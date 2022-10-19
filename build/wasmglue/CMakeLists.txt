@@ -31,25 +31,25 @@ set (WGLUE wasmglue)
 
 ####################################
 # source and headers files
-file (GLOB SRC ${SRCDIR}/generator/wasm/wasm_dsp_aux.cpp ${SRCDIR}/generator/wasm/wasm_errormsg.cpp ${SRCDIR}/generator/export.cpp)
-file (GLOB HH ${SRCDIR}/generator/wasm/wasm_dsp_aux.hh ${SRCDIR}/generator/export.hh)
+file (GLOB SRC ${SRCDIR}/compiler/generator/wasm/wasm_dsp_aux.cpp ${SRCDIR}/compiler/generator/wasm/wasm_errormsg.cpp ${SRCDIR}/compiler/generator/export.cpp)
+file (GLOB HH ${SRCDIR}/compiler/generator/wasm/wasm_dsp_aux.hh ${SRCDIR}/compiler/generator/export.hh)
 
 #
 ####################################
 # include directories
 set (FAUST_INC ${SRCDIR}
-	${SRCDIR}/errors 
-	${SRCDIR}/generator
-	${SRCDIR}/tlib ${SRCDIR}/transform ${SRCDIR}/utils
-	${SRCDIR}/../architecture /usr/local/include)
+	${SRCDIR}/compiler/errors
+	${SRCDIR}/compiler/generator
+	${SRCDIR}/compiler/tlib ${SRCDIR}/compiler/transform ${SRCDIR}/compiler/utils
+	${ROOT}/architecture /usr/local/include)
 
 
 ####################################
 # emscripten support
 set (WASM_EXTRA_EXPORTED "\"['FS']\"")
 set (LIBSNDFILE "${ROOT}/build/wasmglue/libsndfile.a ${ROOT}/build/wasmglue/libogg.a ${ROOT}/build/wasmglue/libvorbis.a ${ROOT}/build/wasmglue/libvorbisenc.a ${ROOT}/build/wasmglue/libFLAC.a")
-set (WASM_LINK_FLAGS "--bind --memory-init-file 0 -s LINKABLE=0 -s WASM=1 -s EXPORT_NAME=\"'FaustModule'\" -s MODULARIZE=1 -s ASSERTIONS=0 -s ALLOW_MEMORY_GROWTH=1 -s DISABLE_EXCEPTION_CATCHING=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=${WASM_EXTRA_EXPORTED} ${LIBSNDFILE} ${WASM_LINK_FLAGS_EXTRA}") 
- 
+set (WASM_LINK_FLAGS "--bind --memory-init-file 0 -s LINKABLE=0 -s WASM=1 -s EXPORT_NAME=\"'FaustModule'\" -s MODULARIZE=1 -s ASSERTIONS=0 -s ALLOW_MEMORY_GROWTH=1 -s DISABLE_EXCEPTION_CATCHING=1 -s EXTRA_EXPORTED_RUNTIME_METHODS=${WASM_EXTRA_EXPORTED} ${LIBSNDFILE} ${WASM_LINK_FLAGS_EXTRA}")
+
 ####################################
 # Add the different targets
 add_executable(${WGLUE} EXCLUDE_FROM_ALL ${SRC} ${HH})

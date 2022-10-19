@@ -18,11 +18,12 @@ if (NOT DEFINED LIBSDIR)
 endif()
 
 get_filename_component(ROOT ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
-set (SRCDIR ${ROOT}/compiler)
+set (SRCDIR ${ROOT}/source)
 set (BINDIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set (LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/${LIBSDIR})
 
 set (CMAKE_CXX_STANDARD 11)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #######################################
 # Output options
@@ -53,28 +54,79 @@ endif()
 
 ####################################
 # source and headers files
-file (GLOB SRC ${SRCDIR}/*.cpp ${SRCDIR}/*/*.cpp ${SRCDIR}/draw/*/*.cpp ${SRCDIR}/generator/fir/*.cpp)
-file (GLOB HH  ${SRCDIR}/*.hh  ${SRCDIR}/*/*.hh  ${SRCDIR}/generator/fir/*.hh)
+file (GLOB SRC ${SRCDIR}/compiler/*.cpp
+               ${SRCDIR}/compiler/*/*.cpp
+               ${SRCDIR}/compiler/*/*/*.cpp
+               ${SRCDIR}/compiler/*/*/*/*.cpp
+						   ${SRCDIR}/draw/*.cpp
+							 ${SRCDIR}/draw/*/*.cpp
+							 ${SRCDIR}/target/fir/*.cpp
+							 ${SRCDIR}/target/c/*.cpp
+							 ${SRCDIR}/target/cpp/*.cpp
+							 ${SRCDIR}/target/jax/*.cpp
+							 ${SRCDIR}/target/java/*.cpp
+							 ${SRCDIR}/target/julia/*.cpp
+							 ${SRCDIR}/target/rust/*.cpp
+							 ${SRCDIR}/target/dlang/*.cpp
+							 ${SRCDIR}/target/csharp/*.cpp
+							 ${SRCDIR}/target/soul/*.cpp
+							 ${SRCDIR}/target/wasm/*.cpp
+							 ${ROOT}/benchmark/timing.cpp
+ 						   ${SRCDIR}/documentator/*.cpp )
+file (GLOB HH  ${SRCDIR}/compiler/*.hh
+               ${SRCDIR}/compiler/*/*.hh
+               ${SRCDIR}/compiler/*/*/*.hh
+               ${SRCDIR}/compiler/*/*/*/*.hh
+               ${SRCDIR}/draw/*.hh
+               ${SRCDIR}/draw/*/*.hh
+               ${SRCDIR}/target/*/*.hh
+							 ${ROOT}/benchmark/timing.hh
+							 ${SRCDIR}/documentator/*.hh )
 
 ####################################
 # include directories
 set (FAUST_INC ${SRCDIR}
-	${SRCDIR}/boxes ${SRCDIR}/documentator ${SRCDIR}/draw
-	${SRCDIR}/errors ${SRCDIR}/evaluate ${SRCDIR}/extended
-	${SRCDIR}/generator
-	${SRCDIR}/generator/dlang
-	${SRCDIR}/generator/csharp
-	${SRCDIR}/generator/fir
-	${SRCDIR}/generator/julia
-	${SRCDIR}/generator/interpreter
-	${SRCDIR}/generator/rust
-	${SRCDIR}/generator/cmajor
-	${SRCDIR}/normalize ${SRCDIR}/parallelize ${SRCDIR}/parser
-	${SRCDIR}/patternmatcher ${SRCDIR}/propagate ${SRCDIR}/signals
-	${SRCDIR}/tlib ${SRCDIR}/transform ${SRCDIR}/utils
-	${SRCDIR}/draw/device ${SRCDIR}/draw/schema
-	${SRCDIR}/../architecture /usr/local/include)
-
+	${SRCDIR}/documentator
+	${ROOT}/benchmark
+	${SRCDIR}/compiler/draw
+	${SRCDIR}/compiler/errors
+	${SRCDIR}/compiler/evaluate
+	${SRCDIR}/compiler
+	${SRCDIR}/compiler/generator
+	${SRCDIR}/compiler/tlib
+	${SRCDIR}/target/dlang
+	${SRCDIR}/target/c
+	${SRCDIR}/target/cpp
+	${SRCDIR}/target/csharp
+	${SRCDIR}/target/fir
+	${SRCDIR}/target/java
+	${SRCDIR}/target/julia
+	${SRCDIR}/target/jax
+	${SRCDIR}/target/llvm
+	${SRCDIR}/target/wasm
+	${SRCDIR}/target/interpreter
+	${SRCDIR}/target/rust
+	${SRCDIR}/target/soul
+	${SRCDIR}/compiler/generator/normalize
+	${SRCDIR}/compiler/generator/parallelize
+	${SRCDIR}/compiler/parser
+	${SRCDIR}/compiler/boxes
+	${SRCDIR}/compiler/math_primitives
+	${SRCDIR}/compiler/file_handling
+	${SRCDIR}/compiler/block_diagram/evaluate
+	${SRCDIR}/compiler/block_diagram/evaluate/patternmatcher
+	${SRCDIR}/compiler/block_diagram/evaluate/propagate
+	${SRCDIR}/compiler/signals
+	${SRCDIR}/compiler/tlib
+	${SRCDIR}/compiler/transform
+	${SRCDIR}/compiler/utils
+	${SRCDIR}/draw
+	${SRCDIR}/draw/device
+	${SRCDIR}/draw/schema
+	${SRCDIR}/target/interpreter
+	${SRCDIR}/target/fir
+	${ROOT}/architecture
+	/usr/local/include)
 
 ####################################
 # LLVM
@@ -101,7 +153,7 @@ if (NOT MSVC)
 	set_property(SOURCE ${TMP}/llvm_dsp_aux.cpp ${TMP}/llvm_dynamic_dsp_aux.cpp APPEND_STRING PROPERTY CMAKE_CXX_FLAGS "-fno-rtti ${LLVM_DEFINITIONS}")
 endif()
 	set (FAUST_LIBS ${FAUST_LIBS} ${LLVM_LD_FLAGS} ${LLVM_LIBS})
-	
+
 	set (FAUST_DEFINITIONS ${FAUST_DEFINITIONS} -DLLVM_VERSION="${LLVM_PACKAGE_VERSION}")
 
 	if("${LLVM_PACKAGE_VERSION}" VERSION_GREATER_EQUAL 10)
@@ -178,7 +230,7 @@ if (INCLUDE_STATIC)
 	target_compile_definitions (staticlib PRIVATE ${FAUST_DEFINITIONS})
 	target_include_directories (staticlib PRIVATE ${FAUST_INC} ${LLVM_INC})
 	target_link_libraries (staticlib PRIVATE ${FAUST_LIBS})
-	set_target_properties(staticlib PROPERTIES 
+	set_target_properties(staticlib PROPERTIES
 		ARCHIVE_OUTPUT_DIRECTORY ${LIBDIR}
 		LIBRARY_OUTPUT_DIRECTORY ${LIBDIR}
 		ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LIBDIR}
@@ -196,9 +248,9 @@ if (INCLUDE_STATIC)
 	scan_backends (staticlib STATIC)
 	if (INCLUDE_LLVM)
 		if (WIN32)
-			set (MAKELIBCMD Make.llvm.static.bat) 
+			set (MAKELIBCMD Make.llvm.static.bat)
 		else()
-			set (MAKELIBCMD make -f Make.llvm.static || true) 
+			set (MAKELIBCMD make -f Make.llvm.static || true)
 		endif()
 		add_custom_command(TARGET staticlib POST_BUILD
                    COMMAND ${MAKELIBCMD}
@@ -402,8 +454,8 @@ file (GLOB FAUSTDSPLIBS ${ROOT}/libraries/*.lib ${ROOT}/libraries/old/*.lib)
 file (GLOB FAUSTDPSEMB ${ROOT}/libraries/embedded/*.lib)
 # install various files from the architecture root folder
 file (GLOB FAUSTARCHS ${ARCHDIR}/*.cpp ${ARCHDIR}/*.c ${ARCHDIR}/*.cs ${ARCHDIR}/*.rs ${ARCHDIR}/*.jl
-					${ARCHDIR}/*.java ${ARCHDIR}/*.h 
-					${ARCHDIR}/*.d ${ARCHDIR}/mathdoctexts-*.txt  
+					${ARCHDIR}/*.java ${ARCHDIR}/*.h
+					${ARCHDIR}/*.d ${ARCHDIR}/mathdoctexts-*.txt
 					${ARCHDIR}/latexheader.tex)
 install (
     FILES     ${FAUSTDSPLIBS} ${FAUSTARCHS} ${ROOT}/tools/faust2appls/Info.plist DESTINATION ${CMAKE_INSTALL_PREFIX}/share/faust

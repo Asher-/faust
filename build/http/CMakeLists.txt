@@ -42,29 +42,29 @@ set (CMAKE_BUILD_TYPE Release)
 
 #######################################
 # collect source files
-FILE(GLOB SRC 
-	${SRCDIR}/*.cpp 
-	${SRCDIR}/hexa/*.cpp 
-	${SRCDIR}/html/*.cpp 
-	${SRCDIR}/httpd/*.cpp 
-	${SRCDIR}/json/*.cpp 
+FILE(GLOB SRC
+	${SRCDIR}/*.cpp
+	${SRCDIR}/hexa/*.cpp
+	${SRCDIR}/html/*.cpp
+	${SRCDIR}/httpd/*.cpp
+	${SRCDIR}/json/*.cpp
 	${SRCDIR}/lib/*.cpp
 	${SRCDIR}/msg/*.cpp
 	${SRCDIR}/nodes/*.cpp)
 
-set (SRC ${SRC} ${ROOT}/compiler/parser/sourcefetcher.cpp)
+set (SRC ${SRC} ${ROOT}/source/compiler/file_handling/sourcefetcher.cpp)
 
-set( INCLUDE 
-	${SRCDIR}/hexa 
-	${SRCDIR}/html 
-	${SRCDIR}/httpd 
-	${SRCDIR}/include 
-	${SRCDIR}/json 
-	${SRCDIR}/lib 
-	${SRCDIR}/msg 
+set( INCLUDE
+	${SRCDIR}/hexa
+	${SRCDIR}/html
+	${SRCDIR}/httpd
+	${SRCDIR}/include
+	${SRCDIR}/json
+	${SRCDIR}/lib
+	${SRCDIR}/msg
 	${SRCDIR}/nodes
 	${ARCHDIR}
-	${ROOT}/compiler/tlib
+	${ROOT}/source/compiler/tlib
 	)
 
 #######################################
@@ -88,14 +88,14 @@ if (WIN32 AND MSVC)
 	if("${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
 		set (LMHDIR ${ROOT}/windows/libmicrohttpd/x64)
 		set (LMHLIB ${LMHDIR}/libmicrohttpd.lib)
-	else () 
+	else ()
 		set (LMHDIR ${ROOT}/windows/libmicrohttpd)
 		set (LMHLIB ${ROOT}/windows/libmicrohttpd/libmicrohttpd.lib)
 	endif()
 	set (INCLUDE ${INCLUDE} ${LMHDIR})
 else ()
 	find_package(PkgConfig REQUIRED)
-	if (${PKG_CONFIG_FOUND}) 
+	if (${PKG_CONFIG_FOUND})
 		if ( WIN32 OR MSYS )
 			set_pkg_config_path ()
 			message(STATUS "Using MSYS PKG_CONFIG_PATH $ENV{PKG_CONFIG_PATH}")
@@ -135,7 +135,7 @@ if (INCLUDE_HTTP)
 	add_library( httpstatic STATIC  ${SRC})
 	target_include_directories (httpstatic PRIVATE ${INCLUDE} )
 	set (TARGETS httpstatic)
-	if (WIN32 AND MSVC) 
+	if (WIN32 AND MSVC)
 		target_compile_definitions (httpstatic PRIVATE -D_WIN32 -DMHD_W32LIB)
 		if (MSVC)
 			set_target_properties(httpstatic  PROPERTIES OUTPUT_NAME lib${TARGET})
@@ -144,7 +144,7 @@ if (INCLUDE_HTTP)
 		endif()
 		target_link_libraries(httpstatic  ws2_32 ${LMHLIB})
 	else()
-		set_target_properties (httpstatic PROPERTIES 
+		set_target_properties (httpstatic PROPERTIES
 			OUTPUT_NAME ${TARGET}
 			COMPILE_FLAGS  "${LIBMICROHTTPD__CFLAGS}"
 			LINK_FLAGS     "${LIBMICROHTTPD__LDFLAGS}")
@@ -155,18 +155,18 @@ if (HTTPDYNAMIC)
 	add_library( httpdynamic SHARED  ${SRC})
 	target_include_directories (httpdynamic PRIVATE ${INCLUDE} )
 	set_target_properties(httpdynamic PROPERTIES OUTPUT_NAME ${TARGET})
-	set_target_properties(httpdynamic PROPERTIES 
+	set_target_properties(httpdynamic PROPERTIES
 		VERSION ${VERSION}
 		SOVERSION ${SOVERS})
 	set (TARGETS ${TARGETS} httpdynamic)
-	if (WIN32 AND MSVC) 
+	if (WIN32 AND MSVC)
 		target_compile_definitions (httpdynamic PRIVATE -D_WIN32 -DMHD_W32LIB)
 		target_link_libraries(httpdynamic ws2_32 ${LMHLIB})
 	elseif(MSYS)
 		target_link_libraries (httpdynamic ${LIBMICROHTTPD__LDFLAGS})
 	else()
 		target_link_libraries (httpdynamic microhttpd)
-		set_target_properties (httpdynamic PROPERTIES 
+		set_target_properties (httpdynamic PROPERTIES
 			COMPILE_FLAGS  "${LIBMICROHTTPD__CFLAGS}"
 			LINK_FLAGS     "${LIBMICROHTTPD__LDFLAGS}")
 	endif()
@@ -174,7 +174,7 @@ if (HTTPDYNAMIC)
 endif()
 
 file (GLOB HEADERS ${SRCDIR}/include/*.h)
-set_target_properties(${TARGETS} PROPERTIES 
+set_target_properties(${TARGETS} PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY_RELEASE ${LIBDIR}
 	LIBRARY_OUTPUT_DIRECTORY_RELEASE ${LIBDIR}
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LIBDIR})
@@ -199,4 +199,3 @@ install ( TARGETS ${TARGETS}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBSDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX}/include/faust/gui
 )
-
