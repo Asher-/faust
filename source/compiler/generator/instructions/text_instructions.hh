@@ -32,10 +32,11 @@
 #include "Text.hh"
 #include "fir_to_fir.hh"
 #include "instructions.hh"
-#include "type_manager.hh"
+#include "string_type_manager.hh"
+#include "global.hh"
 
 // To check all control fields in the DSP structure
-inline bool isControl(const string& name)
+inline bool isControl(const std::string& name)
 {
     return startWith(name, "fButton") || startWith(name, "fCheckbox") || startWith(name, "fVslider") ||
            startWith(name, "fHslider") || startWith(name, "fEntry") || startWith(name, "fVbargraph") ||
@@ -204,7 +205,7 @@ class TextInstVisitor : public InstVisitor {
      * @return true if parentheses are needed to silence warnings
      * @return false otherwise
      */
-    bool special(const string& name)
+    bool special(const std::string& name)
     {
         return (name == "==") || (name == "!=") || (name == "<") || (name == ">") || (name == "<=") || (name == ">=") ||
                (name == ">>") || (name == "<<") || (name == "&") || (name == "|");
@@ -456,7 +457,7 @@ class TextInstVisitor : public InstVisitor {
         *fOut << ") {";
         fTab++;
         tab(fTab, *fOut);
-        list<pair<int, BlockInst*> >::const_iterator it;
+        std::list<std::pair<int, BlockInst*> >::const_iterator it;
         for (it = inst->fCode.begin(); it != inst->fCode.end(); it++) {
             if ((*it).first == -1) {  // -1 used to code "default" case
                 *fOut << "default: {";

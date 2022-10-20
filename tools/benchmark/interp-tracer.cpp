@@ -6,20 +6,20 @@
  and/or modify it under the terms of the GNU General Public License
  as published by the Free Software Foundation; either version 3 of
  the License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
+
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
  architecture section is not modified.
- 
+
  ************************************************************************/
 
 #include <libgen.h>
@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <unistd.h>
 #include <assert.h>
+#include <utility>
 
 #include "faust/audio/dummy-audio.h"
 #include "faust/dsp/interpreter-dsp.h"
@@ -86,11 +87,12 @@ struct CheckControlUI : public MapUI {
     struct ZoneDesc {
         
         string fLabel;
+
         FAUSTFLOAT fInit;
         FAUSTFLOAT fMin;
         FAUSTFLOAT fMax;
         FAUSTFLOAT fStep;
-        
+
         ZoneDesc(const string& label,
                  FAUSTFLOAT init,
                  FAUSTFLOAT min,
@@ -99,7 +101,7 @@ struct CheckControlUI : public MapUI {
         :fLabel(label), fInit(init), fMin(min), fMax(max), fStep(step)
         {}
     };
-    
+
     CheckControlUI(const string& name = ""):fName(name)
     {}
     
@@ -130,7 +132,7 @@ struct CheckControlUI : public MapUI {
         MapUI::addNumEntry(label, zone, init, min, max, step);
         addItem(label, zone, init, min, max, step);
     }
-    
+
     void addItem(const string& label, FAUSTFLOAT* zone, FAUSTFLOAT init, FAUSTFLOAT min, FAUSTFLOAT max, FAUSTFLOAT step)
     {
         // Reset to init
@@ -149,7 +151,7 @@ struct CheckControlUI : public MapUI {
         }
         out.close();
     }
-    
+
 };
 
 list<GUI*> GUI::fGuiList;
@@ -159,17 +161,17 @@ int main(int argc, char* argv[])
 {
     char name[256];
     char filename[256];
-    
+
     snprintf(name, 255, "%s", basename(argv[0]));
     snprintf(filename, 255, "%s", basename(argv[argc-1]));
-    
+
     int trace_mode = lopt(argv, "-trace", 0);
     bool is_input = isopt(argv, "-input");
     bool is_output = isopt(argv, "-output");
     bool is_control = isopt(argv, "-control");
     bool is_noui = isopt(argv, "-noui");
     int time_out = lopt(argv, "-timeout", 10);
-    
+
     if (isopt(argv, "-h") || isopt(argv, "-help") || trace_mode < 0 || trace_mode > 7) {
         cout << "interp-tracer [-trace <1-7>] [-control] [-output] [-noui] [-timeout <num>] [additional Faust ftestPrograms (-ftz xx)] foo.dsp" << endl;
         cout << "-control to activate min/max control check then setting all controllers (inside their range) in a random way\n";
@@ -186,13 +188,13 @@ int main(int argc, char* argv[])
         cout << "-trace 7 to only check LOAD/STORE errors and exit\n";
         exit(EXIT_FAILURE);
     }
-    
+
     cout << "Filename: " << argv[argc-1] << endl;
     cout << "Libfaust version : " << getCLibFaustVersion() << endl;
-    
+
     int argc1 = 0;
     const char* argv1[64];
-    
+
     cout << "Compiled with additional options : ";
     for (int i = 1; i < argc-1; i++) {
         if (string(argv[i]) == "-control"
@@ -209,47 +211,47 @@ int main(int argc, char* argv[])
     }
     cout << endl;
     argv1[argc1] = nullptr;  // NULL terminated argv
-  
+
     cout << "Using interpreter backend" << endl;
     if (trace_mode > 0) {
         char mode[8]; sprintf(mode, "%d", trace_mode);
         setenv("FAUST_INTERP_TRACE", mode, 1);
     }
-    
+
     if (is_output > 0) {
         char mode[8]; sprintf(mode, "%d", is_output);
         setenv("FAUST_INTERP_OUTPUT", mode, 1);
     }
-    
+
     dsp_factory* factory = nullptr;
     dsp* DSP = nullptr;
     GUI* interface = nullptr;
     RandomControlUI random;
-    
+
     try {
-        
+
         string error_msg;
         // argc : without the filename (last element)
         factory = createInterpreterDSPFactoryFromFile(argv[argc-1], argc1, argv1, error_msg);
-        
+
         if (!factory) {
             cerr << error_msg;
             exit(EXIT_FAILURE);
         }
-        
+
         DSP = factory->createDSPInstance();
         if (!DSP) {
             cerr << "Cannot create instance " << endl;
             exit(EXIT_FAILURE);
         }
-        
+
         if (isopt(argv, "-double")) {
             cout << "Running in double..." << endl;
         }
-        
+
         cout << "getName " << factory->getName() << endl;
         dummyaudio_base* audio = nullptr;
-        
+
         if (isopt(argv, "-double")) {
             audio = new dummyaudio_real<double>(44100, 16, INT_MAX, -1, false, trace_mode == 4);
         } else {
@@ -258,19 +260,19 @@ int main(int argc, char* argv[])
         if (!audio->init(filename, DSP)) {
             exit(EXIT_FAILURE);
         }
-        
+
         if (!is_noui) {
             interface = new GTKUI(filename, &argc, &argv);
             DSP->buildUserInterface(interface);
         }
-        
+
         if (is_control) {
-            
+
             // Check by setting each control to min, the max, then reset to init before going to next one
             {
                 CheckControlUI ctl;
                 DSP->buildUserInterface(&ctl);
-                
+
                 cout << "------------------------------" << endl;
                 cout << "Check control min/max for " << ctl.fControlZone.size() << " controls" << endl;
                 for (size_t index = 0; index < ctl.fControlZone.size(); index++) {
@@ -291,12 +293,12 @@ int main(int argc, char* argv[])
                     *ctl.fControlZone[index].first = init; // reset to init
                 }
             }
-            
+
             // Check by setting each control to max, then min, then keeping to min before going to next one
             {
                 CheckControlUI ctl;
                 DSP->buildUserInterface(&ctl);
-                
+
                 cout << "------------------------------" << endl;
                 cout << "Check control min/max successively keeping min for " << ctl.fControlZone.size() << " controls" << endl;
                 for (size_t index = 0; index < ctl.fControlZone.size(); index++) {
@@ -314,12 +316,12 @@ int main(int argc, char* argv[])
                     audio->render();
                 }
             }
-            
+
             // Check by setting each control to min, then max, then keeping to max before going to next one
             {
                 CheckControlUI ctl;
                 DSP->buildUserInterface(&ctl);
-                
+
                 cout << "------------------------------" << endl;
                 cout << "Check control min/max successively, keeping max for " << ctl.fControlZone.size() << " controls" << endl;
                 for (size_t index = 0; index < ctl.fControlZone.size(); index++) {
@@ -337,12 +339,12 @@ int main(int argc, char* argv[])
                     audio->render();
                 }
             }
-            
+
             // Check by setting each control to zero if contained in the [min..max] range
             {
                 CheckControlUI ctl;
                 DSP->buildUserInterface(&ctl);
-                
+
                 cout << "------------------------------" << endl;
                 cout << "Check control to zero if contained in the [min..max] range" << endl;
                 for (size_t index = 0; index < ctl.fControlZone.size(); index++) {
@@ -357,7 +359,7 @@ int main(int argc, char* argv[])
                     }
                 }
             }
-            
+
             // Generate random values for controllers
             DSP->buildUserInterface(&random);
             cout << "------------------------------" << endl;
@@ -367,9 +369,9 @@ int main(int argc, char* argv[])
                 random.update();
                 audio->render();
             }
-            
+
             goto end;
-            
+
         } else if (is_input) {
             
             // Test with impulse and noise
@@ -385,17 +387,17 @@ int main(int argc, char* argv[])
         } else {
             audio->start();
         }
-        
+
         if (!is_noui) {
             interface->run();
         } else {
             cout << "Use Ctrl-c to Quit" << endl;
             usleep(time_out * 1e6);
         }
-        
+
         audio->stop();
         delete audio;
-        
+
     } catch (...) {
         cout << endl;
         random.display();
@@ -405,14 +407,14 @@ int main(int argc, char* argv[])
         DSP->buildUserInterface(&ctl);
         ctl.display();
     }
-    
+
 end:
-    
+
     delete DSP;
     delete interface;
-    
+
     printList(factory->getWarningMessages());
+
     deleteInterpreterDSPFactory(static_cast<interpreter_dsp_factory*>(factory));
     return 0;
 }
-

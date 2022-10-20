@@ -47,10 +47,11 @@
 #include "normalform.hh"
 #include "timing.hh"
 #include "xtended.hh"
+#include "global.hh"
 
 using namespace std;
 
-static Klass* signal2klass(Klass* parent, const string& name, Tree sig)
+static Klass* signal2klass(Klass* parent, const std::string& name, Tree sig)
 {
     Type t = getCertifiedSigType(sig);  //, NULLENV);
     if (t->nature() == kInt) {
@@ -69,9 +70,9 @@ static Klass* signal2klass(Klass* parent, const string& name, Tree sig)
  getFreshID
  *****************************************************************************/
 
-map<string, int> ScalarCompiler::fIDCounters;
+map<std::string, int> ScalarCompiler::fIDCounters;
 
-string ScalarCompiler::getFreshID(const string& prefix)
+string ScalarCompiler::getFreshID(const std::string& prefix)
 {
     if (fIDCounters.find(prefix) == fIDCounters.end()) {
         fIDCounters[prefix] = 0;
@@ -248,7 +249,7 @@ bool ScalarCompiler::getCompiledExpression(Tree sig, string& cexp)
  * @param cexp the string representing the compiled expression.
  * @return the cexp (for commodity)
  */
-string ScalarCompiler::setCompiledExpression(Tree sig, const string& cexp)
+string ScalarCompiler::setCompiledExpression(Tree sig, const std::string& cexp)
 {
     // cerr << "ScalarCompiler::setCompiledExpression : " << cexp << " ==> " << ppsig(sig) << endl;
     string old;
@@ -271,7 +272,7 @@ string ScalarCompiler::setCompiledExpression(Tree sig, const string& cexp)
  * @param vecname the string representing the vector name.
  * @return true is already compiled
  */
-void ScalarCompiler::setVectorNameProperty(Tree sig, const string& vecname)
+void ScalarCompiler::setVectorNameProperty(Tree sig, const std::string& vecname)
 {
     faustassert(vecname.size() > 0);
     fVectorProperty.set(sig, vecname);
@@ -505,7 +506,7 @@ string ScalarCompiler::generateCode(Tree sig)
  NUMBERS
  *****************************************************************************/
 
-string ScalarCompiler::generateNumber(Tree sig, const string& exp)
+string ScalarCompiler::generateNumber(Tree sig, const std::string& exp)
 {
     string          ctype, vname;
     old_Occurences* o = fOccMarkup->retrieve(sig);
@@ -522,7 +523,7 @@ string ScalarCompiler::generateNumber(Tree sig, const string& exp)
  FOREIGN CONSTANTS
  *****************************************************************************/
 
-string ScalarCompiler::generateFConst(Tree sig, const string& file, const string& exp_aux)
+string ScalarCompiler::generateFConst(Tree sig, const std::string& file, const std::string& exp_aux)
 {
     // Special case for 02/25/19 renaming
     string exp = (exp_aux == "fSamplingFreq") ? "fSampleRate" : exp_aux;
@@ -543,7 +544,7 @@ string ScalarCompiler::generateFConst(Tree sig, const string& file, const string
  FOREIGN VARIABLES
  *****************************************************************************/
 
-string ScalarCompiler::generateFVar(Tree sig, const string& file, const string& exp)
+string ScalarCompiler::generateFVar(Tree sig, const std::string& file, const std::string& exp)
 {
     string ctype, vname;
 
@@ -555,7 +556,7 @@ string ScalarCompiler::generateFVar(Tree sig, const string& file, const string& 
  INPUTS - OUTPUTS
  *****************************************************************************/
 
-string ScalarCompiler::generateInput(Tree sig, const string& idx)
+string ScalarCompiler::generateInput(Tree sig, const std::string& idx)
 {
     if (gGlobal->gInPlace) {
         // inputs must be cached for in-place transformations
@@ -565,7 +566,7 @@ string ScalarCompiler::generateInput(Tree sig, const string& idx)
     }
 }
 
-string ScalarCompiler::generateOutput(Tree sig, const string& idx, const string& arg)
+string ScalarCompiler::generateOutput(Tree sig, const std::string& idx, const std::string& arg)
 {
     string dst = subst("output$0[i]", idx);
     fClass->addExecCode(Statement("", subst("$0 = $2$1;", dst, arg, xcast())));
@@ -646,7 +647,7 @@ string ScalarCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
  CACHE CODE
  *****************************************************************************/
 
-void ScalarCompiler::getTypedNames(Type t, const string& prefix, string& ctype, string& vname)
+void ScalarCompiler::getTypedNames(Type t, const std::string& prefix, string& ctype, string& vname)
 {
     if (t->nature() == kInt) {
         ctype = "int";
@@ -657,7 +658,7 @@ void ScalarCompiler::getTypedNames(Type t, const string& prefix, string& ctype, 
     }
 }
 
-string ScalarCompiler::generateCacheCode(Tree sig, const string& exp)
+string ScalarCompiler::generateCacheCode(Tree sig, const std::string& exp)
 {
     string code;
 
@@ -694,7 +695,7 @@ string ScalarCompiler::generateCacheCode(Tree sig, const string& exp)
 }
 
 // like generateCacheCode but we force caching like if sharing was always > 1
-string ScalarCompiler::forceCacheCode(Tree sig, const string& exp)
+string ScalarCompiler::forceCacheCode(Tree sig, const std::string& exp)
 {
     string code;
 
@@ -716,7 +717,7 @@ string ScalarCompiler::forceCacheCode(Tree sig, const string& exp)
     }
 }
 
-string ScalarCompiler::generateVariableStore(Tree sig, const string& exp)
+string ScalarCompiler::generateVariableStore(Tree sig, const std::string& exp)
 {
     string          vname, vname_perm, ctype;
     Type            t = getCertifiedSigType(sig);
@@ -836,7 +837,7 @@ string ScalarCompiler::generateNumEntry(Tree sig, Tree path, Tree cur, Tree min,
     return generateCacheCode(sig, subst("$1($0)", varname, ifloat()));
 }
 
-string ScalarCompiler::generateVBargraph(Tree sig, Tree path, Tree min, Tree max, const string& exp)
+string ScalarCompiler::generateVBargraph(Tree sig, Tree path, Tree min, Tree max, const std::string& exp)
 {
     string varname = getFreshID("fbargraph");
     fClass->addDeclCode(subst("$1 \t$0;", varname, xfloat()));
@@ -861,7 +862,7 @@ string ScalarCompiler::generateVBargraph(Tree sig, Tree path, Tree min, Tree max
     return generateCacheCode(sig, varname);
 }
 
-string ScalarCompiler::generateHBargraph(Tree sig, Tree path, Tree min, Tree max, const string& exp)
+string ScalarCompiler::generateHBargraph(Tree sig, Tree path, Tree min, Tree max, const std::string& exp)
 {
     string varname = getFreshID("fbargraph");
     fClass->addDeclCode(subst("$1 \t$0;", varname, xfloat()));
@@ -927,7 +928,7 @@ string ScalarCompiler::generateSigGen(Tree sig, Tree content)
 
     fClass->addSubKlass(signal2klass(fClass, klassname, content));
     fClass->addInitCode(subst("$0 $1;", klassname, signame));
-    fInstanceInitProperty.set(content, pair<string, string>(klassname, signame));
+    fInstanceInitProperty.set(content, pair<std::string, string>(klassname, signame));
 
     return signame;
 }
@@ -939,7 +940,7 @@ string ScalarCompiler::generateStaticSigGen(Tree sig, Tree content)
 
     fClass->addSubKlass(signal2klass(fClass, klassname, content));
     fClass->addStaticInitCode(subst("$0 $1;", klassname, signame));
-    fStaticInitProperty.set(content, pair<string, string>(klassname, signame));
+    fStaticInitProperty.set(content, pair<std::string, string>(klassname, signame));
 
     return signame;
 }
@@ -964,7 +965,7 @@ string ScalarCompiler::generateTable(Tree sig, Tree tsize, Tree content)
 
     // already compiled but check if we need to add declarations
     faustassert(isSigGen(content, g));
-    pair<string, string> kvnames;
+    pair<std::string, string> kvnames;
     if (!fInstanceInitProperty.get(g, kvnames)) {
         // not declared here, we add a declaration
         bool b = fStaticInitProperty.get(g, kvnames);
@@ -1015,7 +1016,7 @@ string ScalarCompiler::generateStaticTable(Tree sig, Tree tsize, Tree content)
         cexp = setCompiledExpression(content, generateStaticSigGen(content, g));
     } else {
         // already compiled but check if we need to add declarations
-        pair<string, string> kvnames;
+        pair<std::string, string> kvnames;
         if (!fStaticInitProperty.get(g, kvnames)) {
             // not declared here, we add a declaration
             bool b = fInstanceInitProperty.get(g, kvnames);
@@ -1138,8 +1139,8 @@ void ScalarCompiler::generateRec(Tree sig, Tree var, Tree le)
 
     vector<bool>   used(N);
     vector<int>    delay(N);
-    vector<string> vname(N);
-    vector<string> ctype(N);
+    vector<std::string> vname(N);
+    vector<std::string> ctype(N);
 
     // prepare each element of a recursive definition
     for (int i = 0; i < N; i++) {
@@ -1225,7 +1226,7 @@ string ScalarCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tree s2)
 string ScalarCompiler::generateXtended(Tree sig)
 {
     xtended*       p = (xtended*)getUserData(sig);
-    vector<string> args;
+    vector<std::string> args;
     vector<Type>   types;
 
     for (int i = 0; i < sig->arity(); i++) {
@@ -1319,7 +1320,7 @@ string ScalarCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
  * maximum delay attached to exp and the "less temporaries" switch
  */
 
-string ScalarCompiler::generateDelayVec(Tree sig, const string& exp, const string& ctype, const string& vname, int mxd)
+string ScalarCompiler::generateDelayVec(Tree sig, const std::string& exp, const std::string& ctype, const std::string& vname, int mxd)
 {
     string s = generateDelayVecNoTemp(sig, exp, ctype, vname, mxd);
     if (getCertifiedSigType(sig)->variability() < kSamp) {
@@ -1333,7 +1334,7 @@ string ScalarCompiler::generateDelayVec(Tree sig, const string& exp, const strin
  * Generate code for the delay mecchanism without using temporary variables
  */
 
-string ScalarCompiler::generateDelayVecNoTemp(Tree sig, const string& exp, const string& ctype, const string& vname,
+string ScalarCompiler::generateDelayVecNoTemp(Tree sig, const std::string& exp, const std::string& ctype, const std::string& vname,
                                               int mxd)
 {
     faustassert(mxd > 0);
@@ -1381,8 +1382,8 @@ string ScalarCompiler::generateDelayVecNoTemp(Tree sig, const string& exp, const
  * Generate code for the delay mecchanism without using temporary variables
  */
 
-void ScalarCompiler::generateDelayLine(const string& ctype, const string& vname, int mxd, const string& exp,
-                                       const string& ccs)
+void ScalarCompiler::generateDelayLine(const std::string& ctype, const std::string& vname, int mxd, const std::string& exp,
+                                       const std::string& ccs)
 {
     if (mxd == 0) {
         // cerr << "MXD==0 :  " << vname << " := " << exp << endl;

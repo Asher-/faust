@@ -259,20 +259,20 @@ int TetMesher::initializeCDT(bool recovery)
   if (recovery)
   {
     //get all faces and build neighbors in the triangular mesh
-    map<pair<int, int>, vector<int> > neighborBuffer;
+    std::map<std::pair<int, int>, vector<int> > neighborBuffer;
     for (unsigned i = 0; i < group->getNumFaces(); i++)
     {
       const ObjMesh::Face face = group->getFace(i);
       int a = face.getVertex(0).getPositionIndex();
       int b = face.getVertex(1).getPositionIndex();
       int c = face.getVertex(2).getPositionIndex();
-      pair<int, int> edge[3] = { (a < b ? make_pair(a, b) : make_pair(b, a)), (a < c ? make_pair(a, c) : make_pair(c, a)), (c < b ? make_pair(c, b) : make_pair(b, c)) };
+      std::pair<int, int> edge[3] = { (a < b ? std::make_pair(a, b) : std::make_pair(b, a)), (a < c ? std::make_pair(a, c) : std::make_pair(c, a)), (c < b ? std::make_pair(c, b) : std::make_pair(b, c)) };
       for (int j = 0; j < 3; j++)
         neighborBuffer[edge[j]].push_back(i);
     }
 
     neighborSurface.resize(group->getNumFaces());
-    for (map<pair<int, int>, vector<int> >::const_iterator itr = neighborBuffer.begin(); itr != neighborBuffer.end(); itr++)
+    for (std::map<std::pair<int, int>, std::vector<int> >::const_iterator itr = neighborBuffer.begin(); itr != neighborBuffer.end(); itr++)
     {
 
       if (itr->second.size() != 2)
@@ -540,7 +540,7 @@ void TetMesher::removeEdge(int e1, int e2)
 UEdgeKey find_intersect(UTriKey t1, UTriKey t2)
 {
   bool found = false;
-  pair<int, int> ret;
+  std::pair<int, int> ret;
   for (int i = 0; i < 3; i++)
     for (int j = 0; j < 3; j++)
       if (t1[i] == t2[j])
@@ -628,8 +628,8 @@ void TetMesher::faceRecovery()
     //printf("\n");
     vector<UTriKey> boundaryFace;
     boundaryFace.clear();
-    map<pair<int, int>, pair<int, int> > neighbor;
-    set<pair<int, int> > missingBoundary;
+    std::map<std::pair<int, int>, std::pair<int, int> > neighbor;
+    std::set<std::pair<int, int> > missingBoundary;
     calculateTetBoundary(intersectTet, boundaryFace);
     calculateTriangleBoundary(region, missingBoundary);
     buildTriangleNeighbor(boundaryFace, neighbor);
@@ -700,8 +700,8 @@ void TetMesher::calculateTriangleBoundary(set<int>& missingRegion, std::set<std:
     for (unsigned j = 0; j < 3; j++)
       v[j] = face->getVertexHandle(j)->getPositionIndex();
     std::pair<int, int> edge;
-    set<std::pair<int, int> >::iterator itr;
-    edge = make_pair(v[0], v[1]);
+    std::set<std::pair<int, int> >::iterator itr;
+    edge = std::make_pair(v[0], v[1]);
     if (edge.first > edge.second)
       std::swap(edge.first, edge.second);
     itr = boundary.find(edge);
@@ -709,7 +709,7 @@ void TetMesher::calculateTriangleBoundary(set<int>& missingRegion, std::set<std:
       boundary.insert(edge);
     else
       boundary.erase(itr);
-    edge = make_pair(v[2], v[1]);
+    edge = std::make_pair(v[2], v[1]);
     if (edge.first > edge.second)
       std::swap(edge.first, edge.second);
     itr = boundary.find(edge);
@@ -717,7 +717,7 @@ void TetMesher::calculateTriangleBoundary(set<int>& missingRegion, std::set<std:
       boundary.insert(edge);
     else
       boundary.erase(itr);
-    edge = make_pair(v[0], v[2]);
+    edge = std::make_pair(v[0], v[2]);
     if (edge.first > edge.second)
       std::swap(edge.first, edge.second);
     itr = boundary.find(edge);
@@ -738,21 +738,21 @@ void TetMesher::buildTriangleNeighbor(std::vector<UTriKey>& mesh, std::map<std::
     v[1] = mesh[i][1];
     v[2] = mesh[i][2];
     std::sort(v, v + 3);
-    pair<int, int> edge;
-    map<pair<int, int>, pair<int, int> >::iterator itr;
-    edge = make_pair(v[0], v[1]);
+    std::pair<int, int> edge;
+    std::map<std::pair<int, int>, std::pair<int, int> >::iterator itr;
+    edge = std::make_pair(v[0], v[1]);
     itr = neighbor.find(edge);
     if (itr == neighbor.end())
       neighbor[edge].first = i;
     else
       neighbor[edge].second = i;
-    edge = make_pair(v[1], v[2]);
+    edge = std::make_pair(v[1], v[2]);
     itr = neighbor.find(edge);
     if (itr == neighbor.end())
       neighbor[edge].first = i;
     else
       neighbor[edge].second = i;
-    edge = make_pair(v[0], v[2]);
+    edge = std::make_pair(v[0], v[2]);
     itr = neighbor.find(edge);
     if (itr == neighbor.end())
       neighbor[edge].first = i;
@@ -782,11 +782,11 @@ bool TetMesher::formTwoCavities(std::vector<UTriKey>& faceSet, std::set<std::pai
     v[1] = faceSet[i][1];
     v[2] = faceSet[i][2];
     std::sort(v, v + 3);
-    pair<int, int> edge;
-    pair<int, int> twoNeighbors;
+    std::pair<int, int> edge;
+    std::pair<int, int> twoNeighbors;
     int neighbor;
-    map<pair<int, int>, pair<int, int> >::iterator itr;
-    edge = make_pair(v[0], v[1]);
+    std::map<std::pair<int, int>, std::pair<int, int> >::iterator itr;
+    edge = std::make_pair(v[0], v[1]);
     if (boundary.find(edge) == boundary.end())
     {
       twoNeighbors = neighborMap[edge];
@@ -797,7 +797,7 @@ bool TetMesher::formTwoCavities(std::vector<UTriKey>& faceSet, std::set<std::pai
         q.push(neighbor);
       }
     }
-    edge = make_pair(v[1], v[2]);
+    edge = std::make_pair(v[1], v[2]);
     if (boundary.find(edge) == boundary.end())
     {
       twoNeighbors = neighborMap[edge];
@@ -808,7 +808,7 @@ bool TetMesher::formTwoCavities(std::vector<UTriKey>& faceSet, std::set<std::pai
         q.push(neighbor);
       }
     }
-    edge = make_pair(v[0], v[2]);
+    edge = std::make_pair(v[0], v[2]);
     if (boundary.find(edge) == boundary.end())
     {
       twoNeighbors = neighborMap[edge];
@@ -833,11 +833,11 @@ bool TetMesher::formTwoCavities(std::vector<UTriKey>& faceSet, std::set<std::pai
     v[1] = faceSet[i][1];
     v[2] = faceSet[i][2];
     std::sort(v, v + 3);
-    pair<int, int> edge;
-    pair<int, int> twoNeighbors;
+    std::pair<int, int> edge;
+    std::pair<int, int> twoNeighbors;
     int neighbor;
-    map<pair<int, int>, pair<int, int> >::iterator itr;
-    edge = make_pair(v[0], v[1]);
+    std::map<std::pair<int, int>, std::pair<int, int> >::iterator itr;
+    edge = std::make_pair(v[0], v[1]);
     if (boundary.find(edge) == boundary.end())
     {
       twoNeighbors = neighborMap[edge];
@@ -848,7 +848,7 @@ bool TetMesher::formTwoCavities(std::vector<UTriKey>& faceSet, std::set<std::pai
         q.push(neighbor);
       }
     }
-    edge = make_pair(v[1], v[2]);
+    edge = std::make_pair(v[1], v[2]);
     if (boundary.find(edge) == boundary.end())
     {
       twoNeighbors = neighborMap[edge];
@@ -859,7 +859,7 @@ bool TetMesher::formTwoCavities(std::vector<UTriKey>& faceSet, std::set<std::pai
         q.push(neighbor);
       }
     }
-    edge = make_pair(v[0], v[2]);
+    edge = std::make_pair(v[0], v[2]);
     if (boundary.find(edge) == boundary.end())
     {
       twoNeighbors = neighborMap[edge];
@@ -916,7 +916,7 @@ bool TetMesher::fillHole(std::vector<UTriKey>& holeBoundary)
       if (vertexMap.find(v[j]) == vertexMap.end())
       {
         mesh->addVertexPosition(objMesh->getPosition(v[j]));
-        vertexMap.insert(make_pair(v[j], vertexMap.size()));
+        vertexMap.insert(std::make_pair(v[j], vertexMap.size()));
         vertex_reverse.push_back(v[j]);
       }
       v[j] = vertexMap[v[j]];
@@ -1103,8 +1103,8 @@ TetMesher::TetMeshWithRefineInfo::~TetMeshWithRefineInfo()
 void TetMesher::TetMeshWithRefineInfo::insert(const DelaunayMesher::DelaunayBall * delaunayBall)
 {
   DelaunayBallWithRefineInfo * delaunayBallWithRefineInfo = new DelaunayBallWithRefineInfo(*delaunayBall);
-  edgeRefineMap.insert(make_pair(delaunayBall, edgeRefineBalls.insert(delaunayBallWithRefineInfo).first));
-  if (enabledAngleRefine) angleRefineMap.insert(make_pair(delaunayBall, angleRefineBalls.insert(delaunayBallWithRefineInfo).first));
+  edgeRefineMap.insert(std::make_pair(delaunayBall, edgeRefineBalls.insert(delaunayBallWithRefineInfo).first));
+  if (enabledAngleRefine) angleRefineMap.insert(std::make_pair(delaunayBall, angleRefineBalls.insert(delaunayBallWithRefineInfo).first));
 }
 
 // remove a tet during the refine process

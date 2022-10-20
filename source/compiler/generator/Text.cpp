@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -35,7 +35,7 @@
 #include "floats.hh"
 #include "global.hh"
 
-static string substitution(const string& model, const vector<string>& args)
+static std::string substitution(const std::string& model, const vector<std::string>& args)
 {
     char   c;
     int    i = 0, ilast = (int)model.length() - 1;
@@ -62,38 +62,38 @@ static string substitution(const string& model, const vector<string>& args)
  * occurences in the model string, with the corresponding arguments.
  * Example : subst("float $0 = $1;", "var", T(10.2))
  */
-string subst(const string& model, const vector<string>& args)
+string subst(const std::string& model, const vector<std::string>& args)
 {
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0)
+string subst(const std::string& model, const std::string& a0)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0, const string& a1)
+string subst(const std::string& model, const std::string& a0, const std::string& a1)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     args[1] = a1;
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0, const string& a1, const string& a2)
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     args[1] = a1;
     args[2] = a2;
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3)
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     args[1] = a1;
     args[2] = a2;
@@ -101,10 +101,10 @@ string subst(const string& model, const string& a0, const string& a1, const stri
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3,
-             const string& a4)
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3,
+             const std::string& a4)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     args[1] = a1;
     args[2] = a2;
@@ -113,10 +113,10 @@ string subst(const string& model, const string& a0, const string& a1, const stri
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3,
-             const string& a4, const string& a5)
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3,
+             const std::string& a4, const std::string& a5)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     args[1] = a1;
     args[2] = a2;
@@ -126,10 +126,10 @@ string subst(const string& model, const string& a0, const string& a1, const stri
     return substitution(model, args);
 }
 
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3,
-             const string& a4, const string& a5, const string& a6)
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3,
+             const std::string& a4, const std::string& a5, const std::string& a6)
 {
-    vector<string> args(10);
+    vector<std::string> args(10);
     args[0] = a0;
     args[1] = a1;
     args[2] = a2;
@@ -164,7 +164,7 @@ string T(long n)
  * the textual representation of a floating point number
  * to avoid confusions with an int.
  */
-static string ensureFloat(const string& c)
+static std::string ensureFloat(const std::string& c)
 {
     bool isInt = true;
     for (size_t i = 0; i < c.size(); i++) {
@@ -180,7 +180,7 @@ static string ensureFloat(const string& c)
  * Special encoding for Julia float numbers, see:
  * https://docs.julialang.org/en/v1/manual/integers-and-floating-point-numbers/#Floating-Point-Numbers
  */
-static string encodeJuliaFloat(const string& c, bool& need_suffix)
+static std::string encodeJuliaFloat(const std::string& c, bool& need_suffix)
 {
     bool isInt = true;
     string res;
@@ -198,7 +198,7 @@ static string encodeJuliaFloat(const string& c, bool& need_suffix)
     return (isInt) ? (res + ".0") : res;
 }
 
-static string addSuffix(const string& num)
+static std::string addSuffix(const std::string& num)
 {
     if (gGlobal->gOutputLang == "julia") {
         bool need_suffix = true;
@@ -259,7 +259,7 @@ string T(double n) { return addSuffix(TAux(n)); }
 /**
  * remove quotes from a string
  */
-string unquote(const string& str)
+string unquote(const std::string& str)
 {
     return (str[0] == '"') ? str.substr(1, str.size() - 2) : str;
 }
@@ -267,7 +267,7 @@ string unquote(const string& str)
 /**
  * add quotes to a string
  */
-string quote(const string& s)
+string quote(const std::string& s)
 {
     return "\"" + s + "\"";
 }
@@ -295,9 +295,9 @@ void back(int n, ostream& fout)
  * @param lines list of lines to be printed
  * @param fout output stream
  */
-void printlines(int n, list<string>& lines, ostream& fout, const string& sep)
+void printlines(int n, list<std::string>& lines, ostream& fout, const std::string& sep)
 {
-    list<string>::const_iterator s;
+    list<std::string>::const_iterator s;
     for (s = lines.begin(); s != lines.end(); s++) {
         if (s == lines.begin()) {
             tab(n, fout);
@@ -314,7 +314,7 @@ void printlines(int n, list<string>& lines, ostream& fout, const string& sep)
  * (but not those in the middle of the string)
  */
 
-string rmWhiteSpaces(const string& s)
+string rmWhiteSpaces(const std::string& s)
 {
     size_t i = s.find_first_not_of(" \t");
     size_t j = s.find_last_not_of(" \t");
@@ -332,7 +332,7 @@ string checkReal(double val)
     return (strcmp(ifloat(), "float") == 0) ? checkFloat(float(val)) : checkDouble(val);
 }
 
-string indent(const string& str, int tabs)
+string indent(const std::string& str, int tabs)
 {
     stringstream instream(str);
     stringstream outstream;
@@ -352,7 +352,7 @@ string replaceChar(string str, char src, char dst)
     return str;
 }
 
-string replaceCharList(const string& str, const vector<char>& ch1, char ch2)
+string replaceCharList(const std::string& str, const vector<char>& ch1, char ch2)
 {
     auto beg = ch1.begin();
     auto end = ch1.end();
@@ -363,9 +363,9 @@ string replaceCharList(const string& str, const vector<char>& ch1, char ch2)
     return res;
 }
 
-vector<string> tokenizeString(const string& str, char sep)
+vector<std::string> tokenizeString(const std::string& str, char sep)
 {
-    vector<string> res;
+    vector<std::string> res;
     istringstream is(str);
     string token;
     while (getline(is, token, sep)) res.push_back(token);

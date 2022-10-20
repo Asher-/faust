@@ -15,20 +15,20 @@
  and/or modify it under the terms of the GNU General Public License
  as published by the Free Software Foundation; either version 3 of
  the License, or (at your option) any later version.
- 
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
- 
+
  You should have received a copy of the GNU General Public License
  along with this program; If not, see <http://www.gnu.org/licenses/>.
- 
+
  EXCEPTION : As a special exception, you may create a larger work
  that contains this FAUST architecture section and distribute
  that work under terms of your choice, so long as this FAUST
  architecture section is not modified.
- 
+
  ************************************************************************
  ************************************************************************/
 
@@ -116,11 +116,11 @@ class CMDUI : public UI
     vector<char*>        fFiles;
     stack<string>        fPrefix;
     map<string, param>   fKeyParam;
-    
+
     void openAnyBox(const char* label)
     {
         string prefix;
-        
+
         if (label && label[0]) {
             prefix = fPrefix.top() + "-" + label;
         } else {
@@ -128,17 +128,17 @@ class CMDUI : public UI
         }
         fPrefix.push(prefix);
     }
-    
+
     string simplify(const string& src)
     {
         int       i = 0;
         int       level = 0;
         string    dst;
-        
+
         while (src[i] ) {
-            
+
             switch (level) {
-                    
+
                 case 0 :
                 case 1 :
                 case 2 :
@@ -146,7 +146,7 @@ class CMDUI : public UI
                     // until 3 '-' have been read
                     if (src[i] == '-') { level++; }
                     break;
-                    
+
                 case 3 :
                     // copy the content, but skip non alphnum
                     // and content in parenthesis
@@ -155,34 +155,34 @@ class CMDUI : public UI
                         case '[' :
                             level++;
                             break;
-                            
+
                         case '-' :
                             dst += '-';
                             break;
-                            
+
                         default :
                             if (isalnum(src[i])) {
                                 dst+= tolower(src[i]);
                             }
                     }
                     break;
-                    
+
                 default :
                     // here we are inside parenthesis and
                     // we skip the content until we are back to
                     // level 3
                     switch (src[i]) {
-                            
+
                         case '(' :
                         case '[' :
                             level++;
                             break;
-                            
+
                         case ')' :
                         case ']' :
                             level--;
                             break;
-                            
+
                         default :
                             break;
                     }
@@ -191,69 +191,69 @@ class CMDUI : public UI
         }
         return dst;
     }
-    
+
 public:
-    
+
     CMDUI(int argc, char *argv[]) : UI(), fArgc(argc), fArgv(argv) { fPrefix.push("-"); }
     virtual ~CMDUI() {}
-    
+
     void addOption(const char* label, float* zone, float init, float min, float max)
     {
         string fullname = "-" + simplify(fPrefix.top() + "-" + label);
-        fKeyParam.insert(make_pair(fullname, param(zone, init, min, max)));
+        fKeyParam.insert(std::make_pair(fullname, param(zone, init, min, max)));
     }
-    
+
     virtual void addButton(const char* label, float* zone)
     {
         addOption(label,zone,0,0,1);
     }
-    
+
     virtual void addToggleButton(const char* label, float* zone)
     {
         addOption(label,zone,0,0,1);
     }
-    
+
     virtual void addCheckButton(const char* label, float* zone)
     {
         addOption(label,zone,0,0,1);
     }
-    
+
     virtual void addVerticalSlider(const char* label, float* zone, float init, float min, float max, float step)
     {
         addOption(label,zone,init,min,max);
     }
-    
+
     virtual void addHorizontalSlider(const char* label, float* zone, float init, float min, float max, float step)
     {
         addOption(label,zone,init,min,max);
     }
-    
+
     virtual void addNumEntry(const char* label, float* zone, float init, float min, float max, float step)
     {
         addOption(label,zone,init,min,max);
     }
-    
+
     // -- passive widgets
-    
+
     virtual void addNumDisplay(const char* label, float* zone, int precision)                         {}
     virtual void addTextDisplay(const char* label, float* zone, const char* names[], float min, float max)     {}
     virtual void addHorizontalBargraph(const char* label, float* zone, float min, float max)             {}
     virtual void addVerticalBargraph(const char* label, float* zone, float min, float max)             {}
-    
+
     // -- soundfiles
-    
+
     virtual void addSoundfile(const char* label, const char* filename, Soundfile** sf_zone) {}
-    
+
     virtual void openFrameBox(const char* label)        { openAnyBox(label); }
     virtual void openTabBox(const char* label)            { openAnyBox(label); }
     virtual void openHorizontalBox(const char* label)    { openAnyBox(label); }
     virtual void openVerticalBox(const char* label)        { openAnyBox(label); }
-    
+
     virtual void closeBox()                             { fPrefix.pop(); }
-    
+
     virtual void show() {}
     virtual void run()     {}
-    
+
     void printhelp()
     {
         map<string, param>::iterator i;
@@ -264,7 +264,7 @@ public:
         }
         cout << " infile outfile\n";
     }
-    
+
     void process_command()
     {
         map<string, param>::iterator p;
@@ -290,36 +290,36 @@ public:
             }
         }
     }
-    
+
     int     files()            { return fFiles.size(); }
     char*     file (int n)    { return fFiles[n]; }
-    
+
 };
 
 class channels
 {
-    
+
 protected:
-    
+
     int     fNumFrames;
     int     fNumChannels;
     int*    fRates;
     float*  fBuffers[256];
-    
+
 public:
-    
+
     channels(int nframes, int nchannels, int* rates)
     {
         fNumFrames       = nframes;
         fNumChannels     = nchannels;
         fRates = rates;
-        
+
         // allocate audio  channels
         for (int chan = 0; chan < fNumChannels; chan++) {
             fBuffers[chan] = (float*)calloc(fNumFrames * fRates[chan], sizeof(float));
         }
     }
-    
+
     ~channels()
     {
         // free separate input channels
@@ -327,19 +327,19 @@ public:
             //    free(fBuffers[i]);
         }
     }
-    
+
     float** buffers() { return fBuffers; }
-    
+
 };
 
 class input_channels : public channels
 {
 public:
-    
+
     input_channels(int nframes, int nchannels, int* rates)
     :channels(nframes, nchannels, rates)
     {}
-    
+
     void dirac()
     {
         cout << "dirac: chan " << fNumChannels << " frames: " << fNumFrames << endl;
@@ -348,7 +348,7 @@ public:
             fBuffers[0][0] = 1.f;
         }
     }
-    
+
     void step()
     {
         cout << "step: chan " << fNumChannels << " frames: " << fNumFrames << endl;
@@ -358,7 +358,7 @@ public:
             }
         }
     }
-    
+
     void ramp()
     {
         cout << "ramp: chan " << fNumChannels << " frames: " << fNumFrames << endl;
@@ -368,14 +368,14 @@ public:
             }
         }
     }
-    
+
 };
 
 /******************************************************************************
  *******************************************************************************
- 
+
  VECTOR INTRINSICS
- 
+
  *******************************************************************************
  *******************************************************************************/
 
@@ -534,4 +534,3 @@ int main(int argc, char* argv[])
 }
 
 /********************END ARCHITECTURE SECTION (part 2/2)****************/
-

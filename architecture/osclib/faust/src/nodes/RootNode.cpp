@@ -95,7 +95,7 @@ void RootNode::addAlias(const char* alias, const char* address, float imin, floa
 {
     addAliasAux<float>(alias, address, imin, imax, omin, omax);
 }
-    
+
 //--------------------------------------------------------------------------
 void RootNode::addAlias(const char* alias, const char* address, double imin, double imax, double omin, double omax)
 {
@@ -168,7 +168,7 @@ void RootNode::get(unsigned long ipdest) const		///< handler for the 'get' messa
 //--------------------------------------------------------------------------
 // handling aliases
 //--------------------------------------------------------------------------
-    
+
 template <typename T>
 void RootNode::processAliasAux(const string& address, T val)
 {
@@ -191,15 +191,15 @@ void RootNode::processAlias(const string& address, double val)
     processAliasAux<double>(address, val);
 }
 
-vector<pair<string, double> > RootNode::getAliases(const string& address, double value)
+std::vector<std::pair<std::string, double> > RootNode::getAliases(const std::string& address, double value)
 {
-    map<string, vector<aliastarget> >::iterator it;
-    vector<pair<string, double> > res;
+    map<std::string, std::vector<aliastarget> >::iterator it;
+    std::vector<std::pair<std::string, double> > res;
     for (it = fAliases.begin(); it != fAliases.end(); it++) {
-        vector<aliastarget> targets = (*it).second;
+        std::vector<aliastarget> targets = (*it).second;
         for (size_t i = 0; i < targets.size(); i++) {
             if (targets[i].fTarget == address) {
-                res.push_back(make_pair((*it).first, targets[i].invscale(float(value))));
+                res.push_back(std::make_pair((*it).first, targets[i].invscale(float(value))));
             }
         }
     }
@@ -335,7 +335,7 @@ bool RootNode::aliasMsg(const Message* msg, float omin, float omax)
 {
     return aliasMsgAux<float>(msg, omin, omax);
 }
-    
+
 //--------------------------------------------------------------------------
 bool RootNode::aliasMsg(const Message* msg, double omin, double omax)
 {
@@ -346,13 +346,13 @@ bool RootNode::aliasMsg(const Message* msg, double omin, double omax)
 bool RootNode::accept(const Message* msg)
 {
  	string val;
-    
+
 	// checks for the 'hello' message first
 	if ((msg->size() == 1) && (msg->param(0, val)) && (val == kHelloMsg)) {
 		hello(msg->src());
 		return true;
 	}
-    
+
     // checks for the 'json' message
     if ((msg->size() >= 1) && (msg->param(0, val)) && (val == kJSONMsg)) {
         oscout << OSCStart(getOSCAddress().c_str()) << kJSONMsg << fJSON->JSON(true) << OSCEnd();

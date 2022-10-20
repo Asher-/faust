@@ -76,7 +76,7 @@ static void printlines(int n, list<Statement>& lines, ostream& fout)
  * @param encl the enclosing loop
  * @param size the number of iterations of the loop
  */
-Loop::Loop(Tree recsymbol, Loop* encl, const string& size)
+Loop::Loop(Tree recsymbol, Loop* encl, const std::string& size)
     : fIsRecursive(true),
       fRecSymbolSet(singleton(recsymbol)),
       fEnclosingLoop(encl),
@@ -93,7 +93,7 @@ Loop::Loop(Tree recsymbol, Loop* encl, const string& size)
  * @param encl the enclosing loop
  * @param size the number of iterations of the loop
  */
-Loop::Loop(Loop* encl, const string& size)
+Loop::Loop(Loop* encl, const std::string& size)
     : fIsRecursive(false),
       fRecSymbolSet(gGlobal->nil),
       fEnclosingLoop(encl),

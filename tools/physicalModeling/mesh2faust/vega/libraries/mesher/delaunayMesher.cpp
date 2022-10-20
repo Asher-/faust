@@ -26,6 +26,7 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
+#include <utility>
 
 using namespace std;
 
@@ -253,7 +254,7 @@ bool DelaunayMesher::update(int newVtxInd)
   // those exposed faces form a polygon (the boundary of the "cavity")
   // build the exposed faces
   //faces are stored by giving the three integer indices of the vertices of the triangle, and the two neighboring balls (one is the deleted one, the other will not be deleted as it is outside of the cavity)
-  vector<pair<OTriKey, pair<DelaunayBall *, DelaunayBall *> > > exposedFaces;
+  std::vector<std::pair<OTriKey, std::pair<DelaunayBall *, DelaunayBall *> > > exposedFaces;
   // note: there is no particular reason for going backwards here
   for (BallSet::reverse_iterator iter = ballsToDelete.rbegin(); iter != ballsToDelete.rend(); iter++)
   {
@@ -266,7 +267,7 @@ bool DelaunayMesher::update(int newVtxInd)
       DelaunayBall * neighborBall = ball->nbr[j];
       if (ballsToDelete.find(neighborBall) == ballsToDelete.end()) // if neighbor is not in deleted balls
       {
-        pair<OTriKey, pair<DelaunayBall *, DelaunayBall *> > exposedFace(face, pair<DelaunayBall *, DelaunayBall *>(neighborBall, ball));
+        std::pair<OTriKey, std::pair<DelaunayBall *, DelaunayBall *> > exposedFace(face, std::pair<DelaunayBall *, DelaunayBall *>(neighborBall, ball));
         exposedFaces.push_back(exposedFace);
       }
 
@@ -293,7 +294,7 @@ bool DelaunayMesher::update(int newVtxInd)
 //    printf("Patching %d %d %d\n", face.v[0], face.v[1], face.v[2]);
     // create the new ball, this ball has the correct orientation
     DelaunayBall * ball = createBall(newVtxInd, face[0], face[1], face[2]);
-    
+
     if (ball->isRegular() == false) // an infinite ball. This means that face.third < 0, and face.first and face.second give the edge that is on the boundary of the cavity
     {
       const int * v = deletedBall->getInfiniteBallTriangle(); //The indices v[0],v[1],v[2] of an infinite ball give the triangle that this ball represents
@@ -418,7 +419,7 @@ DelaunayMesher::DelaunayBall * DelaunayMesher::getOneBallContainingPoint(int vtx
         ball = nbrBall;
         if (nbrBall->isRegular()) // tetra has adjacent tet on that face
           break;                  // Traverse to the tetrahedron sharing the face.
-        else 
+        else
           return ball;            // We reached a surface face, so the point is outside the hull
       }
     }
@@ -463,7 +464,7 @@ bool DelaunayMesher::initialize(int v0, int v1, int v2, int v3)
   double volume = dot(b - a, cross(c - a, d - a)); //compute volume
   if (volume <= 0)
     return false;
-  
+
   DelaunayBall * ball0 = NULL, *ball1 = NULL, *ball2 = NULL, *ball3 = NULL, *ball4 = NULL;
 
   ball0 = createBall(v0, v1, v2, v3); // form a regular ball
@@ -565,7 +566,7 @@ DelaunayMesher::DelaunayBall::DelaunayBall(int v0, int v1, int v2, int v3, Delau
   {
     Vec3d p0 = parent.inputVertices[v[0]];
     // double vol = TetMesh::getTetVolume(&p0,&p1,&p2,&p3);
-    // if (vol < 1e-10) 
+    // if (vol < 1e-10)
     //   cout << "problem: tet volume too small: " << vol << endl;
 
     center = parent.circumcenter(p0, p1, p2, p3);
@@ -604,7 +605,7 @@ void DelaunayMesher::DelaunayBall::setNeighbor(const UTriKey & key, DelaunayBall
     nbr[ind] = nbrBall;
 }
 
-//return value: 
+//return value:
 //1 means that the point is outside the ball
 //0 means that the point is on the ball
 //-1 means that the point is inside the ball
@@ -769,7 +770,7 @@ Vec3d DelaunayMesher::getFaceNormal(const OTriKey & face) const
   return norm(cross(v1 - v0, v2 - v0));
 }
 
-DelaunayMesher::VoronoiEdge::VoronoiEdge(bool isFinite, const Vec3d & s, const Vec3d & other) : finite(isFinite), start(s) 
+DelaunayMesher::VoronoiEdge::VoronoiEdge(bool isFinite, const Vec3d & s, const Vec3d & other) : finite(isFinite), start(s)
 {
   if (isFinite)
   {
@@ -929,18 +930,18 @@ DelaunayMesher::DelaunayBall * DelaunayMesher::createBall(int v0, int v1, int v2
 bool DelaunayMesher::isTetMeshFaceManifold(const TetMesh * tetMesh)
 {
   map<UTriKey, int> faceCount;
-  for(int i = 0; i < tetMesh->getNumElements(); i++) 
+  for(int i = 0; i < tetMesh->getNumElements(); i++)
   {
     OTetKey tet(tetMesh->getVertexIndices(i));
-    for(int j = 0; j < 4; j++) 
+    for(int j = 0; j < 4; j++)
     {
       UTriKey face = tet.uFaceKey(j);
       faceCount[face]++;
     }
   }
-  for(map<UTriKey, int>::iterator it = faceCount.begin(); it != faceCount.end(); it++) 
+  for(map<UTriKey, int>::iterator it = faceCount.begin(); it != faceCount.end(); it++)
   {
-    if(it->second > 2) 
+    if(it->second > 2)
       return false; // non-manifold faces found
   }
   return true;
@@ -955,9 +956,9 @@ void DelaunayMesher::removeBall(DelaunayBall * ball)
   {
     UTriKey key = ball->uFaceKey(i);
     map<UTriKey, DelaunayBall *>::iterator itr = neighboringStructure.find(key);
-    if (itr == neighboringStructure.end())	
+    if (itr == neighboringStructure.end())
     {
-      neighboringStructure.insert(make_pair(key, ball->nbr[i]));        // A face loses its one neighbor, save it as a hanging face
+      neighboringStructure.insert(std::make_pair(key, ball->nbr[i]));        // A face loses its one neighbor, save it as a hanging face
       ball->nbr[i]->setNeighbor(key, NULL);
     }
     else
@@ -973,13 +974,13 @@ void DelaunayMesher::removeBall(DelaunayBall * ball)
 DelaunayMesher::DelaunayBall * DelaunayMesher::addBall(const int v0, const int v1, const int v2, const int v3)
 {
   DelaunayBall * ball = createBall(v0, v1, v2, v3);
-  if (v0 >= 0) 
+  if (v0 >= 0)
     vertex2ball[v0] = ball;
-  if (v1 >= 0) 
+  if (v1 >= 0)
     vertex2ball[v1] = ball;
-  if (v2 >= 0) 
+  if (v2 >= 0)
     vertex2ball[v2] = ball;
-  if (v3 >= 0) 
+  if (v3 >= 0)
     vertex2ball[v3] = ball;
   if (balls.find(ball) != balls.end())
     return ball;
@@ -989,7 +990,7 @@ DelaunayMesher::DelaunayBall * DelaunayMesher::addBall(const int v0, const int v
     UTriKey key = ball->uFaceKey(i);
     map<UTriKey, DelaunayBall *>::iterator itr = neighboringStructure.find(key);
     if (itr == neighboringStructure.end())
-      neighboringStructure.insert(make_pair(key, ball)); // A face has only one neighbor, save it as a hanging face
+      neighboringStructure.insert(std::make_pair(key, ball)); // A face has only one neighbor, save it as a hanging face
     else // Build neighbor relationship
     {
       ball->nbr[i] = itr->second;
@@ -1031,7 +1032,7 @@ int DelaunayMesher::buildCDT()
       UTriKey key = infiniteBall->uFaceKey(i);
       map<UTriKey, DelaunayBall *>::iterator itr = neighboringStructure.find(key);
       if (itr == neighboringStructure.end())
-        neighboringStructure.insert(make_pair(key, infiniteBall));
+        neighboringStructure.insert(std::make_pair(key, infiniteBall));
       else
       {
         infiniteBall->nbr[i] = itr->second;
@@ -1247,7 +1248,7 @@ int DelaunayMesher::getTwoBallsByFace(const OTriKey& face, std::pair<DelaunayBal
   int ind = ball->getNeighborIndex(face);
   if (ind == -1)
     return -2;
-  twoBalls = make_pair(ball, ball->nbr[ind]);
+  twoBalls = std::make_pair(ball, ball->nbr[ind]);
   return 0;
 }
 
@@ -1399,15 +1400,15 @@ int DelaunayMesher::segmentRecoveryUsingFlip(const OEdgeKey & lineSegment, int d
     //    ON_VERTEX: the line segment goes down a tet edge and ends at another tet vertex
     //    SECT_EDGE: the line segment goes down an interior of a tet face, and exits through an edge
     //    SECT_FACE: the line segment goes through the interior of the tet, and exits through the opposite tet interior face
-    int result = getOneBallBySegment(lineSegment[0], lineSegment[1]); 
+    int result = getOneBallBySegment(lineSegment[0], lineSegment[1]);
     int locationType = result & 255;
     if (locationType == ON_VERTEX)
     {
       recoveredEdge.insert(UEdgeKey(lineSegment[0], lineSegment[1]));
       return 0; // this edge is already recovered; no more work needed
     }
-    else if (locationType == SECT_FACE) 
-    { 
+    else if (locationType == SECT_FACE)
+    {
       // line segment intersects the interior of the face, try flip23
       int originIdx = vertex2ball[lineSegment[0]]->getInd(lineSegment[0]);
       OTriKey face = vertex2ball[lineSegment[0]]->oFaceKey(originIdx);
@@ -1647,9 +1648,9 @@ int DelaunayMesher::segmentRecoveryUsingSteinerPoint(const OEdgeKey& edge)
   for (itr++ ; itr != tetAroundEdge.end(); itr++)
   {
     OTriKey face(itr->first, itr->third->getVtxOpposeFace(itr->second), removalEdge[1]);
-    cavityNeighbors.insert(make_pair(face, itr->third->getNeighborByFace(face)));
+    cavityNeighbors.insert(std::make_pair(face, itr->third->getNeighborByFace(face)));
     face = OTriKey(itr->first, removalEdge[0], itr->third->getVtxOpposeFace(itr->second));
-    cavityNeighbors.insert(make_pair(face, itr->third->getNeighborByFace(face)));
+    cavityNeighbors.insert(std::make_pair(face, itr->third->getNeighborByFace(face)));
   }
 
   tetAroundEdge.pop_front();
@@ -1658,22 +1659,22 @@ int DelaunayMesher::segmentRecoveryUsingSteinerPoint(const OEdgeKey& edge)
     OTriKey face(removalEdge[0], removalEdge[1], edge[0]);
     DelaunayBall * ball = (tetAroundEdge.begin())->third;
     assert(ball->getNeighborIndex(face) != -1);
-    cavityNeighbors.insert(make_pair(face, ball->getNeighborByFace(face)));
+    cavityNeighbors.insert(std::make_pair(face, ball->getNeighborByFace(face)));
     face = OTriKey(removalEdge[1], removalEdge[0], edge[1]);
     ball = (--tetAroundEdge.end())->third;
     assert(ball->getNeighborIndex(face) != -1);
-    cavityNeighbors.insert(make_pair(face, ball->getNeighborByFace(face)));
+    cavityNeighbors.insert(std::make_pair(face, ball->getNeighborByFace(face)));
   }
   else
   {
     OTriKey face(removalEdge[0], removalEdge[1], edge[1]);
     DelaunayBall * ball = (tetAroundEdge.begin())->third;
     assert(ball->getNeighborIndex(face) != -1);
-    cavityNeighbors.insert(make_pair(face, ball->getNeighborByFace(face)));
+    cavityNeighbors.insert(std::make_pair(face, ball->getNeighborByFace(face)));
     face = OTriKey(removalEdge[1], removalEdge[0], edge[0]);
     ball = (--tetAroundEdge.end())->third;
     assert(ball->getNeighborIndex(face) != -1);
-    cavityNeighbors.insert(make_pair(face, ball->getNeighborByFace(face)));
+    cavityNeighbors.insert(std::make_pair(face, ball->getNeighborByFace(face)));
   }
 
   //Calculate the gravity center
@@ -1736,7 +1737,7 @@ int DelaunayMesher::segmentRecoveryUsingSteinerPoint(const OEdgeKey& edge)
         UTriKey uface = ball->uFaceKey(i);
         map<UTriKey, DelaunayBall *>::iterator iter = hangingFaces.find(uface);
         if (iter == hangingFaces.end())
-          hangingFaces.insert(make_pair(uface, ball));
+          hangingFaces.insert(std::make_pair(uface, ball));
         else
         {
           ball->nbr[i] = iter->second;
@@ -1748,4 +1749,3 @@ int DelaunayMesher::segmentRecoveryUsingSteinerPoint(const OEdgeKey& edge)
  // assert(hangingFaces.empty());
   return 100;
 }
-

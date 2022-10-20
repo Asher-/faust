@@ -35,7 +35,7 @@
 #endif
 
 #include "exception.hh"
-#include "instructions_type.hh"
+#include "types/typed.hh"
 #include "loopDetector.hh"
 #include "stackOverflowDetector.hh"
 #include "occurrences.hh"

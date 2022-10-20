@@ -23,6 +23,7 @@
 #define _TYPING_INSTRUCTIONS_H
 
 #include "instructions.hh"
+#include "global.hh"
 
 using namespace std;
 
@@ -39,7 +40,7 @@ struct TypingVisitor : public InstVisitor {
 
     virtual void visit(LoadVarInst* inst)
     {
-        string name = inst->getName();
+        std::string name = inst->getName();
         // Stack or struct variables
         if (gGlobal->hasVarType(name)) {
             fCurType                = gGlobal->getVarType(name);
@@ -63,7 +64,7 @@ struct TypingVisitor : public InstVisitor {
 
     virtual void visit(TeeVarInst* inst)
     {
-        string name = inst->getName();
+        std::string name = inst->getName();
         if (gGlobal->hasVarType(name)) {
             fCurType = gGlobal->getVarType(name);
         } else {
@@ -139,14 +140,14 @@ struct TypingVisitor : public InstVisitor {
             faustassert(false);
         }
     }
-    
+
     static Typed::VarType getType(ValueInst* value)
     {
         TypingVisitor typing;
         value->accept(&typing);
         return typing.fCurType;
     }
-    
+
 };
 
 #endif

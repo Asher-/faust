@@ -26,6 +26,8 @@
 #include "global.hh"
 #include "xtended.hh"
 
+#include "fir_to_fir.hh"
+
 /*
  When argument is kInt and exponent is kInt (or kReal without decimal part),
  an explicit mydsp_faustpowerXX_i(..) is generated.
@@ -56,7 +58,7 @@ class PowPrim : public xtended {
         faustassert(args.size() == arity());
         return max(args[0], args[1]);
     }
-    
+
     // Fast integer based power, for positive exponent
     template <typename Type1, typename Type2>
     Type1 ipow(Type1 a, Type2 ex)
@@ -106,7 +108,7 @@ class PowPrim : public xtended {
         }
         return tree(symbol(), args[0], args[1]);
     }
-    
+
     // Check that power argument is an integer or possibly represents an integer, up to 32
     bool isIntPowArg(::Type ty, ValueInst* val, int& pow_arg)
     {
@@ -139,26 +141,26 @@ class PowPrim : public xtended {
     {
         faustassert(args.size() == arity());
         faustassert(types.size() == arity());
- 
+
         ValuesIt it = args.begin(); it++;
         int pow_arg = 0;
-    
+
         if (isIntPowArg(types[1], *it, pow_arg)
             && (types[1]->variability() == kKonst)
             && (types[1]->computability() == kComp)
             && (gGlobal->gNeedManualPow)) {
-            
+
             Typed::VarType t0 = convert2FIRType(types[0]->nature());
             vector<Typed::VarType> atypes = { t0, Typed::kInt32};
             Typed::VarType rtype = convert2FIRType(result->nature());
-            
+
             // Expand the pow depending of the exposant argument
             BlockInst* block = InstBuilder::genBlockInst();
             string faust_power_name = container->getFaustPowerName() + to_string(pow_arg) + ((rtype == Typed::kInt32) ? "_i" : "_f");
 
             Names named_args;
             named_args.push_back(InstBuilder::genNamedTyped("value", InstBuilder::genBasicTyped(t0)));
-            
+
             if (pow_arg == 0) {
                 block->pushBackInst(InstBuilder::genRetInst(InstBuilder::genTypedNum(t0, 1.0)));
             } else {
@@ -168,28 +170,28 @@ class PowPrim : public xtended {
                 }
                 block->pushBackInst(InstBuilder::genRetInst(res));
             }
-            
+
             container->pushGlobalDeclare(InstBuilder::genDeclareFunInst(faust_power_name,
                                                                         InstBuilder::genFunTyped(named_args, InstBuilder::genBasicTyped(rtype),
                                                                                                  FunTyped::kLocal), block));
-            
+
             Values truncated_args;
             truncated_args.push_back((*args.begin()));
             return InstBuilder::genFunCallInst(faust_power_name, truncated_args);
-      
+
         } else {
-            
+
             // Both arguments forced to itfloat()
             vector<Typed::VarType> atypes = {itfloat(), itfloat()};
-            
+
             Values cargs;
             ValuesIt it2 = args.begin();
             vector<::Type>::const_iterator it1;
-            
+
             for (it1 = types.begin(); it1 != types.end(); it1++, it2++) {
                 cargs.push_back(promote2real((*it1)->nature(), (*it2)));
             }
-            
+
             return cast2int(result->nature(), container->pushFunction(subst("pow$0", isuffix()), itfloat(), atypes, cargs));
         }
     }

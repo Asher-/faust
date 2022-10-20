@@ -22,7 +22,7 @@
 #ifndef DSP_AUX_H
 #define DSP_AUX_H
 
-#include <string.h>
+#include <string>
 #include <cassert>
 #include <list>
 #include <map>

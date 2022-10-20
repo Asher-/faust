@@ -298,7 +298,7 @@ ostream& ppsig::print(ostream& fout) const
     if (gGlobal->gSignalTable.find(fSig) == gGlobal->gSignalTable.end()) { \
         stringstream s; \
         (exp); \
-        gGlobal->gSignalTable[fSig] = make_pair(gGlobal->gSignalCounter, s.str()); \
+        gGlobal->gSignalTable[fSig] = std::make_pair(gGlobal->gSignalCounter, s.str()); \
         gGlobal->gSignalTrace.push_back("ID_" + std::to_string(gGlobal->gSignalCounter) + " = " + s.str() + ";\n"); \
         gGlobal->gSignalCounter++;\
     } \
@@ -392,7 +392,7 @@ ostream& ppsigShared::printff(ostream& fout, Tree ff, Tree largs) const
 ostream& ppsigShared::printDelay(ostream& fout, Tree exp, Tree delay) const
 {
     int d;
-    
+
     if (isSigInt(delay, &d) && (d == 1)) {
         fout << ppsigShared(exp, fEnv, 8) << "'";
     } else {
@@ -423,7 +423,7 @@ ostream& ppsigShared::printextended(ostream& fout, Tree sig1) const
 {
     string   sep = "";
     xtended* p   = (xtended*)getUserData(fSig);
-    
+
     fout << p->name() << '(';
     for (int i = 0; i < sig1->arity(); i++) {
         fout << sep << ppsigShared(sig1->branch(i), fEnv);
@@ -438,7 +438,7 @@ ostream& ppsigShared::print(ostream& fout) const
     int    i;
     double r;
     Tree   c, sel, x, y, z, u, var, le, label, id, ff, largs, type, name, file, sf;
-    
+
     if (isList(fSig)) {
         printlist(fout, fSig);
     } else if (isProj(fSig, &i, x)) {
@@ -446,14 +446,14 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isRec(fSig, var, le)) {
         SIG_INSERT_ID(printrec(s, var, le, fHideRecursion));
     }
-    
+
     // debruinj notation
     else if (isRec(fSig, le)) {
         SIG_INSERT_ID(printrec(s, le, fHideRecursion));
     } else if (isRef(fSig, i)) {
         fout << "REF[" << i << "]";
     }
-    
+
     else if (getUserData(fSig)) {
         SIG_INSERT_ID(printextended(s, fSig));
     } else if (isSigInt(fSig, &i)) {
@@ -467,7 +467,7 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigOutput(fSig, &i, x)) {
         SIG_INSERT_ID(printout(s, i, x));
     }
-    
+
     else if (isSigDelay1(fSig, x)) {
         SIG_INSERT_ID(s << ppsig(x, fEnv, 9) << "'");
     }
@@ -484,7 +484,7 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigFVar(fSig, type, name, file)) {
         fout << tree2str(name);
     }
-    
+
     else if (isSigTable(fSig, id, x, y)) {
         SIG_INSERT_ID(printfun(s, "TABLE", x, y));
     } else if (isSigWRTbl(fSig, id, x, y, z)) {
@@ -494,7 +494,7 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigGen(fSig, x)) {
         SIG_INSERT_ID(s << ppsig(x, fEnv, fPriority));
     }
-    
+
     else if (isSigDocConstantTbl(fSig, x, y)) {
         SIG_INSERT_ID(printfun(s, "docConstantTbl", x, y));
     } else if (isSigDocWriteTbl(fSig, x, y, z, u)) {
@@ -502,17 +502,17 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigDocAccessTbl(fSig, x, y)) {
         SIG_INSERT_ID(printfun(fout, "docAccessTbl", x, y));
     }
-    
+
     else if (isSigSelect2(fSig, sel, x, y)) {
         SIG_INSERT_ID(printfun(s, "select2", sel, x, y));
     }
-    
+
     else if (isSigIntCast(fSig, x)) {
         SIG_INSERT_ID(printfun(s, "int", x));
     } else if (isSigFloatCast(fSig, x)) {
         SIG_INSERT_ID(printfun(s, "float", x));
     }
-    
+
     else if (isSigButton(fSig, label)) {
         SIG_INSERT_ID(printui(s, "button", label));
     } else if (isSigCheckbox(fSig, label)) {
@@ -528,7 +528,7 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigHBargraph(fSig, label, x, y, z)) {
         SIG_INSERT_ID(printui(s, "hbargraph", label, x, y, z));
     }
-    
+
     else if (isSigSoundfile(fSig, label)) {
         SIG_INSERT_ID(printui(s, "soundfile", label));
     } else if (isSigSoundfileLength(fSig, sf, x)) {
@@ -538,7 +538,7 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigSoundfileBuffer(fSig, sf, x, y, z)) {
         SIG_INSERT_ID(printfun(s, "buffer", sf, x, y, z));
     }
-    
+
     else if (isSigAttach(fSig, x, y)) {
         SIG_INSERT_ID(printfun(s, "attach", x, y));
     } else if (isSigEnable(fSig, x, y)) {
@@ -546,7 +546,7 @@ ostream& ppsigShared::print(ostream& fout) const
     } else if (isSigControl(fSig, x, y)) {
         SIG_INSERT_ID(printfun(s, "control", x, y));
     }
-    
+
     else {
         // cerr << "[[" << *fSig << "]]";
     }

@@ -44,6 +44,7 @@ Compile a list of FAUST signals into a C++ class.
 #include "sigtyperules.hh"
 #include "simplify.hh"
 #include "timing.hh"
+#include "global.hh"
 
 /*****************************************************************************
 ******************************************************************************
@@ -65,7 +66,7 @@ Compile a list of FAUST signals into a C++ class.
                                constructor
 *****************************************************************************/
 
-Compiler::Compiler(const string& name, const string& super, int numInputs, int numOutputs, bool vec)
+Compiler::Compiler(const std::string& name, const std::string& super, int numInputs, int numOutputs, bool vec)
     : fClass(new Klass(name, super, numInputs, numOutputs, vec)),
       fNeedToDeleteClass(true),
       fUIRoot(uiFolder(cons(tree(0), tree("")))),
@@ -120,7 +121,7 @@ Tree Compiler::prepareUserInterfaceTree(Tree t)
 /**
  * Removes enclosing whitespaces : '  toto  ' -> 'toto'
  */
-static string wdel(const string& s)
+static std::string wdel(const std::string& s)
 {
     size_t i = 0;
     size_t j = s.size();
@@ -180,14 +181,14 @@ void Compiler::generateUserInterfaceTree(Tree t, bool root)
         // extract metadata from group label str resulting in a simplifiedLabel
         // and metadata declarations for fictive zone at address 0
         string                    simplifiedLabel;
-        map<string, set<string> > metadata;
+        map<std::string, set<std::string> > metadata;
         extractMetadata(str, simplifiedLabel, metadata);
 
         // add metadata if any
-        for (map<string, set<string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {
-            const string&      key    = i->first;
-            const set<string>& values = i->second;
-            for (set<string>::const_iterator j = values.begin(); j != values.end(); j++) {
+        for (map<std::string, set<std::string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {
+            const std::string&      key    = i->first;
+            const set<std::string>& values = i->second;
+            for (set<std::string>::const_iterator j = values.begin(); j != values.end(); j++) {
                 fClass->addUICode(subst("ui_interface->declare($0, \"$1\", \"$2\");", "0", wdel(key), wdel(*j)));
                 fJSON.declare(NULL, wdel(key).c_str(), wdel(*j).c_str());
             }
@@ -250,17 +251,17 @@ void Compiler::generateUserInterfaceElements(Tree elements)
 void Compiler::generateWidgetCode(Tree fulllabel, Tree varname, Tree sig)
 {
     Tree                      path, c, x, y, z;
-    map<string, set<string> > metadata;
+    map<std::string, set<std::string> > metadata;
     string                    label, url;
 
     extractMetadata(tree2str(fulllabel), label, metadata);
 
     // Extract "url" metadata to be given as parameter to 'addSoundfile' function
     if (isSigSoundfile(sig, path)) {
-        for (map<string, set<string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {
+        for (map<std::string, set<std::string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {
             string      key    = i->first;
-            set<string> values = i->second;
-            for (set<string>::const_iterator j = values.begin(); j != values.end(); j++) {
+            set<std::string> values = i->second;
+            for (set<std::string>::const_iterator j = values.begin(); j != values.end(); j++) {
                 if (key == "url") {
                     url = prepareURL(*j);
                 }
@@ -268,10 +269,10 @@ void Compiler::generateWidgetCode(Tree fulllabel, Tree varname, Tree sig)
         }
     } else {
         // Add metadata if any
-        for (map<string, set<string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {
-            const string&      key    = i->first;
-            const set<string>& values = i->second;
-            for (set<string>::const_iterator j = values.begin(); j != values.end(); j++) {
+        for (map<std::string, set<std::string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {
+            const std::string&      key    = i->first;
+            const set<std::string>& values = i->second;
+            for (set<std::string>::const_iterator j = values.begin(); j != values.end(); j++) {
                 fClass->addUICode(
                     subst("ui_interface->declare(&$0, \"$1\", \"$2\");", tree2str(varname), wdel(key), wdel(*j)));
                 fJSON.declare(NULL, wdel(key).c_str(), wdel(*j).c_str());
@@ -349,7 +350,7 @@ void Compiler::generateWidgetCode(Tree fulllabel, Tree varname, Tree sig)
  * Generate user interface macros corresponding
  * to user interface element t
  */
-void Compiler::generateMacroInterfaceTree(const string& pathname, Tree t)
+void Compiler::generateMacroInterfaceTree(const std::string& pathname, Tree t)
 {
     Tree label, elements, varname, sig;
 
@@ -370,7 +371,7 @@ void Compiler::generateMacroInterfaceTree(const string& pathname, Tree t)
 /**
  * Iterate generateMacroInterfaceTree on a list of user interface elements
  */
-void Compiler::generateMacroInterfaceElements(const string& pathname, Tree elements)
+void Compiler::generateMacroInterfaceElements(const std::string& pathname, Tree elements)
 {
     while (!isNil(elements)) {
         generateMacroInterfaceTree(pathname, right(hd(elements)));
@@ -382,11 +383,11 @@ void Compiler::generateMacroInterfaceElements(const string& pathname, Tree eleme
  * Generate user interface macros corresponding
  * to a user interface widget
  */
-void Compiler::generateWidgetMacro(const string& pathname, Tree fulllabel, Tree varname, Tree sig)
+void Compiler::generateWidgetMacro(const std::string& pathname, Tree fulllabel, Tree varname, Tree sig)
 {
     Tree                      path, c, x, y, z;
     string                    label;
-    map<string, set<string> > metadata;
+    map<std::string, set<std::string> > metadata;
 
     extractMetadata(tree2str(fulllabel), label, metadata);
     string pathlabel = pathname + label;

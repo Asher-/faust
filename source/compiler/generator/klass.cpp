@@ -45,6 +45,7 @@
 #include "recursivness.hh"
 #include "signals.hh"
 #include "uitree.hh"
+#include "global.hh"
 
 static int gTaskCount = 0;
 
@@ -70,7 +71,7 @@ bool Klass::getLoopProperty(Tree sig, Loop*& l)
  * Open a non-recursive loop on top of the stack of open loops.
  * @param size the number of iterations of the loop
  */
-void Klass::openLoop(const string& size)
+void Klass::openLoop(const std::string& size)
 {
     fTopLoop = new Loop(fTopLoop, size);
     // cerr << "\nOPEN SHARED LOOP(" << size << ") ----> " << fTopLoop << endl;
@@ -81,7 +82,7 @@ void Klass::openLoop(const string& size)
  * @param recsymbol the recursive symbol defined in this loop
  * @param size the number of iterations of the loop
  */
-void Klass::openLoop(Tree recsymbol, const string& size)
+void Klass::openLoop(Tree recsymbol, const std::string& size)
 {
     fTopLoop = new Loop(recsymbol, fTopLoop, size);
     // cerr << "\nOPEN REC LOOP(" << *recsymbol << ", " << size << ") ----> " << fTopLoop << endl;
@@ -112,7 +113,7 @@ void Klass::listAllLoopProperties(Tree sig, set<Loop*>& L, set<Tree>& visited)
 void Klass::closeLoop(Tree sig)
 {
     faustassert(fTopLoop);
-    
+
     // fix the missing dependencies
     set<Loop*> L;
     set<Tree> V;
@@ -120,7 +121,7 @@ void Klass::closeLoop(Tree sig)
     for (Loop* l : L) {
         fTopLoop->fBackwardLoopDependencies.insert(l);
     }
-  
+
     Loop* l  = fTopLoop;
     fTopLoop = l->fEnclosingLoop;
     faustassert(fTopLoop);
@@ -154,7 +155,7 @@ void Klass::closeLoop(Tree sig)
 /**
  * Print a list of elements (e1, e2,...)
  */
-static void printdecllist(int n, const string& decl, list<string>& content, ostream& fout)
+static void printdecllist(int n, const std::string& decl, list<std::string>& content, ostream& fout)
 {
     if (!content.empty()) {
         fout << "\\";
@@ -174,8 +175,8 @@ static void printdecllist(int n, const string& decl, list<string>& content, ostr
  */
 void Klass::printLibrary(ostream& fout)
 {
-    set<string>           S;
-    set<string>::iterator f;
+    set<std::string>           S;
+    set<std::string>::iterator f;
 
     string sep;
     collectLibrary(S);
@@ -195,7 +196,7 @@ void Klass::printIncludeFile(ostream& fout)
         fout << "#include <omp.h>\n";
     }
 
-    set<string> S;
+    set<std::string> S;
     collectIncludeFile(S);
     for (const auto& f : S) {
         string inc = f;
@@ -1504,18 +1505,18 @@ void SigFloatGenKlass::println(int n, ostream& fout)
     fout << "};\n" << endl;
 }
 
-static void merge(set<string>& dst, set<string>& src)
+static void merge(set<std::string>& dst, set<std::string>& src)
 {
     for (const auto& i : src) dst.insert(i);
 }
 
-void Klass::collectIncludeFile(set<string>& S)
+void Klass::collectIncludeFile(set<std::string>& S)
 {
     for (const auto& k : fSubClassList) k->collectIncludeFile(S);
     merge(S, fIncludeFileSet);
 }
 
-void Klass::collectLibrary(set<string>& S)
+void Klass::collectLibrary(set<std::string>& S)
 {
     for (const auto& k : fSubClassList) k->collectLibrary(S);
     merge(S, fLibrarySet);

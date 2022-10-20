@@ -38,7 +38,7 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
       {
         int vtxA = face.getVertex(iVertex).getPositionIndex();
         int vtxB = face.getVertex((iVertex + 1) % face.getNumVertices()).getPositionIndex();
- 
+
         // ensure that vtxA <= vtxB
         if (vtxA >= vtxB)
         {
@@ -46,14 +46,14 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
           vtxA = vtxB;
           vtxB = buffer;
         }
- 
-        meshEdges.insert(make_pair(make_pair(vtxA, vtxB), 0));
+
+        meshEdges.insert(std::make_pair(std::make_pair(vtxA, vtxB), 0));
       }
     }
   }
 
   // create vector of mesh edges
-  for(map<pair<int,int>, int > :: iterator iter = meshEdges.begin();
+  for(std::map<std::pair<int,int>, int > :: iterator iter = meshEdges.begin();
       iter != meshEdges.end(); iter++)
   {
     meshEdgesVector.push_back(iter->first);
@@ -67,11 +67,11 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
 
   // add edge indices to the mesh edge datastructure
   int numMeshEdges = 0;
-  for(map<pair<int,int>, int> :: iterator iter = meshEdges.begin();
+  for(std::map<std::pair<int,int>, int> :: iterator iter = meshEdges.begin();
       iter != meshEdges.end(); iter++)
   {
     iter->second = numMeshEdges;
-    numMeshEdges++; 
+    numMeshEdges++;
   }
 
   // build graph adjacency
@@ -92,7 +92,7 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
       for ( unsigned int iVertex = 0; iVertex < face.getNumVertices(); iVertex++ )
       {
         int vtx = face.getVertex(iVertex).getPositionIndex();
-        edges.insert(make_pair(GetVertexID(vtx), GetFaceID(faceIndex)));
+        edges.insert(std::make_pair(GetVertexID(vtx), GetFaceID(faceIndex)));
       }
 
       // every edge is adjacent to its face
@@ -110,7 +110,7 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
           vtxB = buffer;
         }
 
-        map<pair<int, int>, int > :: iterator iter = meshEdges.find(make_pair(vtxA, vtxB));
+        std::map<std::pair<int, int>, int > :: iterator iter = meshEdges.find(std::make_pair(vtxA, vtxB));
         if (iter == meshEdges.end())
         {
           printf("Sanity check error: vtxA=%d vtxB=%d.\n",vtxA,vtxB);
@@ -118,7 +118,7 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
         }
         int edgeID = iter->second;
         edgeIDs[iVertex] = edgeID;
-        edges.insert(make_pair(GetEdgeID(edgeID), GetFaceID(faceIndex)));
+        edges.insert(std::make_pair(GetEdgeID(edgeID), GetFaceID(faceIndex)));
       }
 
       meshFaceEdgesVector.push_back(triple<int,int,int> (edgeIDs[0], edgeIDs[1], edgeIDs[2]));
@@ -128,19 +128,19 @@ ObjMeshGraph::ObjMeshGraph(ObjMesh * objMesh_): objMesh(objMesh_)
   }
 
   // every edge is adjacent to its vertices
-  for(map<pair<int,int>, int > :: iterator iter = meshEdges.begin();
+  for(std::map<std::pair<int,int>, int > :: iterator iter = meshEdges.begin();
       iter != meshEdges.end(); iter++)
   {
-    edges.insert(make_pair(GetVertexID(iter->first.first), GetEdgeID(iter->second)));
-    edges.insert(make_pair(GetVertexID(iter->first.second), GetEdgeID(iter->second)));
+    edges.insert(std::make_pair(GetVertexID(iter->first.first), GetEdgeID(iter->second)));
+    edges.insert(std::make_pair(GetVertexID(iter->first.second), GetEdgeID(iter->second)));
   }
 
   numEdges = edges.size();
 
   printf("Graph generated.\n");
-  printf("Mesh vertices: %d\n", nObj); 
-  printf("Mesh edges: %d\n", eObj); 
-  printf("Mesh faces: %d\n", fObj); 
+  printf("Mesh vertices: %d\n", nObj);
+  printf("Mesh edges: %d\n", eObj);
+  printf("Mesh faces: %d\n", fObj);
 
   BuildVertexNeighbors();
 }
@@ -157,7 +157,7 @@ void ObjMeshGraph::meshID(int graphVertex, int & siteType, int meshVtxData[3])
   {
     siteType = 1;
     int edgeID = graphVertex - nObj;
-    pair<int,int> edge = meshEdgesVector[edgeID];
+    std::pair<int,int> edge = meshEdgesVector[edgeID];
     meshVtxData[0] = edge.first;
     meshVtxData[1] = edge.second;
   }
@@ -216,7 +216,7 @@ int ObjMeshGraph::graphID(int faceID, int siteIndex)
 
   if (graphVertex > numVertices)
   {
-    printf("Error: incorrect graph vertex (%d). faceID=%d site:%d\n", 
+    printf("Error: incorrect graph vertex (%d). faceID=%d site:%d\n",
       graphVertex, faceID, siteIndex);
   }
 
@@ -226,9 +226,9 @@ int ObjMeshGraph::graphID(int faceID, int siteIndex)
 Graph * ObjMeshGraph::GenerateVertexGraph(const ObjMesh * objMesh, int faceClique)
 {
   // Generate springs:
-  typedef pair<int,int> edge;
+  typedef std::pair<int,int> edge;
   set<edge> edgeSet;
-  #define SORTED(i,j) ( (i) <= (j) ? make_pair((i),(j)) : make_pair((j),(i)) )
+  #define SORTED(i,j) ( (i) <= (j) ? std::make_pair((i),(j)) : std::make_pair((j),(i)) )
 
   for(unsigned int i=0; i < objMesh->getNumGroups(); i++) // over all groups
   {
@@ -280,4 +280,3 @@ Graph * ObjMeshGraph::GenerateVertexGraph(const ObjMesh * objMesh, int faceCliqu
 
   #undef SORTED
 }
-

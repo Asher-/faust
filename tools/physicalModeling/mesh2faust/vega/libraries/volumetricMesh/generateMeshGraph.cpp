@@ -34,7 +34,7 @@ Graph * GenerateMeshGraph::Generate(const VolumetricMesh * volumetricMesh)
 {
   // Generate springs:
   typedef pair<int,int> edge;
-  #define SORTED(i,j) ( (i) <= (j) ? make_pair((i),(j)) : make_pair((j),(i)) )
+  #define SORTED(i,j) ( (i) <= (j) ? std::make_pair((i),(j)) : std::make_pair((j),(i)) )
 
   // first, all tensile springs (quad edges)
   set<edge> edgeSet;
@@ -42,7 +42,7 @@ Graph * GenerateMeshGraph::Generate(const VolumetricMesh * volumetricMesh)
   int * edgeBuffer = (int*) malloc (sizeof(int) * 2 * numElementEdges);
   for(int el=0; el<volumetricMesh->getNumElements(); el++)
   {
-    volumetricMesh->getElementEdges(el, edgeBuffer);  
+    volumetricMesh->getElementEdges(el, edgeBuffer);
 
     for(int j=0; j<numElementEdges; j++)
       edgeSet.insert(SORTED(edgeBuffer[2*j+0], edgeBuffer[2*j+1]));
@@ -71,4 +71,3 @@ Graph * GenerateMeshGraph::Generate(const VolumetricMesh * volumetricMesh)
 
   return graph;
 }
-

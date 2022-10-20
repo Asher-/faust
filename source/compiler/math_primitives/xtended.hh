@@ -32,6 +32,8 @@
 #include "tlib.hh"
 #include "ppsig.hh"
 
+#include "fir_to_fir.hh"
+
 class CodeContainer;
 
 /*
@@ -78,7 +80,7 @@ class xtended : public virtual Garbageable {
     {
         return false;
     }  ///< generally false, but true for binary op # such that #(x) == _#x
-  
+
     ValueInst* generateFun(CodeContainer* container,
                            const string& fun_name,
                            const Values& args,

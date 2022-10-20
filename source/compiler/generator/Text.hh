@@ -22,7 +22,7 @@
 #ifndef _Text_H
 #define _Text_H
 
-#include <string.h>
+#include <string>
 
 #include <fstream>
 #include <iostream>
@@ -34,17 +34,17 @@
 
 using namespace std;
 
-string subst(const string& m, const string& a0);
-string subst(const string& m, const vector<string>& vargs);
-string subst(const string& m, const string& a0, const string& a1);
-string subst(const string& m, const string& a0, const string& a1, const string& a2);
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3);
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3,
-             const string& a4);
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3,
-             const string& a4, const string& a5);
-string subst(const string& model, const string& a0, const string& a1, const string& a2, const string& a3,
-             const string& a4, const string& a5, const string& a6);
+string subst(const std::string& m, const std::string& a0);
+string subst(const std::string& m, const vector<std::string>& vargs);
+string subst(const std::string& m, const std::string& a0, const std::string& a1);
+string subst(const std::string& m, const std::string& a0, const std::string& a1, const std::string& a2);
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3);
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3,
+             const std::string& a4);
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3,
+             const std::string& a4, const std::string& a5);
+string subst(const std::string& model, const std::string& a0, const std::string& a1, const std::string& a2, const std::string& a3,
+             const std::string& a4, const std::string& a5, const std::string& a6);
 
 string T(char* c);
 string T(int n);
@@ -55,13 +55,13 @@ string TAux(double n);
 string T(double n);
 
 // Add and remove quotes of a string
-string unquote(const string& s);
-string quote(const string& s);
+string unquote(const std::string& s);
+string quote(const std::string& s);
 
 void tab(int n, ostream& fout);
 void back(int n, ostream& fout);
-void printlines(int n, list<string>& lines, ostream& fout, const string& sep = "");
-string rmWhiteSpaces(const string& s);
+void printlines(int n, list<std::string>& lines, ostream& fout, const std::string& sep = "");
+string rmWhiteSpaces(const std::string& s);
 
 inline string checkFloat(float val)
 {
@@ -75,40 +75,40 @@ string checkReal(double val);
 
 string indent(string const& str, int tabs);
 string replaceChar(string str, char ch1, char ch2);
-string replaceCharList(const string& str, const vector<char>& ch1, char ch2);
+string replaceCharList(const std::string& str, const vector<char>& ch1, char ch2);
 
-inline bool checkMin(const string& str)
+inline bool checkMin(const std::string& str)
 {
     return ((str == "min") || (str == "min_i") || (str == "min_f") || (str == "min_") || (str == "min_l"));
 }
 
-inline bool checkMax(const string& str)
+inline bool checkMax(const std::string& str)
 {
     return ((str == "max") || (str == "max_i") || (str == "max_f") || (str == "max_") || (str == "max_l"));
 }
 
-inline bool checkMinMax(const string& str)
+inline bool checkMinMax(const std::string& str)
 {
     return checkMin(str) || checkMax(str);
 }
 
-inline bool startWith(const string& str, const string& prefix)
+inline bool startWith(const std::string& str, const std::string& prefix)
 {
     return (str.substr(0, prefix.size()) == prefix);
 }
 
-inline bool endWith(const string& str, const string& suffix)
+inline bool endWith(const std::string& str, const std::string& suffix)
 {
     size_t i = str.rfind(suffix);
     return (i != string::npos) && (i == (str.length() - suffix.length()));
 }
 
-inline string startWithRes(const string& str, const string& prefix)
+inline string startWithRes(const std::string& str, const std::string& prefix)
 {
     return (str.substr(0, prefix.size()) == prefix) ? str.substr(prefix.size()) : "";
 }
 
-inline bool startWithRes(const string& str, const string& prefix, string& res)
+inline bool startWithRes(const std::string& str, const std::string& prefix, string& res)
 {
     if (str.substr(0, prefix.size()) == prefix) {
         res = str.substr(prefix.size());
@@ -118,7 +118,7 @@ inline bool startWithRes(const string& str, const string& prefix, string& res)
     }
 }
 
-inline string removeChar(const string& str, char c)
+inline string removeChar(const std::string& str, char c)
 {
     string res;
     res.reserve(str.size());  // optional, avoids buffer reallocations in the loop
@@ -128,7 +128,7 @@ inline string removeChar(const string& str, char c)
     return res;
 }
 
-inline bool replaceExtension(const string& str, const string& term, string& res)
+inline bool replaceExtension(const std::string& str, const std::string& term, string& res)
 {
     size_t pos = str.rfind('.');
     if (pos != string::npos) {
@@ -140,7 +140,7 @@ inline bool replaceExtension(const string& str, const string& term, string& res)
     }
 }
 
-inline string pathToContent(const string& path)
+inline string pathToContent(const std::string& path)
 {
     ifstream file(path.c_str(), ifstream::binary);
 
@@ -162,7 +162,7 @@ inline string pathToContent(const string& path)
 
 // For soundfile : remove spaces between filenames and possibly
 // put a unique file in a {...} list
-inline string prepareURL(const string& url)
+inline string prepareURL(const std::string& url)
 {
     bool in_str = false;
     stringstream dst;
@@ -191,7 +191,7 @@ inline string prepareURL(const string& url)
     return (res[0] != '{') ? "{'" + res + "'}" : res;
 }
 
-inline string flatten(const string& src)
+inline string flatten(const std::string& src)
 {
     string dst;
     for (size_t i = 0; i < src.size(); i++) {
@@ -214,7 +214,7 @@ inline string flatten(const string& src)
 }
 
 // To be used for WASM or CMaj
-inline string flattenJSON(const string& src)
+inline string flattenJSON(const std::string& src)
 {
     string dst;
     for (size_t i = 0; i < src.size(); i++) {
@@ -237,7 +237,7 @@ inline string flattenJSON(const string& src)
 }
 
 // To be used for JavaScript
-inline string flattenJSON1(const string& src)
+inline string flattenJSON1(const std::string& src)
 {
     string dst;
     for (size_t i = 0; i < src.size(); i++) {
@@ -266,6 +266,6 @@ inline bool testArg(const char* arg)
     return false;
 }
 
-vector<string> tokenizeString(const string& str, char sep);
+vector<std::string> tokenizeString(const std::string& str, char sep);
 
 #endif

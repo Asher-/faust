@@ -84,7 +84,7 @@ static const unsigned char face_vertices[6][4] =
  2 rotations (by +- 2pi/3) about 4 pairs of opposite vertices (diagonals). (8)
 */
 
-// this table was generated manually, by physically manufacturing two cubes, 
+// this table was generated manually, by physically manufacturing two cubes,
 // labeling the corners and applying each transformation
 static const unsigned char cubeSymmetryVertices[25][8] =
 {
@@ -124,10 +124,10 @@ static const unsigned char vertex_position[8][3] =
   { 0, 0, 1 },
   { 1, 0, 1 },
   { 1, 1, 1 },
-  { 0, 1, 1 } 
+  { 0, 1, 1 }
 };
 
-// The four corners of the six faces 
+// The four corners of the six faces
 static const unsigned char face_vertex[6][4] =
 {
   { 0, 1, 5, 4 },
@@ -135,7 +135,7 @@ static const unsigned char face_vertex[6][4] =
   { 3, 2, 6, 7 },
   { 0, 3, 7, 4 },
   { 0, 1, 2, 3 },
-  { 4, 5, 6, 7 } 
+  { 4, 5, 6, 7 }
 };
 
 // edge_map and edge_vertex: how vertices are placed around an edge
@@ -184,7 +184,7 @@ static const unsigned char edge_vertex[3][14] =
 
   // if first entry is negative, this is a representative case, second entry has no meaning (it is always set to 0)
   // if first entry i is non-negative, this is a symmetry and/or complement of the representative case i; second entry specifies the symmetry and/or complement;
-  // if second entry j is positive, this is a symmetry using the permutation j from cubeSymmetryVertices; 
+  // if second entry j is positive, this is a symmetry using the permutation j from cubeSymmetryVertices;
   // if second entry j is zero or negative,  this is symmetry |j|, plus complement
   // can determine algorithmically from cubeSymmetryVertices
   static int marchingCubeSymmetries[256][3];
@@ -244,12 +244,12 @@ static const unsigned char edge_vertex[3][14] =
 
   // the numbers of faces should be used in face test for all 256 cases
   static vector<char> faceTest_num[256];
-  // may be removed later 
+  // may be removed later
   static char interiorTest_num[256];
 
   static vector<char> ambiguityTable[15];
-   
-  /*  
+
+  /*
     "triangleTable" is a three-dimensional data structure.
     The first dimension is the 256 cases, depending on the signs of values of eight corners.
     The second dimension is for each case, there may exist some subcases depending on the results of face tests and interior tests.
@@ -258,7 +258,7 @@ static const unsigned char edge_vertex[3][14] =
   static vector<vector<unsigned char> > triangleTable[256];
   static vector<bool> centerVertexNeeded[256];
 
-  /*  
+  /*
     "rc" is a three-dimensional data structure.
     The first dimension is the 15 representive cases, depending on the signs of values of eight corners.
     The second dimension is for each representive case, there may exist some subcases depending on the results of face tests and interior tests.
@@ -276,7 +276,7 @@ static const unsigned char edge_vertex[3][14] =
   static const char faceTest_size[15] = { 0, 0, 0, 1, 0, 0, 1, 3, 0, 0, 2, 0, 2, 6, 0 };
   static const char interiorTest_number[15] = { 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 };
 
-  // Whether the look up tables have been loaded. Only need to be loaded once. 
+  // Whether the look up tables have been loaded. Only need to be loaded once.
   static bool tableLoaded = false;
 #endif
 
@@ -355,11 +355,11 @@ ObjMesh * MarchingCubes::compute()
       createTable(); // data needs to be loaded
     //printTable();
   #endif
-  
+
   int resX = distanceFieldBase->getResolutionX();
   int resY = distanceFieldBase->getResolutionY();
   int resZ = distanceFieldBase->getResolutionZ();
-  
+
 //  cout << "Begin computing: " << endl;
 //  PerformanceCounter pc;
   vector<Vec3d> allVertices;
@@ -434,7 +434,7 @@ ObjMesh * MarchingCubes::compute()
 
   vector<int> allTriangles;
 //  pc.StartCounter();
-  
+
   #ifdef USE_OPENMP
     // because each slice stores local slice indices for the vertices, we need to know the global index for each vertex
     // indexCorrection is used to get the global index for each vertex.
@@ -760,10 +760,10 @@ float MarchingCubes::getDistance(int i, int j, int k)
     return ret;
   }
 
-  static bool violate(int k, vector<vector<int> >& binaryRepresentation) 
+  static bool violate(int k, vector<vector<int> >& binaryRepresentation)
   {
     int p = 0, n = 0;
-    for (int i = 0; i < 3; i++) 
+    for (int i = 0; i < 3; i++)
     {
       bool r0 = find(binaryRepresentation[k].begin(), binaryRepresentation[k].end(), oppositeFace[i][0]) == binaryRepresentation[k].end();
       bool r1 = find(binaryRepresentation[k].begin(), binaryRepresentation[k].end(), oppositeFace[i][1]) == binaryRepresentation[k].end();
@@ -774,61 +774,61 @@ float MarchingCubes::getDistance(int i, int j, int k)
     return (n > 0) && (p > 0);
   }
 
-  static bool compare(const int *a, const int *b) 
+  static bool compare(const int *a, const int *b)
   {
     for (int i = 0; i < 3; i++)
       if (a[i] != b[i]) return false;
     return true;
   }
 
-  static bool cmp(const vector<int> a, const vector<int> b) 
+  static bool cmp(const vector<int> a, const vector<int> b)
   {
     bool interiora = ((a.size() == 3) && (compare(&a[0], vtxAdjacentFaces[1]) || compare(&a[0], vtxAdjacentFaces[3]) || compare(&a[0], vtxAdjacentFaces[4]) || compare(&a[0], vtxAdjacentFaces[6])));
 
     bool interiorb = ((b.size() == 3) && (compare(&b[0], vtxAdjacentFaces[1]) || compare(&b[0], vtxAdjacentFaces[3]) || compare(&b[0], vtxAdjacentFaces[4]) || compare(&b[0], vtxAdjacentFaces[6])));
 
-    if (!interiora && interiorb) 
+    if (!interiora && interiorb)
       return true;
 
-    if (interiora && !interiorb) 
+    if (interiora && !interiorb)
       return false;
 
-    if (a.size() < b.size()) 
+    if (a.size() < b.size())
       return true;
 
-    if (a.size() > b.size()) 
+    if (a.size() > b.size())
       return false;
 
-    if (a.size() <= 3) 
+    if (a.size() <= 3)
     {
       for (unsigned int i = 0; i < a.size(); i++)
       {
-        if (a[i] < b[i]) 
+        if (a[i] < b[i])
           return true;
-        if (a[i] > b[i]) 
+        if (a[i] > b[i])
           return false;
       }
       return true;
     }
-    else 
+    else
     {
-      for (int i = 0; i < 6; i++) 
+      for (int i = 0; i < 6; i++)
       {
         bool ra = find(a.begin(), a.end(), i) == a.end();
         bool rb = find(b.begin(), b.end(), i) == b.end();
-        if (ra && !rb) 
+        if (ra && !rb)
           return true;
-        if (!ra && rb) 
+        if (!ra && rb)
           return false;
       }
       return true;
     }
   }
 
-  static vector<int> make_vector13(unsigned int p) 
+  static vector<int> make_vector13(unsigned int p)
   {
     vector <int> ret;
-    for (int i = 1; i <= 6; i++) 
+    for (int i = 1; i <= 6; i++)
     {
       if ((p | ((1 << i) >> 1)) == p)
         ret.push_back(i);
@@ -892,7 +892,7 @@ float MarchingCubes::getDistance(int i, int j, int k)
 
     for (int i = 63; i >= 0; i--)
     {
-      if (violate(i, binaryRepresentation)) 
+      if (violate(i, binaryRepresentation))
         binaryRepresentation.erase(binaryRepresentation.begin() + i);
     }
 
@@ -926,9 +926,9 @@ float MarchingCubes::getDistance(int i, int j, int k)
         for (k = 0; k < 24; k++)
         {
           p = permute(i, j, k);
-          if (p > 0) 
+          if (p > 0)
           {
-            candidate = make_pair(k, p);
+            candidate = std::make_pair(k, p);
             break;
           }
         }
@@ -939,14 +939,14 @@ float MarchingCubes::getDistance(int i, int j, int k)
         for (k = 0; k < 24; k++)
         {
           p = permute(i, j, k);
-          if (p < 0) 
+          if (p < 0)
           {
-            candidate = make_pair(k, p);
+            candidate = std::make_pair(k, p);
             break;
           }
         }
 
-        if (k < 24) 
+        if (k < 24)
           break;
       }
 
@@ -1180,34 +1180,34 @@ float MarchingCubes::getDistance(int i, int j, int k)
   {
     // once the file is OK, rename it to marchingCubesTable.h
     ofstream fout("marchingCubesTable_.h", ios::binary);
-    if (!fout) 
+    if (!fout)
       return;
     fout << endl;
 
     //static vector<char> ambiguityTable[15];
     unsigned int maxSize = 0;
-    for(unsigned int i = 0; i < 15; i++) 
+    for(unsigned int i = 0; i < 15; i++)
     {
-      if (ambiguityTable[i].size() > maxSize) 
+      if (ambiguityTable[i].size() > maxSize)
         maxSize = ambiguityTable[i].size();
     }
     fout << "static char ambiguityTable[15][" << maxSize << "] = " << endl << "{" << endl;
     //char buffer[100];
-    //fout << 
-    for(int i = 0; i < 15; i++) 
+    //fout <<
+    for(int i = 0; i < 15; i++)
     {
       fout << "  { ";
       unsigned int j = 0;
-      for(j = 0; j < ambiguityTable[i].size(); j++) 
+      for(j = 0; j < ambiguityTable[i].size(); j++)
       {
         fout << int(ambiguityTable[i][j]);
-        if (j < maxSize-1)  
+        if (j < maxSize-1)
           fout << ", ";
       }
-      for(; j < maxSize; j++) 
+      for(; j < maxSize; j++)
       {
         fout << "0";
-        if (j < maxSize-1)  
+        if (j < maxSize-1)
           fout << ", ";
       }
       fout << " }";
@@ -1221,19 +1221,19 @@ float MarchingCubes::getDistance(int i, int j, int k)
 
     // static int marchingCubeSymmetries[256][3];
     fout << "static int marchingCubeSymmetries[256][3] = {" << endl;
-    for(int i = 0; i < 256; i++) 
+    for(int i = 0; i < 256; i++)
     {
       fout << "  {";
-      for(int j = 0; j < 3; j++) 
+      for(int j = 0; j < 3; j++)
       {
         fout << setw(3) << marchingCubeSymmetries[i][j];
-        if (j < 3 - 1) 
+        if (j < 3 - 1)
           fout << ",";
       }
       fout << " }";
       if (i < 256 -1)
         fout << ", ";
-      if (i % 8 == 7) 
+      if (i % 8 == 7)
         fout << endl;
     }
     fout << "};" << endl;
@@ -1242,14 +1242,14 @@ float MarchingCubes::getDistance(int i, int j, int k)
 
     //static vector<char> faceTest_num[256];
     maxSize = 0;
-    for(unsigned int i = 0; i < 256; i++) 
+    for(unsigned int i = 0; i < 256; i++)
     {
-      if (faceTest_num[i].size() > maxSize) 
+      if (faceTest_num[i].size() > maxSize)
         maxSize = faceTest_num[i].size();
     }
     fout << "static char faceTest_num[256][" << maxSize+1 << "] = " << endl << "{" << endl;
     //char buffer[100];
-    for(int i = 0; i < 256; i++) 
+    for(int i = 0; i < 256; i++)
     {
       fout << "  {";
       fout << setw(2) << faceTest_num[i].size();
@@ -1257,16 +1257,16 @@ float MarchingCubes::getDistance(int i, int j, int k)
       fout << ",";
 
       unsigned int j = 0;
-      for(j = 0; j < faceTest_num[i].size(); j++) 
+      for(j = 0; j < faceTest_num[i].size(); j++)
       {
         fout << setw(2) << int(faceTest_num[i][j]);
-        if (j < maxSize-1)  
+        if (j < maxSize-1)
           fout << ",";
       }
-      for(; j < maxSize; j++) 
+      for(; j < maxSize; j++)
       {
         fout << " 0";
-        if (j < maxSize-1)  
+        if (j < maxSize-1)
           fout << ",";
       }
       fout << " }";
@@ -1281,7 +1281,7 @@ float MarchingCubes::getDistance(int i, int j, int k)
 
     //static char interiorTest_num[256];
     fout << "static char interiorTest_num[256] = " << endl << "  { ";
-    for(int i = 0; i < 256; i++) 
+    for(int i = 0; i < 256; i++)
     {
       fout << int(interiorTest_num[i]);
       if (i < 256 - 1)
@@ -1292,12 +1292,12 @@ float MarchingCubes::getDistance(int i, int j, int k)
     fout << endl;
 
     // static vector< vector<unsigned char> > triangleTable[256];
-    for(int i = 0; i < 256; i++) 
+    for(int i = 0; i < 256; i++)
     {
-      if (triangleTable[i].size() == 0) 
+      if (triangleTable[i].size() == 0)
         continue;
 
-      for(unsigned int j = 0; j < triangleTable[i].size(); j++) 
+      for(unsigned int j = 0; j < triangleTable[i].size(); j++)
       {
         vector<unsigned char> & table = triangleTable[i][j];
         unsigned int num = table.size();
@@ -1305,7 +1305,7 @@ float MarchingCubes::getDistance(int i, int j, int k)
         fout << num << ", " << centerVertexNeeded[i][j];
         if (num > 0)
           fout << ", ";
-        for(unsigned int k = 0; k < table.size(); k++) 
+        for(unsigned int k = 0; k < table.size(); k++)
         {
           fout << int(table[k]);
           if (k < table.size() - 1)
@@ -1316,10 +1316,10 @@ float MarchingCubes::getDistance(int i, int j, int k)
 
       unsigned int num = triangleTable[i].size();
       fout << "static unsigned char * triangleTable_" << i << "[" << num << "] = ";
-      if (num <= 7) 
+      if (num <= 7)
       {
         fout << "{ ";
-        for(unsigned int k = 0; k < num; k++) 
+        for(unsigned int k = 0; k < num; k++)
         {
           fout << "triangleTable_" << i << "_" << k;
           if (k < num - 1)
@@ -1327,10 +1327,10 @@ float MarchingCubes::getDistance(int i, int j, int k)
         }
         fout << " };" << endl;
       }
-      else 
+      else
       {
         fout << endl << "{ " << endl;
-        for(unsigned int k = 0; k < num; k++) 
+        for(unsigned int k = 0; k < num; k++)
         {
           if (k % 8 == 0)
             fout << "  ";
@@ -1350,7 +1350,7 @@ float MarchingCubes::getDistance(int i, int j, int k)
     } //end 256
 
     fout << "static unsigned char ** triangleTable[256] = " << endl << "{ " << endl;
-    for(unsigned int k = 0; k < 256; k++) 
+    for(unsigned int k = 0; k < 256; k++)
     {
       if (k % 8 == 0)
         fout << "  ";
@@ -1364,7 +1364,7 @@ float MarchingCubes::getDistance(int i, int j, int k)
       if (k % 8 == 7)
         fout << endl;
     }
-    fout << "};" << endl << endl; 
+    fout << "};" << endl << endl;
     fout.close();
     //exit(0);
   }

@@ -38,7 +38,7 @@ using namespace std;
 /**
  * Extracts metadata from a label : 'vol [unit: dB]' -> 'vol' + metadata
  */
-void extractMetadata(const string& fulllabel, string& label, map<string, set<string>>& metadata)
+void extractMetadata(const std::string& fulllabel, string& label, map<std::string, set<std::string>>& metadata)
 {
     enum { kLabel, kEscape1, kEscape2, kEscape3, kKey, kValue };
     int    state = kLabel;
@@ -156,7 +156,7 @@ void extractMetadata(const string& fulllabel, string& label, map<string, set<str
 string extractName(Tree full_label)
 {
     string                   name;
-    map<string, set<string>> metadata;
+    map<std::string, set<std::string>> metadata;
 
     extractMetadata(tree2str(full_label), name, metadata);
     return name;
@@ -165,9 +165,9 @@ string extractName(Tree full_label)
 /**
  * removes enclosing quotes and transforms '<', '>' and '&' characters
  */
-static string xmlize(const string& fullsrc)
+static std::string xmlize(const std::string& fullsrc)
 {
-    map<string, set<string>> metadata;
+    map<std::string, set<std::string>> metadata;
     string                   dst;
     string                   src;
 
@@ -195,17 +195,17 @@ static string xmlize(const string& fullsrc)
     return dst;
 }
 
-static list<string> xmlOfMetadata(const map<string, set<string>>& metadata, int level)
+static list<std::string> xmlOfMetadata(const map<std::string, set<std::string>>& metadata, int level)
 {
-    list<string> lines;
+    list<std::string> lines;
     string       line;
 
     line.reserve(128);
 
     for (const auto& it1 : metadata) {
-        const string& key = it1.first;
+        const std::string& key = it1.first;
         for (const auto& it2 : it1.second) {
-            const string& value = it2;
+            const std::string& value = it2;
             line.assign(level, '\t');
             line += "<meta key=\"";
             line += xmlize(key);
@@ -221,7 +221,7 @@ static list<string> xmlOfMetadata(const map<string, set<string>>& metadata, int 
 
 void Description::print(int n, ostream& fout)
 {
-    list<string> metaDataLines = xmlOfMetadata(fMetadata, 0);
+    list<std::string> metaDataLines = xmlOfMetadata(fMetadata, 0);
 
     tab(n, fout);
     fout << "<faust>";
@@ -283,7 +283,7 @@ void Description::print(int n, ostream& fout)
     tab(n + 2, fout);
     fout << "<layout>";
     list<int>::iterator t;
-    list<string>::iterator s;
+    list<std::string>::iterator s;
     for (t = fLayoutTabs.begin(), s = fLayoutLines.begin(); s != fLayoutLines.end(); t++, s++) {
         tab(n + 3 + *t, fout);
         fout << *s;
@@ -441,9 +441,9 @@ int Description::addWidget(Tree label, Tree varname, Tree sig)
 
 void Description::addActiveMetadata(Tree label)
 {
-    map<string, set<string>>     metadata;
+    map<std::string, set<std::string>>     metadata;
     string                       shortLabel;
-    list<string>                 lines;
+    list<std::string>                 lines;
   
     extractMetadata(tree2str(label), shortLabel, metadata);
     lines = xmlOfMetadata(metadata, 1);
@@ -453,9 +453,9 @@ void Description::addActiveMetadata(Tree label)
 
 void Description::addPassiveMetadata(Tree label)
 {
-    map<string, set<string>>     metadata;
+    map<std::string, set<std::string>>     metadata;
     string                       shortLabel;
-    list<string>                 lines;
+    list<std::string>                 lines;
   
     extractMetadata(tree2str(label), shortLabel, metadata);
     lines = xmlOfMetadata(metadata, 1);

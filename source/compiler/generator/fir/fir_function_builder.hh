@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#include <string.h>
+#include <string>
 #include <algorithm>
 #include <iostream>
 #include <list>
@@ -37,6 +37,7 @@ using namespace std;
 #include "exception.hh"
 #include "global.hh"
 #include "instructions.hh"
+#include "visitors/dispatch_visitor.hh"
 
 /*
     void compute(int count, float** inputs, float** ouputs)
@@ -82,8 +83,8 @@ using namespace std;
 
 struct Loop2FunctionBuider : public DispatchVisitor {
     // Variable management
-    map<string, Address::AccessType> fLocalVarTable;
-    list<string>                     fAddedVarTable;
+    map<std::string, Address::AccessType> fLocalVarTable;
+    list<std::string>                     fAddedVarTable;
 
     // Function definition creation
     Names fArgsTypeList;
@@ -188,16 +189,16 @@ struct Loop2FunctionBuider : public DispatchVisitor {
         createParameter(inst->fAddress);
     }
 
-    Loop2FunctionBuider(const string& fun_name, BlockInst* block, bool add_object = false)
+    Loop2FunctionBuider(const std::string& fun_name, BlockInst* block, bool add_object = false)
     {
         // This prepare fArgsTypeList and fArgsValueList
         block->accept(this);
 
         // Change the status of all variables used in function parameter list
         struct LoopCloneVisitor : public BasicCloneVisitor {
-            list<string>& fAddedVarTable;
+            list<std::string>& fAddedVarTable;
 
-            LoopCloneVisitor(list<string>& table) : fAddedVarTable(table) {}
+            LoopCloneVisitor(list<std::string>& table) : fAddedVarTable(table) {}
 
             virtual Address* visit(NamedAddress* address)
             {
@@ -238,7 +239,7 @@ Constant propagation :
 */
 
 struct ConstantPropagationBuilder : public BasicCloneVisitor {
-    map<string, ValueInst*> fValueTable;
+    map<std::string, ValueInst*> fValueTable;
 
     virtual ValueInst* visit(BinopInst* inst)
     {

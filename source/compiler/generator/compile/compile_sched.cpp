@@ -22,6 +22,7 @@
 #include "compile_sched.hh"
 #include "floats.hh"
 #include "ppsig.hh"
+#include "global.hh"
 
 void SchedulerCompiler::compileMultiSignal(Tree L)
 {
@@ -65,7 +66,7 @@ void SchedulerCompiler::compileMultiSignal(Tree L)
  * @param delay the maximum delay
  * @param cexp the content of the signal as a C++ expression
  */
-void SchedulerCompiler::vectorLoop(const string& tname, const string& vecname, const string& cexp, const string& ccs)
+void SchedulerCompiler::vectorLoop(const std::string& tname, const std::string& vecname, const std::string& cexp, const std::string& ccs)
 {
     // -- declare the vector
     fClass->addSharedDecl(vecname);
@@ -86,8 +87,8 @@ void SchedulerCompiler::vectorLoop(const string& tname, const string& vecname, c
  * @param delay the maximum delay
  * @param cexp the content of the signal as a C++ expression
  */
-void SchedulerCompiler::dlineLoop(const string& tname, const string& dlname, int delay, const string& cexp,
-                                  const string& ccs)
+void SchedulerCompiler::dlineLoop(const std::string& tname, const std::string& dlname, int delay, const std::string& cexp,
+                                  const std::string& ccs)
 {
     if (delay < gGlobal->gMaxCopyDelay) {
         // Implementation of a copy based delayline

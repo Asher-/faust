@@ -21,7 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -41,7 +41,7 @@
 using namespace std;
 
 // Look for 'key' in 'options' and modify the parameter 'position' if found
-static bool parseKey(vector<string>& options, const string& key, int& position)
+static bool parseKey(vector<std::string>& options, const std::string& key, int& position)
 {
     for (int i = 0; i < int(options.size()); i++) {
         if (key == options[i]) {
@@ -57,8 +57,8 @@ static bool parseKey(vector<string>& options, const string& key, int& position)
  *  Add 'key' if existing in 'options', otherwise add 'defaultKey' (if different from "")
  * return true if 'key' was added
  */
-static bool addKeyIfExisting(vector<string>& options, vector<string>& newoptions, const string& key,
-                             const string& defaultKey, int& position)
+static bool addKeyIfExisting(vector<std::string>& options, vector<std::string>& newoptions, const std::string& key,
+                             const std::string& defaultKey, int& position)
 {
     if (parseKey(options, key, position)) {
         newoptions.push_back(options[position]);
@@ -73,8 +73,8 @@ static bool addKeyIfExisting(vector<string>& options, vector<string>& newoptions
 }
 
 // Add 'key' & it's associated value if existing in 'options', otherwise add 'defaultValue' (if different from "")
-static void addKeyValueIfExisting(vector<string>& options, vector<string>& newoptions, const string& key,
-                                  const string& defaultValue)
+static void addKeyValueIfExisting(vector<std::string>& options, vector<std::string>& newoptions, const std::string& key,
+                                  const std::string& defaultValue)
 {
     int position = 0;
 
@@ -93,12 +93,12 @@ static void addKeyValueIfExisting(vector<string>& options, vector<string>& newop
  * Reorganizes the compilation options
  * Following the tree of compilation (Faust_Compilation_Options.pdf in distribution)
  */
-static vector<string> reorganizeCompilationOptionsAux(vector<string>& options)
+static vector<std::string> reorganizeCompilationOptionsAux(vector<std::string>& options)
 {
     bool vectorize = false;
     int  position  = 0;
 
-    vector<string> newoptions;
+    vector<std::string> newoptions;
 
     //------STEP 1 - Single or Double ?
     addKeyIfExisting(options, newoptions, "-double", "-single", position);
@@ -177,7 +177,7 @@ static vector<string> reorganizeCompilationOptionsAux(vector<string>& options)
     return newoptions;
 }
 
-static string extractCompilationOptions(const string& dsp_content)
+static std::string extractCompilationOptions(const std::string& dsp_content)
 {
     size_t pos1 = dsp_content.find(COMPILATION_OPTIONS_KEY);
 
@@ -194,12 +194,12 @@ static string extractCompilationOptions(const string& dsp_content)
 
 string reorganizeCompilationOptions(int argc, const char* argv[])
 {
-    vector<string> res1;
+    vector<std::string> res1;
     for (int i = 0; i < argc; i++) {
         res1.push_back(argv[i]);
     }
 
-    vector<string> res2 = reorganizeCompilationOptionsAux(res1);
+    vector<std::string> res2 = reorganizeCompilationOptionsAux(res1);
 
     string sep, res3;
     for (size_t i = 0; i < res2.size(); i++) {
@@ -210,7 +210,7 @@ string reorganizeCompilationOptions(int argc, const char* argv[])
     return quote(res3);
 }
 
-string sha1FromDSP(const string& name_app, const string& dsp_content, int argc, const char* argv[], string& sha_key)
+string sha1FromDSP(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[], string& sha_key)
 {
     sha_key = generateSHA1(name_app + dsp_content + reorganizeCompilationOptions(argc, argv));
     return dsp_content;
@@ -218,7 +218,7 @@ string sha1FromDSP(const string& name_app, const string& dsp_content, int argc, 
 
 // External C++ libfaust API
 
-LIBFAUST_API string expandDSPFromFile(const string& filename, int argc, const char* argv[], string& sha_key,
+LIBFAUST_API string expandDSPFromFile(const std::string& filename, int argc, const char* argv[], string& sha_key,
                                 string& error_msg)
 {
     string base = basename((char*)filename.c_str());
@@ -229,8 +229,8 @@ LIBFAUST_API string expandDSPFromFile(const string& filename, int argc, const ch
 /*
 Same DSP code and same normalized compilation options will generate the same SHA key.
 */
-LIBFAUST_API string expandDSPFromString(const string& name_app, const string& dsp_content, int argc, const char* argv[],
-                                    string& sha_key, string& error_msg)
+LIBFAUST_API string expandDSPFromString(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[],
+                                  string& sha_key, string& error_msg)
 {
     LOCK_API
     if (dsp_content == "") {
@@ -264,14 +264,14 @@ LIBFAUST_API string expandDSPFromString(const string& name_app, const string& ds
     }
 }
 
-LIBFAUST_API bool generateAuxFilesFromFile(const string& filename, int argc, const char* argv[], string& error_msg)
+LIBFAUST_API bool generateAuxFilesFromFile(const std::string& filename, int argc, const char* argv[], string& error_msg)
 {
     string base = basename((char*)filename.c_str());
     size_t pos  = filename.find(".dsp");
     return generateAuxFilesFromString(base.substr(0, pos), pathToContent(filename), argc, argv, error_msg);
 }
 
-LIBFAUST_API bool generateAuxFilesFromString(const string& name_app, const string& dsp_content, int argc, const char* argv[],
+LIBFAUST_API bool generateAuxFilesFromString(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[],
                                        string& error_msg)
 {
     LOCK_API

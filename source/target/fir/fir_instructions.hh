@@ -33,7 +33,7 @@
 #include "binop.hh"
 #include "dsp_factory.hh"
 #include "instructions.hh"
-#include "type_manager.hh"
+#include "string_type_manager/c.hh"
 
 using namespace std;
 
@@ -52,7 +52,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
             tab(fTab, *fOut);
         }
     }
-    
+
    public:
     FIRInstVisitor(std::ostream* out, int tab = 0)
         : CStringTypeManager(xfloat(), "*"), fTab(tab), fOut(out), fFinishLine(true)
@@ -269,7 +269,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         *fOut << ")";
         EndLine();
     }
-    
+
     // For Rust and Julia backends
     virtual void visit(DeclareBufferIterators* inst)
     {
@@ -357,7 +357,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
     {
         *fOut << "Address(" << named->fName << ", " << Address::dumpString(named->fAccess) << ")";
     }
-    
+
     void visitIndices(const std::vector<ValueInst*>& indices, int start)
     {
         if (indices.size() > 0) {
@@ -381,12 +381,12 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
             visitIndices(indexed->getIndices(), 0);
         }
     }
-    
+
     virtual void visit(NullValueInst* inst)
     {
         *fOut << "NullValueInst()";
     }
-    
+
     virtual void visit(NullStatementInst* inst)
     {
         *fOut << "NullStatementInst()";
@@ -551,7 +551,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         *fOut << "EndIfInst";
         tab(fTab, *fOut);
     }
-    
+
     virtual void visit(ControlInst* inst)
     {
         *fOut << "ControlInst ";
@@ -585,7 +585,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         *fOut << "EndForLoopInst";
         tab(fTab, *fOut);
     }
-    
+
     // For Rust backend
     virtual void visit(SimpleForLoopInst* inst)
     {
@@ -603,7 +603,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         *fOut << "EndSimpleForLoopInst";
         tab(fTab, *fOut);
     }
-    
+
     virtual void visit(IteratorForLoopInst* inst)
     {
         *fOut << "IteratorForLoopInst ";

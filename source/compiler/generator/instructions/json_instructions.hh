@@ -24,6 +24,7 @@
 
 #include <string>
 #include <set>
+#include <vector>
 
 #include "faust/gui/JSONUI.h"
 #include "instructions.hh"
@@ -41,12 +42,12 @@ using namespace std;
 
 template <typename REAL>
 struct JSONInstVisitor : public DispatchVisitor, public JSONUIReal<REAL> {
-    map<string, string> fPathTable; // Table : field_name, complete path
-    set<string> fControlPathSet;    // Set of already used control paths
- 
+    map<std::string, std::string> fPathTable; // Table : field_name, complete path
+    set<std::string> fControlPathSet;    // Set of already used control paths
+
     using DispatchVisitor::visit;
-    
-    const string& insertPath(const string& path, bool check = true)
+
+    const std::string& insertPath(const std::string& path, bool check = true)
     {
         if (check && fControlPathSet.find(path) != fControlPathSet.end()) {
             throw faustexception("ERROR : path '" + path + "' is already used\n");
@@ -55,7 +56,7 @@ struct JSONInstVisitor : public DispatchVisitor, public JSONUIReal<REAL> {
         }
         return path;
     }
-  
+
     JSONInstVisitor(const std::string& name, const std::string& filename, int inputs, int outputs, int sr_index,
                     const std::string& sha_key, const std::string& dsp_code, const std::string& version,
                     const std::string& compile_options, const std::vector<std::string>& library_list,
@@ -72,7 +73,7 @@ struct JSONInstVisitor : public DispatchVisitor, public JSONUIReal<REAL> {
     JSONInstVisitor() : JSONUIReal<REAL>() {}
 
     virtual ~JSONInstVisitor() {}
-  
+
     virtual void visit(AddMetaDeclareInst* inst) { this->declare(NULL, inst->fKey.c_str(), inst->fValue.c_str()); }
 
     virtual void visit(OpenboxInst* inst)

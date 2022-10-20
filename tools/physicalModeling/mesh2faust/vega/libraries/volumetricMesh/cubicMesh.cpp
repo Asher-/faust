@@ -47,21 +47,21 @@ CubicMesh::CubicMesh(const char * filename, fileFormatType fileFormat, int verbo
   {
     printf("Error: mesh is not a cubic mesh.\n");
     throw 11;
-  } 
+  }
 
   // set cube size
   cubeSize = len(getVertex(0,1) - getVertex(0,0));
   SetInverseCubeSize();
 }
 
-CubicMesh::CubicMesh(void * binaryStream, int memoryLoad) : 
+CubicMesh::CubicMesh(void * binaryStream, int memoryLoad) :
   VolumetricMesh(binaryStream, 8, &temp, memoryLoad), parallelepipedMode(0)
 {
   if (temp != elementType_)
   {
     printf("Error: mesh is not a cubic mesh.\n");
     throw 11;
-  } 
+  }
 
   // set cube size
   cubeSize = len(getVertex(0,1) - getVertex(0,0));
@@ -70,7 +70,7 @@ CubicMesh::CubicMesh(void * binaryStream, int memoryLoad) :
 
 CubicMesh::CubicMesh(int numVertices, double * vertices,
                int numElements, int * elements,
-               double E, double nu, double density): 
+               double E, double nu, double density):
   VolumetricMesh(numVertices, vertices, numElements, 8, elements, E, nu, density), parallelepipedMode(0)
 {
   if (numElements > 0)
@@ -85,7 +85,7 @@ CubicMesh::CubicMesh(int numVertices, double * vertices,
          int numElements, int * elements,
          int numMaterials, Material ** materials,
          int numSets, Set ** sets,
-         int numRegions, Region ** regions): 
+         int numRegions, Region ** regions):
   VolumetricMesh(numVertices, vertices, numElements, 8, elements, numMaterials, materials, numSets, sets, numRegions, regions), parallelepipedMode(0)
 {
   if (numElements > 0)
@@ -127,7 +127,7 @@ CubicMesh * CubicMesh::createFromUniformGrid(int resolution, int numVoxels, int 
     int i = voxels[3*vox+0];
     int j = voxels[3*vox+1];
     int k = voxels[3*vox+2];
- 
+
     for(int corner=0; corner<numElementVertices; corner++)
     {
       tripleIndex triIndex(i+vtxI[corner], j+vtxJ[corner], k+vtxK[corner]);
@@ -147,7 +147,7 @@ CubicMesh * CubicMesh::createFromUniformGrid(int resolution, int numVoxels, int 
     vertices[3*count+0] = -0.5 + 1.0 * i / resolution;
     vertices[3*count+1] = -0.5 + 1.0 * j / resolution;
     vertices[3*count+2] = -0.5 + 1.0 * k / resolution;
-    vertexMap.insert(make_pair(tripleIndex(i,j,k), count));
+    vertexMap.insert(std::make_pair(tripleIndex(i,j,k), count));
     //printf("%d %d %d: %d\n", i,j,k, count);
     count++;
   }
@@ -219,7 +219,7 @@ bool CubicMesh::containsVertex(int element, Vec3d pos) const
   // general, parallelepied version (supports cubes transformed by a linear transformation; although the class does not "officially" support this)
   double alpha, beta, gamma;
   computeAlphaBetaGamma(element, pos, &alpha, &beta, &gamma);
-  
+
   return ( (0 <= alpha) && (alpha <= 1) &&
            (0 <= beta) && (beta <= 1) &&
            (0 <= gamma) && (gamma <= 1) );
@@ -539,30 +539,30 @@ void CubicMesh::computeAlphaBetaGamma(int el, Vec3d pos, double * alpha, double 
     Vec3d axis2 = v4 - v0;
     Vec3d p = pos - v0;
     Vec3d v;
-  
+
     // OBB code
     //double invCubeSize2 = invCubeSize * invCubeSize;
     //*alpha = invCubeSize2 * dot(p, axis0);
     //*beta  = invCubeSize2 * dot(p, axis1);
     //*gamma = invCubeSize2 * dot(p, axis2);
-  
+
     // parallelepiped code
     double A[9], invA[9];
     A[0] = axis0[0];
     A[1] = axis1[0];
     A[2] = axis2[0];
-  
+
     A[3] = axis0[1];
     A[4] = axis1[1];
     A[5] = axis2[1];
-  
+
     A[6] = axis0[2];
     A[7] = axis1[2];
     A[8] = axis2[2];
-  
+
     inverse3x3(A, invA);
     MATRIX_VECTOR_MULTIPLY3X3(invA, p, v);
-  
+
     *alpha = v[0];
     *beta = v[1];
     *gamma = v[2];
@@ -664,7 +664,7 @@ void CubicMesh::computeElementMassMatrix(int el, double * massMatrix) const
 
 void CubicMesh::subdivide()
 {
-  int numNewElements = 8 * numElements; 
+  int numNewElements = 8 * numElements;
   int ** newElements = (int**) malloc (sizeof(int*) * numNewElements);
 
   int parentMask[8][3] = {
@@ -676,7 +676,7 @@ void CubicMesh::subdivide()
       { 1, 0, 1 },
       { 1, 1, 1 },
       { 0, 1, 1 } };
-  
+
   int mask[8][8][3];
   for(int el=0; el<8; el++)
     for(int vtx=0; vtx<8; vtx++)
@@ -689,7 +689,7 @@ void CubicMesh::subdivide()
   vector<Vec3d> newVertices;
   for(int el=0; el<numElements; el++)
   {
-    const Vec3d & v0 = getVertex(el, 0);   
+    const Vec3d & v0 = getVertex(el, 0);
 
     // create the 8 children cubes
     for(int child=0; child<8; child++)
@@ -773,4 +773,3 @@ void CubicMesh::setParallelepipedMode(int parallelepipedMode_)
 {
   parallelepipedMode = parallelepipedMode_;
 }
-

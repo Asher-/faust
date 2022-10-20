@@ -59,19 +59,22 @@ file (GLOB SRC ${SRCDIR}/compiler/*.cpp
                ${SRCDIR}/compiler/*/*.cpp
                ${SRCDIR}/compiler/*/*/*.cpp
                ${SRCDIR}/compiler/*/*/*/*.cpp
+               ${SRCDIR}/compiler/*/*/*/*/*.cpp
 						   ${SRCDIR}/draw/*.cpp
 							 ${SRCDIR}/draw/*/*.cpp
+							 ${SRCDIR}/target/*.cpp
+							 ${SRCDIR}/target/code_container/*.cpp
 							 ${SRCDIR}/target/fir/*.cpp
-							 ${SRCDIR}/target/c/*.cpp
-							 ${SRCDIR}/target/cpp/*.cpp
-							 ${SRCDIR}/target/jax/*.cpp
-							 ${SRCDIR}/target/java/*.cpp
-							 ${SRCDIR}/target/julia/*.cpp
-							 ${SRCDIR}/target/rust/*.cpp
-							 ${SRCDIR}/target/dlang/*.cpp
-							 ${SRCDIR}/target/csharp/*.cpp
-							 ${SRCDIR}/target/soul/*.cpp
-							 ${SRCDIR}/target/wasm/*.cpp
+							 ${SRCDIR}/target/language/c/*.cpp
+							 ${SRCDIR}/target/language/cpp/*.cpp
+							 ${SRCDIR}/target/language/jax/*.cpp
+							 ${SRCDIR}/target/language/java/*.cpp
+							 ${SRCDIR}/target/language/julia/*.cpp
+							 ${SRCDIR}/target/language/rust/*.cpp
+							 ${SRCDIR}/target/language/dlang/*.cpp
+							 ${SRCDIR}/target/language/csharp/*.cpp
+							 ${SRCDIR}/target/language/soul/*.cpp
+							 ${SRCDIR}/target/language/wasm/*.cpp
 							 ${SRCDIR}/tlib/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
 							 ${ROOT}/architecture/faust/export.cpp
@@ -80,9 +83,12 @@ file (GLOB HH  ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
                ${SRCDIR}/compiler/*/*/*.hh
                ${SRCDIR}/compiler/*/*/*/*.hh
+               ${SRCDIR}/compiler/*/*/*/*/*.hh
                ${SRCDIR}/draw/*.hh
                ${SRCDIR}/draw/*/*.hh
+               ${SRCDIR}/target/*.hh
                ${SRCDIR}/target/*/*.hh
+               ${SRCDIR}/target/*/*/*.hh
                ${SRCDIR}/tlib/*.hh
 							 ${ROOT}/benchmark/timing.hh
 							 ${ROOT}/architecture/faust/export.h
@@ -100,26 +106,40 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/generator
 	${SRCDIR}/compiler/faust
 	${SRCDIR}/tlib
-	${SRCDIR}/target/dlang
-	${SRCDIR}/target/c
-	${SRCDIR}/target/cpp
-	${SRCDIR}/target/csharp
+	${SRCDIR}/target
+	${SRCDIR}/target/code_container
 	${SRCDIR}/target/fir
-	${SRCDIR}/target/java
-	${SRCDIR}/target/julia
-	${SRCDIR}/target/jax
-	${SRCDIR}/target/llvm
-	${SRCDIR}/target/wasm
 	${SRCDIR}/target/interpreter
-	${SRCDIR}/target/rust
-	${SRCDIR}/target/soul
-	${SRCDIR}/compiler/generator/code_container
+	${SRCDIR}/target/language/dlang
+	${SRCDIR}/target/language/c
+	${SRCDIR}/target/language/cpp
+	${SRCDIR}/target/language/csharp
+	${SRCDIR}/target/language/java
+	${SRCDIR}/target/language/julia
+	${SRCDIR}/target/language/jax
+	${SRCDIR}/target/language/llvm
+	${SRCDIR}/target/language/wasm
+	${SRCDIR}/target/language/rust
+	${SRCDIR}/target/language/soul
+	${SRCDIR}/compiler/generator/address
 	${SRCDIR}/compiler/generator/compile
+	${SRCDIR}/compiler/generator/compile/scalar
 	${SRCDIR}/compiler/generator/fir
-	${SRCDIR}/compiler/generator/parallelize
 	${SRCDIR}/compiler/generator/instructions
+	${SRCDIR}/compiler/generator/instructions/cast
+	${SRCDIR}/compiler/generator/instructions/control_flow
+	${SRCDIR}/compiler/generator/instructions/declarations
+	${SRCDIR}/compiler/generator/instructions/loops
+	${SRCDIR}/compiler/generator/instructions/math
+	${SRCDIR}/compiler/generator/instructions/memory
+	${SRCDIR}/compiler/generator/instructions/numbers
+	${SRCDIR}/compiler/generator/instructions/ui
+	${SRCDIR}/compiler/generator/parallelize
+	${SRCDIR}/compiler/generator/string_type_manager
 	${SRCDIR}/compiler/generator/terms
+	${SRCDIR}/compiler/generator/types
 	${SRCDIR}/compiler/generator/util
+	${SRCDIR}/compiler/generator/visitors
 	${SRCDIR}/compiler/parser
 	${SRCDIR}/compiler/boxes
 	${SRCDIR}/compiler/math_primitives
@@ -135,8 +155,6 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/draw
 	${SRCDIR}/draw/device
 	${SRCDIR}/draw/schema
-	${SRCDIR}/target/interpreter
-	${SRCDIR}/target/fir
 	${ROOT}/architecture
 	/usr/local/include)
 

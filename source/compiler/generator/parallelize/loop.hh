@@ -50,7 +50,7 @@ struct Loop {
     const bool   fIsRecursive;    ///< recursive loops can't be SIMDed
     Tree         fRecSymbolSet;   ///< recursive loops define a set of recursive symbol
     Loop* const  fEnclosingLoop;  ///< Loop from which this one originated
-    const string fSize;           ///< number of iterations of the loop
+    const std::string fSize;           ///< number of iterations of the loop
     // fields concerned by absorbsion
     set<Loop*>      fBackwardLoopDependencies;  ///< Loops that must be computed before this one
     set<Loop*>      fForwardLoopDependencies;   ///< Loops that will be computed after this one
@@ -67,8 +67,8 @@ struct Loop {
     int fPrinted;  ///< true when loop has been printed (to track multi-print errors)
 
    public:
-    Loop(Tree recsymbol, Loop* encl, const string& size);  ///< create a recursive loop
-    Loop(Loop* encl, const string& size);                  ///< create a non recursive loop
+    Loop(Tree recsymbol, Loop* encl, const std::string& size);  ///< create a recursive loop
+    Loop(Loop* encl, const std::string& size);                  ///< create a non recursive loop
 
     bool isEmpty();                   ///< true when the loop doesn't contain any line of code
     bool hasRecDependencyIn(Tree S);  ///< returns true is this loop or its ancestors define a symbol in S

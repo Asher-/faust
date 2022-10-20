@@ -63,37 +63,37 @@ class Klass
     int    fNumActives;   ///< number of active controls in the UI (sliders, buttons, etc.)
     int    fNumPassives;  ///< number of passive widgets in the UI (bargraphs, etc.)
 
-    set<string> fIncludeFileSet;
-    set<string> fLibrarySet;
+    set<std::string> fIncludeFileSet;
+    set<std::string> fLibrarySet;
 
     list<Klass*> fSubClassList;
 
-    list<string> fDeclCode;
-    list<string> fStaticInitCode;     ///< static init code for class constant tables
-    list<string> fStaticDestroyCode;  ///< static destroy code for class constant tables
-    list<string> fStaticFields;       ///< static fields after class
-    list<string> fInitCode;
-    list<string> fInitUICode;
-    list<string> fClearCode;
-    list<string> fUICode;
-    list<string> fUIMacro;
+    list<std::string> fDeclCode;
+    list<std::string> fStaticInitCode;     ///< static init code for class constant tables
+    list<std::string> fStaticDestroyCode;  ///< static destroy code for class constant tables
+    list<std::string> fStaticFields;       ///< static fields after class
+    list<std::string> fInitCode;
+    list<std::string> fInitUICode;
+    list<std::string> fClearCode;
+    list<std::string> fUICode;
+    list<std::string> fUIMacro;
 
 #if 0
-    list<string>        fSlowDecl;
-    list<string>        fSharedDecl;            ///< declare shared variables for openMP
-    list<string>        fCommonCode;            ///< code executed by all threads
-    list<string>        fSlowCode;
-    list<string>        fEndCode;
+    list<std::string>        fSlowDecl;
+    list<std::string>        fSharedDecl;            ///< declare shared variables for openMP
+    list<std::string>        fCommonCode;            ///< code executed by all threads
+    list<std::string>        fSlowCode;
+    list<std::string>        fEndCode;
 #endif
-    list<string> fSharedDecl;        ///< shared declarations
-    list<string> fFirstPrivateDecl;  ///< first private declarations
+    list<std::string> fSharedDecl;        ///< shared declarations
+    list<std::string> fFirstPrivateDecl;  ///< first private declarations
 
-    list<string> fZone1Code;   ///< shared vectors
-    list<string> fZone2Code;   ///< first private
-    list<string> fZone2bCode;  ///< single once per block
-    list<string> fZone2cCode;  ///< single once per block
-    list<string> fZone3Code;   ///< private every sub block
-    list<string> fZone4Code;   ///< code after all loops
+    list<std::string> fZone1Code;   ///< shared vectors
+    list<std::string> fZone2Code;   ///< first private
+    list<std::string> fZone2bCode;  ///< single once per block
+    list<std::string> fZone2cCode;  ///< single once per block
+    list<std::string> fZone3Code;   ///< private every sub block
+    list<std::string> fZone4Code;   ///< code after all loops
 
     Loop*           fTopLoop;       ///< active loops currently open
     property<Loop*> fLoopProperty;  ///< loops used to compute some signals
@@ -101,7 +101,7 @@ class Klass
     bool fVec;
 
    public:
-    Klass(const string& name, const string& super, int numInputs, int numOutputs, bool __vec = false)
+    Klass(const std::string& name, const std::string& super, int numInputs, int numOutputs, bool __vec = false)
         : fParentKlass(0),
           fKlassName(name),
           fSuperKlassName(super),
@@ -128,59 +128,59 @@ class Klass
         return (fParentKlass != 0) ? fParentKlass->getFullClassName() + "::" + getClassName() : getClassName();
     }  ///< Returns the name of the class
 
-    void openLoop(const string& size);
-    void openLoop(Tree recsymbol, const string& size);
+    void openLoop(const std::string& size);
+    void openLoop(Tree recsymbol, const std::string& size);
     void closeLoop(Tree sig);
 
     void setLoopProperty(Tree sig, Loop* l);   ///< Store the loop used to compute a signal
     bool getLoopProperty(Tree sig, Loop*& l);  ///< Returns the loop used to compute a signal
     void listAllLoopProperties(Tree sig, set<Loop*>&, set<Tree>& visited);  ///< Returns all the loop used to compute a signal
 
-    const string& getClassName() const { return fKlassName; }  ///< Returns the name of the class
+    const std::string& getClassName() const { return fKlassName; }  ///< Returns the name of the class
 
     Loop* topLoop() { return fTopLoop; }
 
     void buildTasksList();
 
-    void addIncludeFile(const string& str) { fIncludeFileSet.insert(str); }
+    void addIncludeFile(const std::string& str) { fIncludeFileSet.insert(str); }
 
-    void addLibrary(const string& str) { fLibrarySet.insert(str); }
+    void addLibrary(const std::string& str) { fLibrarySet.insert(str); }
 
     void rememberNeedPowerDef() { fNeedPowerDef = true; }
 
-    void collectIncludeFile(set<string>& S);
+    void collectIncludeFile(set<std::string>& S);
 
-    void collectLibrary(set<string>& S);
+    void collectLibrary(set<std::string>& S);
 
     void addSubKlass(Klass* son) { fSubClassList.push_back(son); }
 
-    void addDeclCode(const string& str) { fDeclCode.push_back(str); }
+    void addDeclCode(const std::string& str) { fDeclCode.push_back(str); }
 
-    void addInitCode(const string& str) { fInitCode.push_back(str); }
-    void addInitUICode(const string& str) { fInitUICode.push_back(str); }
-    void addClearCode(const string& str) { fClearCode.push_back(str); }
+    void addInitCode(const std::string& str) { fInitCode.push_back(str); }
+    void addInitUICode(const std::string& str) { fInitUICode.push_back(str); }
+    void addClearCode(const std::string& str) { fClearCode.push_back(str); }
 
-    void addStaticInitCode(const string& str) { fStaticInitCode.push_back(str); }
-    void addStaticDestroyCode(const string& str) { fStaticDestroyCode.push_back(str); }
+    void addStaticInitCode(const std::string& str) { fStaticInitCode.push_back(str); }
+    void addStaticDestroyCode(const std::string& str) { fStaticDestroyCode.push_back(str); }
 
-    void addStaticFields(const string& str) { fStaticFields.push_back(str); }
+    void addStaticFields(const std::string& str) { fStaticFields.push_back(str); }
 
-    void addUICode(const string& str) { fUICode.push_back(str); }
+    void addUICode(const std::string& str) { fUICode.push_back(str); }
 
-    void addUIMacro(const string& str) { fUIMacro.push_back(str); }
+    void addUIMacro(const std::string& str) { fUIMacro.push_back(str); }
 
     void incUIActiveCount() { fNumActives++; }
     void incUIPassiveCount() { fNumPassives++; }
 
-    void addSharedDecl(const string& str) { fSharedDecl.push_back(str); }
-    void addFirstPrivateDecl(const string& str) { fFirstPrivateDecl.push_back(str); }
+    void addSharedDecl(const std::string& str) { fSharedDecl.push_back(str); }
+    void addFirstPrivateDecl(const std::string& str) { fFirstPrivateDecl.push_back(str); }
 
-    void addZone1(const string& str) { fZone1Code.push_back(str); }
-    void addZone2(const string& str) { fZone2Code.push_back(str); }
-    void addZone2b(const string& str) { fZone2bCode.push_back(str); }
-    void addZone2c(const string& str) { fZone2cCode.push_back(str); }
-    void addZone3(const string& str) { fZone3Code.push_back(str); }
-    void addZone4(const string& str) { fZone4Code.push_back(str); }
+    void addZone1(const std::string& str) { fZone1Code.push_back(str); }
+    void addZone2(const std::string& str) { fZone2Code.push_back(str); }
+    void addZone2b(const std::string& str) { fZone2bCode.push_back(str); }
+    void addZone2c(const std::string& str) { fZone2cCode.push_back(str); }
+    void addZone3(const std::string& str) { fZone3Code.push_back(str); }
+    void addZone4(const std::string& str) { fZone4Code.push_back(str); }
 
     void addPreCode(const Statement& stmt) { fTopLoop->addPreCode(stmt); }
     void addExecCode(const Statement& stmt) { fTopLoop->addExecCode(stmt); }
@@ -223,14 +223,14 @@ class Klass
 
 class SigIntGenKlass : public Klass {
    public:
-    SigIntGenKlass(Klass* parent, const string& name) : Klass(name, "", 0, 1, false) { fParentKlass = parent; }
+    SigIntGenKlass(Klass* parent, const std::string& name) : Klass(name, "", 0, 1, false) { fParentKlass = parent; }
 
     virtual void println(int n, ostream& fout);
 };
 
 class SigFloatGenKlass : public Klass {
    public:
-    SigFloatGenKlass(Klass* parent, const string& name) : Klass(name, "", 0, 1, false) { fParentKlass = parent; }
+    SigFloatGenKlass(Klass* parent, const std::string& name) : Klass(name, "", 0, 1, false) { fParentKlass = parent; }
 
     virtual void println(int n, ostream& fout);
 };

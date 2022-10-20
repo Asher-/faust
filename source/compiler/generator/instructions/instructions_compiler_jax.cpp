@@ -23,8 +23,9 @@
 #include "ensure.hh"
 #include "ppsig.hh"
 #include "sigtyperules.hh"
+#include "global.hh"
 
-StatementInst* InstructionsCompilerJAX::generateShiftArray(const string& vname, int delay)
+StatementInst* InstructionsCompilerJAX::generateShiftArray(const std::string& vname, int delay)
 {
     Values truncated_args;
     truncated_args.push_back(InstBuilder::genLoadArrayStructVar(vname));
@@ -32,7 +33,7 @@ StatementInst* InstructionsCompilerJAX::generateShiftArray(const string& vname, 
     return InstBuilder::genStoreArrayStructVar(vname, InstBuilder::genFunCallInst(string("jnp.roll"), truncated_args));
 }
 
-ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::VarType ctype, const string& vname,
+ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::VarType ctype, const std::string& vname,
                                                       int mxd, Address::AccessType& var_access, ValueInst* ccs)
 {
     if (mxd == 0) {
@@ -67,7 +68,7 @@ ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::Var
             // Generate table use
             if (gGlobal->gComputeIOTA) {  // Ensure IOTA base fixed delays are computed once
                 if (fIOTATable.find(N) == fIOTATable.end()) {
-                    string   iota_name = subst("i$0", gGlobal->getFreshID(fCurrentIOTA + "_temp"));
+                    std::string   iota_name = subst("i$0", gGlobal->getFreshID(fCurrentIOTA + "_temp"));
                     FIRIndex value2    = FIRIndex(InstBuilder::genLoadStructVar(fCurrentIOTA)) & FIRIndex(N - 1);
 
                     pushPreComputeDSPMethod(InstBuilder::genDecStackVar(iota_name, InstBuilder::genInt32Typed(),
@@ -88,8 +89,8 @@ ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::Var
             }
         } else {
             // 'select' based delay
-            string widx_tmp_name = vname + "_widx_tmp";
-            string widx_name     = vname + "_widx";
+            std::string widx_tmp_name = vname + "_widx_tmp";
+            std::string widx_name     = vname + "_widx";
 
             // Generates table write index
             pushDeclare(InstBuilder::genDecStructVar(widx_name, InstBuilder::genInt32Typed()));
@@ -129,8 +130,8 @@ ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::Var
 
 ValueInst* InstructionsCompilerJAX::generateSoundfile(Tree sig, Tree path)
 {
-    string varname = gGlobal->getFreshID("fSoundfile");
-    string SFcache = varname + "ca";
+    std::string varname = gGlobal->getFreshID("fSoundfile");
+    std::string SFcache = varname + "ca";
 
     addUIWidget(reverse(tl(path)), uiWidget(hd(path), tree(varname), sig));
 

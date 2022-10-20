@@ -32,7 +32,7 @@
 
 using namespace std;
 
-ForLoopInst* CodeLoop::generateScalarLoop(const string& counter, bool loop_var_in_bytes)
+ForLoopInst* CodeLoop::generateScalarLoop(const std::string& counter, bool loop_var_in_bytes)
 {
     DeclareVarInst* loop_decl =
         InstBuilder::genDecLoopVar(fLoopIndex, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(0));
@@ -57,7 +57,7 @@ ForLoopInst* CodeLoop::generateScalarLoop(const string& counter, bool loop_var_i
 }
 
 // To be used for the 'rust' backend
-SimpleForLoopInst* CodeLoop::generateSimpleScalarLoop(const string& counter)
+SimpleForLoopInst* CodeLoop::generateSimpleScalarLoop(const std::string& counter)
 {
     ValueInst* upper_bound = InstBuilder::genLoadFunArgsVar(counter);
     ValueInst* lower_bound = InstBuilder::genInt32NumInst(0);
@@ -69,7 +69,7 @@ SimpleForLoopInst* CodeLoop::generateSimpleScalarLoop(const string& counter)
     return static_cast<SimpleForLoopInst*>(loop->clone(&cloner));
 }
 
-IteratorForLoopInst* CodeLoop::generateSimpleScalarLoop(const std::vector<string>& iterators)
+IteratorForLoopInst* CodeLoop::generateSimpleScalarLoop(const std::vector<std::string>& iterators)
 {
     std::vector<NamedAddress*> iterators1;
     for (const auto& it : iterators) {

@@ -61,7 +61,7 @@ const char* prim2name(CTree *(*ptr)(CTree *, CTree *))
     if (ptr == sigLeftShift) return "<<";
     if (ptr == sigARightShift) return ">>";
     if (ptr == sigLRightShift) return ">>>";
-    
+
     if (ptr == sigLT) return "<";
     if (ptr == sigLE) return "<=";
     if (ptr == sigGT) return ">";
@@ -382,7 +382,7 @@ ostream& boxpp::print(ostream& fout) const
     if (gGlobal->gBoxTable.find(fBox) == gGlobal->gBoxTable.end()) { \
         stringstream s; \
         (exp); \
-        gGlobal->gBoxTable[fBox] = make_pair(gGlobal->gBoxCounter, s.str()); \
+        gGlobal->gBoxTable[fBox] = std::make_pair(gGlobal->gBoxCounter, s.str()); \
         gGlobal->gBoxTrace.push_back("ID_" + std::to_string(gGlobal->gBoxCounter) + " = " + s.str() + ";\n"); \
         gGlobal->gBoxCounter++;\
     } \
@@ -398,13 +398,13 @@ ostream& boxppShared::print(ostream& fout) const
     prim3  p3;
     prim4  p4;
     prim5  p5;
-    
+
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, arg, body, fun, args, abstr, genv, vis, lenv,
         ldef, slot, ident, rules, chan, ins, outs, lroutes;
-    
+
     const char* str;
     xtended* xt = (xtended*)getUserData(fBox);
-    
+
     // Primitive elements
     if (xt)
         fout << xt->name();
@@ -430,7 +430,7 @@ ostream& boxppShared::print(ostream& fout) const
         fout << prim4name(p4);
     else if (isBoxPrim5(fBox, &p5))
         fout << prim5name(p5);
-    
+
     else if (isBoxAbstr(fBox, arg, body)) {
         // BoxAbstr cannot be safely expanded with 'boxppShared' since 'arg' used in 'body' will be somewhat free
         fout << "\\" << boxpp(arg) << ".(" << boxpp(body) << ")";
@@ -442,7 +442,7 @@ ostream& boxppShared::print(ostream& fout) const
     } else if (isBoxFFun(fBox, ff)) {
         if (gGlobal->gBoxTable.find(fBox) == gGlobal->gBoxTable.end()) {
             stringstream s;
-                
+
             s << "ffunction(" << type2str(ffrestype(ff));
             Tree namelist = nth(ffsignature(ff), 1);
             char sep      = ' ';
@@ -457,8 +457,8 @@ ostream& boxppShared::print(ostream& fout) const
             }
             s << ')';
             s << ',' << ffincfile(ff) << ',' << fflibfile(ff) << ')';
-            
-            gGlobal->gBoxTable[fBox] = make_pair(gGlobal->gBoxCounter, s.str());
+
+            gGlobal->gBoxTable[fBox] = std::make_pair(gGlobal->gBoxCounter, s.str());
             gGlobal->gBoxTrace.push_back("ID_" + std::to_string(gGlobal->gBoxCounter) + " = " + s.str() + ";\n");
             gGlobal->gBoxCounter++;
         }
@@ -492,7 +492,7 @@ ostream& boxppShared::print(ostream& fout) const
         BOX_INSERT_ID(s << "inputs(" << boxppShared(t1) << ")");
     } else if (isBoxOutputs(fBox, t1)) {
         BOX_INSERT_ID(s << "outputs(" << boxppShared(t1) << ")");
-    
+
     // User interface
     } else if (isBoxButton(fBox, label)) {
         BOX_INSERT_ID(s  << "button(" << tree2quotedstr(label) << ')');
@@ -519,7 +519,7 @@ ostream& boxppShared::print(ostream& fout) const
     } else if (isBoxSoundfile(fBox, label, chan)) {
         BOX_INSERT_ID(s << "soundfile(" << tree2quotedstr(label) << ", " << boxppShared(chan) << ')');
     }
-    
+
     else if (isNil(fBox)) {
         fout << "()";
     } else if (isList(fBox)) {
@@ -527,15 +527,15 @@ ostream& boxppShared::print(ostream& fout) const
             stringstream s;
             Tree l   = fBox;
             char sep = '(';
-            
+
             do {
                 s << sep << boxppShared(hd(l));
                 sep = ',';
                 l   = tl(l);
             } while (isList(l));
-            
+
             s << ')';
-            gGlobal->gBoxTable[fBox] = make_pair(gGlobal->gBoxCounter, s.str());
+            gGlobal->gBoxTable[fBox] = std::make_pair(gGlobal->gBoxCounter, s.str());
             gGlobal->gBoxTrace.push_back("ID_" + std::to_string(gGlobal->gBoxCounter) + " = " + s.str() + ";\n");
             gGlobal->gBoxCounter++;
         }
@@ -551,7 +551,7 @@ ostream& boxppShared::print(ostream& fout) const
                 sep = ',';
             }
             s << '}';
-            gGlobal->gBoxTable[fBox] = make_pair(gGlobal->gBoxCounter, s.str());
+            gGlobal->gBoxTable[fBox] = std::make_pair(gGlobal->gBoxCounter, s.str());
             gGlobal->gBoxTrace.push_back("ID_" + std::to_string(gGlobal->gBoxCounter) + " = " + s.str() + ";\n");
             gGlobal->gBoxCounter++;
         }
@@ -574,7 +574,7 @@ ostream& boxppShared::print(ostream& fout) const
         // BoxSymbolic cannot be safely expanded with 'boxppShared' since 'slot' used in 'body' will be somewhat free
         fout << "\\(" << boxpp(slot) << ").(" << boxpp(body) << ")";
     }
-    
+
     // pattern Matching Extensions
     else if (isBoxCase(fBox, rules)) {
         fout << "case {";
@@ -595,15 +595,15 @@ ostream& boxppShared::print(ostream& fout) const
         fout << boxppShared(ident);
     }
 #endif
-    
+
     else if (isBoxPatternMatcher(fBox)) {
         fout << "PM[" << fBox << "]";
     }
-    
+
     else if (isBoxRoute(fBox, ins, outs, lroutes)) {
         BOX_INSERT_ID(s << "route(" << boxppShared(ins) << "," << boxppShared(outs) << "," << boxppShared(lroutes) << ")");
     }
-    
+
     else if (isBoxError(fBox)) {
         fout << "ERROR";
     }
@@ -614,7 +614,7 @@ ostream& boxppShared::print(ostream& fout) const
         error << "ERROR : boxppShared::print() : " << *fBox << " is not a valid box" << endl;
         throw faustexception(error.str());
     }
-    
+
     return fout;
 }
 

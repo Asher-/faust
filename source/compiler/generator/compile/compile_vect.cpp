@@ -26,6 +26,7 @@
 #include "compile_vect.hh"
 #include "floats.hh"
 #include "ppsig.hh"
+#include "global.hh"
 
 void VectorCompiler::compileMultiSignal(Tree L)
 {
@@ -210,7 +211,7 @@ string VectorCompiler::generateLoopCode(Tree sig)
  * @param exp the corresponding C code.
  * @return the cached C code
  */
-string VectorCompiler::generateCacheCode(Tree sig, const string& exp)
+string VectorCompiler::generateCacheCode(Tree sig, const std::string& exp)
 {
     string          vname, ctype;
     int             sharing = getSharingCount(sig);
@@ -333,7 +334,7 @@ bool VectorCompiler::needSeparateLoop(Tree sig)
     return b;
 }
 
-string VectorCompiler::generateVariableStore(Tree sig, const string& exp)
+string VectorCompiler::generateVariableStore(Tree sig, const std::string& exp)
 {
     Type t = getCertifiedSigType(sig);
 
@@ -406,7 +407,7 @@ string VectorCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
  * maximum delay attached to exp and the "less temporaries" switch
  */
 
-string VectorCompiler::generateDelayVec(Tree sig, const string& exp, const string& ctype, const string& vname, int mxd)
+string VectorCompiler::generateDelayVec(Tree sig, const std::string& exp, const std::string& ctype, const std::string& vname, int mxd)
 {
     // it is a non-sample but used delayed
     // we need a delay line
@@ -419,8 +420,8 @@ string VectorCompiler::generateDelayVec(Tree sig, const string& exp, const strin
     }
 }
 
-void VectorCompiler::generateDelayLine(const string& ctype, const string& vname, int mxd, const string& exp,
-                                       const string& ccs)
+void VectorCompiler::generateDelayLine(const std::string& ctype, const std::string& vname, int mxd, const std::string& exp,
+                                       const std::string& ccs)
 {
     if (mxd == 0) {
         generateVectorLoop(ctype, vname, exp, ccs);
@@ -438,8 +439,8 @@ void VectorCompiler::generateDelayLine(const string& ctype, const string& vname,
  * @param delay the maximum delay
  * @param cexp the content of the signal as a C++ expression
  */
-void VectorCompiler::generateVectorLoop(const string& tname, const string& vecname, const string& cexp,
-                                        const string& ccs)
+void VectorCompiler::generateVectorLoop(const std::string& tname, const std::string& vecname, const std::string& cexp,
+                                        const std::string& ccs)
 {
     // -- declare the vector
     fClass->addSharedDecl(vecname);
@@ -460,8 +461,8 @@ void VectorCompiler::generateVectorLoop(const string& tname, const string& vecna
  * @param delay the maximum delay
  * @param cexp the content of the signal as a C++ expression
  */
-void VectorCompiler::generateDlineLoop(const string& tname, const string& dlname, int delay, const string& cexp,
-                                       const string& ccs)
+void VectorCompiler::generateDlineLoop(const std::string& tname, const std::string& dlname, int delay, const std::string& cexp,
+                                       const std::string& ccs)
 {
     if (delay < gGlobal->gMaxCopyDelay) {
         // Implementation of a copy based delayline

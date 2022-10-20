@@ -201,7 +201,7 @@ static void scheduleDrawing(Tree t)
 {
     if (gGlobal->gDrawnExp.find(t) == gGlobal->gDrawnExp.end()) {
         gGlobal->gDrawnExp.insert(t);
-        gGlobal->gBackLink.insert(make_pair(t, gGlobal->gSchemaFileName));  // remember the enclosing filename
+        gGlobal->gBackLink.insert(std::make_pair(t, gGlobal->gSchemaFileName));  // remember the enclosing filename
         gGlobal->gPendingExp.push(t);
     }
 }

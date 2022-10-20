@@ -243,7 +243,7 @@ string ptrToHex(Tree ptr)
     return res.str();
 }
 
-string checkNullLabel(Tree t, const string& label, bool bargraph)
+string checkNullLabel(Tree t, const std::string& label, bool bargraph)
 {
     return (label == "") ? (bargraph ? ptrToHex(t) : string("0x00")) : label;
 }

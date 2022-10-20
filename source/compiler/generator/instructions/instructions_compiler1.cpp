@@ -20,12 +20,13 @@
  ************************************************************************/
 
 #include "instructions_compiler1.hh"
+#include "global.hh"
 
-StatementInst* InstructionsCompiler1::generateInitArray(const string& vname, Typed::VarType ctype, int delay)
+StatementInst* InstructionsCompiler1::generateInitArray(const std::string& vname, Typed::VarType ctype, int delay)
 {
     ValueInst*  init  = InstBuilder::genTypedZero(ctype);
     BasicTyped* typed = InstBuilder::genBasicTyped(ctype);
-    string      index = gGlobal->getFreshID("l");
+    std::string      index = gGlobal->getFreshID("l");
 
     // Generates table declaration
     pushDeclare(InstBuilder::genDecStructVar(vname, InstBuilder::genArrayTyped(typed, delay)));
@@ -39,13 +40,13 @@ StatementInst* InstructionsCompiler1::generateInitArray(const string& vname, Typ
     return loop;
 }
 
-StatementInst* InstructionsCompiler1::generateShiftArray(const string& vname, int delay)
+StatementInst* InstructionsCompiler1::generateShiftArray(const std::string& vname, int delay)
 {
-    string index = gGlobal->getFreshID("j");
+    std::string index = gGlobal->getFreshID("j");
 
     ValueInst*         upperBound  = InstBuilder::genInt32NumInst(delay);
     ValueInst*         lowerBound  = InstBuilder::genInt32NumInst(1);
-    
+
     SimpleForLoopInst* loop        = InstBuilder::genSimpleForLoopInst(index, upperBound, lowerBound, true);
     LoadVarInst*       loadVarInst = InstBuilder::genLoadVarInst(InstBuilder::genNamedAddress(index, Address::kLoop));
     ValueInst*         load_value2 = InstBuilder::genSub(loadVarInst, InstBuilder::genInt32NumInst(1));
@@ -55,9 +56,9 @@ StatementInst* InstructionsCompiler1::generateShiftArray(const string& vname, in
     return loop;
 }
 
-StatementInst* InstructionsCompiler1::generateCopyArray(const string& vname_to, const string& vname_from, int size)
+StatementInst* InstructionsCompiler1::generateCopyArray(const std::string& vname_to, const std::string& vname_from, int size)
 {
-    string index = gGlobal->getFreshID("j");
+    std::string index = gGlobal->getFreshID("j");
 
     ValueInst*         upperBound  = InstBuilder::genInt32NumInst(size);
     SimpleForLoopInst* loop        = InstBuilder::genSimpleForLoopInst(index, upperBound);

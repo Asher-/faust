@@ -258,7 +258,7 @@ const aterm& aterm::operator+=(const mterm& m)
     SM::const_iterator p = fSig2MTerms.find(signature);
     if (p == fSig2MTerms.end()) {
         // its a new mterm
-        fSig2MTerms.insert(make_pair(signature, m));
+        fSig2MTerms.insert(std::make_pair(signature, m));
     } else {
         // we already have a mterm of same signature, we add them together
         fSig2MTerms[signature] += m;
@@ -277,7 +277,7 @@ const aterm& aterm::operator-=(const mterm& m)
     SM::const_iterator p = fSig2MTerms.find(sig);
     if (p == fSig2MTerms.end()) {
         // its a new mterm
-        fSig2MTerms.insert(make_pair(sig, m * mterm(-1)));
+        fSig2MTerms.insert(std::make_pair(sig, m * mterm(-1)));
     } else {
         fSig2MTerms[sig] -= m;
     }

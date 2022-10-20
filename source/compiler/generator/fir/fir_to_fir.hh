@@ -28,6 +28,9 @@
 #include "fir_instructions.hh"
 #include "instructions.hh"
 #include "typing_instructions.hh"
+#include "instructions/numbers/number_value_instruction.hh"
+#include "fir/fir_index.hh"
+#include "global.hh"
 
 // Tools to dump FIR
 inline void dump2FIR(StatementInst* inst, std::ostream& out = cerr, bool complete = true)
@@ -86,7 +89,7 @@ struct Stack2StructRewriter1 : public DispatchVisitor {
         }
     }
 
-    Stack2StructRewriter1(const string& name) : fName(name) {}
+    Stack2StructRewriter1(const std::string& name) : fName(name) {}
 };
 
 // Analysis to promote stack variables to struct variables
@@ -130,11 +133,11 @@ struct Stack2StructRewriter2 : public DispatchVisitor {
         }
     }
 
-    Stack2StructRewriter2(CodeContainer* container, const string& name) : fContainer(container), fName(name) {}
+    Stack2StructRewriter2(CodeContainer* container, const std::string& name) : fContainer(container), fName(name) {}
 };
 
 struct VariableMover {
-    static void Move(CodeContainer* container, const string& name)
+    static void Move(CodeContainer* container, const std::string& name)
     {
         // Transform stack variables in struct variables
         Stack2StructRewriter2 rewriter2(container, name);
@@ -415,9 +418,9 @@ struct MoveVariablesInFront3 : public BasicCloneVisitor {
  Rename loop variable and all access (warning: does not work with nested loops with the same variable name...)
  */
 struct LoopVariableRenamer : public BasicCloneVisitor {
-  
+
     std::map<std::string, std::string> fLoopIndexMap;
-    
+
     virtual StatementInst* visit(DeclareVarInst* inst)
     {
         // Rename 'loop' variables
@@ -427,7 +430,7 @@ struct LoopVariableRenamer : public BasicCloneVisitor {
         }
         return BasicCloneVisitor::visit(inst);
     }
-    
+
     virtual Address* visit(NamedAddress* address)
     {
         if (address->fAccess == Address::kLoop && fLoopIndexMap.find(address->getName()) != fLoopIndexMap.end()) {
@@ -436,7 +439,7 @@ struct LoopVariableRenamer : public BasicCloneVisitor {
             return BasicCloneVisitor::visit(address);
         }
     }
-    
+
 };
 
 // ===============
@@ -446,7 +449,7 @@ struct LoopVariableRenamer : public BasicCloneVisitor {
 // TODO: stack variables should be renamed since inlining the same function several times will create variables name clash
 
 struct FunctionInliner {
-    map<string, string> fVarTable;
+    map<std::string, string> fVarTable;
 
     BlockInst* ReplaceParameterByArg(BlockInst* code, NamedTyped* named, ValueInst* arg);
     BlockInst* ReplaceParametersByArgs(BlockInst* code, Names args_type, Values args, bool ismethod);
@@ -454,7 +457,7 @@ struct FunctionInliner {
 
 // Replace a function call with the actual inlined function code
 struct FunctionCallInliner : public BasicCloneVisitor {
-    
+
     DeclareFunInst* fFunction;
 
     FunctionCallInliner(DeclareFunInst* function) : fFunction(function) {}
@@ -466,7 +469,7 @@ struct FunctionCallInliner : public BasicCloneVisitor {
             FunctionInliner inliner;
             BlockInst*      inlined = inliner.ReplaceParametersByArgs(fFunction->fCode, fFunction->fType->fArgsTypes,
                                                                  fun_call->fArgs, fun_call->fMethod);
-            
+
             // Get return value and remove it from the block
             ValueInst* res = inlined->getReturnValue();
             // Put the code without the value into the enclosing block
@@ -481,7 +484,7 @@ struct FunctionCallInliner : public BasicCloneVisitor {
 
 // Compute the size in bytes of variables of a given type
 struct VariableSizeCounter : public DispatchVisitor {
-    
+
     int                 fSizeBytes;
     Typed::VarType      fType;
     Address::AccessType fAccess;
@@ -505,7 +508,7 @@ struct VariableSizeCounter : public DispatchVisitor {
 
 // Remove unneeded cast
 struct CastRemover : public BasicCloneVisitor {
-    
+
     virtual ValueInst* visit(::CastInst* inst)
     {
         Typed::VarType value_type = TypingVisitor::getType(inst->fInst);
@@ -521,7 +524,7 @@ struct CastRemover : public BasicCloneVisitor {
                 // TODO = protection out-of [-2147483647, 2147483647] range
                 ValueInst* max = InstBuilder::genRealNumInst(Typed::kFloat, double(std::numeric_limits<int>::max()));
                 ValueInst* min = InstBuilder::genRealNumInst(Typed::kFloat, double(std::numeric_limits<int>::min()));
-                
+
                 return InstBuilder::genSelect2Inst(InstBuilder::genGreater(inst->fInst->clone(this), max),
                                                    InstBuilder::genInt32NumInst(std::numeric_limits<int>::max()),
                                                    InstBuilder::genSelect2Inst(InstBuilder::genLess(inst->fInst->clone(this), min),
@@ -547,7 +550,7 @@ struct CastRemover : public BasicCloneVisitor {
 
 // FIR checker
 struct FIRChecker : public DispatchVisitor {
-    
+
     virtual void visit(BinopInst* inst)
     {
         Typed::VarType a1_type = TypingVisitor::getType(inst->fInst1);
@@ -566,7 +569,7 @@ struct FIRChecker : public DispatchVisitor {
         cerr << " a2_type = " << Typed::gTypeString[a2_type] << endl;
         faustassert(false);
     }
-    
+
     virtual void visit(Select2Inst* inst)
     {
         Typed::VarType cond_type = TypingVisitor::getType(inst->fCond);
@@ -577,7 +580,7 @@ struct FIRChecker : public DispatchVisitor {
             faustassert(false);
         }
     }
-    
+
     virtual void visit(::CastInst* inst)
     {
         Typed::VarType val_type = TypingVisitor::getType(inst->fInst);
@@ -612,14 +615,14 @@ struct FIRChecker : public DispatchVisitor {
 };
 
 /*
- 
+
   Remove usage of var address:
   int* v1 = &foo[n]; ==> v1 definition is removed, usage of v1[m] are replaced with foo[n+m]
   v1 = &foo[n];      ==> usage of v1[m] are replaced with foo[n+m]
  */
 struct VarAddressRemover : public BasicCloneVisitor {
-    
-    std::map<string, LoadVarAddressInst*> fVariableMap;
+
+    std::map<std::string, LoadVarAddressInst*> fVariableMap;
 
     virtual StatementInst* visit(DeclareVarInst* inst)
     {
@@ -663,13 +666,13 @@ struct VarAddressRemover : public BasicCloneVisitor {
 
 // Expand and rewrite ControlInst as 'IF (cond) {....}' instructions
 struct ControlExpander : public BasicCloneVisitor {
-    
+
     // To keep the current condition with the IfInst block which is progressively filled
     struct IfBlock {
-        
+
         ValueInst* fCond;
         IfInst* fIfInst;
-        
+
         IfBlock() { init(); }
         void init()
         {
@@ -677,35 +680,37 @@ struct ControlExpander : public BasicCloneVisitor {
             fIfInst = nullptr;
         }
     };
-    
+
     std::stack<BlockInst*> fBlockStack;
     std::stack<IfBlock> fIfBlockStack;
-    
+
     void beginCond(ControlInst* inst);
     void continueCond(ControlInst* inst);
     void endCond();
-    
+
     StatementInst* visit(ControlInst* inst);
     StatementInst* visit(BlockInst* inst);
-    
+
 };
 
 // Base class for iConst/fConst memory copy in -osX modes
 struct ConstantsCopyMemory : public BasicCloneVisitor {
     
     // Additional variables are added at the end of iZone/fZone arrays
+
     int fIntIndex = 0;
     int fRealIndex = 0;
-    
+
     ConstantsCopyMemory(int int_index, int float_index):fIntIndex(int_index), fRealIndex(float_index)
     {}
-    
+
     // Removed instructions
+
     StatementInst* visit(DeclareVarInst* inst)
     {
         return InstBuilder::genDropInst();
     }
-    
+
     StatementInst* visit(ForLoopInst* inst)
     {
         return InstBuilder::genDropInst();
@@ -715,10 +720,10 @@ struct ConstantsCopyMemory : public BasicCloneVisitor {
 
 // Analysis to copy constants from an external memory zone (FunArgs version) used in -os2 and -os3 modes
 struct ConstantsCopyFromMemory : public ConstantsCopyMemory {
-    
+
     ConstantsCopyFromMemory(int int_index, int float_index):ConstantsCopyMemory(int_index, float_index)
     {}
-    
+
     StatementInst* visit(StoreVarInst* inst)
     {
         string name = inst->fAddress->getName();
@@ -735,15 +740,15 @@ struct ConstantsCopyFromMemory : public ConstantsCopyMemory {
             return InstBuilder::genDropInst();
         }
     }
-    
+
 };
 
 // Analysis to copy constants from an external memory zone (Struct version) used in -os2 and -os3 modes
 struct ConstantsCopyFromMemory1 : public ConstantsCopyMemory {
-    
+
     ConstantsCopyFromMemory1(int int_index, int float_index):ConstantsCopyMemory(int_index, float_index)
     {}
-    
+
     StatementInst* visit(StoreVarInst* inst)
     {
         string name = inst->fAddress->getName();
@@ -760,15 +765,15 @@ struct ConstantsCopyFromMemory1 : public ConstantsCopyMemory {
             return InstBuilder::genDropInst();
         }
     }
-    
+
 };
 
 // Analysis to copy constants to an external memory zone (FunArgs version) used in -os2 and -os3 modes
 struct ConstantsCopyToMemory : public ConstantsCopyMemory {
-    
+
     ConstantsCopyToMemory(int int_index, int float_index):ConstantsCopyMemory(int_index, float_index)
     {}
-    
+
     StatementInst* visit(StoreVarInst* inst)
     {
         string name = inst->fAddress->getName();
@@ -788,10 +793,10 @@ struct ConstantsCopyToMemory : public ConstantsCopyMemory {
 
 // Analysis to copy constants to an external memory zone (Struct version) used in -os2 and -os3 modes
 struct ConstantsCopyToMemory1 : public ConstantsCopyMemory {
-    
+
     ConstantsCopyToMemory1(int int_index, int float_index):ConstantsCopyMemory(int_index, float_index)
     {}
-    
+
     StatementInst* visit(StoreVarInst* inst)
     {
         string name = inst->fAddress->getName();
@@ -806,12 +811,12 @@ struct ConstantsCopyToMemory1 : public ConstantsCopyMemory {
             return InstBuilder::genDropInst();
         }
     }
-    
+
 };
 
 // Rewrite DSP array fields as pointers
 struct ArrayToPointer : public BasicCloneVisitor {
-    
+
     virtual StatementInst* visit(DeclareVarInst* inst)
     {
         ArrayTyped* array_typed = dynamic_cast<ArrayTyped*>(inst->fType);
@@ -821,7 +826,7 @@ struct ArrayToPointer : public BasicCloneVisitor {
             return BasicCloneVisitor::visit(inst);
         }
     }
-    
+
 };
 
 #endif

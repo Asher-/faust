@@ -52,7 +52,7 @@ template<class Data>
 bool HashTable<Data>::isPrime(unsigned int n)
 {
   if (n <= 1)
-    return false; 
+    return false;
 
   for(unsigned int i=2; i <= (unsigned int)(sqrt(1.0 * (n+1))); i++)
   {
@@ -74,7 +74,7 @@ template<class Data>
 void HashTable<Data>::insert(unsigned int key, Data & data)
 {
   unsigned int hash = hashFunction(key);
-  buckets[hash].push_back(make_pair(key,data));
+  buckets[hash].push_back(std::make_pair(key,data));
 }
 
 template<class Data>
@@ -90,7 +90,7 @@ void HashTable<Data>::erase(unsigned int key)
       buckets[hash].erase(iter);
       break;
     }
-  } 
+  }
 }
 
 template<class Data>
@@ -105,7 +105,7 @@ Data * HashTable<Data>::find(unsigned int key)
     {
       return &(iter->second);
     }
-  } 
+  }
 
   return NULL;
 }
@@ -122,7 +122,7 @@ bool HashTable<Data>::contains(unsigned int key, Data & data)
     {
       return true;
     }
-  } 
+  }
 
   return false;
 }

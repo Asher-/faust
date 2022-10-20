@@ -30,22 +30,24 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <set>
+#include <utility>
 #include "matrixIO.h"
 #include "graph.h"
 using namespace std;
 
-Graph::Graph() 
-{ 
-  numVertices = 0; 
-  numEdges = 0; 
+Graph::Graph()
+{
+  numVertices = 0;
+  numEdges = 0;
 }
 
-Graph::Graph(const Graph & graph) 
+Graph::Graph(const Graph & graph)
 {
   (*this) = graph;
 }
 
-Graph & Graph::operator=(const Graph & graph) 
+Graph & Graph::operator=(const Graph & graph)
 {
   numVertices = graph.numVertices;
   numEdges = graph.numEdges;
@@ -69,12 +71,12 @@ Graph::Graph(int numVertices_, int numEdges_, int * edges_, int sortEdgeVertices
     {
       // keep the two indices in each edge sorted
       if (edges_[2*i+0] < edges_[2*i+1])
-        edges.insert(make_pair(edges_[2*i+0], edges_[2*i+1])); 
+        edges.insert(std::make_pair(edges_[2*i+0], edges_[2*i+1]));
       else
-        edges.insert(make_pair(edges_[2*i+1], edges_[2*i+0])); 
+        edges.insert(std::make_pair(edges_[2*i+1], edges_[2*i+0]));
     }
     else
-      edges.insert(make_pair(edges_[2*i+0], edges_[2*i+1])); 
+      edges.insert(std::make_pair(edges_[2*i+0], edges_[2*i+1]));
   }
 
   BuildVertexNeighbors();
@@ -101,12 +103,12 @@ Graph::Graph(const char * filename, int sortEdgeVertices)
     if (sortEdgeVertices)
     {
       if (vtxA < vtxB)
-        edges.insert(make_pair(vtxA, vtxB));
+        edges.insert(std::make_pair(vtxA, vtxB));
       else
-        edges.insert(make_pair(vtxB, vtxA));
+        edges.insert(std::make_pair(vtxB, vtxA));
     }
     else
-      edges.insert(make_pair(vtxA, vtxB));
+      edges.insert(std::make_pair(vtxA, vtxB));
   }
 
   fclose(fin);
@@ -120,7 +122,7 @@ void Graph::Save(const char * filename)
   OpenFile_(filename, &fout, "w");
   fprintf(fout, "%d %d\n", numVertices, numEdges);
 
-  for(set<pair<int, int> > :: iterator iter = edges.begin(); iter != edges.end(); iter++)
+  for(std::set<std::pair<int, int> > :: iterator iter = edges.begin(); iter != edges.end(); iter++)
   {
     int vtxA = iter->first;
     int vtxB = iter->second;
@@ -138,10 +140,10 @@ void Graph::BuildVertexNeighbors()
   for(int i=0; i<numVertices; i++)
     vertexNeighbors.push_back(map<int, int>());
 
-  for(set<pair<int,int> > :: iterator iter = edges.begin(); iter != edges.end(); iter++)
+  for(std::set<std::pair<int,int> > :: iterator iter = edges.begin(); iter != edges.end(); iter++)
   {
-    vertexNeighbors[iter->first].insert(make_pair(iter->second,0)); 
-    vertexNeighbors[iter->second].insert(make_pair(iter->first,0)); 
+    vertexNeighbors[iter->first].insert(std::make_pair(iter->second,0));
+    vertexNeighbors[iter->second].insert(std::make_pair(iter->first,0));
   }
 
   // number the neighbors
@@ -220,26 +222,26 @@ void Graph::ExpandNeighbors()
   // over all edges:
   // insert neigbors of every vtx into the edges
 
-  set<pair<int, int> > expandedEdges = edges;
+  std::set<std::pair<int, int> > expandedEdges = edges;
 
-  for(set<pair<int, int> > :: iterator iter = edges.begin(); iter != edges.end(); iter++)
+  for(std::set<std::pair<int, int> > :: iterator iter = edges.begin(); iter != edges.end(); iter++)
   {
-    int vtxA = iter->first; 
-    int vtxB = iter->second; 
+    int vtxA = iter->first;
+    int vtxB = iter->second;
 
     // connect all neighbors of A to B
     for(map<int,int> :: iterator mapIter = vertexNeighbors[vtxA].begin(); mapIter != vertexNeighbors[vtxA].end(); mapIter++)
     {
       if (vtxB < mapIter->first)
-        expandedEdges.insert(make_pair(vtxB, mapIter->first)); 
+        expandedEdges.insert(std::make_pair(vtxB, mapIter->first));
     }
 
     // connect all neigbhors of B to A
     for(map<int,int> :: iterator mapIter = vertexNeighbors[vtxB].begin(); mapIter != vertexNeighbors[vtxB].end(); mapIter++)
       if (vtxA < mapIter->first)
-        expandedEdges.insert(make_pair(vtxA, mapIter->first)); 
+        expandedEdges.insert(std::make_pair(vtxA, mapIter->first));
   }
- 
+
   edges = expandedEdges;
   numEdges = edges.size();
   BuildVertexNeighbors();
@@ -286,7 +288,7 @@ Graph * Graph::CartesianProduct(Graph & graph2)
   int numProductVertices = numVertices * graph2.numVertices;
   int numProductEdges = numEdges * graph2.numVertices + numVertices * graph2.numEdges;
   int * productEdges = (int*) malloc (sizeof(int) * 2 * numProductEdges);
- 
+
   printf("Num space-time graph vertices: %d\n", numProductVertices);
   printf("Num space-time graph edges: %d\n", numProductEdges);
 
@@ -298,7 +300,7 @@ Graph * Graph::CartesianProduct(Graph & graph2)
       // connect every vertex of graph1 to its neighbors
       //std::vector< std::vector<int> > vertexNeighborsVector;
       for(int k=0; k<(int)vertexNeighborsVector[i].size(); k++)
-      {  
+      {
         if (i > vertexNeighborsVector[i][k])
         {
           productEdges[2*edge+0] = GetCartesianProductVertexIndex(i, j);
@@ -308,7 +310,7 @@ Graph * Graph::CartesianProduct(Graph & graph2)
       }
       // connect every vertex of graph2 to its neighbors
       for(int k=0; k<(int)(graph2.vertexNeighborsVector[j].size()); k++)
-      {  
+      {
         if (j > graph2.vertexNeighborsVector[j][k])
         {
           productEdges[2*edge+0] = GetCartesianProductVertexIndex(i, j);
@@ -377,7 +379,7 @@ void Graph::ShortestPath(std::set<int> & seedVertices, std::vector<int> & distan
 {
   distances.clear();
   distances.resize(numVertices);
-  
+
   for(set<int> :: iterator iter = seedVertices.begin(); iter != seedVertices.end(); iter++)
     distances[*iter] = 0;
 
@@ -411,7 +413,6 @@ void Graph::ShortestPath(std::set<int> & seedVertices, std::vector<int> & distan
       distances[node] = distance;
     }
 
-    oldFront = front; 
+    oldFront = front;
   }
 }
-

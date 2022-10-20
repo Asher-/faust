@@ -148,7 +148,7 @@ void SparseMatrixOutline::RemoveEntry(int i, int j)
   columnEntries[i].erase(j);
 }
 
-// add a block matrix, starting at row i, and column j 
+// add a block matrix, starting at row i, and column j
 void SparseMatrixOutline::AddBlockMatrix(int iStart, int jStart, const SparseMatrix * block, double scalarFactor)
 {
   int nBlock = block->GetNumRows();
@@ -639,7 +639,7 @@ bool SparseMatrix::operator==(const SparseMatrix & mat2) const
 
 bool SparseMatrix::SameStructure(const SparseMatrix & mat2) const
 {
-  if(numRows != mat2.numRows) 
+  if(numRows != mat2.numRows)
     return false;
   for(int i = 0; i < numRows; i++)
   {
@@ -1907,14 +1907,14 @@ void SparseMatrix::BuildConjugationIndices(SparseMatrix & U, SparseMatrix & MTil
           int L = U.columnIndices[J][l];
           //outline.AddEntry(K, L, scalar * U.columnEntries[I][k] * U.columnEntries[J][l]);
 
-          fourTuple tuple(make_pair(make_pair(i,j), make_pair(k,l)));
+          fourTuple tuple(std::make_pair(std::make_pair(i,j), std::make_pair(k,l)));
 
           rowMap::iterator iter = rowMaps[K].find(L);
           if (iter == rowMaps[K].end())
           {
             listOfFourTuples singletonList;
             singletonList.push_back(tuple);
-            rowMaps[K].insert(make_pair(L, singletonList));
+            rowMaps[K].insert(std::make_pair(L, singletonList));
           }
           else
           {

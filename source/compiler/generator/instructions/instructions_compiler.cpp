@@ -39,6 +39,7 @@
 #include "normalform.hh"
 #include "timing.hh"
 #include "sigtyperules.hh"
+
 #include "signalVisitor.hh"
 #include "sigPromotion.hh"
 
@@ -247,45 +248,45 @@ Tree InstructionsCompiler::prepare(Tree LS)
         ppsigShared(L1, cout);
         throw faustexception("Dump shared normal form finished...\n");
     }
-    
+
     startTiming("privatise");
     Tree L2 = privatise(L1);  // Un-share tables with multiple writers
     endTiming("privatise");
-    
+
     startTiming("conditionAnnotation");
     conditionAnnotation(L2);
     endTiming("conditionAnnotation");
-    
+
     startTiming("recursivnessAnnotation");
     recursivnessAnnotation(L2);  // Annotate L2 with recursivness information
     endTiming("recursivnessAnnotation");
-    
+
     startTiming("L2 typeAnnotation");
     typeAnnotation(L2, true);     // Annotate L2 with type information and check causality
     endTiming("L2 typeAnnotation");
-    
+
     startTiming("sharingAnalysis");
     sharingAnalysis(L2);         // Annotate L2 with sharing count
     endTiming("sharingAnalysis");
-    
+
     startTiming("occurrences analysis");
     delete fOccMarkup;
     fOccMarkup = new old_OccMarkup(fConditionProperty);
     fOccMarkup->mark(L2);        // Annotate L2 with occurrences analysis
     endTiming("occurrences analysis");
-    
+
     endTiming("prepare");
-    
+
     if (gGlobal->gDrawSignals) {
         ofstream dotfile(subst("$0-sig.dot", gGlobal->makeDrawPath()).c_str());
         sigToGraph(L2, dotfile);
     }
-    
+
     // Generate VHDL if -vhdl option is set
     if (gGlobal->gVHDLSwitch) {
         sigVHDLFile(fOccMarkup, L2, gGlobal->gVHDLTrace);
     }
-    
+
     return L2;
 }
 
@@ -296,7 +297,7 @@ Tree InstructionsCompiler::prepare2(Tree L0)
     recursivnessAnnotation(L0);  // Annotate L0 with recursivness information
     typeAnnotation(L0, true);    // Annotate L0 with type information
     sharingAnalysis(L0);         // Annotate L0 with sharing count
-   
+
     delete fOccMarkup;
     fOccMarkup = new old_OccMarkup();
     fOccMarkup->mark(L0);        // Annotate L0 with occurrences analysis
@@ -312,7 +313,7 @@ Tree InstructionsCompiler::prepare2(Tree L0)
 /**
  * Test if a signal is already compiled
  * @param sig the signal expression to compile.
- * @param name the string representing the compiled expression.
+ * @param name the std::string representing the compiled expression.
  * @return true is already compiled
  */
 bool InstructionsCompiler::getCompiledExpression(Tree sig, ValueType& cexp)
@@ -321,16 +322,16 @@ bool InstructionsCompiler::getCompiledExpression(Tree sig, ValueType& cexp)
 }
 
 /**
- * Set the string of a compiled expression is already compiled
+ * Set the std::string of a compiled expression is already compiled
  * @param sig the signal expression to compile.
- * @param cexp the string representing the compiled expression.
+ * @param cexp the std::string representing the compiled expression.
  * @return the cexp (for commodity)
  */
 ValueType InstructionsCompiler::setCompiledExpression(Tree sig, const ValueType& cexp)
 {
     ValueType old;
     if (fCompileProperty.get(sig, old) && (old != cexp)) {
-        // stringstream error;
+        // std::stringstream error;
         // error << "ERROR already a compiled expression attached : " << old << " replaced by " << cexp << endl;
         // throw faustexception(error.str());
     }
@@ -347,10 +348,10 @@ ValueType InstructionsCompiler::setCompiledExpression(Tree sig, const ValueType&
  * Set the vector name property of a signal, the name of the vector used to
  * store the previous values of the signal to implement a delay.
  * @param sig the signal expression.
- * @param vname the string representing the vector name.
+ * @param vname the std::string representing the vector name.
  * @return true is already compiled
  */
-void InstructionsCompiler::setVectorNameProperty(Tree sig, const string& vname)
+void InstructionsCompiler::setVectorNameProperty(Tree sig, const std::string& vname)
 {
     faustassert(vname.size() > 0);
     fVectorProperty.set(sig, vname);
@@ -360,22 +361,22 @@ void InstructionsCompiler::setVectorNameProperty(Tree sig, const string& vname)
  * Get the vector name property of a signal, the name of the vector used to
  * store the previous values of the signal to implement a delay.
  * @param sig the signal expression.
- * @param vname the string where to store the vector name.
+ * @param vname the std::string where to store the vector name.
  * @return true if the signal has this property, false otherwise
  */
 
-bool InstructionsCompiler::getVectorNameProperty(Tree sig, string& vname)
+bool InstructionsCompiler::getVectorNameProperty(Tree sig, std::string& vname)
 {
     return fVectorProperty.get(sig, vname);
 }
 
-void InstructionsCompiler::setTableNameProperty(Tree sig, const string& name)
+void InstructionsCompiler::setTableNameProperty(Tree sig, const std::string& name)
 {
     faustassert(name.size() > 0);
     fTableProperty.set(sig, name);
 }
 
-bool InstructionsCompiler::getTableNameProperty(Tree sig, string& name)
+bool InstructionsCompiler::getTableNameProperty(Tree sig, std::string& name)
 {
     return fTableProperty.get(sig, name);
 }
@@ -392,12 +393,12 @@ ValueInst* InstructionsCompiler::CS(Tree sig)
     return code;
 }
 
-CodeContainer* InstructionsCompiler::signal2Container(const string& name, Tree sig)
+CodeContainer* InstructionsCompiler::signal2Container(const std::string& name, Tree sig)
 {
     ::Type t = getCertifiedSigType(sig);
 
     CodeContainer* container = fContainer->createScalarContainer(name, t->nature());
-    
+
     if (gGlobal->gOutputLang == "rust" || gGlobal->gOutputLang == "julia") {
         InstructionsCompiler1 C(container);
         C.compileSingleSignal(sig);
@@ -508,7 +509,7 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
     };
     
     startTiming("compileMultiSignal");
-    
+
     // Has to be done *after* gMachinePtrSize is set by the actual backend
     gGlobal->initTypeSizeMap();
 
@@ -541,14 +542,14 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
             // "input" and "inputs" used as a name convention
             if (gGlobal->gOneSampleControl) {
                 for (int index = 0; index < fContainer->inputs(); index++) {
-                    string name = subst("input$0", T(index));
+                    std::string name = subst("input$0", T(index));
                     pushDeclare(InstBuilder::genDecStructVar(name, type));
                 }
             } else if (gGlobal->gOneSample >= 0) {
             // Nothing...
             } else {
                 for (int index = 0; index < fContainer->inputs(); index++) {
-                    string name = subst("input$0", T(index));
+                    std::string name = subst("input$0", T(index));
                     pushComputeBlockMethod(InstBuilder::genDecStackVar(name, ptr_type,
                         InstBuilder::genLoadArrayFunArgsVar("inputs", InstBuilder::genInt32NumInst(index))));
                 }
@@ -566,14 +567,14 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
             // "output" and "outputs" used as a name convention
             if (gGlobal->gOneSampleControl) {
                 for (int index = 0; index < fContainer->outputs(); index++) {
-                    string name = subst("output$0", T(index));
+                    std::string name = subst("output$0", T(index));
                     pushDeclare(InstBuilder::genDecStructVar(name, type));
                 }
             } else if (gGlobal->gOneSample >= 0) {
             // Nothing...
             } else {
                 for (int index = 0; index < fContainer->outputs(); index++) {
-                    string name = subst("output$0", T(index));
+                    std::string name = subst("output$0", T(index));
                     pushComputeBlockMethod(InstBuilder::genDecStackVar(name, ptr_type,
                         InstBuilder::genLoadArrayFunArgsVar("outputs", InstBuilder::genInt32NumInst(index))));
                 }
@@ -592,7 +593,7 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
         ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->nature(), CS(sig));
 
         // HACK for Rust backend
-        string name;
+        std::string name;
         if (gGlobal->gOutputLang == "rust") {
             name = subst("*output$0", T(index));
             pushComputeDSPMethod(InstBuilder::genStoreStackVar(name, res));
@@ -643,7 +644,7 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
 
     // Apply FIR to FIR transformations
     fContainer->processFIR();
-    
+
     // Check FIR code
     if (global::isDebug("FIR_CHECKER")) {
         startTiming("FIR checker");
@@ -662,7 +663,7 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
 void InstructionsCompiler::compileSingleSignal(Tree sig)
 {
     sig         = prepare2(sig);  // Optimize and annotate expression
-    string name = fContainer->getTableName();
+    std::string name = fContainer->getTableName();
 
     pushComputeDSPMethod(InstBuilder::genStoreArrayFunArgsVar(name, getCurrentLoopIndex(), CS(sig)));
 
@@ -785,19 +786,19 @@ ValueInst* InstructionsCompiler::generateCode(Tree sig)
     else if (isSigAttach(sig, x, y)) {
         CS(y);
         return generateCacheCode(sig, CS(x));
-       
+
     } else if (isSigControl(sig, x, y)) {
         if (gGlobal->gVectorSwitch) {
             throw faustexception("ERROR : 'control/enable' can only be used in scalar mode\n");
         }
         return generateControl(sig, x, y);
-        
+
     } else if (isSigAssertBounds(sig, x, y, z)) {
         /* no debug option for the moment */
         return generateCode(z);
     } else if (isSigLowest(sig, x) || isSigHighest(sig, x)) {
         throw faustexception("ERROR : annotations should have been deleted in Simplification process\n");
-        
+
     /* we should not have any control at this stage*/
     } else {
         cerr << "ERROR : when compiling, unrecognized signal : " << ppsig(sig) << endl;
@@ -817,7 +818,7 @@ ValueInst* InstructionsCompiler::generateIntNumber(Tree sig, int num)
     // Check for number occuring in delays
     if (o->getMaxDelay() > 0) {
         Typed::VarType ctype;
-        string         vname;
+        std::string         vname;
         getTypedNames(getCertifiedSigType(sig), "Vec", ctype, vname);
         generateDelayVec(sig, InstBuilder::genInt32NumInst(num), ctype, vname, o->getMaxDelay());
     }
@@ -833,7 +834,7 @@ ValueInst* InstructionsCompiler::generateRealNumber(Tree sig, double num)
 
     // Check for number occuring in delays
     if (o->getMaxDelay() > 0) {
-        string vname;
+        std::string vname;
         getTypedNames(getCertifiedSigType(sig), "Vec", ctype, vname);
         generateDelayVec(sig, InstBuilder::genRealNumInst(ctype, num), ctype, vname, o->getMaxDelay());
     }
@@ -846,16 +847,16 @@ ValueInst* InstructionsCompiler::generateRealNumber(Tree sig, double num)
  FOREIGN CONSTANTS
  *****************************************************************************/
 
-ValueInst* InstructionsCompiler::generateFConst(Tree sig, Tree type, const string& file, const string& name_aux)
+ValueInst* InstructionsCompiler::generateFConst(Tree sig, Tree type, const std::string& file, const std::string& name_aux)
 {
     fContainer->addIncludeFile(file);
 
     // Special case for 02/25/19 renaming
-    string name = (name_aux == "fSamplingFreq") ? "fSampleRate" : name_aux;
+    std::string name = (name_aux == "fSamplingFreq") ? "fSampleRate" : name_aux;
 
     // Check access (handling "fSampleRate" as a special case)
     if (name != "fSampleRate" && !gGlobal->gAllowForeignConstant) {
-        stringstream error;
+        std::stringstream error;
         error << "ERROR : accessing foreign constant '" << name << "'"
         << " is not allowed in this compilation mode!" << endl;
         throw faustexception(error.str());
@@ -868,7 +869,7 @@ ValueInst* InstructionsCompiler::generateFConst(Tree sig, Tree type, const strin
 
     // Check for number occuring in delays
     Typed::VarType ctype;
-    string         vname;
+    std::string         vname;
     old_Occurences*    o = fOccMarkup->retrieve(sig);
 
     if (o->getMaxDelay() > 0) {
@@ -893,12 +894,12 @@ ValueInst* InstructionsCompiler::generateFConst(Tree sig, Tree type, const strin
  FOREIGN VARIABLES
  *****************************************************************************/
 
-ValueInst* InstructionsCompiler::generateFVar(Tree sig, Tree type, const string& file, const string& name)
+ValueInst* InstructionsCompiler::generateFVar(Tree sig, Tree type, const std::string& file, const std::string& name)
 {
     // Check access (handling 'fFullCount' as a special case)
     if ((name != fFullCount && !gGlobal->gAllowForeignVar)
         || (name == fFullCount && (gGlobal->gOneSample >= 0 || gGlobal->gOneSampleControl))) {
-        stringstream error;
+        std::stringstream error;
         error << "ERROR : accessing foreign variable '" << name << "'"
         << " is not allowed in this compilation mode!" << endl;
         throw faustexception(error.str());
@@ -936,7 +937,7 @@ ValueInst* InstructionsCompiler::generateInput(Tree sig, int idx)
     } else {
         res = InstBuilder::genLoadArrayStackVar(subst("input$0", T(idx)), getCurrentLoopIndex());
     }
-    
+
     // Cast to internal float
     res = genCastedInput(res);
 
@@ -965,7 +966,7 @@ ValueInst* InstructionsCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
 {
     fContainer->addIncludeFile(ffincfile(ff));
     fContainer->addLibrary(fflibfile(ff));
-    string funname = ffname(ff);
+    std::string funname = ffname(ff);
 
     if (gGlobal->gAllowForeignFunction || gGlobal->hasForeignFunction(funname, ffincfile(ff))) {
 
@@ -985,7 +986,7 @@ ValueInst* InstructionsCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
         pushExtGlobalDeclare(InstBuilder::genDeclareFunInst(funname, fun_type));
         return generateCacheCode(sig, InstBuilder::genFunCallInst(funname, args_value));
     } else {
-        stringstream error;
+        std::stringstream error;
         error << "ERROR : calling foreign function '" << funname << "'"
               << " is not allowed in this compilation mode!" << endl;
         throw faustexception(error.str());
@@ -996,7 +997,7 @@ ValueInst* InstructionsCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
  CACHE CODE
  *****************************************************************************/
 
-void InstructionsCompiler::getTypedNames(::Type t, const string& prefix, Typed::VarType& ctype, string& vname)
+void InstructionsCompiler::getTypedNames(::Type t, const std::string& prefix, Typed::VarType& ctype, std::string& vname)
 {
     if (t->nature() == kInt) {
         ctype = Typed::kInt32;
@@ -1016,7 +1017,7 @@ ValueInst* InstructionsCompiler::generateCacheCode(Tree sig, ValueInst* exp)
         return code;
     }
 
-    string         vname;
+    std::string         vname;
     Typed::VarType ctype;
     int            sharing = getSharingCount(sig);
     old_Occurences* o      = fOccMarkup->retrieve(sig);
@@ -1053,8 +1054,9 @@ ValueInst* InstructionsCompiler::forceCacheCode(Tree sig, ValueInst* exp)
     if (getCompiledExpression(sig, code)) {
         return code;
     }
-   
-    string         vname;
+
+    std::string         vname;
+
     Typed::VarType ctype;
     old_Occurences*    o = fOccMarkup->retrieve(sig);
     faustassert(o);
@@ -1070,7 +1072,7 @@ ValueInst* InstructionsCompiler::forceCacheCode(Tree sig, ValueInst* exp)
 
 ValueInst* InstructionsCompiler::generateVariableStore(Tree sig, ValueInst* exp)
 {
-    string         vname, vname_perm;
+    std::string         vname, vname_perm;
     Typed::VarType ctype;
     ::Type         t = getCertifiedSigType(sig);
     old_Occurences* o = fOccMarkup->retrieve(sig);
@@ -1089,10 +1091,10 @@ ValueInst* InstructionsCompiler::generateVariableStore(Tree sig, ValueInst* exp)
                 pushInitMethod(InstBuilder::genDecStackVar(vname, InstBuilder::genBasicTyped(ctype), exp));
                 return InstBuilder::genLoadStackVar(vname);
             }
-  
+
         case kBlock:
             if (gGlobal->gOneSample >= 0 || gGlobal->gOneSampleControl) {
-                
+
                 if (gGlobal->gOneSample == 3) {
                     if (t->nature() == kInt) {
                         pushComputeBlockMethod(InstBuilder::genStoreArrayStructVar(
@@ -1197,9 +1199,9 @@ ValueInst* InstructionsCompiler::generateFloatCast(Tree sig, Tree x)
  user interface elements
  *****************************************************************************/
 
-ValueInst* InstructionsCompiler::generateButtonAux(Tree sig, Tree path, const string& name)
+ValueInst* InstructionsCompiler::generateButtonAux(Tree sig, Tree path, const std::string& name)
 {
-    string varname = gGlobal->getFreshID(name);
+    std::string varname = gGlobal->getFreshID(name);
     Typed* type    = InstBuilder::genFloatMacroTyped();
 
     pushDeclare(InstBuilder::genDecStructVar(varname, type));
@@ -1222,9 +1224,9 @@ ValueInst* InstructionsCompiler::generateCheckbox(Tree sig, Tree path)
 }
 
 ValueInst* InstructionsCompiler::generateSliderAux(Tree sig, Tree path, Tree cur, Tree min, Tree max, Tree step,
-                                                   const string& name)
+                                                   const std::string& name)
 {
-    string varname = gGlobal->getFreshID(name);
+    std::string varname = gGlobal->getFreshID(name);
     Typed* type    = InstBuilder::genFloatMacroTyped();
 
     pushDeclare(InstBuilder::genDecStructVar(varname, type));
@@ -1251,9 +1253,9 @@ ValueInst* InstructionsCompiler::generateNumEntry(Tree sig, Tree path, Tree cur,
 }
 
 ValueInst* InstructionsCompiler::generateBargraphAux(Tree sig, Tree path, Tree min, Tree max, ValueInst* exp,
-                                                     const string& name)
+                                                     const std::string& name)
 {
-    string varname = gGlobal->getFreshID(name);
+    std::string varname = gGlobal->getFreshID(name);
     pushDeclare(InstBuilder::genDecStructVar(varname, InstBuilder::genFloatMacroTyped()));
     addUIWidget(reverse(tl(path)), uiWidget(hd(path), tree(varname), sig));
 
@@ -1292,8 +1294,8 @@ ValueInst* InstructionsCompiler::generateHBargraph(Tree sig, Tree path, Tree min
 
 ValueInst* InstructionsCompiler::generateSoundfile(Tree sig, Tree path)
 {
-    string varname = gGlobal->getFreshID("fSoundfile");
-    string SFcache = varname + "ca";
+    std::string varname = gGlobal->getFreshID("fSoundfile");
+    std::string SFcache = varname + "ca";
 
     addUIWidget(reverse(tl(path)), uiWidget(hd(path), tree(varname), sig));
 
@@ -1330,8 +1332,8 @@ ValueInst* InstructionsCompiler::generateSoundfileLength(Tree sig, ValueInst* sf
 
     Typed* type = InstBuilder::genBasicTyped(Typed::kInt32_ptr);
 
-    string SFcache        = load->fAddress->getName() + "ca";
-    string SFcache_length = gGlobal->getFreshID(SFcache + "_le");
+    std::string SFcache        = load->fAddress->getName() + "ca";
+    std::string SFcache_length = gGlobal->getFreshID(SFcache + "_le");
 
     if (gGlobal->gOneSample >= 0) {
 
@@ -1358,8 +1360,8 @@ ValueInst* InstructionsCompiler::generateSoundfileRate(Tree sig, ValueInst* sf, 
 
     Typed* type = InstBuilder::genBasicTyped(Typed::kInt32_ptr);
 
-    string SFcache      = load->fAddress->getName() + "ca";
-    string SFcache_rate = gGlobal->getFreshID(SFcache + "_ra");
+    std::string SFcache      = load->fAddress->getName() + "ca";
+    std::string SFcache_rate = gGlobal->getFreshID(SFcache + "_ra");
 
     if (gGlobal->gOneSample >= 0) {
 
@@ -1389,10 +1391,10 @@ ValueInst* InstructionsCompiler::generateSoundfileBuffer(Tree sig, ValueInst* sf
     Typed* type2 = InstBuilder::genItFloatTyped();
     Typed* type3 = InstBuilder::genBasicTyped(Typed::kInt32_ptr);
 
-    string SFcache             = load->fAddress->getName() + "ca";
-    string SFcache_buffer      = gGlobal->getFreshID(SFcache + "_bu");
-    string SFcache_buffer_chan = gGlobal->getFreshID(SFcache + "_bu_ch");
-    string SFcache_offset      = gGlobal->getFreshID(SFcache + "_of");
+    std::string SFcache             = load->fAddress->getName() + "ca";
+    std::string SFcache_buffer      = gGlobal->getFreshID(SFcache + "_bu");
+    std::string SFcache_buffer_chan = gGlobal->getFreshID(SFcache + "_bu_ch");
+    std::string SFcache_offset      = gGlobal->getFreshID(SFcache + "_of");
 
     if (gGlobal->gOneSample >= 0) {
 
@@ -1451,7 +1453,7 @@ ValueInst* InstructionsCompiler::generateTable(Tree sig, Tree tsize, Tree conten
 {
     int size;
     if (!isSigInt(tsize, &size)) {
-        stringstream error;
+        std::stringstream error;
         error << "ERROR : generateTable : " << *tsize << " is not an integer expression " << endl;
         throw faustexception(error.str());
     }
@@ -1459,11 +1461,11 @@ ValueInst* InstructionsCompiler::generateTable(Tree sig, Tree tsize, Tree conten
     ValueInst*     signame = CS(content);
     Typed::VarType ctype;
     Tree           g;
-    string         vname;
+    std::string         vname;
 
     // already compiled but check if we need to add declarations
     faustassert(isSigGen(content, g));
-    pair<string, string> kvnames;
+    pair<std::string, std::string> kvnames;
     if (!fInstanceInitProperty.get(g, kvnames)) {
         // not declared here, we add a declaration
         bool b = fStaticInitProperty.get(g, kvnames);
@@ -1496,7 +1498,7 @@ ValueInst* InstructionsCompiler::generateTable(Tree sig, Tree tsize, Tree conten
     pushDeclare(
         InstBuilder::genDecStructVar(vname, InstBuilder::genArrayTyped(InstBuilder::genBasicTyped(ctype), size)));
 
-    string tablename;
+    std::string tablename;
     getTableNameProperty(content, tablename);
 
     // Init content generator
@@ -1521,7 +1523,7 @@ ValueInst* InstructionsCompiler::generateStaticTable(Tree sig, Tree tsize, Tree 
 {
     int size;
     if (!isSigInt(tsize, &size)) {
-        stringstream error;
+        std::stringstream error;
         error << "ERROR : generateStaticTable : " << *tsize << " is not an integer expression " << endl;
         throw faustexception(error.str());
     }
@@ -1529,7 +1531,7 @@ ValueInst* InstructionsCompiler::generateStaticTable(Tree sig, Tree tsize, Tree 
     Tree           g;
     ValueInst*     signame;
     Typed::VarType ctype;
-    string         vname;
+    std::string         vname;
 
     ensure(isSigGen(content, g));
 
@@ -1537,7 +1539,7 @@ ValueInst* InstructionsCompiler::generateStaticTable(Tree sig, Tree tsize, Tree 
         signame = setCompiledExpression(content, generateStaticSigGen(content, g));
     } else {
         // already compiled but check if we need to add declarations
-        pair<string, string> kvnames;
+        pair<std::string, std::string> kvnames;
         if (!fStaticInitProperty.get(g, kvnames)) {
             // not declared here, we add a declaration
             bool b = fInstanceInitProperty.get(g, kvnames);
@@ -1567,7 +1569,7 @@ ValueInst* InstructionsCompiler::generateStaticTable(Tree sig, Tree tsize, Tree 
     // Define table name and type
     getTypedNames(getCertifiedSigType(content), "tbl", ctype, vname);
 
-    string tablename;
+    std::string tablename;
     getTableNameProperty(content, tablename);
     vname += tablename;
 
@@ -1579,9 +1581,9 @@ ValueInst* InstructionsCompiler::generateStaticTable(Tree sig, Tree tsize, Tree 
         pushGlobalDeclare(InstBuilder::genDecStaticStructVar(
             vname, InstBuilder::genArrayTyped(InstBuilder::genBasicTyped(ctype), size)));
     }
-    
+
     // Keep table size in bytes
-    gGlobal->gTablesSize[tablename] = make_pair(vname, size * gGlobal->gTypeSizeMap[ctype]);
+    gGlobal->gTablesSize[tablename] = std::make_pair(vname, size * gGlobal->gTypeSizeMap[ctype]);
 
     // Init content generator
     Values args1;
@@ -1626,7 +1628,7 @@ ValueInst* InstructionsCompiler::generateWRTbl(Tree sig, Tree tbl, Tree idx, Tre
     faustassert(load_value);
 
     ValueInst* cdata = CS(data);
-    string vname = load_value->fAddress->getName();
+    std::string vname = load_value->fAddress->getName();
 
     Type t2 = getCertifiedSigType(idx);
     Type t3 = getCertifiedSigType(data);
@@ -1679,8 +1681,8 @@ ValueInst* InstructionsCompiler::generateRDTbl(Tree sig, Tree tbl, Tree idx)
 
 ValueInst* InstructionsCompiler::generateSigGen(Tree sig, Tree content)
 {
-    string cname   = gGlobal->getFreshID(fContainer->getClassName() + "SIG");
-    string signame = gGlobal->getFreshID("sig");
+    std::string cname   = gGlobal->getFreshID(fContainer->getClassName() + "SIG");
+    std::string signame = gGlobal->getFreshID("sig");
 
     CodeContainer* subcontainer = signal2Container(cname, content);
     fContainer->addSubContainer(subcontainer);
@@ -1706,15 +1708,15 @@ ValueInst* InstructionsCompiler::generateSigGen(Tree sig, Tree content)
     }
 
     setTableNameProperty(sig, cname);
-    fInstanceInitProperty.set(content, pair<string, string>(cname, signame));
+    fInstanceInitProperty.set(content, pair<std::string, std::string>(cname, signame));
 
     return InstBuilder::genLoadStackVar(signame);
 }
 
 ValueInst* InstructionsCompiler::generateStaticSigGen(Tree sig, Tree content)
 {
-    string cname   = gGlobal->getFreshID(fContainer->getClassName() + "SIG");
-    string signame = gGlobal->getFreshID("sig");
+    std::string cname   = gGlobal->getFreshID(fContainer->getClassName() + "SIG");
+    std::string signame = gGlobal->getFreshID("sig");
 
     CodeContainer* subcontainer = signal2Container(cname, content);
     fContainer->addSubContainer(subcontainer);
@@ -1740,7 +1742,7 @@ ValueInst* InstructionsCompiler::generateStaticSigGen(Tree sig, Tree content)
     }
 
     setTableNameProperty(sig, cname);
-    fStaticInitProperty.set(content, pair<string, string>(cname, signame));
+    fStaticInitProperty.set(content, pair<std::string, std::string>(cname, signame));
 
     return InstBuilder::genLoadStackVar(signame);
 }
@@ -1754,7 +1756,7 @@ ValueInst* InstructionsCompiler::generateStaticSigGen(Tree sig, Tree content)
  */
 ValueInst* InstructionsCompiler::generateRecProj(Tree sig, Tree r, int i)
 {
-    string     vname;
+    std::string     vname;
     Tree       var, le;
     ValueInst* res;
 
@@ -1778,7 +1780,7 @@ ValueInst* InstructionsCompiler::generateRec(Tree sig, Tree var, Tree le, int in
     ValueInst*             res = nullptr;
     vector<bool>           used(N);
     vector<int>            delay(N);
-    vector<string>         vname(N);
+    vector<std::string>         vname(N);
     vector<Typed::VarType> ctype(N);
 
     // Prepare each element of a recursive definition
@@ -1825,8 +1827,8 @@ ValueInst* InstructionsCompiler::generateControl(Tree sig, Tree x, Tree y)
 
 ValueInst* InstructionsCompiler::generatePrefix(Tree sig, Tree x, Tree e)
 {
-    string         vperm = gGlobal->getFreshID("pfPerm");
-    string         vtemp = gGlobal->getFreshID("pfTemp");
+    std::string         vperm = gGlobal->getFreshID("pfPerm");
+    std::string         vtemp = gGlobal->getFreshID("pfTemp");
     Typed::VarType type  = convert2FIRType(getCertifiedSigType(sig)->nature());
 
     // Variable declaration
@@ -1834,7 +1836,7 @@ ValueInst* InstructionsCompiler::generatePrefix(Tree sig, Tree x, Tree e)
 
     // Init
     pushInitMethod(InstBuilder::genStoreStructVar(vperm, CS(x)));
-    
+
     // Exec
     pushComputeBlockMethod(InstBuilder::genControlInst(getConditionCode(sig),
                                                        InstBuilder::genDecStackVar(vtemp,
@@ -1842,17 +1844,17 @@ ValueInst* InstructionsCompiler::generatePrefix(Tree sig, Tree x, Tree e)
                                                                                    InstBuilder::genTypedZero(type))));
     pushComputeDSPMethod(InstBuilder::genControlInst(getConditionCode(sig),
                                                      InstBuilder::genStoreStackVar(vtemp, InstBuilder::genLoadStructVar(vperm))));
-    
+
     /*
     ValueInst* res = CS(e);
-    string vname;
+    std::string vname;
     if (getVectorNameProperty(e, vname)) {
         setVectorNameProperty(sig, vname);
     } else {
         faustassert(false);
     }
     */
-    
+
     pushComputeDSPMethod(InstBuilder::genControlInst(getConditionCode(sig), InstBuilder::genStoreStructVar(vperm, CS(e))));
     return InstBuilder::genLoadStackVar(vtemp);
 }
@@ -1923,7 +1925,7 @@ ValueInst* InstructionsCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tr
                 break;
         }
     }
-  
+
     return generateCacheCode(sig, InstBuilder::genSelect2Inst(cond, v2, v1));
 }
 
@@ -1941,7 +1943,7 @@ ValueInst* InstructionsCompiler::generateXtended(Tree sig)
         args.push_back(CS(sig->branch(i)));
         types.push_back(getCertifiedSigType(sig->branch(i)));
     }
-    
+
     ValueInst* res = p->generateCode(fContainer, args, getCertifiedSigType(sig), types);
     if (p->needCache()) {
         return generateCacheCode(sig, res);
@@ -1976,7 +1978,7 @@ ValueInst* InstructionsCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
 {
     ValueInst* code = CS(exp);  // Ensure exp is compiled to have a vector name
     int        mxd  = fOccMarkup->retrieve(exp)->getMaxDelay();
-    string     vname;
+    std::string     vname;
 
     if (!getVectorNameProperty(exp, vname)) {
         if (mxd == 0) {
@@ -2004,13 +2006,13 @@ ValueInst* InstructionsCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
 
         int N = pow2limit(mxd + 1);
         if (N <= gGlobal->gMaskDelayLineThreshold) {
-            
+
             ensureIotaCode();
-            
+
             FIRIndex value2 = (FIRIndex(InstBuilder::genLoadStructVar(fCurrentIOTA)) - CS(delay)) & FIRIndex(N - 1);
             return generateCacheCode(sig, InstBuilder::genLoadArrayStructVar(vname, value2));
         } else {
-            string ridx_name = gGlobal->getFreshID(vname + "_ridx_tmp");
+            std::string ridx_name = gGlobal->getFreshID(vname + "_ridx_tmp");
 
             // int ridx = widx - delay;
             FIRIndex widx1 = FIRIndex(InstBuilder::genLoadStructVar(vname + "_widx"));
@@ -2028,7 +2030,7 @@ ValueInst* InstructionsCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
  * Generate code for the delay mechanism. The generated code depends of the
  * maximum delay attached to exp and the "less temporaries" switch.
  */
-ValueInst* InstructionsCompiler::generateDelayVec(Tree sig, ValueInst* exp, Typed::VarType ctype, const string& vname,
+ValueInst* InstructionsCompiler::generateDelayVec(Tree sig, ValueInst* exp, Typed::VarType ctype, const std::string& vname,
                                                   int mxd)
 {
     setVectorNameProperty(sig, vname);
@@ -2036,11 +2038,11 @@ ValueInst* InstructionsCompiler::generateDelayVec(Tree sig, ValueInst* exp, Type
     return generateDelayLine(exp, ctype, vname, mxd, var_access, getConditionCode(sig));
 }
 
-StatementInst* InstructionsCompiler::generateInitArray(const string& vname, Typed::VarType ctype, int delay)
+StatementInst* InstructionsCompiler::generateInitArray(const std::string& vname, Typed::VarType ctype, int delay)
 {
     ValueInst*  init  = InstBuilder::genTypedZero(ctype);
     BasicTyped* typed = InstBuilder::genBasicTyped(ctype);
-    string      index = gGlobal->getFreshID("l");
+    std::string      index = gGlobal->getFreshID("l");
 
     // Generates table declaration
     pushDeclare(InstBuilder::genDecStructVar(vname, InstBuilder::genArrayTyped(typed, delay)));
@@ -2057,9 +2059,9 @@ StatementInst* InstructionsCompiler::generateInitArray(const string& vname, Type
     return loop;
 }
 
-StatementInst* InstructionsCompiler::generateShiftArray(const string& vname, int delay)
+StatementInst* InstructionsCompiler::generateShiftArray(const std::string& vname, int delay)
 {
-    string index = gGlobal->getFreshID("j");
+    std::string index = gGlobal->getFreshID("j");
 
     // Generates init table loop
     DeclareVarInst* loop_decl =
@@ -2075,15 +2077,15 @@ StatementInst* InstructionsCompiler::generateShiftArray(const string& vname, int
     return loop;
 }
 
-StatementInst* InstructionsCompiler::generateCopyArray(const string& vname, int index_from, int index_to)
+StatementInst* InstructionsCompiler::generateCopyArray(const std::string& vname, int index_from, int index_to)
 {
     ValueInst* inst1 = InstBuilder::genLoadArrayStructVar(vname, InstBuilder::genInt32NumInst(index_from));
     return InstBuilder::genStoreArrayStructVar(vname, InstBuilder::genInt32NumInst(index_to), inst1);
 }
 
-StatementInst* InstructionsCompiler::generateCopyArray(const string& vname_to, const string& vname_from, int size)
+StatementInst* InstructionsCompiler::generateCopyArray(const std::string& vname_to, const std::string& vname_from, int size)
 {
-    string index = gGlobal->getFreshID("j");
+    std::string index = gGlobal->getFreshID("j");
 
     // Generates init table loop
     DeclareVarInst* loop_decl =
@@ -2098,7 +2100,7 @@ StatementInst* InstructionsCompiler::generateCopyArray(const string& vname_to, c
     return loop;
 }
 
-ValueInst* InstructionsCompiler::generateDelayLine(ValueInst* exp, Typed::VarType ctype, const string& vname, int mxd,
+ValueInst* InstructionsCompiler::generateDelayLine(ValueInst* exp, Typed::VarType ctype, const std::string& vname, int mxd,
                                                    Address::AccessType& var_access, ValueInst* ccs)
 {
     if (mxd == 0) {
@@ -2142,7 +2144,7 @@ ValueInst* InstructionsCompiler::generateDelayLine(ValueInst* exp, Typed::VarTyp
             // Generate table use
             if (gGlobal->gComputeIOTA) {  // Ensure IOTA base fixed delays are computed once
                 if (fIOTATable.find(N) == fIOTATable.end()) {
-                    string   iota_name = subst("i$0", gGlobal->getFreshID(fCurrentIOTA + "_temp"));
+                    std::string   iota_name = subst("i$0", gGlobal->getFreshID(fCurrentIOTA + "_temp"));
                     FIRIndex value2 = FIRIndex(InstBuilder::genLoadStructVar(fCurrentIOTA)) & FIRIndex(N - 1);
 
                     pushPreComputeDSPMethod(InstBuilder::genDecStackVar(iota_name, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(0)));
@@ -2161,8 +2163,8 @@ ValueInst* InstructionsCompiler::generateDelayLine(ValueInst* exp, Typed::VarTyp
         } else {
 
             // 'select' based delay
-            string widx_tmp_name = vname + "_widx_tmp";
-            string widx_name = vname + "_widx";
+            std::string widx_tmp_name = vname + "_widx_tmp";
+            std::string widx_name = vname + "_widx";
 
             // Generates table write index
             pushDeclare(InstBuilder::genDecStructVar(widx_name, InstBuilder::genInt32Typed()));
@@ -2203,7 +2205,7 @@ ValueInst* InstructionsCompiler::generateDelayLine(ValueInst* exp, Typed::VarTyp
  * Generate code for a waveform. The waveform will be declared as a static field.
  * The name of the waveform is returned in vname and its size in size.
  */
-void InstructionsCompiler::declareWaveform(Tree sig, string& vname, int& size)
+void InstructionsCompiler::declareWaveform(Tree sig, std::string& vname, int& size)
 {
     // computes C type and unique name for the waveform
 
@@ -2259,19 +2261,19 @@ void InstructionsCompiler::declareWaveform(Tree sig, string& vname, int& size)
         pushGlobalDeclare(InstBuilder::genDecConstStaticStructVar(vname, type, num_array));
     }
 
-    string idx = subst("$0_idx", vname);
+    std::string idx = subst("$0_idx", vname);
     pushDeclare(InstBuilder::genDecStructVar(idx, InstBuilder::genInt32Typed()));
     pushInitMethod(InstBuilder::genStoreStructVar(idx, InstBuilder::genInt32NumInst(0)));
 }
 
 ValueInst* InstructionsCompiler::generateWaveform(Tree sig)
 {
-    string vname;
+    std::string vname;
     int    size;
 
     declareWaveform(sig, vname, size);
 
-    string   idx   = subst("$0_idx", vname);
+    std::string   idx   = subst("$0_idx", vname);
     FIRIndex index = (FIRIndex(1) + InstBuilder::genLoadStructVar(idx)) % InstBuilder::genInt32NumInst(size);
     pushPostComputeDSPMethod(InstBuilder::genControlInst(getConditionCode(sig), InstBuilder::genStoreStructVar(idx, index)));
     return generateCacheCode(sig, InstBuilder::genLoadArrayStaticStructVar(vname, InstBuilder::genLoadStructVar(idx)));
@@ -2311,25 +2313,25 @@ void InstructionsCompiler::generateUserInterfaceTree(Tree t, bool root)
     if (isUiFolder(t, label, elements)) {
         OpenboxInst::BoxType orient = static_cast<OpenboxInst::BoxType>(tree2int(left(label)));
         // Empty labels will be renamed with a 0xABCD (address) that is ignored and not displayed by UI architectures
-        string str = tree2str(right(label));
+        std::string str = tree2str(right(label));
 
         // extract metadata from group label str resulting in a simplifiedLabel
         // and metadata declarations for fictive zone at address 0
-        string                    simplifiedLabel;
-        map<string, set<string> > metadata;
+        std::string                    simplifiedLabel;
+        map<std::string, set<std::string> > metadata;
         extractMetadata(str, simplifiedLabel, metadata);
 
         // add metadata if any
         for (const auto& i : metadata) {
-            const string&      key    = i.first;
-            const set<string>& values = i.second;
+            const std::string&      key    = i.first;
+            const set<std::string>& values = i.second;
             for (const auto& j : values) {
                 pushUserInterfaceMethod(InstBuilder::genAddMetaDeclareInst("0", rmWhiteSpaces(key), rmWhiteSpaces(j)));
             }
         }
         // At rool level and if label is empty, use the name kept in "metadata" (either the one coded in 'declare name
         // "XXX";' line, or the filename)
-        string group = (root && (simplifiedLabel == ""))
+        std::string group = (root && (simplifiedLabel == ""))
                            ? unquote(tree2str(*(gGlobal->gMetaDataSet[tree("name")].begin())))
                            : checkNullLabel(t, simplifiedLabel);
 
@@ -2362,16 +2364,16 @@ void InstructionsCompiler::generateUserInterfaceElements(Tree elements)
 void InstructionsCompiler::generateWidgetCode(Tree fulllabel, Tree varname, Tree sig)
 {
     Tree                      path, c, x, y, z;
-    map<string, set<string> > metadata;
-    string                    label, url;
+    map<std::string, set<std::string> > metadata;
+    std::string                    label, url;
 
     extractMetadata(tree2str(fulllabel), label, metadata);
 
     // Extract "url" metadata to be given as parameter to 'addSoundfile' function
     if (isSigSoundfile(sig, path)) {
         for (const auto& i : metadata) {
-            const string&      key    = i.first;
-            const set<string>& values = i.second;
+            const std::string&      key    = i.first;
+            const set<std::string>& values = i.second;
             for (const auto& j : values) {
                 if (key == "url") {
                     url = prepareURL(j);
@@ -2381,8 +2383,8 @@ void InstructionsCompiler::generateWidgetCode(Tree fulllabel, Tree varname, Tree
     } else {
         // Add metadata if any
         for (const auto& i : metadata) {
-            const string&      key    = i.first;
-            const set<string>& values = i.second;
+            const std::string&      key    = i.first;
+            const set<std::string>& values = i.second;
             for (const auto& j : values) {
                 pushUserInterfaceMethod(InstBuilder::genAddMetaDeclareInst(tree2str(varname), rmWhiteSpaces(key), rmWhiteSpaces(j)));
             }
@@ -2442,13 +2444,13 @@ void InstructionsCompiler::generateWidgetCode(Tree fulllabel, Tree varname, Tree
  * Generate user interface macros corresponding
  * to user interface element t
  */
-void InstructionsCompiler::generateMacroInterfaceTree(const string& pathname, Tree t)
+void InstructionsCompiler::generateMacroInterfaceTree(const std::string& pathname, Tree t)
 {
     Tree label, elements, varname, sig;
 
     if (isUiFolder(t, label, elements)) {
-        string pathname2 = pathname;
-        string str       = tree2str(right(label));
+        std::string pathname2 = pathname;
+        std::string str       = tree2str(right(label));
         if (str.length() > 0) pathname2 += str + "/";
         generateMacroInterfaceElements(pathname2, elements);
     } else if (isUiWidget(t, label, varname, sig)) {
@@ -2462,7 +2464,7 @@ void InstructionsCompiler::generateMacroInterfaceTree(const string& pathname, Tr
 /**
  * Iterate generateMacroInterfaceTree on a list of user interface elements
  */
-void InstructionsCompiler::generateMacroInterfaceElements(const string& pathname, Tree elements)
+void InstructionsCompiler::generateMacroInterfaceElements(const std::string& pathname, Tree elements)
 {
     while (!isNil(elements)) {
         generateMacroInterfaceTree(pathname, right(hd(elements)));
@@ -2474,15 +2476,16 @@ void InstructionsCompiler::generateMacroInterfaceElements(const string& pathname
  * Generate user interface macros corresponding
  * to a user interface widget
  */
-void InstructionsCompiler::generateWidgetMacro(const string& pathname, Tree fulllabel, Tree varname, Tree sig)
+void InstructionsCompiler::generateWidgetMacro(const std::string& pathname, Tree fulllabel, Tree varname, Tree sig)
 {
     Tree                      path, c, x, y, z;
-    string                    label;
-    map<string, set<string>>  metadata;
-  
+
+    std::string                    label;
+    map<std::string, set<std::string>>  metadata;
+
     extractMetadata(tree2str(fulllabel), label, metadata);
-    string pathlabel = pathname + label;
-    string rawlabel = label;
+    std::string pathlabel = pathname + label;
+    std::string rawlabel = label;
     std::replace(rawlabel.begin(), rawlabel.end(), ' ', '_');
 
     if (isSigButton(sig, path)) {
