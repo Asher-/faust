@@ -42,20 +42,19 @@
 
 // The name of 'count' parameter
 #define fFullCount string("count")
-
 #define fTableName string("table")
 
 class TextInstVisitor;
 
 // Look for the name of a given subcontainer
 struct SearchSubcontainer : public DispatchVisitor {
-    
+
     string fClassName;
     bool fFound = false;
-    
+
     SearchSubcontainer(const string& class_name):fClassName(class_name)
     {}
-    
+
     virtual void visit(NamedTyped* typed)
     {
         fFound |= (fClassName == typed->getName());
@@ -190,12 +189,12 @@ class CodeContainer : public virtual Garbageable {
     }
 
     BlockInst* inlineSubcontainersFunCalls(BlockInst* block);
-    
+
    public:
     CodeContainer();
     void initialize(int numInputs, int numOutputs);
     virtual ~CodeContainer();
-    
+
     void printMacros(ostream& fout, int n);
 
     CodeLoop* getCurLoop() { return fCurLoop; }
@@ -257,7 +256,7 @@ class CodeContainer : public virtual Garbageable {
 
     DeclareFunInst* generateGetIORate(const string& name, const string& obj, vector<int>& io, bool ismethod,
                                       bool isvirtual);
-  
+
     virtual DeclareFunInst* generateClassInit(const string& name)
     {
         faustassert(false);
@@ -291,10 +290,10 @@ class CodeContainer : public virtual Garbageable {
     DeclareFunInst* generateInit(const string& name, const string& obj, bool ismethod, bool isvirtual);
     DeclareFunInst* generateInstanceInit(const string& name, const string& obj, bool ismethod, bool isvirtual);
     DeclareFunInst* generateGetSampleRate(const string& name, const string& obj, bool ismethod, bool isvirtual);
-    
+
     DeclareFunInst* generateCalloc();
     DeclareFunInst* generateFree();
-    
+
     DeclareFunInst* generateNewDsp(const string& name, int size);
     DeclareFunInst* generateDeleteDsp(const string& name, const string& obj);
 
@@ -302,7 +301,7 @@ class CodeContainer : public virtual Garbageable {
                               TextInstVisitor* producer, const string& in_fun = "getNumInputs", const string& out_fun = "getNumOutputs");
 
     void generateDAGLoop(BlockInst* loop_code, DeclareVarInst* count);
-    
+
     template <typename REAL>
     void generateMetaData(JSONUIReal<REAL>* json)
     {
@@ -343,7 +342,7 @@ class CodeContainer : public virtual Garbageable {
         ofstream xout(subst("$0.json", gGlobal->makeDrawPath()).c_str());
         xout << visitor.JSON();
     }
-    
+
     template <typename REAL>
     void generateJSON(JSONInstVisitor<REAL>* visitor)
     {
@@ -357,7 +356,7 @@ class CodeContainer : public virtual Garbageable {
         generateUserInterface(visitor);
         generateMetaData(visitor);
     }
-    
+
     template <typename REAL>
     string generateJSON()
     {
@@ -365,7 +364,7 @@ class CodeContainer : public virtual Garbageable {
         generateJSON(&visitor);
         return visitor.JSON(true);
     }
-    
+
     string generateJSONAux()
     {
         if (gGlobal->gFloatSize == 1) {
@@ -660,7 +659,7 @@ class CodeContainer : public virtual Garbageable {
         faustassert(false);
         return nullptr;
     }
-    
+
     void generateJSONFile();
 
     int fInt32ControlNum;  // number of 'int32' intermediate control values

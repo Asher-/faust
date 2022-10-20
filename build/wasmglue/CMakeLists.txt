@@ -40,7 +40,7 @@ file (GLOB HH ${SRCDIR}/compiler/generator/wasm/wasm_dsp_aux.hh ${SRCDIR}/compil
 set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/errors
 	${SRCDIR}/compiler/generator
-	${SRCDIR}/compiler/tlib ${SRCDIR}/compiler/transform ${SRCDIR}/compiler/utils
+	${SRCDIR}/tlib ${SRCDIR}/compiler/transform ${SRCDIR}/compiler/utils
 	${ROOT}/architecture /usr/local/include)
 
 

@@ -115,7 +115,7 @@
 #endif
 
 #ifdef OCPP_BUILD
-#include "compile_scal.hh"
+#include "compile_scalar.hh"
 #include "compile_sched.hh"
 #include "compile_vect.hh"
 #endif

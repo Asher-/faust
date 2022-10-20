@@ -72,6 +72,7 @@ file (GLOB SRC ${SRCDIR}/compiler/*.cpp
 							 ${SRCDIR}/target/csharp/*.cpp
 							 ${SRCDIR}/target/soul/*.cpp
 							 ${SRCDIR}/target/wasm/*.cpp
+							 ${SRCDIR}/tlib/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
  						   ${SRCDIR}/documentator/*.cpp )
 file (GLOB HH  ${SRCDIR}/compiler/*.hh
@@ -81,6 +82,7 @@ file (GLOB HH  ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/draw/*.hh
                ${SRCDIR}/draw/*/*.hh
                ${SRCDIR}/target/*/*.hh
+               ${SRCDIR}/tlib/*.hh
 							 ${ROOT}/benchmark/timing.hh
 							 ${SRCDIR}/documentator/*.hh )
 
@@ -95,7 +97,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler
 	${SRCDIR}/compiler/generator
 	${SRCDIR}/compiler/faust
-	${SRCDIR}/compiler/tlib
+	${SRCDIR}/tlib
 	${SRCDIR}/target/dlang
 	${SRCDIR}/target/c
 	${SRCDIR}/target/cpp
@@ -111,15 +113,18 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/soul
 	${SRCDIR}/compiler/generator/normalize
 	${SRCDIR}/compiler/generator/parallelize
+	${SRCDIR}/compiler/generator/instructions
+	${SRCDIR}/compiler/generator/compile
+	${SRCDIR}/compiler/generator/code_container
 	${SRCDIR}/compiler/parser
 	${SRCDIR}/compiler/boxes
 	${SRCDIR}/compiler/math_primitives
 	${SRCDIR}/compiler/file_handling
-	${SRCDIR}/compiler/block_diagram/evaluate
-	${SRCDIR}/compiler/block_diagram/evaluate/patternmatcher
-	${SRCDIR}/compiler/block_diagram/evaluate/propagate
+	${SRCDIR}/compiler/block_diagram
+	${SRCDIR}/compiler/block_diagram/patternmatcher
+	${SRCDIR}/compiler/block_diagram/propagate
 	${SRCDIR}/compiler/signals
-	${SRCDIR}/compiler/tlib
+	${SRCDIR}/tlib
 	${SRCDIR}/compiler/transform
 	${SRCDIR}/compiler/utils
 	${SRCDIR}/draw
@@ -390,7 +395,7 @@ install (
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
 install (
-    FILES     ${SRCDIR}/generator/libfaust.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/faust/dsp
+    FILES     ${SRCDIR}/libfaust.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/faust/dsp
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
 # the file below is part of the httpd lib but installed even if the lib is not part of the config

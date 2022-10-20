@@ -64,7 +64,7 @@ set( INCLUDE
 	${SRCDIR}/msg
 	${SRCDIR}/nodes
 	${ARCHDIR}
-	${ROOT}/source/compiler/tlib
+	${ROOT}/source/tlib
 	)
 
 #######################################
