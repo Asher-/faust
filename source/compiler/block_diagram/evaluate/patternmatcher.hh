@@ -19,46 +19,16 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_GARBAGE__
-#define __FAUST_GARBAGE__
+#ifndef __PATTERNMATCHER__
+#define __PATTERNMATCHER__
 
-#include <stdio.h>
-#include <new>
+#include <vector>
+#include "tlib.hh"
 
-#include "exception.hh"
-#include "faust/export.h"
-
-// To be inherited by all garbageable classes
-
-/* Garbageable denotes a type that is allocated in memory and can be deleted. */
-
-class LIBFAUST_API Garbageable {
-   public:
-    Garbageable()
-    {}
-    virtual ~Garbageable()
-    {}
-
-    /* Defined in global.cpp */
-    void* operator new(size_t size);
-    void* operator new[](size_t size);
-    void  operator delete(void* ptr);
-    void  operator delete[](void* ptr);
-
-    static void cleanup();
-};
-
-template <class P>
-class GarbageablePtr : public virtual Garbageable {
-   private:
-    P* fPtr;
-
-   public:
-    GarbageablePtr(const P& data) { fPtr = new P(data); }
-
-    virtual ~GarbageablePtr() { delete (fPtr); }
-
-    P* getPointer() { return fPtr; }
-};
+#include "patternmatcher/path.hh"
+#include "patternmatcher/rule.hh"
+#include "patternmatcher/trans.hh"
+#include "patternmatcher/state.hh"
+#include "patternmatcher/automaton.hh"
 
 #endif

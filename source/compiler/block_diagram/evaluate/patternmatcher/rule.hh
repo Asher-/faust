@@ -19,46 +19,44 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_GARBAGE__
-#define __FAUST_GARBAGE__
+#ifndef __PATTERNMATCHER__RULE__
+#define __PATTERNMATCHER__RULE__
 
-#include <stdio.h>
-#include <new>
+#include <list>
 
-#include "exception.hh"
-#include "faust/export.h"
+#include "patternmatcher/path.hh"
+#include "garbageable.hh"
+#include "tlib/tree.hh"
 
-// To be inherited by all garbageable classes
+namespace PM {
 
-/* Garbageable denotes a type that is allocated in memory and can be deleted. */
+  struct Rule : public virtual Garbageable {
+      int  r;   // rule number
+      Tree id;  // matched variable (NULL if none)
+      Path p;   // subterm path indicating where variable value is found
 
-class LIBFAUST_API Garbageable {
-   public:
-    Garbageable()
-    {}
-    virtual ~Garbageable()
-    {}
+      Rule(int _r, Tree _id) : r(_r), id(_id), p(Path()) {}
+      Rule(int _r, Tree _id, const Path& _p) : r(_r), id(_id), p(_p) {}
+      Rule(const Rule& rule) : r(rule.r), id(rule.id), p(rule.p) {}
 
-    /* Defined in global.cpp */
-    void* operator new(size_t size);
-    void* operator new[](size_t size);
-    void  operator delete(void* ptr);
-    void  operator delete[](void* ptr);
+      Rule& operator=(const Rule& rule)
+      {
+          r  = rule.r;
+          id = rule.id;
+          p  = rule.p;
+          return *this;
+      }
 
-    static void cleanup();
-};
+      bool operator==(const Rule& rule) const { return r == rule.r; }
+      bool operator<(const Rule& rule) const { return r < rule.r; }
 
-template <class P>
-class GarbageablePtr : public virtual Garbageable {
-   private:
-    P* fPtr;
+      static void merge_rules(list<Rule>& rules1, list<Rule>& rules2);
 
-   public:
-    GarbageablePtr(const P& data) { fPtr = new P(data); }
+  #ifdef DEBUG
+      ostream& print(ostream& fout) const;
+  #endif
+  };
 
-    virtual ~GarbageablePtr() { delete (fPtr); }
-
-    P* getPointer() { return fPtr; }
-};
+}
 
 #endif

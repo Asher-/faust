@@ -19,46 +19,22 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_GARBAGE__
-#define __FAUST_GARBAGE__
+#ifndef __PATTERNMATCHER__ASSOC__
+#define __PATTERNMATCHER__ASSOC__
 
-#include <stdio.h>
-#include <new>
+/* Helper type to represent variable substitutions which are recorded during
+   matching. Each variable is associated with the path pointing at the subterm
+   of the argument where the substitution of the matched variable is to be
+   found. */
 
-#include "exception.hh"
-#include "faust/export.h"
+namespace PM {
 
-// To be inherited by all garbageable classes
+  struct Assoc : public virtual Garbageable {
+      Tree id;
+      Path p;
+      Assoc(Tree _id, const Path& _p) : id(_id), p(_p) {}
+  };
 
-/* Garbageable denotes a type that is allocated in memory and can be deleted. */
-
-class LIBFAUST_API Garbageable {
-   public:
-    Garbageable()
-    {}
-    virtual ~Garbageable()
-    {}
-
-    /* Defined in global.cpp */
-    void* operator new(size_t size);
-    void* operator new[](size_t size);
-    void  operator delete(void* ptr);
-    void  operator delete[](void* ptr);
-
-    static void cleanup();
-};
-
-template <class P>
-class GarbageablePtr : public virtual Garbageable {
-   private:
-    P* fPtr;
-
-   public:
-    GarbageablePtr(const P& data) { fPtr = new P(data); }
-
-    virtual ~GarbageablePtr() { delete (fPtr); }
-
-    P* getPointer() { return fPtr; }
-};
+}
 
 #endif

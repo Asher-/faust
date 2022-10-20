@@ -44,6 +44,7 @@
 #include "property.hh"
 #include "simplify.hh"
 #include "xtended.hh"
+#include "patternmatcher/automaton.hh"
 
 // History
 // 23/05/2005 : New environment management
@@ -111,7 +112,7 @@ Tree evalprocess(Tree eqlist)
 
 Tree evaldocexpr(Tree docexpr, Tree eqlist)
 {
-    // Init stack overflow detector 
+    // Init stack overflow detector
     gGlobal->gStackOverflowDetector = stackOverflowDetector(MAX_STACK_SIZE);
     return a2sb(eval(docexpr, gGlobal->nil, pushMultiClosureDefs(eqlist, gGlobal->nil, gGlobal->nil)));
 }
@@ -1129,7 +1130,7 @@ static Tree applyList(Tree fun, Tree larg)
 
         list2vec(envList, envVect);
         // cerr << "applyList/apply_pattern_matcher(" << automat << "," << state << "," << *hd(larg) << ")" << endl;
-        state2 = PM::apply_pattern_matcher(automat, state, hd(larg), result, envVect);
+        state2 = PM::Automaton::apply_pattern_matcher(automat, state, hd(larg), result, envVect);
         // cerr << "state2 = " << state2 << "; result = " << *result << endl;
         if (state2 >= 0 && isNil(result)) {
             // we need to continue the pattern matching
@@ -1364,7 +1365,7 @@ static Tree evalCase(Tree rules, Tree env)
 {
     Tree pm;
     if (!getPMProperty(rules, env, pm)) {
-        PM::Automaton* a = PM::make_pattern_matcher(evalRuleList(rules, env));
+        PM::Automaton* a = PM::Automaton::make_pattern_matcher(evalRuleList(rules, env));
         pm               = boxPatternMatcher(a, 0, listn(len(rules), pushEnvBarrier(env)), rules, gGlobal->nil);
         setPMProperty(rules, env, pm);
     }

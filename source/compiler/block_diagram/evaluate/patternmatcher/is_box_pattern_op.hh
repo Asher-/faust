@@ -19,46 +19,22 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_GARBAGE__
-#define __FAUST_GARBAGE__
+/* Deconstruct a (BDA) op pattern (YO). */
 
-#include <stdio.h>
-#include <new>
+#ifndef _IS_BOX_PATTERN_OP_
+#define _IS_BOX_PATTERN_OP_
 
-#include "exception.hh"
-#include "faust/export.h"
+#include "boxes.hh"
 
-// To be inherited by all garbageable classes
-
-/* Garbageable denotes a type that is allocated in memory and can be deleted. */
-
-class LIBFAUST_API Garbageable {
-   public:
-    Garbageable()
-    {}
-    virtual ~Garbageable()
-    {}
-
-    /* Defined in global.cpp */
-    void* operator new(size_t size);
-    void* operator new[](size_t size);
-    void  operator delete(void* ptr);
-    void  operator delete[](void* ptr);
-
-    static void cleanup();
-};
-
-template <class P>
-class GarbageablePtr : public virtual Garbageable {
-   private:
-    P* fPtr;
-
-   public:
-    GarbageablePtr(const P& data) { fPtr = new P(data); }
-
-    virtual ~GarbageablePtr() { delete (fPtr); }
-
-    P* getPointer() { return fPtr; }
-};
+inline bool isBoxPatternOp(Tree box, Node& n, Tree& t1, Tree& t2)
+{
+    if (isBoxPar(box, t1, t2) || isBoxSeq(box, t1, t2) || isBoxSplit(box, t1, t2) || isBoxMerge(box, t1, t2) ||
+        isBoxHGroup(box, t1, t2) || isBoxVGroup(box, t1, t2) || isBoxTGroup(box, t1, t2) || isBoxRec(box, t1, t2)) {
+        n = box->node();
+        return true;
+    } else {
+        return false;
+    }
+}
 
 #endif

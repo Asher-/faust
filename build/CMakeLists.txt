@@ -23,6 +23,7 @@ set (BINDIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set (LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/${LIBSDIR})
 
 set (CMAKE_CXX_STANDARD 11)
+
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #######################################

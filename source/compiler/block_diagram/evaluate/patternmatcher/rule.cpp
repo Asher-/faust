@@ -19,46 +19,35 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_GARBAGE__
-#define __FAUST_GARBAGE__
+#include "patternmatcher/rule.hh"
 
-#include <stdio.h>
-#include <new>
+namespace PM {
 
-#include "exception.hh"
-#include "faust/export.h"
 
-// To be inherited by all garbageable classes
+  /* Merge two tree automata. Merges the tree automaton rooted at state2 into
+     the automaton rooted at state1. We assume that state2 is in "trie" form,
+     i.e., each state has at most one transition, which is always guaranteed
+     here and simplifies the algorithm. */
 
-/* Garbageable denotes a type that is allocated in memory and can be deleted. */
+  void Rule::merge_rules(list<Rule>& rules1, list<Rule>& rules2)
+  {
+      list<Rule> cprules2 = rules2;
+      rules1.merge(cprules2);
+  }
 
-class LIBFAUST_API Garbageable {
-   public:
-    Garbageable()
-    {}
-    virtual ~Garbageable()
-    {}
+  #ifdef DEBUG
+  inline ostream& operator<<(ostream& s, const Rule& x)
+  {
+      return x.print(s);
+  }
+  ostream& Rule::print(ostream& fout) const
+  {
+      if (id != NULL)
+          fout << "#" << r << "(" << *id << ")";
+      else
+          fout << "#" << r;
+      return fout;
+  }
+  #endif
 
-    /* Defined in global.cpp */
-    void* operator new(size_t size);
-    void* operator new[](size_t size);
-    void  operator delete(void* ptr);
-    void  operator delete[](void* ptr);
-
-    static void cleanup();
-};
-
-template <class P>
-class GarbageablePtr : public virtual Garbageable {
-   private:
-    P* fPtr;
-
-   public:
-    GarbageablePtr(const P& data) { fPtr = new P(data); }
-
-    virtual ~GarbageablePtr() { delete (fPtr); }
-
-    P* getPointer() { return fPtr; }
-};
-
-#endif
+}
