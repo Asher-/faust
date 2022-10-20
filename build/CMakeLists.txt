@@ -74,6 +74,7 @@ file (GLOB SRC ${SRCDIR}/compiler/*.cpp
 							 ${SRCDIR}/target/wasm/*.cpp
 							 ${SRCDIR}/tlib/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
+							 ${ROOT}/architecture/faust/export.cpp
  						   ${SRCDIR}/documentator/*.cpp )
 file (GLOB HH  ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
@@ -84,6 +85,7 @@ file (GLOB HH  ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/target/*/*.hh
                ${SRCDIR}/tlib/*.hh
 							 ${ROOT}/benchmark/timing.hh
+							 ${ROOT}/architecture/faust/export.h
 							 ${SRCDIR}/documentator/*.hh )
 
 ####################################
@@ -111,11 +113,13 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/interpreter
 	${SRCDIR}/target/rust
 	${SRCDIR}/target/soul
-	${SRCDIR}/compiler/generator/normalize
+	${SRCDIR}/compiler/generator/code_container
+	${SRCDIR}/compiler/generator/compile
+	${SRCDIR}/compiler/generator/fir
 	${SRCDIR}/compiler/generator/parallelize
 	${SRCDIR}/compiler/generator/instructions
-	${SRCDIR}/compiler/generator/compile
-	${SRCDIR}/compiler/generator/code_container
+	${SRCDIR}/compiler/generator/terms
+	${SRCDIR}/compiler/generator/util
 	${SRCDIR}/compiler/parser
 	${SRCDIR}/compiler/boxes
 	${SRCDIR}/compiler/math_primitives
@@ -123,6 +127,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/block_diagram
 	${SRCDIR}/compiler/block_diagram/patternmatcher
 	${SRCDIR}/compiler/block_diagram/propagate
+	${SRCDIR}/compiler/block_diagram/simplify
 	${SRCDIR}/compiler/signals
 	${SRCDIR}/tlib
 	${SRCDIR}/compiler/transform

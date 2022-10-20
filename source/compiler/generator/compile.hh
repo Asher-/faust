@@ -31,7 +31,7 @@
 #include "signals.hh"
 #include "uitree.hh"
 
-#include "description.hh"
+#include "xml_description.hh"
 #include "faust/gui/JSONUI.h"
 
 ////////////////////////////////////////////////////////////////////////

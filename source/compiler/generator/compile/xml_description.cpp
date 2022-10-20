@@ -29,7 +29,7 @@
 
 #include "Text.hh"
 #include "compatibility.hh"
-#include "description.hh"
+#include "xml_description.hh"
 #include "exception.hh"
 #include "global.hh"
 

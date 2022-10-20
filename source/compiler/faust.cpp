@@ -37,7 +37,7 @@
 #include "Text.hh"
 #include "compatibility.hh"
 #include "dag_instructions_compiler.hh"
-#include "description.hh"
+#include "xml_description.hh"
 #include "doc.hh"
 #include "drawschema.hh"
 #include "architectures.hh"

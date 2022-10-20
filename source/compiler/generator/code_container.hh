@@ -26,7 +26,7 @@
 
 #include "Text.hh"
 #include "code_loop.hh"
-#include "description.hh"
+#include "xml_description.hh"
 #include "dsp_factory.hh"
 #include "floats.hh"
 #include "garbageable.hh"

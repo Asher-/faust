@@ -46,7 +46,7 @@
 #include "boxcomplexity.hh"
 #include "boxes.hh"
 #include "compatibility.hh"
-#include "description.hh"
+#include "xml_description.hh"
 #include "devLib.h"
 #include "drawschema.hh"
 #include "exception.hh"

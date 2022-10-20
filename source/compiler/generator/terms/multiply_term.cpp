@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "mterm.hh"
+#include "multiply_term.hh"
 #include "exception.hh"
 #include "global.hh"
 #include "ppsig.hh"
@@ -230,7 +230,7 @@ void mterm::cleanup()
 }
 
 /**
- * Add in place an mterm. As we want the result to be
+ * Add in place an multiply_term. As we want the result to be
  * a mterm therefore essentially mterms of same signature can be added
  */
 const mterm& mterm::operator+=(const mterm& m)
@@ -251,7 +251,7 @@ const mterm& mterm::operator+=(const mterm& m)
 }
 
 /**
- * Substract in place an mterm. As we want the result to be
+ * Substract in place an multiply_term. As we want the result to be
  * a mterm therefore essentially mterms of same signature can be substracted
  */
 const mterm& mterm::operator-=(const mterm& m)

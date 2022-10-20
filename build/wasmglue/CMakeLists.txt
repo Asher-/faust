@@ -31,16 +31,25 @@ set (WGLUE wasmglue)
 
 ####################################
 # source and headers files
-file (GLOB SRC ${SRCDIR}/compiler/generator/wasm/wasm_dsp_aux.cpp ${SRCDIR}/compiler/generator/wasm/wasm_errormsg.cpp ${SRCDIR}/compiler/generator/export.cpp)
-file (GLOB HH ${SRCDIR}/compiler/generator/wasm/wasm_dsp_aux.hh ${SRCDIR}/compiler/generator/export.hh)
+file (GLOB SRC
+	${SRCDIR}/target/wasm/wasm_dsp_aux.cpp
+	${SRCDIR}/target/wasm/wasm_errormsg.cpp
+	${SRCDIR}/architecture/faust/export.cpp
+)
+file (GLOB HH
+	${SRCDIR}/target/wasm/wasm_dsp_aux.hh
+	${SRCDIR}/architecture/faust/export.h
+)
 
 #
 ####################################
 # include directories
 set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/errors
-	${SRCDIR}/compiler/generator
-	${SRCDIR}/tlib ${SRCDIR}/compiler/transform ${SRCDIR}/compiler/utils
+	${SRCDIR}/architecture/faust
+	${SRCDIR}/tlib
+	${SRCDIR}/compiler/transform
+	${SRCDIR}/compiler/utils
 	${ROOT}/architecture /usr/local/include)
 
 
@@ -53,7 +62,7 @@ set (WASM_LINK_FLAGS "--bind --memory-init-file 0 -s LINKABLE=0 -s WASM=1 -s EXP
 ####################################
 # Add the different targets
 add_executable(${WGLUE} EXCLUDE_FROM_ALL ${SRC} ${HH})
-target_include_directories (${WGLUE} PRIVATE ${SRCDIR}/generator/wasm ${FAUST_INC})
+target_include_directories (${WGLUE} PRIVATE ${SRCDIR}/target/wasm ${FAUST_INC})
 target_compile_definitions (${WGLUE} PRIVATE -DEMCC ${FAUST_DEFINITIONS})
 set_target_properties (${WGLUE} PROPERTIES
 		OUTPUT_NAME ${LIB_NAME}

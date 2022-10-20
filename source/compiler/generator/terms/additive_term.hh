@@ -28,7 +28,7 @@
 
 #include "exception.hh"
 #include "garbageable.hh"
-#include "mterm.hh"
+#include "multiply_term.hh"
 #include "normalize.hh"
 #include "signals.hh"
 #include "sigorderrules.hh"

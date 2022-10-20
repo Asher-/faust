@@ -27,7 +27,7 @@
 #include <string>
 
 #include "Text.hh"
-#include "description.hh"
+#include "xml_description.hh"
 #include "doc_Text.hh"
 #include "garbageable.hh"
 #include "lateq.hh"

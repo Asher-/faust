@@ -45,12 +45,12 @@ static void error(const char* s, Tree t)
 
 #if 0
 
-// version normale, qui marche, mais qui ne range pas en ordre alphabetique
+// normal version, which works, but which does not arrange in alphabetical order
 static bool findKey(Tree pl, Tree key, Tree& val)
 {
 	if (isNil(pl)) 				return false;
 	if (left(hd(pl)) == key) 	{ val = right(hd(pl)); return true; }
-	/*  left(hd(pl)) != key	*/	return findKey (tl(pl), key, val); 
+	/*  left(hd(pl)) != key	*/	return findKey (tl(pl), key, val);
 }
 
 static Tree updateKey(Tree pl, Tree key, Tree val)
@@ -69,8 +69,7 @@ static Tree removeKey(Tree pl, Tree key)
 
 #else
 
-// version experimentale qui range en ordre alphabetique
-
+// experimental version which arranges in alphabetical order
 static bool isBefore(Tree k1, Tree k2)
 {
     // before comparing replace (type . label) by label
@@ -135,7 +134,7 @@ static Tree removeKey(Tree pl, Tree key)
 #endif
 
 //------------------------------------------------------------------------------
-// gestion de la construction de l'arbre d'interface utilisateur
+// UI tree construction management
 //------------------------------------------------------------------------------
 
 Tree uiFolder(Tree label, Tree elements)
@@ -160,7 +159,7 @@ bool isUiWidget(Tree t, Tree& label, Tree& varname, Tree& sig)
     return isTree(t, gGlobal->UIWIDGET, label, varname, sig);
 }
 
-// place un item dans un folder. Remplace eventuellement l'element de meme nom.
+// places an item in a folder. Eventually replaces the element of the same name.
 Tree putFolder(Tree folder, Tree item)
 {
     Tree label, content;
@@ -171,7 +170,7 @@ Tree putFolder(Tree folder, Tree item)
     return uiFolder(label, updateKey(content, uiLabel(item), item));
 }
 
-// place un item dans un folder. Sans Remplacement
+// places an item in a folder. Without Replacement
 Tree addToFolder(Tree folder, Tree item)
 {
     Tree label, content;
@@ -196,7 +195,7 @@ Tree getFolder(Tree folder, Tree ilabel)
     }
 }
 
-// cree une chaine de dossiers correspondant a path et contenant in fine elem
+// create a chain of folders corresponding to path and containing in fine elem
 Tree makeSubFolderChain(Tree path, Tree elem)
 {
     if (isNil(path)) {
@@ -222,18 +221,18 @@ Tree putSubFolder(Tree folder, Tree path, Tree item)
 }
 
 /*
-Fonctionnement des dossiers.
-Dossier a 1 niveau : Un dossier contient une liste de choses reperees par un nom :
-    Dossier[(l1,d1)...(ln,dn)]
-ou (lx,dx) est une chose dx reperee par un nom lx. On suppose les lx tous differents
+Folder operation.
+Folder at 1 level: A folder contains a list of things identified by a name:
+     Folder[(l1,d1)...(ln,dn)]
+where (lx,dx) is a thing dx identified by a name lx. We assume that the lx are all different
 
-On peut ajouter une chose a un dossier : Ajouter(Dossier, Chose) -> Dossier
+You can add a thing to a folder: Add(Folder, Thing) -> Folder
 
-Si le dossier contient deja qq chose de meme nom, cette chose est remplacee par la nouvelle.
+If the folder already contains something with the same name, this thing is replaced by the new one.
 
-AJOUTER (Dossier[(l1,d1)...(ln,dn)], (lx,dx)) -> Dossier[(l1,d1)...(lx,dx)...(ln,dn)]
+ADD (Folder[(l1,d1)...(ln,dn)], (lx,dx)) -> Folder[(l1,d1)...(lx,dx)...(ln,dn) ]
 
-AJOUTER (Dossier[(l1,d1)...(lx,dx)...(ln,dn)], (lx,dx')) -> Dossier[(l1,d1)...(lx,dx')...(ln,dn)]
+ADD (Folder[(l1,d1)...(lx,dx)...(ln,dn)], (lx,dx')) -> Folder[(l1,d1)...(lx,dx ')...(ln,dn)]
 */
 
 // Handle empty labels in a consistent way

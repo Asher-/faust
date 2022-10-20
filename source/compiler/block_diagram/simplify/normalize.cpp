@@ -23,9 +23,9 @@
 #include <list>
 #include <map>
 
-#include "aterm.hh"
+#include "additive_term.hh"
 #include "exception.hh"
-#include "mterm.hh"
+#include "multiply_term.hh"
 #include "normalize.hh"
 #include "ppsig.hh"
 #include "signals.hh"

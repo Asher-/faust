@@ -495,7 +495,7 @@ struct global {
     map<string, int> gIDCounters;
 
     // internal state during drawing
-    Occurrences*      gOccurrences;
+    Occurrences*      gOccurrences; // FIX - only used for Draw
     bool              gFoldingFlag;     // true with complex block-diagrams
     stack<Tree>       gPendingExp;      // Expressions that need to be drawn
     set<Tree>         gDrawnExp;        // Expressions drawn or scheduled so far

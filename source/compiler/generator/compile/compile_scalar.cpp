@@ -89,7 +89,7 @@ Tree ScalarCompiler::prepare(Tree LS)
 {
     startTiming("prepare");
     Tree L1 = simplifyToNormalForm(LS);
-    
+
     // dump normal form
     if (gGlobal->gDumpNorm == 0) {
         cout << ppsig(L1) << endl;
@@ -98,45 +98,45 @@ Tree ScalarCompiler::prepare(Tree LS)
         ppsigShared(L1, cout);
         throw faustexception("Dump shared normal form finished...\n");
     }
-    
+
     startTiming("privatise");
     Tree L2 = privatise(L1);  // Un-share tables with multiple writers
     endTiming("privatise");
-    
+
     startTiming("conditionAnnotation");
     conditionAnnotation(L2);
     endTiming("conditionAnnotation");
-    
+
     startTiming("recursivnessAnnotation");
     recursivnessAnnotation(L2);  // Annotate L2 with recursivness information
     endTiming("recursivnessAnnotation");
-    
+
     startTiming("L2 typeAnnotation");
     typeAnnotation(L2, true);     // Annotate L2 with type information and check causality
     endTiming("L2 typeAnnotation");
-    
+
     startTiming("sharingAnalysis");
     sharingAnalysis(L2);         // Annotate L2 with sharing count
     endTiming("sharingAnalysis");
-    
+
     startTiming("occurrences analysis");
     delete fOccMarkup;
     fOccMarkup = new old_OccMarkup(fConditionProperty);
     fOccMarkup->mark(L2);        // Annotate L2 with occurrences analysis
     endTiming("occurrences analysis");
-    
+
     endTiming("prepare");
-    
+
     if (gGlobal->gDrawSignals) {
         ofstream dotfile(subst("$0-sig.dot", gGlobal->makeDrawPath()).c_str());
         sigToGraph(L2, dotfile);
     }
-    
+
     // Generate VHDL if -vhdl option is set
     if (gGlobal->gVHDLSwitch) {
         sigVHDLFile(fOccMarkup, L2, gGlobal->gVHDLTrace);
     }
-    
+
     return L2;
 }
 
@@ -589,7 +589,7 @@ string ScalarCompiler::generateBinOp(Tree sig, int opcode, Tree arg1, Tree arg2)
     int p0 = gBinOpTable[opcode]->fPriority;
     int p1 = binopPriority(arg1);
     int p2 = binopPriority(arg2);
-    
+
     bool np1 = (p0 > p1) || isLogicalOpcode(opcode);
     bool np2 = (p0 > p2) || isLogicalOpcode(opcode);
 
@@ -1185,7 +1185,7 @@ string ScalarCompiler::generatePrefix(Tree sig, Tree x, Tree e)
     fClass->addInitCode(subst("$0 = $1;", vperm, CS(x)));
 
     fClass->addExecCode(Statement(getConditionCode(sig), subst("$0 \t$1 = $2;", type, vtemp, vperm)));
-    
+
     /*
     string res = CS(e);
     string vname;
@@ -1195,7 +1195,7 @@ string ScalarCompiler::generatePrefix(Tree sig, Tree x, Tree e)
         faustassert(false);
     }
     */
-    
+
     fClass->addExecCode(Statement(getConditionCode(sig), subst("$0 = $1;", vperm, CS(e))));
     return vtemp;
 }
