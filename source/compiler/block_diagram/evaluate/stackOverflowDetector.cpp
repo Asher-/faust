@@ -22,32 +22,20 @@
 #include <cmath>
 
 #include "exception.hh"
-#include "loopDetector.hh"
+#include "stackOverflowDetector.hh"
 #include "ppbox.hh"
 
-bool loopDetector::detect(Tree t)
+void stackOverflowDetector::detect()
 {
-    fPhase++;
-    int w      = fPhase % fBuffersize;
-    fBuffer[w] = t;
-    if ((fPhase % fCheckperiod) == 0) {
-        // time to check for a cycle
-        for (int i = 1; i < fBuffersize; i++) {
-            int r = w - i;
-            if (r < 0) {
-                r += fBuffersize;
-            }
-            faustassert(r >= 0);
-            faustassert(r < fBuffersize);
-            faustassert(r != w);
-            if (fBuffer[r] == t) {
-                stringstream error;
-                error << "ERROR : after " << fPhase
-                      << " evaluation steps, the compiler has detected an endless evaluation cycle of " << i
-                      << " steps\n";
-                throw faustexception(error.str());
-            }
+    int   stack       = 0;
+    void* cur_address = &stack;
+    if (fFirstCall) {
+        fFirstCall         = false;
+        fFirstStackAddress = cur_address;
+    } else {
+        long long current_stack_size = (long long)fFirstStackAddress - (long long)cur_address;
+        if (std::abs(current_stack_size - fMaxStackSize) < STACK_FRAME) {
+            throw faustexception("ERROR : stack overflow in eval\n");
         }
     }
-    return false;
 }

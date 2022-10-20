@@ -1,3 +1,4 @@
+
 /************************************************************************
  ************************************************************************
     FAUST compiler
@@ -19,35 +20,32 @@
  ************************************************************************
  ************************************************************************/
 
-#include <cmath>
+#ifndef __STACKOVERFLOWDETECTOR__
+#define __STACKOVERFLOWDETECTOR__
 
-#include "exception.hh"
-#include "loopDetector.hh"
-#include "ppbox.hh"
+/**
+ * \file stackOverflowDetector.hh
+ *
+ * Detect evaluation loops
+ *
+ **/
 
-bool loopDetector::detect(Tree t)
-{
-    fPhase++;
-    int w      = fPhase % fBuffersize;
-    fBuffer[w] = t;
-    if ((fPhase % fCheckperiod) == 0) {
-        // time to check for a cycle
-        for (int i = 1; i < fBuffersize; i++) {
-            int r = w - i;
-            if (r < 0) {
-                r += fBuffersize;
-            }
-            faustassert(r >= 0);
-            faustassert(r < fBuffersize);
-            faustassert(r != w);
-            if (fBuffer[r] == t) {
-                stringstream error;
-                error << "ERROR : after " << fPhase
-                      << " evaluation steps, the compiler has detected an endless evaluation cycle of " << i
-                      << " steps\n";
-                throw faustexception(error.str());
-            }
-        }
-    }
-    return false;
-}
+#include "boxes.hh"
+
+#define MAX_STACK_SIZE 1024 * 1024 * 16  // 16 MO
+#define STACK_FRAME 65536 * 4
+
+class stackOverflowDetector {
+   private:
+    long fMaxStackSize;
+
+    bool  fFirstCall;
+    void* fFirstStackAddress;
+
+   public:
+    stackOverflowDetector(long size) : fMaxStackSize(size), fFirstCall(true), fFirstStackAddress(nullptr) {}
+
+    void detect();
+};
+
+#endif

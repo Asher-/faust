@@ -37,6 +37,7 @@
 #include "exception.hh"
 #include "instructions_type.hh"
 #include "loopDetector.hh"
+#include "stackOverflowDetector.hh"
 #include "occurrences.hh"
 #include "property.hh"
 #include "sigtype.hh"
