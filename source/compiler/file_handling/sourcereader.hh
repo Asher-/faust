@@ -35,26 +35,29 @@ void declareMetadata(Tree key, Tree value);
 void declareDefinitionMetadata(Tree id, Tree key, Tree value);
 void declareDoc(Tree t);
 
+FILE* fopenSearch(const char* filename, std::string& fullpath);
+std::string stripEnd(const std::string& name, const std::string& ext);
+
 /**
  * Helper class used for additional DSP of library files needed in the parsing process.
 */
-class SourceReader 
+class SourceReader
 {
-    
+
     private:
-    
+
         map<string, Tree> fFileCache;
         vector<string> fFilePathnames;
-    
+
         Tree parseLocal(const char* fname);
         Tree expandRec(Tree ldef, set<string>& visited, Tree lresult);
         bool cached(string fname);
         Tree parseFile(const char* fname);
         Tree parseString(const char* fname);
         void checkName();
-        
+
     public:
-    
+
         void init()
         {
             fFileCache.clear();
@@ -67,4 +70,4 @@ class SourceReader
 
 };
 
-#endif 
+#endif

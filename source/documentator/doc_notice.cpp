@@ -29,7 +29,7 @@
 #include "compatibility.hh"
 #include "doc_lang.hh"
 #include "doc_notice.hh"
-#include "enrobage.hh"
+#include "architectures.hh"
 #include "global.hh"
 
 static void initDocNoticeKeySet();

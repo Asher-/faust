@@ -94,6 +94,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/evaluate
 	${SRCDIR}/compiler
 	${SRCDIR}/compiler/generator
+	${SRCDIR}/compiler/faust
 	${SRCDIR}/compiler/tlib
 	${SRCDIR}/target/dlang
 	${SRCDIR}/target/c

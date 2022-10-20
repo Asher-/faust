@@ -26,7 +26,7 @@
 #include <cctype>
 #include <climits>
 
-#include "enrobage.hh"
+#include "architectures.hh"
 #include "compatibility.hh"
 #include "exception.hh"
 #include "garbageable.hh"
@@ -98,30 +98,30 @@ static string& replaceClassName(string& str)
  * architecture files
  */
 class myparser {
-    
+
    private:
-    
+
     string str;
     size_t N;
     size_t p;
 
    public:
-    
+
     myparser(const string& s) : str(s), N(s.length()), p(0) {}
-    
+
     bool skip()
     {
         while (p < N && isspace(str[p])) p++;
         return true;
     }
-    
+
     bool parse(const string& s)
     {
         bool f;
         if ((f = (p == str.find(s, p)))) p += s.length();
         return f;
     }
-    
+
     bool filename(string& fname)
     {
         size_t saved = p;
@@ -213,7 +213,7 @@ static bool checkFile(const char* filename)
  * Try to open the file '<dir>/<filename>'. If it succeed, it stores the full pathname
  * of the file into <fullpath>
  */
-static FILE* fopenAt(string& fullpath, const char* dir, const char* filename)
+FILE* fopenAt(string& fullpath, const char* dir, const char* filename)
 {
     int  err;
     char olddirbuffer[FAUST_PATH_MAX];
@@ -257,47 +257,12 @@ static FILE* fopenAt(string& fullpath, const char* dir, const char* filename)
  * Try to open the file '<dir>/<filename>'. If it succeed, it stores the full pathname
  * of the file into <fullpath>
  */
-static FILE* fopenAt(string& fullpath, const string& dir, const char* filename)
+FILE* fopenAt(string& fullpath, const string& dir, const char* filename)
 {
     return fopenAt(fullpath, dir.c_str(), filename);
 }
 
-/**
- * Test absolute pathname.
- */
-static bool isAbsolutePathname(const string& filename)
-{
-    // test windows absolute pathname "x:xxxxxx"
-    if (filename.size() > 1 && filename[1] == ':') return true;
 
-    // test unix absolute pathname "/xxxxxx"
-    if (filename.size() > 0 && filename[0] == '/') return true;
-
-    return false;
-}
-
-/**
- * Build a full pathname of <filename>.
- * <fullpath> = <currentdir>/<filename>
- */
-static void buildFullPathname(string& fullpath, const char* filename)
-{
-    char old[FAUST_PATH_MAX];
-
-    if (isAbsolutePathname(filename)) {
-        fullpath = filename;
-    } else {
-        char* newdir = getcwd(old, FAUST_PATH_MAX);
-        if (!newdir) {
-            stringstream error;
-            error << "ERROR : getcwd : " << strerror(errno) << endl;
-            throw faustexception(error.str());
-        }
-        fullpath = newdir;
-        fullpath += '/';
-        fullpath += filename;
-    }
-}
 
 //---------------------------
 // Exported public functions
@@ -311,42 +276,17 @@ unique_ptr<ifstream> openArchStream(const char* filename)
     char  buffer[FAUST_PATH_MAX];
     char* old = getcwd(buffer, FAUST_PATH_MAX);
     int   err;
-    
+
     TRY_OPEN(filename);
     for (string dirname : gGlobal->gArchitectureDirList) {
         if ((err = chdir(dirname.c_str())) == 0) {
             TRY_OPEN(filename);
         }
     }
-    
+
     return nullptr;
 }
 
-/**
- * Try to open the file <filename> searching in various directories. If succesful
- * place its full pathname in the string <fullpath>
- */
-FILE* fopenSearch(const char* filename, string& fullpath)
-{
-    FILE* f;
-
-    // tries to open file with its filename
-    if ((f = fopen(filename, "r"))) {
-        buildFullPathname(fullpath, filename);
-        // enrich the supplied directories paths with the directory containing the loaded file,
-        // so that local files relative to this added directory can then be loaded
-        gGlobal->gImportDirList.push_back(fileDirname(fullpath));
-        return f;
-    }
- 
-    // otherwise search file in user supplied directories paths
-    for (string dirname : gGlobal->gImportDirList) {
-        if ((f = fopenAt(fullpath, dirname, filename))) {
-            return f;
-        }
-    }
-    return nullptr;
-}
 
 /**
  * filebasename returns the basename of a path.
@@ -413,19 +353,10 @@ string fileDirname(const string& name)
     return dirname;
 }
 
-string stripEnd(const string& name, const string& ext)
-{
-    if (name.length() >= 4 && name.substr(name.length() - ext.length()) == ext) {
-        return name.substr(0, name.length() - ext.length());
-    } else {
-        return name;
-    }
-}
-
 bool checkURL(const char* filename)
 {
     char* fileBuf = nullptr;
-    
+
     // Tries to open as an URL for a local file
     if (strstr(filename, "file://") != 0) {
         // Tries to open as a regular file after removing 'file://'
@@ -456,25 +387,25 @@ void streamCopyLicense(istream& src, ostream& dst, const string& exceptiontag)
 {
     string         line;
     vector<string> H;
-    
+
     // skip blank lines
     while (getline(src, line) && isBlank(line)) dst << line << endl;
-    
+
     // first non blank should start a comment
     if (line.find("/*") == string::npos) {
         dst << line << endl;
         return;
     }
-    
+
     // copy the header into H
     bool remove = false;
     H.push_back(line);
-    
+
     while (getline(src, line) && line.find("*/") == string::npos) {
         H.push_back(line);
         if (line.find(exceptiontag) != string::npos) remove = true;
     }
-    
+
     // copy the header unless explicitely granted to remove it
     if (!remove) {
         // copy the header

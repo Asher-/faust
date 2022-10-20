@@ -30,14 +30,14 @@ void streamCopyUntilEnd(std::istream& src, std::ostream& dst);
 
 std::unique_ptr<std::ifstream> openArchStream(const char* filename);
 
-FILE* fopenSearch(const char* filename, std::string& fullpath);
 
 bool checkURL(const char* filename);
-		
+
 const char* fileBasename(const char* name);         // returns a pointer on the basename part of name
 
 std::string fileDirname(const std::string& name);   // allocate a string containing the dirname of name
 
-std::string stripEnd(const std::string& name, const std::string& ext);
-
 std::string makeOutputFile(const std::string& fname);
+
+FILE* fopenAt(std::string& fullpath, const char* dir, const char* filename);
+FILE* fopenAt(std::string& fullpath, const std::string& dir, const char* filename);

@@ -40,7 +40,7 @@
 #include "description.hh"
 #include "doc.hh"
 #include "drawschema.hh"
-#include "enrobage.hh"
+#include "architectures.hh"
 #include "errormsg.hh"
 #include "eval.hh"
 #include "exception.hh"
@@ -198,7 +198,7 @@ static void enumBackends(ostream& out)
 #ifdef JAX_BUILD
     out << dspto << "JAX" << endl;
 #endif
-    
+
 #ifdef JULIA_BUILD
     out << dspto << "Julia" << endl;
 #endif
@@ -1595,7 +1595,7 @@ static void compileJAX(Tree signals, int numInputs, int numOutputs, ostream* out
     gGlobal->gNeedManualPow        = false;
     gGlobal->gFAUSTFLOAT2Internal  = true;
     container = JAXCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
-    
+
     if (gGlobal->gVectorSwitch) {
         new_comp = new DAGInstructionsCompiler(container);
     } else {
@@ -2230,13 +2230,13 @@ LIBFAUST_API Tree DSPToBoxes(const string& name_app, const string& dsp_content, 
     int argc1 = 0;
     const char* argv1[64];
     argv1[argc1++] = "faust";
-    
+
     // Copy arguments
     for (int i = 0; i < argc; i++) {
         argv1[argc1++] = argv[i];
     }
     argv1[argc1] = nullptr;  // NULL terminated argv
-    
+
     /****************************************************************
      1 - process command line
      *****************************************************************/
@@ -2549,14 +2549,13 @@ LIBFAUST_API string createSourceFromSignals(const string& name_app, tvec signals
     argv1[argc1++] = lang.c_str();
     argv1[argc1++] = "-o";
     argv1[argc1++] = "string";
-    
+
     // Copy arguments
     for (int i = 0; i < argc; i++) {
         argv1[argc1++] = argv[i];
     }
     argv1[argc1] = nullptr;  // NULL terminated argv
-    
-    dsp_factory_base* factory = createFactory(name_app, signals, argc1, argv1, error_msg);
+    dsp_factory_base* factory = createFactory(name_app.c_str(), signals, argc1, argv1, error_msg);
     if (factory) {
         // Print the textual class
         stringstream str;

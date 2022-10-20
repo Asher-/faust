@@ -42,13 +42,86 @@
 #include "compatibility.hh"
 #include "sourcereader.hh"
 #include "sourcefetcher.hh"
-#include "enrobage.hh"
 #include "ppbox.hh"
 #include "exception.hh"
 #include "global.hh"
 #include "Text.hh"
 
+#include "architectures.hh"
+
 using namespace std;
+
+/**
+ * Test absolute pathname.
+ */
+static bool isAbsolutePathname(const string& filename)
+{
+    // test windows absolute pathname "x:xxxxxx"
+    if (filename.size() > 1 && filename[1] == ':') return true;
+
+    // test unix absolute pathname "/xxxxxx"
+    if (filename.size() > 0 && filename[0] == '/') return true;
+
+    return false;
+}
+
+/**
+ * Build a full pathname of <filename>.
+ * <fullpath> = <currentdir>/<filename>
+ */
+static void buildFullPathname(string& fullpath, const char* filename)
+{
+    char old[FAUST_PATH_MAX];
+
+    if (isAbsolutePathname(filename)) {
+        fullpath = filename;
+    } else {
+        char* newdir = getcwd(old, FAUST_PATH_MAX);
+        if (!newdir) {
+            stringstream error;
+            error << "ERROR : getcwd : " << strerror(errno) << endl;
+            throw faustexception(error.str());
+        }
+        fullpath = newdir;
+        fullpath += '/';
+        fullpath += filename;
+    }
+}
+
+/**
+ * Try to open the file <filename> searching in various directories. If succesful
+ * place its full pathname in the string <fullpath>
+ */
+FILE* fopenSearch(const char* filename, string& fullpath)
+{
+    FILE* f;
+
+    // tries to open file with its filename
+    if ((f = fopen(filename, "r"))) {
+        buildFullPathname(fullpath, filename);
+        // enrich the supplied directories paths with the directory containing the loaded file,
+        // so that local files relative to this added directory can then be loaded
+        gGlobal->gImportDirList.push_back(fileDirname(fullpath));
+        return f;
+    }
+
+    // otherwise search file in user supplied directories paths
+    for (string dirname : gGlobal->gImportDirList) {
+        if ((f = fopenAt(fullpath, dirname, filename))) {
+            return f;
+        }
+    }
+    return nullptr;
+}
+
+string stripEnd(const string& name, const string& ext)
+{
+    if (name.length() >= 4 && name.substr(name.length() - ext.length()) == ext) {
+        return name.substr(0, name.length() - ext.length());
+    } else {
+        return name;
+    }
+}
 
 /****************************************************************
  Parser variables
@@ -219,7 +292,7 @@ Tree SourceReader::parseFile(const char* fname)
     yyerr = 0;
     yylineno = 1;
     yyfilename = fname;
- 
+
     // We are requested to parse an URL file
     if (isURL(yyfilename)) {
         char* buffer = nullptr;
@@ -269,7 +342,7 @@ Tree SourceReader::parseFile(const char* fname)
         if (isFILE(yyfilename)) {
             yyfilename = &yyfilename[7]; // skip 'file://'
         }
-        
+
         // Try to open local file
         string fullpath1;
         FILE* tmp_file = yyin = fopenSearch(yyfilename, fullpath1); // Keep file to properly close it
