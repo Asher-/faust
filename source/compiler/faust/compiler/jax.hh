@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_JAX_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef JAX_BUILD
 #include "jax_code_container.hh"
@@ -31,9 +32,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct JAX
+    struct JAX : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       {
       #ifdef JAX_BUILD
           gGlobal->gAllowForeignFunction = true;  // foreign functions are supported (we use jax.random.PRNG for example)
@@ -55,6 +56,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang jax not supported since JAX backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
     };
 

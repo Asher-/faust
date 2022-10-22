@@ -67,6 +67,8 @@
 #include "faust/cli.hh"
 #include "faust/controller.hh"
 
+#include "faust/compiler/common.hh"
+
 #include "faust/compiler/c.hh"
 #include "faust/compiler/clang.hh"
 #include "faust/compiler/cpp.hh"
@@ -93,7 +95,6 @@ using namespace std;
  *****************************************************************/
 
 static unique_ptr<ifstream> injcode;
-static unique_ptr<ifstream> enrobage;
 static unique_ptr<ostream>  helpers;
 
 // Old CPP compiler
@@ -1006,28 +1007,7 @@ void includeFile(const string& file, ostream& dst)
     }
 }
 
-void injectCode(unique_ptr<ifstream>& enrobage, ostream& dst)
-{
-    /****************************************************************
-     1.7 - Inject code instead of compile
-     *****************************************************************/
 
-    // Check if this is a code injection
-    if (gGlobal->gInjectFlag) {
-        if (gGlobal->gArchFile == "") {
-            stringstream error;
-            error << "ERROR : no architecture file specified to inject \"" << gGlobal->gInjectFile << "\"" << endl;
-            throw faustexception(error.str());
-        } else {
-            streamCopyUntil(*enrobage.get(), dst, "<<includeIntrinsic>>");
-            container->printMacros(dst, 0);
-            streamCopyUntil(*enrobage.get(), dst, "<<includeclass>>");
-            streamCopyUntilEnd(*injcode.get(), dst);
-            streamCopyUntilEnd(*enrobage.get(), dst);
-        }
-        throw faustexception("");
-    }
-}
 
 
 
@@ -1052,8 +1032,9 @@ void createHelperFile(const string& outpath)
 
 
 
-void generateCodeAux1(unique_ptr<ostream>& dst)
+void generateCodeAux1(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& injcode, unique_ptr<ostream>& dst)
 {
+  unique_ptr<ifstream> enrobage;
     if (gGlobal->gArchFile != "") {
         if ((enrobage = openArchStream(gGlobal->gArchFile.c_str()))) {
             if (gGlobal->gNamespace != "" && gGlobal->gOutputLang == "cpp")
@@ -1066,7 +1047,7 @@ void generateCodeAux1(unique_ptr<ostream>& dst)
 #endif
 
             // Possibly inject code
-            injectCode(enrobage, *dst.get());
+            ::Faust::Compiler::Common::injectCode(compiler_return, injcode, enrobage, *dst.get());
 
             container->printHeader();
 
@@ -1138,92 +1119,6 @@ void generateCodeAux1(unique_ptr<ostream>& dst)
     }
 }
 
-#ifdef OCPP_BUILD
-
-void printHeader(ostream& dst)
-{
-    // defines the metadata we want to print as comments at the begin of in the C++ file
-    set<Tree> selectedKeys;
-    selectedKeys.insert(tree("name"));
-    selectedKeys.insert(tree("author"));
-    selectedKeys.insert(tree("copyright"));
-    selectedKeys.insert(tree("license"));
-    selectedKeys.insert(tree("version"));
-
-    dst << "//----------------------------------------------------------" << endl;
-    for (const auto& i : gGlobal->gMetaDataSet) {
-        if (selectedKeys.count(i.first)) {
-            dst << "// " << *(i.first);
-            const char* sep = ": ";
-            for (const auto& j : i.second) {
-                dst << sep << *j;
-                sep = ", ";
-            }
-            dst << endl;
-        }
-    }
-
-    dst << "//" << endl;
-    dst << "// Code generated with Faust " << FAUSTVERSION << " (https://faust.grame.fr)" << endl;
-    dst << "//----------------------------------------------------------" << endl << endl;
-}
-
-void generateCodeAux2(unique_ptr<ostream>& dst)
-{
-    // Check for architecture file
-    if (gGlobal->gArchFile != "") {
-        if ((enrobage = openArchStream(gGlobal->gArchFile.c_str())) == nullptr) {
-            stringstream error;
-            error << "ERROR : can't open architecture file " << gGlobal->gArchFile << endl;
-            throw faustexception(error.str());
-        }
-    }
-
-    // Possibly inject code
-    injectCode(enrobage, *dst.get());
-
-    printHeader(*dst);
-    old_comp->getClass()->printLibrary(*dst.get());
-    old_comp->getClass()->printIncludeFile(*dst.get());
-    old_comp->getClass()->printAdditionalCode(*dst.get());
-
-    if (gGlobal->gArchFile != "") {
-        streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
-
-        if (gGlobal->gSchedulerSwitch) {
-            unique_ptr<ifstream> scheduler_include = openArchStream("old-scheduler.cpp");
-            if (scheduler_include) {
-                streamCopyUntilEnd(*scheduler_include, *dst.get());
-            } else {
-                throw("ERROR : can't include \"old-scheduler.cpp\", file not found>\n");
-            }
-        }
-
-        streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
-        printfloatdef(*dst.get());
-        old_comp->getClass()->println(0, *dst.get());
-        streamCopyUntilEnd(*enrobage.get(), *dst.get());
-
-    } else {
-        printfloatdef(*dst.get());
-        old_comp->getClass()->println(0, *dst.get());
-    }
-
-    /****************************************************************
-     9 - generate the task graph file in dot format
-     *****************************************************************/
-
-    if (gGlobal->gGraphSwitch) {
-        ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
-        old_comp->getClass()->printGraphDotFormat(dotfile);
-    }
-
-    if (gGlobal->gOutputFile == "") {
-        cout << dynamic_cast<ostringstream*>(dst.get())->str();
-    }
-}
-
-#endif
 
 void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
 {
@@ -1262,40 +1157,41 @@ void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
      * create container
      ****************************************************************/
 
+    ::Faust::Compiler::Common* compiler(nullptr);
     if (gGlobal->gOutputLang == "cllvm") {
-        compiler_return = ::Faust::Compiler::Clang::compile(signals, numInputs, numOutputs);
+        compiler = new ::Faust::Compiler::Clang;
     } else if (gGlobal->gOutputLang == "llvm") {
-        compiler_return = ::Faust::Compiler::LLVM::compile(signals, numInputs, numOutputs, generate);
+        compiler = new ::Faust::Compiler::LLVM;
     } else if (gGlobal->gOutputLang == "interp") {
-        compiler_return = ::Faust::Compiler::Interpreter::compile(signals, numInputs, numOutputs);
+        compiler = new ::Faust::Compiler::Interpreter;
     } else if (gGlobal->gOutputLang == "fir") {
-        compiler_return = ::Faust::Compiler::FIR::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::FIR;
     } else if (gGlobal->gOutputLang == "c") {
-        compiler_return = ::Faust::Compiler::C::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::C;
     } else if (gGlobal->gOutputLang == "cpp") {
-        compiler_return = ::Faust::Compiler::CPP::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::CPP;
     } else if (gGlobal->gOutputLang == "ocpp") {
-        compiler_return = ::Faust::Compiler::OCPP::compile(signals, numInputs, numOutputs);
+        compiler = new ::Faust::Compiler::OCPP;
     } else if (gGlobal->gOutputLang == "rust") {
-        compiler_return = ::Faust::Compiler::Rust::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::Rust;
     } else if (gGlobal->gOutputLang == "java") {
-        compiler_return = ::Faust::Compiler::Java::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::Java;
     } else if (gGlobal->gOutputLang == "jax") {
-        compileJAX(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::JAX;
     } else if (gGlobal->gOutputLang == "temp") {
         compileTemplate(signals, numInputs, numOutputs, dst.get());
     } else if (gGlobal->gOutputLang == "julia") {
-        compiler_return = ::Faust::Compiler::Julia::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::Julia;
     } else if (gGlobal->gOutputLang == "csharp") {
         compiler_return = ::Faust::Compiler::CSharp::compile(signals, numInputs, numOutputs, dst.get());
     } else if (startWith(gGlobal->gOutputLang, "cmajor")) {
         compiler_return = ::Faust::Compiler::Cmajor::compile(signals, numInputs, numOutputs, dst.get());
     } else if (startWith(gGlobal->gOutputLang, "wast")) {
-        compiler_return = ::Faust::Compiler::WAST::compile(signals, numInputs, numOutputs, dst.get(), outpath);
+        compiler = new ::Faust::Compiler::WAST;
     } else if (startWith(gGlobal->gOutputLang, "wasm")) {
-        compiler_return = ::Faust::Compiler::WASM::compile(signals, numInputs, numOutputs, dst.get(), outpath);
+        compiler = new ::Faust::Compiler::WASM;
     } else if (startWith(gGlobal->gOutputLang, "dlang")) {
-        compiler_return = ::Faust::Compiler::Dlang::compile(signals, numInputs, numOutputs, dst.get());
+        compiler = new ::Faust::Compiler::Dlang;
     } else {
         stringstream error;
         error << "ERROR : cannot find backend for "
@@ -1303,16 +1199,18 @@ void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
         throw faustexception(error.str());
     }
 
+    compiler_return = compiler->compile(signals, numInputs, numOutputs, dst.get(), outpath);
+
     /****************************************************************
      * generate output file
      ****************************************************************/
 
     if (new_comp) {
-        generateCodeAux1(dst);
+        generateCodeAux1(compiler_return, injcode, dst);
     }
 #ifdef OCPP_BUILD
     else if (old_comp) {
-        generateCodeAux2(dst);
+        ::Faust::Compiler::OCPP::generateCode(compiler_return, injcode, dst);
     }
 #endif
     else {

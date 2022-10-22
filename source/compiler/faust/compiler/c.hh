@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_C_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 #include "faust/compiler/return.hh"
 
 #ifdef C_BUILD
@@ -32,9 +33,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct C
+    struct C : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       {
       #ifdef C_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -53,6 +54,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang c not supported since C backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
     };
 
   }

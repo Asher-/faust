@@ -1,4 +1,4 @@
-/************************************************************************
+ /************************************************************************
  ************************************************************************
     FAUST compiler
     Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
@@ -23,13 +23,14 @@
 #define __FAUST_COMPILE_CLANG_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct Clang
+    struct Clang : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
       {
       #ifdef CLANG_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -52,7 +53,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang cllcm not supported since LLVM backend is not built\n");
       #endif
       }
-
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs); };
     };
 
   }

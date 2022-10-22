@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_WASM_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef WASM_BUILD
 #include "wasm_code_container.hh"
@@ -32,11 +33,13 @@
 namespace Faust {
   namespace Compiler {
 
-    struct WASM
+    struct WASM : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
       {
       #ifdef WASM_BUILD
+          assert(out!=nullptr);
+          assert(outpath!="");
           static ::Faust::Compiler::Return compiler_return;
 
           gGlobal->gAllowForeignFunction = false;  // No foreign functions
@@ -77,6 +80,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang wasm not supported since WASM backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr, ""); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr, ""); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs, out, ""); };
 
     };
 

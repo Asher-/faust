@@ -23,6 +23,8 @@
 #define __FAUST_COMPILE_CPP_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
+
 
 #ifdef CPP_BUILD
 #include "cpp_code_container.hh"
@@ -32,9 +34,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct CPP
+    struct CPP : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       {
       #ifdef CPP_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -55,6 +57,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang cpp not supported since CPP backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
     };
 

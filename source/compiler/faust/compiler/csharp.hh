@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_CSHARP_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef CSHARP_BUILD
 #include "csharp_code_container.hh"
@@ -31,9 +32,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct CSharp
+    struct CSharp : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       {
       #ifdef CSHARP_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -55,6 +56,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang csharp not supported since CSharp backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
     };
 

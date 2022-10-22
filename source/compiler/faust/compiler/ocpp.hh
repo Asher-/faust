@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_OCPP_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef OCPP_BUILD
 #include "compile_scalar.hh"
@@ -33,9 +34,99 @@
 namespace Faust {
   namespace Compiler {
 
-    struct OCPP
+    struct OCPP : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      #ifdef OCPP_BUILD
+
+      static unique_ptr<ifstream> enrobage;
+
+      static void printHeader(ostream& dst)
+      {
+          // defines the metadata we want to print as comments at the begin of in the C++ file
+          set<Tree> selectedKeys;
+          selectedKeys.insert(tree("name"));
+          selectedKeys.insert(tree("author"));
+          selectedKeys.insert(tree("copyright"));
+          selectedKeys.insert(tree("license"));
+          selectedKeys.insert(tree("version"));
+
+          dst << "//----------------------------------------------------------" << endl;
+          for (const auto& i : gGlobal->gMetaDataSet) {
+              if (selectedKeys.count(i.first)) {
+                  dst << "// " << *(i.first);
+                  const char* sep = ": ";
+                  for (const auto& j : i.second) {
+                      dst << sep << *j;
+                      sep = ", ";
+                  }
+                  dst << endl;
+              }
+          }
+
+          dst << "//" << endl;
+          dst << "// Code generated with Faust " << FAUSTVERSION << " (https://faust.grame.fr)" << endl;
+          dst << "//----------------------------------------------------------" << endl << endl;
+      }
+
+      static void generateCode(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& injcode, unique_ptr<ostream>& dst)
+      {
+          // Check for architecture file
+          if (gGlobal->gArchFile != "") {
+              if ((enrobage = openArchStream(gGlobal->gArchFile.c_str())) == nullptr) {
+                  stringstream error;
+                  error << "ERROR : can't open architecture file " << gGlobal->gArchFile << endl;
+                  throw faustexception(error.str());
+              }
+          }
+
+          // Possibly inject code
+          ::Faust::Compiler::Common::injectCode(compiler_return, injcode, enrobage, *dst.get());
+
+          printHeader(*dst);
+          compiler_return.old_comp->getClass()->printLibrary(*dst.get());
+          compiler_return.old_comp->getClass()->printIncludeFile(*dst.get());
+          compiler_return.old_comp->getClass()->printAdditionalCode(*dst.get());
+
+          if (gGlobal->gArchFile != "") {
+              streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
+
+              if (gGlobal->gSchedulerSwitch) {
+                  unique_ptr<ifstream> scheduler_include = openArchStream("old-scheduler.cpp");
+                  if (scheduler_include) {
+                      streamCopyUntilEnd(*scheduler_include, *dst.get());
+                  } else {
+                      throw("ERROR : can't include \"old-scheduler.cpp\", file not found>\n");
+                  }
+              }
+
+              streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
+              printfloatdef(*dst.get());
+              compiler_return.old_comp->getClass()->println(0, *dst.get());
+              streamCopyUntilEnd(*enrobage.get(), *dst.get());
+
+          } else {
+              printfloatdef(*dst.get());
+              compiler_return.old_comp->getClass()->println(0, *dst.get());
+          }
+
+          /****************************************************************
+           9 - generate the task graph file in dot format
+           *****************************************************************/
+
+          if (gGlobal->gGraphSwitch) {
+              ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
+              compiler_return.old_comp->getClass()->printGraphDotFormat(dotfile);
+          }
+
+          if (gGlobal->gOutputFile == "") {
+              cout << dynamic_cast<ostringstream*>(dst.get())->str();
+          }
+      }
+
+      #endif
+
+
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
       {
       #ifdef OCPP_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -55,6 +146,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang ocpp not supported since old CPP backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs); };
 
     };
 

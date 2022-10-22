@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_LLVM_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef LLVM_BUILD
 #include "clang_code_container.hh"
@@ -32,9 +33,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct LLVM
+    struct LLVM : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate)
       {
       #ifdef LLVM_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -65,6 +66,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, false); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs, false); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, false); };
 
     };
 

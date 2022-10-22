@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_INTERPRETER_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef INTERP_BUILD
 #include "interpreter_code_container.cpp"
@@ -31,9 +32,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct Interpreter
+    struct Interpreter : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
       {
       #ifdef INTERP_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -68,6 +69,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang interp not supported since Interpreter backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs); };
 
     };
 

@@ -23,6 +23,7 @@
 #define __FAUST_COMPILE_SOUL_HH__
 
 #include "faust.hh"
+#include "faust/compiler/common.hh"
 
 #ifdef SOUL_BUILD
 #include "soul_code_container.hh"
@@ -31,9 +32,9 @@
 namespace Faust {
   namespace Compiler {
 
-    struct Soul
+    struct Soul : public Common
     {
-      static ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       {
       #ifdef SOUL_BUILD
           static ::Faust::Compiler::Return compiler_return;
@@ -64,6 +65,9 @@ namespace Faust {
           throw faustexception("ERROR : -lang soul not supported since SOUL backend is not built\n");
       #endif
       }
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
     };
 
