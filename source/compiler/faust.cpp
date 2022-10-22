@@ -94,9 +94,6 @@ using namespace std;
  Global context
  *****************************************************************/
 
-static unique_ptr<ifstream> injcode;
-static unique_ptr<ostream>  helpers;
-
 // Old CPP compiler
 #ifdef OCPP_BUILD
 static Compiler* old_comp = nullptr;
@@ -112,72 +109,6 @@ global* gGlobal = nullptr;
 
 // Timing can be used outside of the scope of 'gGlobal'
 extern bool gTimingSwitch;
-
-string reorganizeCompilationOptions(int argc, const char* argv[]);
-
-void enumBackends(ostream& out)
-{
-    const char* dspto = "   DSP to ";
-#ifdef C_BUILD
-    out << dspto << "C" << endl;
-#endif
-
-#ifdef CPP_BUILD
-    out << dspto << "C++" << endl;
-#endif
-
-#ifdef CMAJOR_BUILD
-    out << dspto << "Cmajor" << endl;
-#endif
-
-#ifdef CSHARP_BUILD
-    out << dspto << "CSharp" << endl;
-#endif
-
-#ifdef DLANG_BUILD
-    out << dspto << "DLang" << endl;
-#endif
-
-#ifdef FIR_BUILD
-    out << dspto << "FIR" << endl;
-#endif
-
-#ifdef INTERP_BUILD
-    out << dspto << "Interpreter" << endl;
-#endif
-
-#ifdef JAVA_BUILD
-    out << dspto << "Java" << endl;
-#endif
-
-#ifdef JAX_BUILD
-    out << dspto << "JAX" << endl;
-#endif
-
-#ifdef JULIA_BUILD
-    out << dspto << "Julia" << endl;
-#endif
-
-#ifdef LLVM_BUILD
-    out << dspto << "LLVM IR" << endl;
-#endif
-
-#ifdef OCPP_BUILD
-    out << dspto << "old C++" << endl;
-#endif
-
-#ifdef RUST_BUILD
-    out << dspto << "Rust" << endl;
-#endif
-    
-#ifdef TEMPLATE_BUILD
-    out << dspto << "Template" << endl;
-#endif
-
-#ifdef WASM_BUILD
-    out << dspto << "WebAssembly (wast/wasm)" << endl;
-#endif
-}
 
 // Used to pass parameters and possibly return a result
 struct CallContext {
@@ -811,11 +742,6 @@ bool processCmdline(int argc, const char* argv[])
 /****************************************************************
                      Faust directories information
 *****************************************************************/
-#ifdef WIN32
-#define kPSEP '\\'
-#else
-#define kPSEP '/'
-#endif
 
 #ifndef LIBDIR
 #define LIBDIR "lib"
@@ -896,36 +822,31 @@ LIBFAUST_API unsigned int xtendedArity(Tree tree)
     return ((xtended*)userData)->arity();
 }
 
+LIBFAUST_API Tree DSPToBoxes(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[], int* inputs, int* outputs, std::string& error_msg)
+{
+    int argc_plus1 = 0;
+    const char* argv_plus1[64];
+    argv_plus1[argc_plus1++] = "faust";
+    for (int i = 0; i < argc; i++) {
+        argv_plus1[argc_plus1++] = argv[i];
+    }
+    argv_plus1[argc_plus1] = nullptr;  // NULL terminated argv
+    ::Faust::CLI faust_cli(argc_plus1, argv_plus1);
+    ::Faust::Controller::initFaustDirectories(argv_plus1[0]);
+    ::Faust::Compiler::Common* compiler = faust_cli.parse();
+    Tree boxes = compiler->DSPToBoxes(
+      name_app,
+      dsp_content,
+      inputs,
+      outputs,
+      error_msg
+    );
+    return boxes;
+}
+
 /****************************************************************
                                 MAIN
 *****************************************************************/
-
-/**
- * transform a filename "faust/example/noise.dsp" into
- * the corresponding fx name "noise"
- */
-string fxName(const string& filename)
-{
-    // determine position right after the last '/' or 0
-    size_t p1 = 0;
-    for (size_t i = 0; i < filename.size(); i++) {
-        if (filename[i] == '/') {
-            p1 = i + 1;
-        }
-    }
-
-    // determine position of the last '.'
-    size_t p2 = filename.size();
-    for (size_t i = p1; i < filename.size(); i++) {
-        if (filename[i] == '.') {
-            p2 = i;
-        }
-    }
-
-    return filename.substr(p1, p2 - p1);
-}
-
-
 
 void parseSourceFiles()
 {
@@ -1028,9 +949,6 @@ void createHelperFile(const string& outpath)
         helpers = unique_ptr<ostream>(new ostringstream());
     }
 }
-
-
-
 
 void generateCodeAux1(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& injcode, unique_ptr<ostream>& dst)
 {
@@ -1261,11 +1179,11 @@ void generateOutputFiles()
 
     if (gGlobal->gPrintXMLSwitch) {
         if (new_comp) {
-            printXML(new_comp->getDescription(), container->inputs(), container->outputs());
+            ::Faust::Compiler::Common::printXML(new_comp->getDescription(), container->inputs(), container->outputs());
         }
 #ifdef OCPP_BUILD
         else if (old_comp) {
-            printXML(old_comp->getDescription(), old_comp->getClass()->inputs(), old_comp->getClass()->outputs());
+            ::Faust::Compiler::Common::printXML(old_comp->getDescription(), old_comp->getClass()->inputs(), old_comp->getClass()->outputs());
         }
 #endif
         else {
@@ -1332,8 +1250,10 @@ static void* expandDSPInternal(void* arg)
       /****************************************************************
        1 - process command line
       *****************************************************************/
-      ::Faust::CLI::initFaustDirectories(argc, argv);
-      ::Faust::CLI::processCmdline(argc, argv);
+
+      ::Faust::CLI faust_cli(argc, argv);
+      ::Faust::Compiler::Common* compiler = faust_cli.parse();
+      compiler->_dspContent = dsp_content;
 
         /****************************************************************
          2 - parse source files
@@ -1345,7 +1265,7 @@ static void* expandDSPInternal(void* arg)
         ::Faust::Controller::initDocumentNames();
         ::Faust::Type::Float::init();
 
-        parseSourceFiles();
+        compiler->parseSourceFiles();
 
         /****************************************************************
          3 - evaluate 'process' definition
@@ -1363,6 +1283,8 @@ static void* expandDSPInternal(void* arg)
         gGlobal->gErrorMessage = e.Message();
         return nullptr;
     }
+
+  }
 }
 
 static void* evaluateBlockDiagram2(void* arg)

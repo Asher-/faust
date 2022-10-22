@@ -65,7 +65,7 @@ namespace Faust {
               WASMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out,
                                                  ((gGlobal->gOutputLang == "wasm") || (gGlobal->gOutputLang == "wasm-i") ||
                                                   (gGlobal->gOutputLang == "wasm-ib")));
-          createHelperFile(outpath);
+          this->createHelperFile(outpath);
 
           if (gGlobal->gVectorSwitch) {
               compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);

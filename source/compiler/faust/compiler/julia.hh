@@ -24,6 +24,7 @@
 
 #include "faust.hh"
 #include "faust/compiler/common.hh"
+#include "instructions_compiler1.hh"
 
 #ifdef JULIA_BUILD
 #include "julia_code_container.hh"

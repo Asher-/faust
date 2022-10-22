@@ -64,7 +64,6 @@ string wasm_dynamic_dsp_factory::generateWasmFromString2(const string& name_app,
         argv1[argc1++] = argv[i].c_str();
     }
     argv1[argc1] = nullptr;  // NULL terminated argv
-    
     return generateWasmFromString(name_app, dsp_content, argc1, argv1, wasm_dsp_factory::gErrorMessage, internal_memory);
 }
 
@@ -138,7 +137,6 @@ LIBFAUST_API wasm_dsp_factory* createWasmDSPFactoryFromSignals(const string& nam
         argv1[argc1++] = argv[i];
     }
     argv1[argc1] = nullptr;  // NULL terminated argv
-    
     dsp_factory_base* dsp_factory_aux = createFactory(name_app, signals, argc1, argv1, error_msg);
     if (dsp_factory_aux) {
         dsp_factory_aux->setName(name_app);
@@ -165,7 +163,6 @@ LIBFAUST_API string generateWasmFromString(const string& name_app, const string&
         argv1[argc1++] = argv[i];
     }
     argv1[argc1] = nullptr;  // NULL terminated argv
-    
     dsp_factory_base* dsp_factory_aux = createFactory(name_app, dsp_content, argc1, argv1, error_msg, true);
     return (dsp_factory_aux) ? dsp_factory_aux->getBinaryCode() : "";
 }
@@ -197,7 +194,7 @@ LIBFAUST_API wasm_dsp_factory* createWasmCDSPFactoryFromString2(const char* name
     strncpy(error_msg, error_msg_aux.c_str(), 4096);
     return factory;
 }
-    
+
 LIBFAUST_API wasm_dsp_factory* createWasmCDSPFactoryFromSignals2(const char* name_app, tvec signals,
                                                            int argc, const char* argv[], char* error_msg,
                                                            bool internal_memory)

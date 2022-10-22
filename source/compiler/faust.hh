@@ -52,8 +52,6 @@
  Global context
  *****************************************************************/
 
-void enumBackends(ostream& out);
-void* threadEvaluateBlockDiagram(void* arg);
 void* threadBoxPropagateSig(void* arg);
 
 /****************************************************************
@@ -64,22 +62,9 @@ bool isCmd(const char* cmd, const char* kw1);
 bool isCmd(const char* cmd, const char* kw1, const char* kw2);
 
 /****************************************************************
-                     Faust directories information
-*****************************************************************/
-
-void printLibDir();
-void printIncludeDir();
-void printArchDir();
-void printDspDir();
-void printPaths();
-
-/****************************************************************
                      Help and Version information
 *****************************************************************/
 
-void printVersion();
-void printHelp();
-void printDeclareHeader(ostream& dst);
 LIBFAUST_API const char* xtendedName(Tree tree);
 LIBFAUST_API unsigned int xtendedArity(Tree tree);
 
@@ -102,7 +87,6 @@ void compileJulia(Tree signals, int numInputs, int numOutputs, ostream* out);
 void compileJAX(Tree signals, int numInputs, int numOutputs, ostream* out);
 void compileCSharp(Tree signals, int numInputs, int numOutputs, ostream* out);
 void compileSOUL(Tree signals, int numInputs, int numOutputs, ostream* out);
-void createHelperFile(const string& outpath);
 void compileWAST(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath);
 void compileWASM(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath);
 void generateCodeAux1(unique_ptr<ostream>& dst);
@@ -111,7 +95,7 @@ void generateCodeAux2(unique_ptr<ostream>& dst);
 void generateCode(Tree signals, int numInputs, int numOutputs, bool generate);
 void printXML(Description* D, int inputs, int outputs);
 void generateOutputFiles();
-void expandDSPInternalAux(int argc, const char* argv[], ostream& out);
+void expandDSPInternalAux(ostream& out);
 string expandDSPInternal(int argc, const char* argv[], const char* name, const char* dsp_content);
 LIBFAUST_API Tree DSPToBoxes(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[], int* inputs, int* outputs, std::string& error_msg);
 void createFactoryAux(const char* name, const char* dsp_content, int argc, const char* argv[], bool generate);

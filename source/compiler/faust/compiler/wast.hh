@@ -60,7 +60,7 @@ namespace Faust {
           compiler_return.container =
               WASTCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out,
                                                  ((gGlobal->gOutputLang == "wast") || (gGlobal->gOutputLang == "wast-i")));
-          createHelperFile(outpath);
+          this->createHelperFile(outpath);
 
           if (gGlobal->gVectorSwitch) {
               compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);

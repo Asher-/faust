@@ -56,7 +56,7 @@ LIBFAUST_API interpreter_dsp_factory* createInterpreterDSPFactoryFromString(cons
     if ((expanded_dsp_content = sha1FromDSP(name_app, dsp_content, argc, argv, sha_key)) == "") {
         return nullptr;
     } else {
-     
+
         dsp_factory_table<SDsp_factory>::factory_iterator it;
         if (gInterpreterFactoryTable.getFactory(sha_key, it)) {
             SDsp_factory sfactory = (*it).first;
@@ -76,7 +76,6 @@ LIBFAUST_API interpreter_dsp_factory* createInterpreterDSPFactoryFromString(cons
                     argv1[argc1++] = argv[i];
                 }
                 argv1[argc1] = nullptr;  // NULL terminated argv
-                
                 dsp_factory_base* dsp_factory_aux = createFactory(name_app, dsp_content, argc1, argv1, error_msg, true);
                 if (dsp_factory_aux) {
                     dsp_factory_aux->setName(name_app);
@@ -113,7 +112,6 @@ LIBFAUST_API interpreter_dsp_factory* createInterpreterDSPFactoryFromSignals(con
             argv1[argc1++] = argv[i];
         }
         argv1[argc1] = nullptr;  // NULL terminated argv
-        
         dsp_factory_base* dsp_factory_aux = createFactory(name_app, signals, argc1, argv1, error_msg);
         if (dsp_factory_aux) {
             dsp_factory_aux->setName(name_app);
@@ -194,7 +192,7 @@ LIBFAUST_API interpreter_dsp_factory* createCInterpreterDSPFactoryFromBoxes(cons
     strncpy(error_msg, error_msg_aux.c_str(), 4096);
     return factory;
 }
-    
+
 #ifdef __cplusplus
 }
 #endif

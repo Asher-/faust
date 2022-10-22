@@ -46,11 +46,11 @@ extern std::vector<std::string> gWarningMessages;
  */
 
 struct dsp_factory_base {
- 
+
     virtual ~dsp_factory_base() {}
-    
+
     virtual void write(std::ostream* out, bool binary = false, bool compact = false) = 0;
-    
+
     virtual void writeHelper(std::ostream* out, bool binary = false, bool compact = false) {}  // Helper functions
 
     virtual std::string getName()                        = 0;
@@ -61,7 +61,7 @@ struct dsp_factory_base {
 
     virtual std::string getDSPCode()                        = 0;
     virtual void        setDSPCode(const std::string& code) = 0;
-    
+
     virtual std::string getCompileOptions() = 0;
     
     virtual std::vector<std::string> getWarningMessages() = 0;
@@ -75,7 +75,7 @@ struct dsp_factory_base {
     virtual void  destroy(void* ptr)    = 0;
 
     virtual void metadata(Meta* meta) = 0;
-   
+
     virtual std::string getBinaryCode() = 0;
 
     // Sub-classes will typically implement this method to create a factory from a stream
@@ -120,7 +120,7 @@ class dsp_factory_imp : public dsp_factory_base {
 
     std::string getDSPCode() { return fExpandedDSP; }
     void        setDSPCode(const std::string& code) { fExpandedDSP = code; }
-    
+
     virtual std::string getCompileOptions() { return ""; };
     
     virtual std::vector<std::string> getWarningMessages() { return gWarningMessages; }
@@ -152,7 +152,7 @@ class dsp_factory_imp : public dsp_factory_base {
             faustassert(false);
         }
     }
-  
+
     virtual void metadata(Meta* meta) { faustassert(false); }
 
     virtual void write(std::ostream* out, bool binary = false, bool compact = false) {}

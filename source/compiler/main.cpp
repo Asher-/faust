@@ -32,6 +32,8 @@ unsigned faust_alarm(unsigned seconds)
 #include "dsp_factory.hh"
 #include "global.hh"
 
+#include "faust/cli.hh"
+
 using namespace std;
 
 // Standalone compiler uses the real 'alarm' function
@@ -42,18 +44,30 @@ unsigned faust_alarm(unsigned seconds)
 
 int main(int argc, const char* argv[])
 {
-    string            error_msg;
-    dsp_factory_base* factory = createFactory("FaustDSP", "", argc, argv, error_msg, true);
-    // Possibly print warnings
-    if (factory) {
-        vector<string> warning_messages = factory->getWarningMessages();
-        if (gAllWarning && warning_messages.size() > 0) {
-            cerr << endl << "===== Warnings ======" << endl;
-            for (const auto& it : warning_messages) {
-                cerr << it << endl;
-            }
-            cerr << "=====================" << endl;
-        }
+    gGlobal = nullptr;
+
+    dsp_factory_base* factory{nullptr};
+
+    std::string  error_msg;
+    try {
+      ::Faust::CLI faust_cli(argc, argv);
+      ::Faust::Compiler::Common* compiler = faust_cli.parse();
+      compiler->createFactory();
+      error_msg = gGlobal->gErrorMsg;
+      factory   = gGlobal->gDSPFactory;
+      if (factory) {
+          vector<string> warning_messages = factory->getWarningMessages();
+          if (gAllWarning && warning_messages.size() > 0) {
+              cerr << endl << "===== Warnings ======" << endl;
+              for (const auto& it : warning_messages) {
+                  cerr << it << endl;
+              }
+              cerr << "=====================" << endl;
+          }
+      }
+    }
+    catch (faustexception& e) {
+      error_msg = e.Message();
     }
     delete factory;
     if (error_msg == "") {

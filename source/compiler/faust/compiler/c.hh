@@ -26,6 +26,9 @@
 #include "faust/compiler/common.hh"
 #include "faust/compiler/return.hh"
 
+#include "dag_instructions_compiler.hh"
+#include "instructions_compiler.hh"
+
 #ifdef C_BUILD
 #include "c_code_container.hh"
 #endif

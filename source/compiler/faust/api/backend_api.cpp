@@ -19,60 +19,47 @@
  ************************************************************************
  ************************************************************************/
 
-#include "signalVisitor.hh"
 #include "dsp_factory.hh"
 #include "global.hh"
 #include "faust.hh"
 #include "libfaust.h"
 #include "normalform.hh"
+#include "Text.hh"
+
+#include "tlib/compatibility.hh"
+
+#include "faust/architectures.hh"
+#include "faust/cli.hh"
+#include "faust/compiler/common.hh"
+
+#include "visitors/max_inputs_visitor.hh"
 
 // ============
 // Backend API
 // ============
 
-// Keep the maximum index of inputs signals
-struct MaxInputsCounter : public SignalVisitor {
-    int fMaxInputs = 0;
-
-    MaxInputsCounter(Tree L)
-    {
-        // L is in normal form
-        while (!isNil(L)) {
-            self(hd(L));
-            L = tl(L);
-        }
-    }
-
-    void visit(Tree sig)
-    {
-        int input;
-        if (isSigInput(sig, &input)) {
-            fMaxInputs = std::max(fMaxInputs, input + 1);
-        } else {
-            SignalVisitor::visit(sig);
-        }
-    }
-};
-
+/* From Source */
 dsp_factory_base* createFactory(const char* name, const char* dsp_content, int argc, const char* argv[],
                                 string& error_msg, bool generate)
 {
-    gGlobal                   = nullptr;
-    dsp_factory_base* factory = nullptr;
-
+    gGlobal = nullptr;
+    dsp_factory_base* factory{nullptr};
     try {
-        global::allocate();
-        createFactoryAux(name, dsp_content, argc, argv, generate);
-        error_msg = gGlobal->gErrorMsg;
-        factory   = gGlobal->gDSPFactory;
+      ::Faust::CLI faust_cli(argc, argv);
+      ::Faust::Compiler::Common* compiler = faust_cli.parse();
+      compiler->_dspContent = dsp_content;
+      compiler->_generate = generate;
+      compiler->createFactory();
+      error_msg = gGlobal->gErrorMsg;
+      factory   = gGlobal->gDSPFactory;
     } catch (faustexception& e) {
         error_msg = e.Message();
     }
-
     global::destroy();
     return factory;
 }
 
+/* From Signals */
 dsp_factory_base* createFactory(const char* name, tvec signals, int argc, const char* argv[], std::string& error_msg)
 {
     dsp_factory_base* factory = nullptr;
@@ -81,9 +68,11 @@ dsp_factory_base* createFactory(const char* name, tvec signals, int argc, const 
         Tree             outputs    = listConvert(signals);
         Tree             outputs_nf = simplifyToNormalForm(outputs);
         MaxInputsCounter counter(outputs_nf);
-        createFactoryAux(name, outputs_nf, argc, argv, counter.fMaxInputs, signals.size(), true);
+        ::Faust::CLI faust_cli(argc, argv);
+        ::Faust::Compiler::Common* compiler = faust_cli.parse();
+        compiler->createFactory(name, outputs_nf, counter.fMaxInputs, signals.size());
         error_msg = gGlobal->gErrorMsg;
-        factory   = gGlobal->gDSPFactory;
+      factory   = gGlobal->gDSPFactory;
     } catch (faustexception& e) {
         error_msg = e.Message();
     }
@@ -91,6 +80,7 @@ dsp_factory_base* createFactory(const char* name, tvec signals, int argc, const 
     return factory;
 }
 
+/* From Sources with encryption */
 string expandDSP(int argc, const char* argv[], const char* name, const char* dsp_content, string& sha_key,
                  string& error_msg)
 {

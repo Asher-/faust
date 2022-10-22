@@ -292,6 +292,7 @@ LIBFAUST_API bool generateAuxFilesFromString(const std::string& name_app, const 
         argv1[argc1] = nullptr;  // NULL terminated argv
 
         dsp_factory_base* factory = createFactory(name_app, dsp_content, argc1, argv1, error_msg, false);
+
         // Factory is no more needed
         delete factory;
         return (factory != nullptr);
@@ -303,7 +304,7 @@ LIBFAUST_API bool generateAuxFilesFromString(const std::string& name_app, const 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 LIBFAUST_API const char* expandCDSPFromFile(const char* filename, int argc, const char* argv[], char* sha_key,
                                         char* error_msg)
 {

@@ -275,7 +275,7 @@ bool llvm_dynamic_dsp_factory_aux::initJIT(string& error_msg)
 
     string buider_error;
     builder.setErrorStr(&buider_error);
-  
+
     string triple, cpu;
     splitTarget(fTarget, triple, cpu);
     fModule->setTargetTriple(triple);
@@ -290,19 +290,19 @@ bool llvm_dynamic_dsp_factory_aux::initJIT(string& error_msg)
     targetOptions.NoNaNsFPMath          = true;
     targetOptions.GuaranteedTailCallOpt = true;
     targetOptions.NoTrappingFPMath      = true;
-    
+
 #if LLVM_VERSION_MAJOR >= 9
     targetOptions.NoSignedZerosFPMath   = true;
 #endif
-    
+
 #if LLVM_VERSION_MAJOR >= 11
     targetOptions.setFPDenormalMode(DenormalMode::getIEEE());
 #else
     targetOptions.FPDenormalMode = FPDenormal::IEEE;
 #endif
-    
+
     targetOptions.GuaranteedTailCallOpt = true;
-    
+
     string debug_var = (getenv("FAUST_DEBUG")) ? string(getenv("FAUST_DEBUG")) : "";
     if ((debug_var != "") && (debug_var.find("FAUST_LLVM3") != string::npos)) {
 #if LLVM_VERSION_MAJOR < 12
@@ -470,7 +470,7 @@ bool llvm_dynamic_dsp_factory_aux::writeDSPFactoryToObjectcodeFile(const string&
         return writeDSPFactoryToObjectcodeFileAux(object_code_path);
     }
 }
-        
+
 // IR <==> string
 
 static llvm_dsp_factory* readDSPFactoryFromIRAux(MEMORY_BUFFER buffer, const string& target, string& error_msg,
@@ -478,7 +478,7 @@ static llvm_dsp_factory* readDSPFactoryFromIRAux(MEMORY_BUFFER buffer, const str
 {
     string sha_key = generateSHA1(MEMORY_BUFFER_GET(buffer).str());
     dsp_factory_table<SDsp_factory>::factory_iterator it;
-    
+
     if (llvm_dsp_factory_aux::gLLVMFactoryTable.getFactory(sha_key, it)) {
         SDsp_factory sfactory = (*it).first;
         sfactory->addReference();
@@ -572,7 +572,7 @@ Module* linkAllModules(LLVMContext* context, Module* dst, string& error)
     }
     return dst;
 }
-        
+
 // Public C++ API
 
 LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromFile(const string& filename, int argc, const char* argv[],
@@ -580,7 +580,7 @@ LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromFile(const string& filename, 
 {
     string base = basename((char*)filename.c_str());
     size_t pos  = filename.find(".dsp");
-    
+
     if (pos != string::npos) {
         return createDSPFactoryFromString(base.substr(0, pos), pathToContent(filename), argc, argv, target, error_msg,
                                           opt_level);
@@ -596,11 +596,11 @@ LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromString(const string& name_app
 {
     LOCK_API
     string expanded_dsp_content, sha_key;
-   
+
     if ((expanded_dsp_content = sha1FromDSP(name_app, dsp_content, argc, argv, sha_key)) == "") {
         return nullptr;
     } else {
-        
+
         dsp_factory_table<SDsp_factory>::factory_iterator it;
         if (llvm_dsp_factory_aux::gLLVMFactoryTable.getFactory(sha_key, it)) {
             SDsp_factory sfactory = (*it).first;
@@ -620,7 +620,7 @@ LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromString(const string& name_app
                     argv1[argc1++] = argv[i];
                 }
                 argv1[argc1] = nullptr;  // NULL terminated argv
-                
+
                 llvm_dynamic_dsp_factory_aux* factory_aux
                     = static_cast<llvm_dynamic_dsp_factory_aux*>(createFactory(name_app,
                                                                             dsp_content,
@@ -649,7 +649,7 @@ LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromString(const string& name_app
         }
     }
 }
-        
+
 LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromSignals(const string& name_app, tvec signals,
                                                         int argc, const char* argv[],
                                                         const string& target,
@@ -670,7 +670,7 @@ LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromSignals(const string& name_ap
             argv1[argc1++] = argv[i];
         }
         argv1[argc1] = nullptr;  // NULL terminated argv
-        
+
         llvm_dynamic_dsp_factory_aux* factory_aux
             = static_cast<llvm_dynamic_dsp_factory_aux*>(createFactory(name_app, signals, argc1, argv1, error_msg));
         if (factory_aux && factory_aux->initJIT(error_msg)) {
@@ -690,7 +690,7 @@ LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromSignals(const string& name_ap
         return nullptr;
     }
 }
-        
+
 LIBFAUST_API llvm_dsp_factory* createDSPFactoryFromBoxes(const string& name_app, Tree box,
                                                       int argc, const char* argv[],
                                                       const string& target,
@@ -799,7 +799,7 @@ LIBFAUST_API llvm_dsp_factory* createCDSPFactoryFromString(const char* name_app,
     strncpy(error_msg, error_msg_aux.c_str(), 4096);
     return factory;
 }
-    
+
 LIBFAUST_API llvm_dsp_factory* createCDSPFactoryFromSignals(const char* name_app, Signal* signals_aux,
                                                          int argc, const char* argv[],
                                                          const char* target,

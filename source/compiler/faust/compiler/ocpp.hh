@@ -24,6 +24,7 @@
 
 #include "faust.hh"
 #include "faust/compiler/common.hh"
+#include "instructions_compiler1.hh"
 
 #ifdef OCPP_BUILD
 #include "compile_scalar.hh"
@@ -68,7 +69,7 @@ namespace Faust {
           dst << "//----------------------------------------------------------" << endl << endl;
       }
 
-      static void generateCode(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& injcode, unique_ptr<ostream>& dst)
+      void generateCode(::Faust::Compiler::Return compiler_return, unique_ptr<ostream>& dst)
       {
           // Check for architecture file
           if (gGlobal->gArchFile != "") {
@@ -80,7 +81,7 @@ namespace Faust {
           }
 
           // Possibly inject code
-          ::Faust::Compiler::Common::injectCode(compiler_return, injcode, enrobage, *dst.get());
+          this->injectCode(compiler_return, enrobage, *dst.get());
 
           printHeader(*dst);
           compiler_return.old_comp->getClass()->printLibrary(*dst.get());

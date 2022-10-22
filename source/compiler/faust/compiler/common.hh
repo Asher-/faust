@@ -22,20 +22,229 @@
 #ifndef __FAUST_COMPILE_COMMON_HH__
 #define __FAUST_COMPILE_COMMON_HH__
 
+#include <cassert>
+
 #include "faust.hh"
 #include "faust/architectures.hh"
 #include "faust/compiler/return.hh"
+#include "faust/controller.hh"
+
+#include "sigprint.hh"
+#include "ppsig.hh"
+#include "eval.hh"
+#include "ppbox.hh"
+#include "drawschema.hh"
+
+#include "timing.hh"
+
+#ifdef DLANG_BUILD
+#include "dlang_code_container.hh"
+#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct Common
     {
+      std::string _name{"FaustDSP"};
+      std::string _dspContent{};
+      bool        _generate{true};
+      std::string _compileOptions{};
+      unique_ptr<ifstream> _injcode;
+      unique_ptr<ostream>  _helpers;
+      Tree _lsignals{nullptr};
+
+      Common
+      () = default;
+      Common
+      ( const std::string& name )
+      : _name(name)
+      {}
+      Common
+      ( const std::string& name,
+        const std::string& dsp_content )
+      : Common(
+          name,
+          dsp_content,
+          true
+        )
+      {}
+      Common
+      ( const std::string& name,
+        const bool&        generate )
+      : _name(name),
+        _generate(generate)
+      {}
+      Common
+      ( const std::string& name,
+        const std::string& dsp_content,
+        const bool&        generate )
+      : _name(name),
+        _dspContent(dsp_content),
+        _generate(generate)
+      {
+          if (dsp_content.length() > 0) {
+              gGlobal->gInputString = dsp_content.c_str();
+              gGlobal->gInputFiles.push_back(name);
+          }
+      }
+
+      static Common* compiler( const std::string& output_lang );
+
+      static void enumBackends(ostream& out)
+      {
+          const char* dspto = "   DSP to ";
+      #ifdef C_BUILD
+          out << dspto << "C" << endl;
+      #endif
+
+      #ifdef CPP_BUILD
+          out << dspto << "C++" << endl;
+      #endif
+
+      #ifdef CSHARP_BUILD
+          out << dspto << "CSharp" << endl;
+      #endif
+
+      #ifdef DLANG_BUILD
+          out << dspto << "DLang" << endl;
+      #endif
+
+      #ifdef FIR_BUILD
+          out << dspto << "FIR" << endl;
+      #endif
+
+      #ifdef INTERP_BUILD
+          out << dspto << "Interpreter" << endl;
+      #endif
+
+      #ifdef JAVA_BUILD
+          out << dspto << "Java" << endl;
+      #endif
+
+      #ifdef JAX_BUILD
+          out << dspto << "JAX" << endl;
+      #endif
+
+      #ifdef JULIA_BUILD
+          out << dspto << "Julia" << endl;
+      #endif
+
+      #ifdef LLVM_BUILD
+          out << dspto << "LLVM IR" << endl;
+      #endif
+
+      #ifdef OCPP_BUILD
+          out << dspto << "old C++" << endl;
+      #endif
+
+      #ifdef RUST_BUILD
+          out << dspto << "Rust" << endl;
+      #endif
+
+      #ifdef SOUL_BUILD
+          out << dspto << "SOUL" << endl;
+      #endif
+
+      #ifdef WASM_BUILD
+          out << dspto << "WebAssembly (wast/wasm)" << endl;
+      #endif
+      }
+
+      /****************************************************************
+                           Help and Version information
+      *****************************************************************/
+
+      static void printVersion()
+      {
+          cout << "FAUST Version " << FAUSTVERSION << "\n";
+          cout << "Embedded backends: \n";
+          enumBackends(cout);
+      #ifdef LLVM_BUILD
+          cout << "Build with LLVM version " << LLVM_VERSION << "\n";
+      #endif
+          cout << "Copyright (C) 2002-2022, GRAME - Centre National de Creation Musicale. All rights reserved. \n";
+      }
+
+      static void printDeclareHeader(ostream& dst)
+      {
+          for (const auto& i : gGlobal->gMetaDataSet) {
+              if (i.first != tree("author")) {
+                  dst << "declare ";
+                  stringstream key;
+                  key << *(i.first);
+                  vector<char> rep{'.', ':', '/'};
+                  dst << replaceCharList(key.str(), rep, '_');
+                  dst << " " << **(i.second.begin()) << ";" << endl;
+              } else {
+                  for (set<Tree>::iterator j = i.second.begin(); j != i.second.end(); ++j) {
+                      if (j == i.second.begin()) {
+                          dst << "declare " << *(i.first) << " " << **j << ";" << endl;
+                      } else {
+                          dst << "declare contributor " << **j << ";" << endl;
+                      }
+                  }
+              }
+          }
+      }
+
+      static void printXML(Description* D, int inputs, int outputs)
+      {
+          faustassert(D);
+          ofstream xout(subst("$0.xml", gGlobal->makeDrawPath()).c_str());
+
+          MetaDataSet::const_iterator it1;
+          set<Tree>::const_iterator   it2;
+          for (const auto& it1 : gGlobal->gMetaDataSet) {
+              const string key = tree2str(it1.first);
+              for (it2 = it1.second.begin(); it2 != it1.second.end(); ++it2) {
+                  const string value = tree2str(*it2);
+                  if (key == "name") {
+                      D->name(value);
+                  } else if (key == "author") {
+                      D->author(value);
+                  } else if (key == "copyright") {
+                      D->copyright(value);
+                  } else if (key == "license") {
+                      D->license(value);
+                  } else if (key == "version") {
+                      D->version(value);
+                  } else {
+                      D->declare(key, value);
+                  }
+              }
+          }
+
+          D->className(gGlobal->gClassName);
+          D->inputs(inputs);
+          D->outputs(outputs);
+          D->print(0, xout);
+      }
+
+      void createHelperFile(const string& outpath)
+      {
+          // Additional file with JS code
+          if (gGlobal->gOutputFile == "binary") {
+              // Nothing
+          } else if (gGlobal->gOutputFile != "") {
+              string outpath_js;
+              bool   res = replaceExtension(outpath, ".js", outpath_js);
+              if (res) {
+                  _helpers = unique_ptr<ostream>(new ofstream(outpath_js.c_str()));
+              } else {
+                  cerr << "WARNING : cannot generate helper JS file, outpath is incorrect : \"" << outpath << "\"" << endl;
+              }
+          } else {
+              _helpers = unique_ptr<ostream>(new ostringstream());
+          }
+      }
+
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) = 0;
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) = 0;
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string& ) = 0;
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) = 0;
-      static void injectCode(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& injcode, unique_ptr<ifstream>& enrobage, ostream& dst)
+
+      void injectCode(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& enrobage, ostream& dst)
       {
           /****************************************************************
            1.7 - Inject code instead of compile
@@ -51,12 +260,473 @@ namespace Faust {
                   streamCopyUntil(*enrobage.get(), dst, "<<includeIntrinsic>>");
                   compiler_return.container->printMacros(dst, 0);
                   streamCopyUntil(*enrobage.get(), dst, "<<includeclass>>");
-                  streamCopyUntilEnd(*injcode.get(), dst);
+                  streamCopyUntilEnd(*_injcode.get(), dst);
                   streamCopyUntilEnd(*enrobage.get(), dst);
               }
               throw faustexception("");
           }
       }
+
+      Tree evaluateBlockDiagram(Tree expandedDefList, int& numInputs, int& numOutputs)
+      {
+          startTiming("evaluation");
+
+          Tree process = evalprocess(expandedDefList);
+          if (gGlobal->gErrorCount > 0) {
+              stringstream error;
+              error << "ERROR : total of " << gGlobal->gErrorCount << " errors during the compilation of "
+                    << gGlobal->gMasterDocument << endl;
+              throw faustexception(error.str());
+          }
+
+          if (gGlobal->gDetailsSwitch) {
+              cout << "process = " << boxpp(process) << ";\n";
+          }
+
+          if (!getBoxType(process, &numInputs, &numOutputs)) {
+              stringstream error;
+              error << "ERROR during the evaluation of process : " << boxpp(process) << endl;
+              throw faustexception(error.str());
+          }
+
+          if (gGlobal->gDrawPSSwitch) {
+              drawSchema(process, subst("$0-ps", gGlobal->makeDrawPathNoExt()).c_str(), "ps");
+          }
+
+          if (gGlobal->gDrawSVGSwitch) {
+              drawSchema(process, subst("$0-svg", gGlobal->makeDrawPathNoExt()).c_str(), "svg");
+          }
+
+          if (gGlobal->gDetailsSwitch) {
+              cout << "process has " << numInputs << " inputs, and " << numOutputs << " outputs" << endl;
+          }
+
+          endTiming("evaluation");
+
+          if (gGlobal->gPrintFileListSwitch) {
+              cout << "---------------------------\n";
+              cout << "List of file dependencies :\n";
+              cout << "---------------------------\n";
+              // print the pathnames of the files used to evaluate process
+              vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+              for (size_t i = 0; i < pathnames.size(); i++) cout << pathnames[i] << endl;
+              cout << "---------------------------\n";
+              cout << endl;
+          }
+
+          return process;
+      }
+
+      void parseSourceFiles()
+      {
+          assert( gGlobal->gInjectFlag || (gGlobal->gInputFiles.begin() == gGlobal->gInputFiles.end()) );
+
+          startTiming("parser");
+
+          std::list<string>::iterator s;
+          gGlobal->gResult2 = gGlobal->nil;
+          gGlobal->gReader.init();
+
+          for (s = gGlobal->gInputFiles.begin(); s != gGlobal->gInputFiles.end(); s++) {
+              if (s == gGlobal->gInputFiles.begin()) {
+                  gGlobal->gMasterDocument = *s;
+              }
+              gGlobal->gResult2 = cons(importFile(tree(s->c_str())), gGlobal->gResult2);
+          }
+
+          gGlobal->gExpandedDefList = gGlobal->gReader.expandList(gGlobal->gResult2);
+
+          endTiming("parser");
+      }
+
+      static void* threadEvaluateBlockDiagram(void* arg)
+      {
+          ::Faust::Compiler::Common* compiler{reinterpret_cast<::Faust::Compiler::Common*>(arg)};
+          try {
+              gGlobal->gProcessTree =
+                  compiler->evaluateBlockDiagram(gGlobal->gExpandedDefList, gGlobal->gNumInputs, gGlobal->gNumOutputs);
+          } catch (faustexception& e) {
+              gGlobal->gErrorMessage = e.Message();
+          }
+          return 0;
+      }
+
+      typedef void* (*compile_fun)(void* compiler);
+
+      void callFunctionInNewThread(compile_fun fun)
+      {
+      #if defined(EMCC)
+          // No thread support in JS or WIN32
+          fun(this);
+      #elif defined(_WIN32)
+          DWORD  id;
+          HANDLE thread = CreateThread(NULL, MAX_STACK_SIZE, LPTHREAD_START_ROUTINE(fun), this, 0, &id);
+          faustassert(thread != NULL);
+          WaitForSingleObject(thread, INFINITE);
+      #else
+          pthread_t      thread;
+          pthread_attr_t attr;
+          faustassert(pthread_attr_init(&attr) == 0);
+          faustassert(pthread_attr_setstacksize(&attr, MAX_STACK_SIZE) == 0);
+          faustassert(pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE) == 0);
+          faustassert(pthread_create(&thread, &attr, fun, this) == 0);
+          pthread_join(thread, nullptr);
+      #endif
+      }
+
+      void evaluateBlockDiagramInNewThread()
+      {
+          callFunctionInNewThread(threadEvaluateBlockDiagram);  // In a thread with more stack size...
+      }
+
+      Tree DSPToBoxes(const std::string& name_app, const std::string& dsp_content, int* inputs, int* outputs, std::string& error_msg)
+      {
+          /****************************************************************
+           1 - process command line
+           *****************************************************************/
+
+          faust_alarm(gGlobal->gTimeout);
+
+          /****************************************************************
+           2 - parse source files
+           *****************************************************************/
+          if (dsp_content.c_str()) {
+              gGlobal->gInputString = dsp_content.c_str();
+              gGlobal->gInputFiles.push_back(name_app.c_str());
+          }
+          ::Faust::Controller::initDocumentNames();
+          ::Faust::Type::Float::init();
+
+          try {
+              this->parseSourceFiles();
+          } catch (faustexception& e) {
+              error_msg = e.what();
+              return nullptr;
+          }
+
+          /****************************************************************
+           3 - evaluate 'process' definition
+           *****************************************************************/
+
+          evaluateBlockDiagramInNewThread();
+          if (gGlobal->gProcessTree) {
+              *inputs  = gGlobal->gNumInputs;
+              *outputs = gGlobal->gNumOutputs;
+              return gGlobal->gProcessTree;
+          } else {
+              error_msg = gGlobal->gErrorMessage;
+              return nullptr;
+          }
+      }
+
+      void injectCodeFromFiles()
+      {
+          /****************************************************************
+           1.5 - Inject Code if needed
+          *****************************************************************/
+          // Check for injected code (before checking for architectures)
+          if (gGlobal->gInjectFlag) {
+              _injcode = openArchStream(gGlobal->gInjectFile.c_str());
+              if (!_injcode) {
+                  stringstream error;
+                  error << "ERROR : can't inject \"" << gGlobal->gInjectFile << "\" external code file, file not found\n";
+                  throw faustexception(error.str());
+              }
+          }
+      }
+
+      void evaluateProcessDefinition()
+      {
+          /****************************************************************
+           3 - evaluate 'process' definition
+          *****************************************************************/
+
+          evaluateBlockDiagramInNewThread();
+
+          if (!gGlobal->gProcessTree) {
+              throw faustexception(gGlobal->gErrorMessage);
+          }
+      }
+
+      bool expandDSP()
+      {
+        /****************************************************************
+         3.1 - possibly expand the DSP and return
+         *****************************************************************/
+
+        if (gGlobal->gExportDSP) {
+            string outpath =
+                (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + gGlobal->gOutputFile) : gGlobal->gOutputFile;
+            ofstream out(outpath.c_str());
+            this->expandDSPInternalAux(out);
+            return true;
+        }
+
+        return false;
+      }
+
+      void expandDSPInternalAux(ostream& out)
+      {
+          // Encode compilation options as a 'declare' : has to be located first in the string
+          out << "declare version \"" << FAUSTVERSION << "\";" << endl;
+          out << COMPILATION_OPTIONS << this->_compileOptions << ';' << endl;
+
+          // Encode all libraries paths as 'declare'
+          vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+          // Remove DSP filename
+          pathnames.erase(pathnames.begin());
+          int i = 0;
+          for (const auto& it : pathnames) {
+              out << "declare library_path" << to_string(i++) << " \"" << it << "\";" << endl;
+          }
+
+          this->printDeclareHeader(out);
+          boxppShared(gGlobal->gProcessTree, out);
+      }
+
+      void computeOutputSignals()
+      {
+          /****************************************************************
+           4 - compute output signals of 'process'
+          *****************************************************************/
+
+          startTiming("propagation");
+
+          ::Faust::Compiler::Common::callFunctionInNewThread(threadBoxPropagateSig);  // In a thread with more stack size...
+          if (!gGlobal->gLsignalsTree) {
+              throw faustexception(gGlobal->gErrorMessage);
+          }
+          _lsignals = gGlobal->gLsignalsTree;
+
+          if (gGlobal->gDetailsSwitch) {
+              cout << "output signals are : " << endl;
+              printSignal(_lsignals, stdout);
+              cout << std::endl << ppsig(_lsignals) << std::endl;
+              cout << "\n\n";
+          }
+
+          endTiming("propagation");
+      }
+
+      void translateOutputSignals()
+      {
+          /*************************************************************************
+          5 - preparation of the signal tree and translate output signals
+          **************************************************************************/
+
+          int numInputs  = gGlobal->gNumInputs;
+          int numOutputs = gGlobal->gNumOutputs;
+          if (numOutputs == 0) {
+              throw faustexception("ERROR : the Faust program has no output signal\n");
+          }
+          compileCode(_lsignals, numInputs, numOutputs);
+      }
+
+      /* From Source */
+      void createFactory()
+      {
+          faust_alarm(gGlobal->gTimeout);
+
+          /****************************************************************
+           1.5 - Inject Code if needed
+          *****************************************************************/
+
+          injectCodeFromFiles();
+
+          /****************************************************************
+           2 - parse source files
+          *****************************************************************/
+
+          ::Faust::Controller::initDocumentNames();
+          parseSourceFiles();
+
+          /****************************************************************
+           3 - evaluate 'process' definition
+          *****************************************************************/
+
+          evaluateProcessDefinition();
+
+          /****************************************************************
+           3.1 - possibly expand the DSP and return
+           *****************************************************************/
+
+          if ( expandDSP() )
+            return;
+
+          /****************************************************************
+           4 - compute output signals of 'process'
+          *****************************************************************/
+
+          computeOutputSignals();
+
+          /*************************************************************************
+          5 - preparation of the signal tree and translate output signals
+          **************************************************************************/
+
+          translateOutputSignals();
+
+          /****************************************************************
+           6 - generate xml description, documentation or dot files
+          *****************************************************************/
+          generateOutputFiles();
+      }
+
+
+      /* From Signals */
+      void createFactory(const char* name, Tree signals, int numInputs,
+                                int numOutputs)
+      {
+          /****************************************************************
+           1 - process command line
+           *****************************************************************/
+
+          ::Faust::Controller::initDocumentNames();
+
+          /*************************************************************************
+           5 - preparation of the signal tree and translate output signals
+           **************************************************************************/
+
+          gGlobal->gMetaDataSet[tree("name")].insert(tree(quote(name)));
+          compileCode(signals, numInputs, numOutputs);
+      }
+
+      void generateCode(::Faust::Compiler::Return compiler_return, unique_ptr<ostream>& dst)
+      {
+        unique_ptr<ifstream> enrobage;
+          if (gGlobal->gArchFile != "") {
+              if ((enrobage = openArchStream(gGlobal->gArchFile.c_str()))) {
+                  if (gGlobal->gNameSpace != "" && gGlobal->gOutputLang == "cpp")
+                      *dst.get() << "namespace " << gGlobal->gNameSpace << " {" << endl;
+      #ifdef DLANG_BUILD
+                  else if (gGlobal->gOutputLang == "dlang") {
+                      DLangCodeContainer::printDRecipeComment(*dst.get(), compiler_return.container->getClassName());
+                      DLangCodeContainer::printDModuleStmt(*dst.get(), compiler_return.container->getClassName());
+                  }
+      #endif
+
+                  // Possibly inject code
+                  this->injectCode(compiler_return, enrobage, *dst.get());
+
+                  compiler_return.container->printHeader();
+
+                  streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
+                  streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
+
+                  if (gGlobal->gOpenCLSwitch || gGlobal->gCUDASwitch) {
+                      includeFile("thread.h", *dst.get());
+                  }
+
+                  compiler_return.container->printFloatDef();
+                  compiler_return.container->produceClass();
+
+                  streamCopyUntilEnd(*enrobage.get(), *dst.get());
+
+                  if (gGlobal->gSchedulerSwitch) {
+                      includeFile("scheduler.cpp", *dst.get());
+                  }
+
+                  compiler_return.container->printFooter();
+
+                  // Generate factory
+                  gGlobal->gDSPFactory = compiler_return.container->produceFactory();
+
+                  if (gGlobal->gOutputFile == "string") {
+                      gGlobal->gDSPFactory->write(dst.get(), false, false);
+                  } else if (gGlobal->gOutputFile == "binary") {
+                      gGlobal->gDSPFactory->write(dst.get(), true, false);
+                  } else if (gGlobal->gOutputFile != "") {
+                      // Binary mode for LLVM backend if output different of 'cout'
+                      gGlobal->gDSPFactory->write(dst.get(), true, false);
+                  } else {
+                      gGlobal->gDSPFactory->write(&cout, false, false);
+                  }
+
+                  if (gGlobal->gNameSpace != "" && gGlobal->gOutputLang == "cpp") {
+                      *dst.get() << "} // namespace " << gGlobal->gNameSpace << endl;
+                  }
+
+              } else {
+                  stringstream error;
+                  error << "ERROR : can't open architecture file " << gGlobal->gArchFile << endl;
+                  throw faustexception(error.str());
+              }
+
+          } else {
+              compiler_return.container->printHeader();
+              compiler_return.container->printFloatDef();
+              compiler_return.container->produceClass();
+              compiler_return.container->printFooter();
+
+              // Generate factory
+              gGlobal->gDSPFactory = compiler_return.container->produceFactory();
+
+              if (gGlobal->gOutputFile == "string") {
+                  gGlobal->gDSPFactory->write(dst.get(), false, false);
+                  if (_helpers) gGlobal->gDSPFactory->writeHelper(_helpers.get(), false, false);
+              } else if (gGlobal->gOutputFile == "binary") {
+                  gGlobal->gDSPFactory->write(dst.get(), true, false);
+                  if (_helpers) gGlobal->gDSPFactory->writeHelper(_helpers.get(), true, false);
+              } else if (gGlobal->gOutputFile != "") {
+                  // Binary mode for LLVM backend if output different of 'cout'
+                  gGlobal->gDSPFactory->write(dst.get(), true, false);
+                  if (_helpers) gGlobal->gDSPFactory->writeHelper(_helpers.get(), false, false);
+              } else {
+                  gGlobal->gDSPFactory->write(&cout, false, false);
+                  if (_helpers) gGlobal->gDSPFactory->writeHelper(&cout, false, false);
+              }
+          }
+      }
+
+      void compileCode(Tree signals, int numInputs, int numOutputs)
+      {
+          /*******************************************************************
+           MANDATORY: use ostringstream which is indeed a subclass of ostream
+           (otherwise subtle dynamic_cast related crash can occur...)
+          *******************************************************************/
+
+          unique_ptr<ostream> dst;
+          string              outpath;
+
+          if (gGlobal->gOutputFile == "string") {
+              dst = unique_ptr<ostream>(new ostringstream());
+          } else if (gGlobal->gOutputFile == "binary") {
+              dst = unique_ptr<ostream>(new ostringstream(ostringstream::out | ostringstream::binary));
+          } else if (gGlobal->gOutputFile != "") {
+              outpath =
+                  (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + gGlobal->gOutputFile) : gGlobal->gOutputFile;
+
+              unique_ptr<ofstream> fdst = unique_ptr<ofstream>(new ofstream(outpath.c_str()));
+              if (!fdst->is_open()) {
+                  stringstream error;
+                  error << "ERROR : file '" << outpath << "' cannot be opened\n";
+                  throw faustexception(error.str());
+              } else {
+                  dst = move(fdst);
+              }
+
+          } else {
+              dst = unique_ptr<ostream>(new ostringstream());
+          }
+
+          startTiming("generateCode");
+
+          /****************************************************************
+           * create container
+           ****************************************************************/
+
+
+          ::Faust::Compiler::Return compiler_return = this->compile(signals, numInputs, numOutputs, dst.get(), outpath);
+
+          /****************************************************************
+           * generate output file
+           ****************************************************************/
+
+          this->generateCode(compiler_return, dst);
+
+          endTiming("generateCode");
+      }
+
+
     };
 
   }
