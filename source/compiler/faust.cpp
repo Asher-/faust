@@ -19,10 +19,6 @@
  ************************************************************************
  ************************************************************************/
 
-#ifdef WIN32
-#pragma warning(disable : 4996 4146 4244)
-#endif
-
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,7 +30,7 @@
 #include <string>
 #include <vector>
 
-#include "Text.hh"
+#include "faust.hh"
 #include "compatibility.hh"
 #include "dag_instructions_compiler.hh"
 #include "xml_description.hh"
@@ -160,7 +156,7 @@ extern bool gTimingSwitch;
 
 string reorganizeCompilationOptions(int argc, const char* argv[]);
 
-static void enumBackends(ostream& out)
+void enumBackends(ostream& out)
 {
     const char* dspto = "   DSP to ";
 #ifdef C_BUILD
@@ -267,17 +263,17 @@ static void callFun(threaded_fun fun, void* arg)
 
 //-- command line tools
 
-static bool isCmd(const char* cmd, const char* kw1)
+bool isCmd(const char* cmd, const char* kw1)
 {
     return (strcmp(cmd, kw1) == 0);
 }
 
-static bool isCmd(const char* cmd, const char* kw1, const char* kw2)
+bool isCmd(const char* cmd, const char* kw1, const char* kw2)
 {
     return (strcmp(cmd, kw1) == 0) || (strcmp(cmd, kw2) == 0);
 }
 
-static bool processCmdline(int argc, const char* argv[])
+bool processCmdline(int argc, const char* argv[])
 {
     int          i   = 1;
     int          err = 0;
@@ -865,23 +861,23 @@ static bool processCmdline(int argc, const char* argv[])
 #ifndef LIBDIR
 #define LIBDIR "lib"
 #endif
-static void printLibDir()
+void printLibDir()
 {
     cout << gGlobal->gFaustRootDir << kPSEP << LIBDIR << endl;
 }
-static void printIncludeDir()
+void printIncludeDir()
 {
     cout << gGlobal->gFaustRootDir << kPSEP << "include" << endl;
 }
-static void printArchDir()
+void printArchDir()
 {
     cout << gGlobal->gFaustRootDir << kPSEP << "share" << kPSEP << "faust" << endl;
 }
-static void printDspDir()
+void printDspDir()
 {
     cout << gGlobal->gFaustRootDir << kPSEP << "share" << kPSEP << "faust" << endl;
 }
-static void printPaths()
+void printPaths()
 {
     cout << "FAUST dsp library paths:" << endl;
     for (const auto& path : gGlobal->gImportDirList) cout << path << endl;
@@ -894,7 +890,7 @@ static void printPaths()
                      Help and Version information
 *****************************************************************/
 
-static void printVersion()
+void printVersion()
 {
     cout << "FAUST Version " << FAUSTVERSION << "\n";
     cout << "Embedded backends: \n";
@@ -905,7 +901,7 @@ static void printVersion()
     cout << "Copyright (C) 2002-2022, GRAME - Centre National de Creation Musicale. All rights reserved. \n";
 }
 
-static void printHelp()
+void printHelp()
 {
     const char* tab  = "  ";
     const char* line = "\n---------------------------------------\n";
@@ -1132,7 +1128,7 @@ static void printHelp()
     cout << "faust -a jack-gtk.cpp -o myfx.cpp myfx.dsp" << endl;
 }
 
-static void printDeclareHeader(ostream& dst)
+void printDeclareHeader(ostream& dst)
 {
     for (const auto& i : gGlobal->gMetaDataSet) {
         if (i.first != tree("author")) {
@@ -1176,7 +1172,7 @@ LIBFAUST_API unsigned int xtendedArity(Tree tree)
  * transform a filename "faust/example/noise.dsp" into
  * the corresponding fx name "noise"
  */
-static string fxName(const string& filename)
+string fxName(const string& filename)
 {
     // determine position right after the last '/' or 0
     size_t p1 = 0;
@@ -1197,7 +1193,7 @@ static string fxName(const string& filename)
     return filename.substr(p1, p2 - p1);
 }
 
-static void initFaustDirectories(int argc, const char* argv[])
+void initFaustDirectories(int argc, const char* argv[])
 {
 #if !defined(FAUST_SELF_CONTAINED_LIB)
     char s[1024];
@@ -1252,7 +1248,7 @@ static void initFaustDirectories(int argc, const char* argv[])
 #endif
 }
 
-static void initDocumentNames()
+void initDocumentNames()
 {
     if (gGlobal->gInputFiles.empty()) {
         gGlobal->gMasterDocument  = "Unknown";
@@ -1271,7 +1267,7 @@ static void initDocumentNames()
     gGlobal->gArchitectureDirList.push_back(gGlobal->gMasterDirectory);
 }
 
-static void parseSourceFiles()
+void parseSourceFiles()
 {
     startTiming("parser");
 
@@ -1293,7 +1289,7 @@ static void parseSourceFiles()
     endTiming("parser");
 }
 
-static Tree evaluateBlockDiagram(Tree expandedDefList, int& numInputs, int& numOutputs)
+Tree evaluateBlockDiagram(Tree expandedDefList, int& numInputs, int& numOutputs)
 {
     startTiming("evaluation");
 
@@ -1343,7 +1339,7 @@ static Tree evaluateBlockDiagram(Tree expandedDefList, int& numInputs, int& numO
     return process;
 }
 
-static void includeFile(const string& file, ostream& dst)
+void includeFile(const string& file, ostream& dst)
 {
     unique_ptr<ifstream> file_include = openArchStream(file.c_str());
     if (file_include) {
@@ -1351,7 +1347,7 @@ static void includeFile(const string& file, ostream& dst)
     }
 }
 
-static void injectCode(unique_ptr<ifstream>& enrobage, ostream& dst)
+void injectCode(unique_ptr<ifstream>& enrobage, ostream& dst)
 {
     /****************************************************************
      1.7 - Inject code instead of compile
@@ -1374,7 +1370,7 @@ static void injectCode(unique_ptr<ifstream>& enrobage, ostream& dst)
     }
 }
 
-static void compileCLLVM(Tree signals, int numInputs, int numOutputs)
+void compileCLLVM(Tree signals, int numInputs, int numOutputs)
 {
 #ifdef CLANG_BUILD
     // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
@@ -1394,7 +1390,7 @@ static void compileCLLVM(Tree signals, int numInputs, int numOutputs)
 #endif
 }
 
-static void compileLLVM(Tree signals, int numInputs, int numOutputs, bool generate)
+void compileLLVM(Tree signals, int numInputs, int numOutputs, bool generate)
 {
 #ifdef LLVM_BUILD
     container = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
@@ -1424,7 +1420,7 @@ static void compileLLVM(Tree signals, int numInputs, int numOutputs, bool genera
 #endif
 }
 
-static void compileInterp(Tree signals, int numInputs, int numOutputs)
+void compileInterp(Tree signals, int numInputs, int numOutputs)
 {
 #ifdef INTERP_BUILD
     if (gGlobal->gFloatSize == 1) {
@@ -1457,7 +1453,7 @@ static void compileInterp(Tree signals, int numInputs, int numOutputs)
 #endif
 }
 
-static void compileFIR(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileFIR(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef FIR_BUILD
     container = FIRCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out, true);
@@ -1474,7 +1470,7 @@ static void compileFIR(Tree signals, int numInputs, int numOutputs, ostream* out
 #endif
 }
 
-static void compileC(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileC(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef C_BUILD
     container = CCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
@@ -1492,7 +1488,7 @@ static void compileC(Tree signals, int numInputs, int numOutputs, ostream* out)
 #endif
 }
 
-static void compileCPP(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileCPP(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef CPP_BUILD
     container =
@@ -1511,7 +1507,7 @@ static void compileCPP(Tree signals, int numInputs, int numOutputs, ostream* out
 #endif
 }
 
-static void compileOCPP(Tree signals, int numInputs, int numOutputs)
+void compileOCPP(Tree signals, int numInputs, int numOutputs)
 {
 #ifdef OCPP_BUILD
     if (gGlobal->gSchedulerSwitch) {
@@ -1529,7 +1525,7 @@ static void compileOCPP(Tree signals, int numInputs, int numOutputs)
 #endif
 }
 
-static void compileRust(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileRust(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef RUST_BUILD
     // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
@@ -1549,7 +1545,7 @@ static void compileRust(Tree signals, int numInputs, int numOutputs, ostream* ou
 #endif
 }
 
-static void compileJava(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileJava(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef JAVA_BUILD
     gGlobal->gAllowForeignFunction = false;  // No foreign functions
@@ -1569,7 +1565,7 @@ static void compileJava(Tree signals, int numInputs, int numOutputs, ostream* ou
 #endif
 }
 
-static void compileJulia(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileJulia(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef JULIA_BUILD
     gGlobal->gAllowForeignFunction = false;  // No foreign functions
@@ -1588,7 +1584,7 @@ static void compileJulia(Tree signals, int numInputs, int numOutputs, ostream* o
 #endif
 }
 
-static void compileJAX(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileJAX(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef JAX_BUILD
     gGlobal->gAllowForeignFunction = true;  // foreign functions are supported (we use jax.random.PRNG for example)
@@ -1679,7 +1675,7 @@ static void compileCmajor(Tree signals, int numInputs, int numOutputs, ostream* 
 #endif
 }
 
-static void createHelperFile(const string& outpath)
+void createHelperFile(const string& outpath)
 {
     // Additional file with JS code
     if (gGlobal->gOutputFile == "binary") {
@@ -1697,7 +1693,7 @@ static void createHelperFile(const string& outpath)
     }
 }
 
-static void compileWAST(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
+void compileWAST(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
 {
 #ifdef WASM_BUILD
     gGlobal->gAllowForeignFunction = false;  // No foreign functions
@@ -1737,7 +1733,7 @@ static void compileWAST(Tree signals, int numInputs, int numOutputs, ostream* ou
 #endif
 }
 
-static void compileWASM(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
+void compileWASM(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
 {
 #ifdef WASM_BUILD
     gGlobal->gAllowForeignFunction = false;  // No foreign functions
@@ -1778,7 +1774,7 @@ static void compileWASM(Tree signals, int numInputs, int numOutputs, ostream* ou
 #endif
 }
 
-static void compileDlang(Tree signals, int numInputs, int numOutputs, ostream* out)
+void compileDlang(Tree signals, int numInputs, int numOutputs, ostream* out)
 {
 #ifdef DLANG_BUILD
     container =
@@ -1797,7 +1793,7 @@ static void compileDlang(Tree signals, int numInputs, int numOutputs, ostream* o
 #endif
 }
 
-static void generateCodeAux1(unique_ptr<ostream>& dst)
+void generateCodeAux1(unique_ptr<ostream>& dst)
 {
     if (gGlobal->gArchFile != "") {
         if ((enrobage = openArchStream(gGlobal->gArchFile.c_str()))) {
@@ -1885,7 +1881,7 @@ static void generateCodeAux1(unique_ptr<ostream>& dst)
 
 #ifdef OCPP_BUILD
 
-static void printHeader(ostream& dst)
+void printHeader(ostream& dst)
 {
     // defines the metadata we want to print as comments at the begin of in the C++ file
     set<Tree> selectedKeys;
@@ -1913,7 +1909,7 @@ static void printHeader(ostream& dst)
     dst << "//----------------------------------------------------------" << endl << endl;
 }
 
-static void generateCodeAux2(unique_ptr<ostream>& dst)
+void generateCodeAux2(unique_ptr<ostream>& dst)
 {
     // Check for architecture file
     if (gGlobal->gArchFile != "") {
@@ -1970,7 +1966,7 @@ static void generateCodeAux2(unique_ptr<ostream>& dst)
 
 #endif
 
-static void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
+void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
 {
     /*******************************************************************
      MANDATORY: use ostringstream which is indeed a subclass of ostream
@@ -2067,7 +2063,7 @@ static void generateCode(Tree signals, int numInputs, int numOutputs, bool gener
     endTiming("generateCode");
 }
 
-static void printXML(Description* D, int inputs, int outputs)
+void printXML(Description* D, int inputs, int outputs)
 {
     faustassert(D);
     ofstream xout(subst("$0.xml", gGlobal->makeDrawPath()).c_str());
@@ -2100,7 +2096,7 @@ static void printXML(Description* D, int inputs, int outputs)
     D->print(0, xout);
 }
 
-static void generateOutputFiles()
+void generateOutputFiles()
 {
     /****************************************************************
      1 - generate XML description (if required)
