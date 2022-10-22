@@ -69,7 +69,7 @@ inline Box getBufferSize()
     destroyLibContext(); \
 }                        \
     
-static void compile(const string& name_app, Box box, int argc = 0, const char* argv[] = nullptr)
+static CodeContainer* compile(const string& name_app, Box box, int argc = 0, const char* argv[] = nullptr)
 {
     string error_msg, source = createSourceFromBoxes(name_app, box, "cpp", argc, argv, error_msg);
     if (source != "") {

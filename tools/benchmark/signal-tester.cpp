@@ -71,7 +71,7 @@ inline Signal getBufferSize()
     destroyLibContext(); \
 }                        \
     
-static void compile(const string& name_app, tvec signals, int argc = 0, const char* argv[] = nullptr)
+static CodeContainer* compile(const string& name_app, tvec signals, int argc = 0, const char* argv[] = nullptr)
 {
     string error_msg, source = createSourceFromSignals(name_app, signals, "cpp", argc, argv, error_msg);
     if (source != "") {
