@@ -40,6 +40,9 @@
  ************************************************************************
  ************************************************************************/
 
+#ifndef _FAUST_HH_
+#define _FAUST_HH_
+
 #include <sstream>
 
 #include "tlib/tree.hh"
@@ -59,7 +62,6 @@ void* threadBoxPropagateSig(void* arg);
 
 bool isCmd(const char* cmd, const char* kw1);
 bool isCmd(const char* cmd, const char* kw1, const char* kw2);
-bool processCmdline(int argc, const char* argv[]);
 
 /****************************************************************
                      Faust directories information
@@ -86,8 +88,6 @@ LIBFAUST_API unsigned int xtendedArity(Tree tree);
  * the corresponding fx name "noise"
  */
 string fxName(const string& filename);
-void initFaustDirectories(int argc, const char* argv[]);
-void initDocumentNames();
 void includeFile(const string& file, ostream& dst);
 void compileCLLVM(Tree signals, int numInputs, int numOutputs);
 void compileLLVM(Tree signals, int numInputs, int numOutputs, bool generate);
@@ -117,3 +117,6 @@ LIBFAUST_API Tree DSPToBoxes(const std::string& name_app, const std::string& dsp
 void createFactoryAux(const char* name, const char* dsp_content, int argc, const char* argv[], bool generate);
 void createFactoryAux(const char* name, Tree signals, int argc, const char* argv[], int numInputs,
                              int numOutputs, bool generate);
+
+
+#endif

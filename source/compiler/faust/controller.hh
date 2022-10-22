@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2016 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -19,49 +19,34 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _FAUSTFLOATS_
-#define _FAUSTFLOATS_
-
-#include <iostream>
-#include <float.h>
-
-#include "instructions.hh"
-
-#define FLOATMACRO "FAUSTFLOAT"
-#define FLOATMACROPTR "FAUSTFLOAT*"
-#define FLOATMACROPTRPTR "FAUSTFLOAT**"
-#define FLOATCASTER "(" FLOATMACRO ")"
-
-const char* isuffix();
-const char* inumix();
-double      inummin();
-
-int            ifloatsize();
-const char*    ifloat();
-const char*    ifloatptr();
-const char*    ifloatptrptr();
-Typed::VarType itfloat();
-Typed::VarType itfloatptr();
-Typed::VarType itfloatptrptr();
-const char*    icast();
-
-const char* xfloat();
-const char* xcast();
-
-
-void printfloatdef(std::ostream& fout);
-
-typedef long double quad;
+#ifndef __FAUST_CONTROLLER_HH__
+#define __FAUST_CONTROLLER_HH__
 
 namespace Faust {
-  namespace Type {
 
-    struct Float
+  struct Controller
+  {
+    static void initDocumentNames()
     {
-       static void init();
-    };
+        if (gGlobal->gInputFiles.empty()) {
+            gGlobal->gMasterDocument  = "Unknown";
+            gGlobal->gMasterDirectory = ".";
+            gGlobal->gMasterName      = "faustfx";
+            gGlobal->gDocName         = "faustdoc";
+        } else {
+            gGlobal->gMasterDocument  = *gGlobal->gInputFiles.begin();
+            gGlobal->gMasterDirectory = fileDirname(gGlobal->gMasterDocument);
+            gGlobal->gMasterName      = fxName(gGlobal->gMasterDocument);
+            gGlobal->gDocName         = fxName(gGlobal->gMasterDocument);
+        }
 
-  }
+        // Add gMasterDirectory in gImportDirList and gArchitectureDirList
+        gGlobal->gImportDirList.push_back(gGlobal->gMasterDirectory);
+        gGlobal->gArchitectureDirList.push_back(gGlobal->gMasterDirectory);
+    }
+
+  };
+
 }
 
 #endif

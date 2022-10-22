@@ -64,6 +64,9 @@
 #include "timing.hh"
 #include "xtended.hh"
 
+#include "faust/cli.hh"
+#include "faust/controller.hh"
+
 #ifdef C_BUILD
 #include "c_code_container.hh"
 #endif
@@ -1193,79 +1196,7 @@ string fxName(const string& filename)
     return filename.substr(p1, p2 - p1);
 }
 
-void initFaustDirectories(int argc, const char* argv[])
-{
-#if !defined(FAUST_SELF_CONTAINED_LIB)
-    char s[1024];
-    getFaustPathname(s, 1024);
 
-    gGlobal->gFaustExeDir              = exepath::get(argv[0]);
-    gGlobal->gFaustRootDir             = exepath::dirup(gGlobal->gFaustExeDir);
-    gGlobal->gFaustDirectory           = fileDirname(s);
-    gGlobal->gFaustSuperDirectory      = fileDirname(gGlobal->gFaustDirectory);
-    gGlobal->gFaustSuperSuperDirectory = fileDirname(gGlobal->gFaustSuperDirectory);
-
-    //-------------------------------------------------------------------------------------
-    // init gImportDirList : a list of path where to search .lib files
-    //-------------------------------------------------------------------------------------
-    if (char* envpath = getenv("FAUST_LIB_PATH")) {
-        gGlobal->gImportDirList.push_back(envpath);
-    }
-#ifdef INSTALL_PREFIX
-    gGlobal->gImportDirList.push_back(INSTALL_PREFIX "/share/faust");
-#endif
-
-    gGlobal->gImportDirList.push_back(exepath::dirup(gGlobal->gFaustExeDir) + "/share/faust");
-    gGlobal->gImportDirList.push_back("/usr/local/share/faust");
-    gGlobal->gImportDirList.push_back("/usr/share/faust");
-
-    //-------------------------------------------------------------------------------------
-    // init gArchitectureDirList : a list of path where to search architectures files
-    //-------------------------------------------------------------------------------------
-    if (char* envpath = getenv("FAUST_ARCH_PATH")) {
-        gGlobal->gArchitectureDirList.push_back(envpath);
-    }
-    gGlobal->gArchitectureDirList.push_back(gGlobal->gFaustDirectory + "/architecture");
-    gGlobal->gArchitectureDirList.push_back(gGlobal->gFaustSuperDirectory + "/architecture");
-    gGlobal->gArchitectureDirList.push_back(gGlobal->gFaustSuperSuperDirectory + "/architecture");
-#ifdef INSTALL_PREFIX
-    gGlobal->gArchitectureDirList.push_back(INSTALL_PREFIX "/share/faust");
-    gGlobal->gArchitectureDirList.push_back(INSTALL_PREFIX "/include");
-#endif
-    gGlobal->gArchitectureDirList.push_back(exepath::dirup(gGlobal->gFaustExeDir) + "/share/faust");
-    gGlobal->gArchitectureDirList.push_back(exepath::dirup(gGlobal->gFaustExeDir) + "/include");
-    gGlobal->gArchitectureDirList.push_back("/usr/local/share/faust");
-    gGlobal->gArchitectureDirList.push_back("/usr/share/faust");
-    gGlobal->gArchitectureDirList.push_back("/usr/local/include");
-    gGlobal->gArchitectureDirList.push_back("/usr/include");
-
-    // for debugging purposes
-    //    cerr << "gArchitectureDirList:\n";
-    //    for (const auto& d : gGlobal->gArchitectureDirList) {
-    //        cerr << "\t" << d << "\n";
-    //    }
-    //    cerr << endl;
-#endif
-}
-
-void initDocumentNames()
-{
-    if (gGlobal->gInputFiles.empty()) {
-        gGlobal->gMasterDocument  = "Unknown";
-        gGlobal->gMasterDirectory = ".";
-        gGlobal->gMasterName      = "faustfx";
-        gGlobal->gDocName         = "faustdoc";
-    } else {
-        gGlobal->gMasterDocument  = *gGlobal->gInputFiles.begin();
-        gGlobal->gMasterDirectory = fileDirname(gGlobal->gMasterDocument);
-        gGlobal->gMasterName      = fxName(gGlobal->gMasterDocument);
-        gGlobal->gDocName         = fxName(gGlobal->gMasterDocument);
-    }
-
-    // Add gMasterDirectory in gImportDirList and gArchitectureDirList
-    gGlobal->gImportDirList.push_back(gGlobal->gMasterDirectory);
-    gGlobal->gArchitectureDirList.push_back(gGlobal->gMasterDirectory);
-}
 
 void parseSourceFiles()
 {
@@ -2171,12 +2102,12 @@ static void* expandDSPInternal(void* arg)
         string dsp_content = context->fDSPContent;
         int argc = context->fArgc;
         const char** argv = context->fArgv;
-        
-        /****************************************************************
-         1 - process command line
-        *****************************************************************/
-        initFaustDirectories(argc, argv);
-        processCmdline(argc, argv);
+          
+      /****************************************************************
+       1 - process command line
+      *****************************************************************/
+      ::Faust::CLI::initFaustDirectories(argc, argv);
+      ::Faust::CLI::processCmdline(argc, argv);
 
         /****************************************************************
          2 - parse source files
@@ -2185,8 +2116,8 @@ static void* expandDSPInternal(void* arg)
             gGlobal->gInputString = dsp_content;
             gGlobal->gInputFiles.push_back(name_app);
         }
-        initDocumentNames();
-        initFaustFloat();
+        ::Faust::Controller::initDocumentNames();
+        ::Faust::Type::Float::init();
 
         parseSourceFiles();
 
@@ -2236,8 +2167,8 @@ LIBFAUST_API Tree DSPToBoxes(const string& name_app, const string& dsp_content, 
     /****************************************************************
      1 - process command line
      *****************************************************************/
-    initFaustDirectories(argc1, argv1);
-    processCmdline(argc1, argv1);
+    ::Faust::CLI::initFaustDirectories(argc1, argv1);
+    ::Faust::CLI::processCmdline(argc1, argv1);
 
     faust_alarm(gGlobal->gTimeout);
 
@@ -2248,8 +2179,8 @@ LIBFAUST_API Tree DSPToBoxes(const string& name_app, const string& dsp_content, 
         gGlobal->gInputString = dsp_content;
         gGlobal->gInputFiles.push_back(name_app);
     }
-    initDocumentNames();
-    initFaustFloat();
+    ::Faust::Controller::initDocumentNames();
+    ::Faust::Type::Float::init();
 
     try {
         parseSourceFiles();
@@ -2282,11 +2213,11 @@ static void* createFactoryAux1(void* arg)
         const char** argv = context->fArgv;
         bool generate = context->fGenerate;
         
-        /****************************************************************
-         1 - process command line
-        *****************************************************************/
-        initFaustDirectories(argc, argv);
-        processCmdline(argc, argv);
+      /****************************************************************
+       1 - process command line
+      *****************************************************************/
+      ::Faust::CLI::initFaustDirectories(argc, argv);
+      ::Faust::CLI::processCmdline(argc, argv);
 
         if (gGlobal->gHelpSwitch) {
             printHelp();
@@ -2339,8 +2270,8 @@ static void* createFactoryAux1(void* arg)
             gGlobal->gInputString = dsp_content;
             gGlobal->gInputFiles.push_back(name_app);
         }
-        initDocumentNames();
-        initFaustFloat();
+        ::Faust::Controller::initDocumentNames();
+        ::Faust::Type::Float::init();
 
         parseSourceFiles();
 
@@ -2441,11 +2372,11 @@ static void* createFactoryAux2(void* arg)
         /****************************************************************
          1 - process command line
          *****************************************************************/
-        initFaustDirectories(argc, argv);
-        processCmdline(argc, argv);
+        ::Faust::CLI::initFaustDirectories(argc, argv);
+        ::Faust::CLI::processCmdline(argc, argv);
 
-        initDocumentNames();
-        initFaustFloat();
+        ::Faust::Controller::initDocumentNames();
+        ::Faust::Type::Float::init();
 
         /*************************************************************************
          5 - preparation of the signal tree and translate output signals
