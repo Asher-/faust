@@ -319,7 +319,7 @@ namespace Faust {
 
       void parseSourceFiles()
       {
-          assert( gGlobal->gInjectFlag || (gGlobal->gInputFiles.begin() == gGlobal->gInputFiles.end()) );
+          assert( gGlobal->gInjectFlag || (gGlobal->gInputFiles.begin() != gGlobal->gInputFiles.end()) );
 
           startTiming("parser");
 

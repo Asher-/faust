@@ -364,7 +364,7 @@ Tree SourceReader::parseFile(const char* fname)
             }
         #endif
             stringstream error;
-            error << "ERROR : unable to open file " << yyfilename << endl;
+            error << "ERROR : unable to open file " << fullpath1 << endl;
             throw faustexception(error.str());
         }
     }

@@ -28,7 +28,7 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #######################################
 # Output options
-option ( DEPLOYMENT_TARGET 	"[MacOS]"	off )
+option ( DEPLOYMENT_TARGET 	"[MacOS]"	on )
 option ( UNIVERSAL 	"Compiles and combines i386 and x86_64 architectures [MacOS]"	off )
 option ( IOS     	"Compiles for iOS"	off )
 option ( USE_LLVM_CONFIG    "Force use off llvm-config"	on )
@@ -418,7 +418,7 @@ install (
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
 install (
-    FILES     ${SRCDIR}/libfaust.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/faust/dsp
+    FILES     ${SRCDIR}/compiler/libfaust.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/faust/dsp
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
 # the file below is part of the httpd lib but installed even if the lib is not part of the config
