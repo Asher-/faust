@@ -54,6 +54,8 @@ namespace Faust {
       unique_ptr<ostream>  _helpers;
       Tree _lsignals{nullptr};
 
+      static constexpr const char* DSPtoTargetString = "   DSP to ";
+
       Common
       () = default;
       Common
@@ -93,62 +95,7 @@ namespace Faust {
 
       static void enumBackends(ostream& out)
       {
-          const char* dspto = "   DSP to ";
-      #ifdef C_BUILD
-          out << dspto << "C" << endl;
-      #endif
-
-      #ifdef CPP_BUILD
-          out << dspto << "C++" << endl;
-      #endif
-
-      #ifdef CSHARP_BUILD
-          out << dspto << "CSharp" << endl;
-      #endif
-
-      #ifdef DLANG_BUILD
-          out << dspto << "DLang" << endl;
-      #endif
-
-      #ifdef FIR_BUILD
-          out << dspto << "FIR" << endl;
-      #endif
-
-      #ifdef INTERP_BUILD
-          out << dspto << "Interpreter" << endl;
-      #endif
-
-      #ifdef JAVA_BUILD
-          out << dspto << "Java" << endl;
-      #endif
-
-      #ifdef JAX_BUILD
-          out << dspto << "JAX" << endl;
-      #endif
-
-      #ifdef JULIA_BUILD
-          out << dspto << "Julia" << endl;
-      #endif
-
-      #ifdef LLVM_BUILD
-          out << dspto << "LLVM IR" << endl;
-      #endif
-
-      #ifdef OCPP_BUILD
-          out << dspto << "old C++" << endl;
-      #endif
-
-      #ifdef RUST_BUILD
-          out << dspto << "Rust" << endl;
-      #endif
-
-      #ifdef SOUL_BUILD
-          out << dspto << "SOUL" << endl;
-      #endif
-
-      #ifdef WASM_BUILD
-          out << dspto << "WebAssembly (wast/wasm)" << endl;
-      #endif
+          out << DSPtoTargetString;
       }
 
       /****************************************************************

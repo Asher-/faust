@@ -61,6 +61,12 @@ namespace Faust {
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
+      virtual void enumBackends(ostream& out)
+      {
+          Common::enumBackends(out);
+          out << "JAX" << endl;
+      }
+
     };
 
   }
