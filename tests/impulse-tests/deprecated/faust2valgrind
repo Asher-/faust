@@ -27,7 +27,7 @@ for f in $FILES; do
 
 	# compile c++ to binary
 	(
-		${CXX=g++} ${CXXFLAGS=-O0 -pthread -std=c++11} $OMP "$f.cpp" -o "${f%.dsp}"
+		${CXX=g++} ${CXXFLAGS=-O0 -pthread -std=c++17} $OMP "$f.cpp" -o "${f%.dsp}"
 	) > /dev/null || exit
 
     # run the resulting binary with valgrind

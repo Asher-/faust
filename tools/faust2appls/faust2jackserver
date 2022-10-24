@@ -28,7 +28,7 @@ QMAKE=$(which qmake-qt4 || echo qmake)
 # existing *.dsp files          -> FILES
 #
 
-CXXFLAGS='-std=c++11 -Wfatal-errors -O3 -mfpmath=sse -msse -msse2 -msse3 -ffast-math'
+CXXFLAGS='-std=c++17 -Wfatal-errors -O3 -mfpmath=sse -msse -msse2 -msse3 -ffast-math'
 
 OSCINC=""
 QTDEFS=""

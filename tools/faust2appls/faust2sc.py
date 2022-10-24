@@ -81,7 +81,7 @@ def faustoptflags():
     # Compilation flags for gcc and icc
     if machine == 'arm6vl':
         # Raspberry Pi
-        envDict["MYGCCFLAGS"] = "-std=c++11 -O3 -march=armv6zk -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math -ftree-vectorize"
+        envDict["MYGCCFLAGS"] = "-std=c++17 -O3 -march=armv6zk -mcpu=arm1176jzf-s -mtune=arm1176jzf-s -mfpu=vfp -mfloat-abi=hard -ffast-math -ftree-vectorize"
 
     # MacOS
     elif systemType == 'Darwin':
@@ -92,16 +92,16 @@ def faustoptflags():
 
         if machine == 'arm64':
             # Silicon MX
-            envDict["MYGCCFLAGS"] = "-std=c++11 -Ofast"
+            envDict["MYGCCFLAGS"] = "-std=c++17 -Ofast"
         else:
-            envDict["MYGCCFLAGS"] = "-std=c++11 -Ofast -march=native"
+            envDict["MYGCCFLAGS"] = "-std=c++17 -Ofast -march=native"
 
-        envDict["MYGCCFLAGSGENERIC"]="-std=c++11 -Ofast"
+        envDict["MYGCCFLAGSGENERIC"]="-std=c++17 -Ofast"
     else:
-        envDict["MYGCCFLAGS"] = "-std=c++11 -Ofast -march=native"
-        envDict["MYGCCFLAGSGENERIC"] = "-std=c++11 -Ofast"
+        envDict["MYGCCFLAGS"] = "-std=c++17 -Ofast -march=native"
+        envDict["MYGCCFLAGSGENERIC"] = "-std=c++17 -Ofast"
 
-    envDict["MYICCFLAGS"]="-std=c++11 -O3 -xHost -ftz -fno-alias -fp-model fast=2"
+    envDict["MYICCFLAGS"]="-std=c++17 -O3 -xHost -ftz -fno-alias -fp-model fast=2"
 
     if systemType != 'Darwin':
         envDict["EXT"]="so"

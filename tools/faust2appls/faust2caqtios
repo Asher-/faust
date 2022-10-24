@@ -97,7 +97,7 @@ if [[ $(uname) == Darwin ]]; then
 	if [ $SYS_VERSION -gt 12 ]
 	then
 		SPEC="-spec macx-clang"
-		CLANGOPT="CONFIG+=c++11"
+		CLANGOPT="CONFIG+=c++17"
 	else
 		SPEC="-spec macx-g++"
 		CLANGOPT=""
@@ -161,5 +161,3 @@ for p in $FILES; do
 done
 
 echo $BINARIES
-
-

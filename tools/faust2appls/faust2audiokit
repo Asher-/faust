@@ -97,7 +97,7 @@ for p in $FILE; do
 
     # create Swift wrapper
     (
-        cd "$SRCDIR/$dspName" && c++ -std=c++11 -O3 faust2swift.cpp -o faust2swift && ./faust2swift && rm faust2swift faust2swift.cpp
+        cd "$SRCDIR/$dspName" && c++ -std=c++17 -O3 faust2swift.cpp -o faust2swift && ./faust2swift && rm faust2swift faust2swift.cpp
     ) > /dev/null || exit
 
     # create the source folder

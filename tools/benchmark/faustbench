@@ -263,13 +263,13 @@ for p in $FILES; do
         echo "$dspName:" > Makefile
         if [ $TESTS == "all" ]; then
             echo -n -e '\t' >> Makefile
-            echo "$CXX $CXXFLAGS -std=c++11 -I `faust -includedir` -DALL_TESTS faustbench.cpp $LIBS -o $dspName" >> Makefile
+            echo "$CXX $CXXFLAGS -std=c++17 -I `faust -includedir` -DALL_TESTS faustbench.cpp $LIBS -o $dspName" >> Makefile
         elif [ $TESTS == "fast" ]; then
             echo -n -e '\t' >> Makefile
-            echo "$CXX $CXXFLAGS -std=c++11 -I `faust -includedir` -DFAST_TESTS faustbench.cpp $LIBS -o $dspName" >> Makefile
+            echo "$CXX $CXXFLAGS -std=c++17 -I `faust -includedir` -DFAST_TESTS faustbench.cpp $LIBS -o $dspName" >> Makefile
         elif [ $TESTS == "single" ]; then
             echo -n -e '\t' >> Makefile
-            echo "$CXX $CXXFLAGS -std=c++11 -I `faust -includedir` -DSINGLE_TESTS faustbench.cpp $LIBS -o $dspName" >> Makefile
+            echo "$CXX $CXXFLAGS -std=c++17 -I `faust -includedir` -DSINGLE_TESTS faustbench.cpp $LIBS -o $dspName" >> Makefile
         fi
         echo -e '\n' >> Makefile
         echo "clean:" >> Makefile
@@ -286,11 +286,11 @@ for p in $FILES; do
     else
         # compile
         if [ $TESTS == "all" ]; then
-            $CXX $CXXFLAGS -std=c++11 -I `faust -includedir` -DALL_TESTS faustbench.cpp $LIBS -o $dspName
+            $CXX $CXXFLAGS -std=c++17 -I `faust -includedir` -DALL_TESTS faustbench.cpp $LIBS -o $dspName
         elif [ $TESTS == "fast" ]; then
-            $CXX $CXXFLAGS -std=c++11 -I `faust -includedir` -DFAST_TESTS faustbench.cpp $LIBS -o $dspName
+            $CXX $CXXFLAGS -std=c++17 -I `faust -includedir` -DFAST_TESTS faustbench.cpp $LIBS -o $dspName
         elif [ $TESTS == "single" ]; then
-            $CXX $CXXFLAGS -std=c++11 -I `faust -includedir` -DSINGLE_TESTS faustbench.cpp $LIBS -o $dspName
+            $CXX $CXXFLAGS -std=c++17 -I `faust -includedir` -DSINGLE_TESTS faustbench.cpp $LIBS -o $dspName
         fi
 
         # run bench

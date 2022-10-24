@@ -190,7 +190,7 @@ for p in $FILES; do
         # compiles faust to c++
         faust -uim -i -a $FAUSTARCH/unity/unityplugin.cpp "$SRCDIR/$NAME.dsp" -o $TMP/$NAME.cpp || (echo "$FNAME : Faust to C++ compilation failed in faust2osxiosunity -ios"; exit 1)
 
-        $CXX $CXXFLAGS -DAPPLE -fembed-bitcode -DPLUGINNAME="libFaustPlugin_$NAME" -std=c++11 -stdlib=libc++ -c -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk $TMP/$NAME.cpp -o $TMP/$NAME.o || (echo "$FNAME : C++ to iOS library compilation failed in faust2osxiosunity -ios"; exit 1)
+        $CXX $CXXFLAGS -DAPPLE -fembed-bitcode -DPLUGINNAME="libFaustPlugin_$NAME" -std=c++17 -stdlib=libc++ -c -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk $TMP/$NAME.cpp -o $TMP/$NAME.o || (echo "$FNAME : C++ to iOS library compilation failed in faust2osxiosunity -ios"; exit 1)
         libtool $TMP/$NAME.o -o $TMP/libFaustPlugin_$NAME.a
         rm $TMP/$NAME.o $TMP/$NAME.cpp
 

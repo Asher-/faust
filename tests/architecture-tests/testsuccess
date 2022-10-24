@@ -187,7 +187,7 @@ if [ "x${TESTS}" != "x" ]; then
     done
 
     if notinlist faust2api "${TESTS_EXCLUDED}"; then
-        (faust2api -jack good.dsp >LOG 2>&1 && unzip dsp-faust.zip && cd dsp-faust && c++ -std=c++11 DspFaust.cpp -DBUILD -ljack -o DspFaust) && (echo "OK: faust2api -jack succeeded !")||(echo "ERROR: faust2api -jack failed")
+        (faust2api -jack good.dsp >LOG 2>&1 && unzip dsp-faust.zip && cd dsp-faust && c++ -std=c++17 DspFaust.cpp -DBUILD -ljack -o DspFaust) && (echo "OK: faust2api -jack succeeded !")||(echo "ERROR: faust2api -jack failed")
         runtest LOG faust2api -jack -midi -nvoices 8 good.dsp
         runtest LOG faust2api -jack -nvoices 8 -effect effect.dsp -midi good.dsp
         runtest LOG faust2api -jack -soundfile -lang ocpp sound.dsp

@@ -41,7 +41,7 @@
 #include "faust/misc.h"
 #include "faust/audio/dummy-audio.h"
 
-// faust -mem -a dummy-mem.cpp noise.dsp -o noise.cpp && c++ -std=c++11 noise.cpp -o noise && ./noise
+// faust -mem -a dummy-mem.cpp noise.dsp -o noise.cpp && c++ -std=c++17 noise.cpp -o noise && ./noise
 
 /******************************************************************************
  *******************************************************************************

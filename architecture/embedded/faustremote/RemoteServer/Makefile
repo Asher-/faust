@@ -14,7 +14,7 @@ llvm_paths = /usr/bin /opt/local/bin /usr/local/bin
 LLVM_CONFIG = $(lastword $(wildcard /usr/bin/llvm-config* /opt/local/bin/llvm-config* /usr/local/bin/llvm-config*) $(shell which llvm-config 2> /dev/null))
 
 CC            = gcc -O3 
-CXX           = g++ -O3 -std=c++11 -fvisibility=hidden
+CXX           = g++ -O3 -std=c++17 -fvisibility=hidden
 DEFINE	      = D_REENTRANT	 
 INCPATH       = -I. -I../ -I../../../architecture -I../../../compiler/generator -I../../../compiler/generator/llvm -I../../../compiler/generator/interpreter -I../../../compiler/utils -I/usr/include -I/opt/local/include 
 LINK          = g++

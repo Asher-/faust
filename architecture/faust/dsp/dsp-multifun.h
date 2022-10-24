@@ -38,7 +38,7 @@ architecture section is not modified.
     This file is used by the 'faust2object' tool to produce a single multi CPU aware .o file,
     to be compiled and linked with the mydspmulti class.
  
-    To test: c++ -std=c++11 FOOmulti.cpp FOOgeneric.cpp -o FOOmulti
+    To test: c++ -std=c++17 FOOmulti.cpp FOOgeneric.cpp -o FOOmulti
  */
 class mydspmulti : public decorator_dsp {
     

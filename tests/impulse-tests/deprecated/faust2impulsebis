@@ -33,7 +33,7 @@ for f in $FILES; do
 
 	# compile c++ to binary
 	(
-		${CXX=g++} ${CXXFLAGS=-O3 -pthread -std=c++11} $OMP "$name.cpp" -o "$name"
+		${CXX=g++} ${CXXFLAGS=-O3 -pthread -std=c++17} $OMP "$name.cpp" -o "$name"
 	) > /dev/null || exit
 
 	# run the resulting binary to generate the impulse response

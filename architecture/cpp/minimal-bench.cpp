@@ -39,7 +39,7 @@
 #include "faust/audio/dummy-audio.h"
 #include "faust/dsp/dsp-bench.h"
 
-// faust -a minimal-bench.cpp noise.dsp -o noise.cpp && c++ -std=c++11 noise.cpp -o noise && ./noise
+// faust -a minimal-bench.cpp noise.dsp -o noise.cpp && c++ -std=c++17 noise.cpp -o noise && ./noise
 
 /******************************************************************************
  *******************************************************************************

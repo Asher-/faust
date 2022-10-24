@@ -63,12 +63,12 @@ STYLE=""
 
 PROCARCH="-fPIC"
 dllext=".so"
-CXXFLAGS="-Ofast -std=c++11 -march=native"
+CXXFLAGS="-Ofast -std=c++17 -march=native"
 
 # Darwin-specific
 #ARCH="-arch i386 -arch x86_64"
 if [[ $(uname) == Darwin || $CROSSTARGET == Darwin ]]; then
-    CXXFLAGS="-Ofast -std=c++11 -march=native $ARCH -I/opt/local/include"
+    CXXFLAGS="-Ofast -std=c++17 -march=native $ARCH -I/opt/local/include"
     dllext=".vst"
 fi
 
@@ -107,7 +107,7 @@ EOF
     : ignore
     elif [ $p = "-icc" ]; then
         CXX=icpc
-        CXXFLAGS="-O3 -std=c++11 -xHost -ftz -fno-alias -fp-model fast=2"
+        CXXFLAGS="-O3 -std=c++17 -xHost -ftz -fno-alias -fp-model fast=2"
     elif [ $p = "-osc" ]; then
         # not implemented for now
         OSCDEFS="DEFINES += OSCCTRL"
@@ -146,7 +146,7 @@ EOF
     elif [ $p = "-arch64" ]; then
         PROCARCH="-m64 -fPIC"
     elif [ $p = "-osx" ]; then
-        CXXFLAGS="-Ofast -std=c++11 -march=native $ARCH -I/opt/local/include"
+        CXXFLAGS="-Ofast -std=c++17 -march=native $ARCH -I/opt/local/include"
         dllext=".vst"
     elif [ $p = "-keep" ]; then
         KEEP="yes"
@@ -230,7 +230,7 @@ if [ -n "$plugin_gui" ]; then
 # XXXTODO: OSX support
 (
     cd "$tmpdir"
-    $QMAKE -project -t lib -o ${clsname}.pro "CONFIG += gui plugin no_plugin_name_prefix warn_off" "QT += widgets printsupport network $QTEXTRA" "INCLUDEPATH+=$ABSDIR" "INCLUDEPATH+=$CURDIR" "INCLUDEPATH+=$FAUSTARCH" "INCLUDEPATH+=$FAUSTINC" "QMAKE_CXXFLAGS=-std=c++11 $CPPFLAGS" $STYLE_CXXFLAGS "LIBS+=$ARCHLIB $OSCLIBS $HTTPLIBS $HTTPLIBS1" "SOURCES+=$SDKSRC/$main $SDKSRC/$afx $SDKSRC/$afxx" "HEADERS+=$FAUSTARCH/faustvstqt.h $FAUSTINC/faust/gui/QTUI.h" $RESOURCES "$OSCDEFS" "$HTTPDEFS" "$QRDEFS"
+    $QMAKE -project -t lib -o ${clsname}.pro "CONFIG += gui plugin no_plugin_name_prefix warn_off" "QT += widgets printsupport network $QTEXTRA" "INCLUDEPATH+=$ABSDIR" "INCLUDEPATH+=$CURDIR" "INCLUDEPATH+=$FAUSTARCH" "INCLUDEPATH+=$FAUSTINC" "QMAKE_CXXFLAGS=-std=c++17 $CPPFLAGS" $STYLE_CXXFLAGS "LIBS+=$ARCHLIB $OSCLIBS $HTTPLIBS $HTTPLIBS1" "SOURCES+=$SDKSRC/$main $SDKSRC/$afx $SDKSRC/$afxx" "HEADERS+=$FAUSTARCH/faustvstqt.h $FAUSTINC/faust/gui/QTUI.h" $RESOURCES "$OSCDEFS" "$HTTPDEFS" "$QRDEFS"
     $QMAKE *.pro
     make
 ) > /dev/null || exit 1
