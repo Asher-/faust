@@ -55,7 +55,11 @@ endif()
 
 ####################################
 # source and headers files
-file (GLOB SRC ${SRCDIR}/compiler/*.cpp
+file (GLOB SRC ${SRCDIR}/instructions/*.cpp
+               ${SRCDIR}/instructions/*/*.cpp
+               ${SRCDIR}/faust/*.cpp
+               ${SRCDIR}/faust/*/*.cpp
+							 ${SRCDIR}/compiler/*.cpp
                ${SRCDIR}/compiler/*/*.cpp
                ${SRCDIR}/compiler/*/*/*.cpp
                ${SRCDIR}/compiler/*/*/*/*.cpp
@@ -79,7 +83,9 @@ file (GLOB SRC ${SRCDIR}/compiler/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
 							 ${ROOT}/architecture/faust/export.cpp
  						   ${SRCDIR}/documentator/*.cpp )
-file (GLOB HH  ${SRCDIR}/compiler/*.hh
+file (GLOB HH  ${SRCDIR}/instructions/*.hh
+               ${SRCDIR}/instructions/*/*.hh
+							 ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
                ${SRCDIR}/compiler/*/*/*.hh
                ${SRCDIR}/compiler/*/*/*/*.hh
@@ -105,6 +111,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler
 	${SRCDIR}/compiler/generator
 	${SRCDIR}/compiler/faust
+	${SRCDIR}/faust
 	${SRCDIR}/tlib
 	${SRCDIR}/target
 	${SRCDIR}/target/code_container
@@ -121,19 +128,19 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/language/wasm
 	${SRCDIR}/target/language/rust
 	${SRCDIR}/target/language/soul
+	${SRCDIR}/instructions
+	${SRCDIR}/instructions/cast
+	${SRCDIR}/instructions/control_flow
+	${SRCDIR}/instructions/declarations
+	${SRCDIR}/instructions/loops
+	${SRCDIR}/instructions/math
+	${SRCDIR}/instructions/memory
+	${SRCDIR}/instructions/numbers
+	${SRCDIR}/instructions/ui
 	${SRCDIR}/compiler/generator/address
 	${SRCDIR}/compiler/generator/compile
 	${SRCDIR}/compiler/generator/compile/scalar
 	${SRCDIR}/compiler/generator/fir
-	${SRCDIR}/compiler/generator/instructions
-	${SRCDIR}/compiler/generator/instructions/cast
-	${SRCDIR}/compiler/generator/instructions/control_flow
-	${SRCDIR}/compiler/generator/instructions/declarations
-	${SRCDIR}/compiler/generator/instructions/loops
-	${SRCDIR}/compiler/generator/instructions/math
-	${SRCDIR}/compiler/generator/instructions/memory
-	${SRCDIR}/compiler/generator/instructions/numbers
-	${SRCDIR}/compiler/generator/instructions/ui
 	${SRCDIR}/compiler/generator/parallelize
 	${SRCDIR}/compiler/generator/string_type_manager
 	${SRCDIR}/compiler/generator/terms
