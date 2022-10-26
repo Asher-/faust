@@ -24,8 +24,8 @@
 
 #include <string>
 
-#include "text_instructions.hh"
-#include "struct_manager.hh"
+#include "text_instruction_visitor.hh"
+#include "struct_instruction_visitor_1.hh"
 
 using namespace std;
 
@@ -43,9 +43,9 @@ class CInstVisitor : public TextInstVisitor {
 
     // Polymorphic math functions
     map<string, string> gPolyMathLibTable;
-    
+
     string cast2FAUSTFLOAT(const string& str) { return "(FAUSTFLOAT)" + str; }
-    
+
    public:
     using TextInstVisitor::visit;
 
@@ -57,7 +57,7 @@ class CInstVisitor : public TextInstVisitor {
 
         gFunctionSymbolTable["min_i"] = true;
         gFunctionSymbolTable["max_i"] = true;
-    
+
         // Float version
         gFunctionSymbolTable["fabsf"]      = true;
         gFunctionSymbolTable["acosf"]      = true;
@@ -123,19 +123,19 @@ class CInstVisitor : public TextInstVisitor {
         gFunctionSymbolTable["sinl"]       = true;
         gFunctionSymbolTable["sqrtl"]      = true;
         gFunctionSymbolTable["tanl"]       = true;
-        
+
         // Polymath mapping int version
         gPolyMathLibTable["min_i"] = "min";
         gPolyMathLibTable["max_i"] = "max";
-        
+
         // Polymath mapping float version
         gPolyMathLibTable["min_f"]  = "fminf";
         gPolyMathLibTable["max_f"]  = "fmaxf";
-        
+
         // Polymath mapping double version
         gPolyMathLibTable["min_"]   = "fmin";
         gPolyMathLibTable["max_"]   = "fmax";
-        
+
         // Polymath mapping quad version
         gPolyMathLibTable["min_l"]  = "fminl";
         gPolyMathLibTable["max_l"]  = "fmaxl";
@@ -179,7 +179,7 @@ class CInstVisitor : public TextInstVisitor {
         *fOut << "ui_interface->closeBox(ui_interface->uiInterface);";
         tab(fTab, *fOut);
     }
-    
+
     virtual void visit(AddButtonInst* inst)
     {
         string name;
@@ -283,11 +283,11 @@ class CInstVisitor : public TextInstVisitor {
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }
-    
+
     virtual void generateFunDefArgs(DeclareFunInst* inst)
     {
         *fOut << "(";
-        
+
         size_t size = inst->fType->fArgsTypes.size(), i = 0;
         for (const auto& it : inst->fType->fArgsTypes) {
             // Pointers are set with 'noalias' for non paired arguments, which are garantied to be unique
@@ -313,7 +313,7 @@ class CInstVisitor : public TextInstVisitor {
         *fOut << "&";
         inst->fAddress->accept(this);
     }
-    
+
     virtual void visit(BinopInst* inst)
     {
         // Special case for 'logical right-shift'
@@ -335,7 +335,7 @@ class CInstVisitor : public TextInstVisitor {
         }
     }
     virtual void visit(FixedPointNumInst* inst) { *fOut << "(fixpoint_t)" << checkFloat(inst->fNum); }
-    
+
     virtual void visit(FixedPointArrayNumInst* inst)
     {
         char sep = '{';
@@ -459,24 +459,24 @@ class CInstVisitor : public TextInstVisitor {
  */
 
 class CInstVisitor1 : public CInstVisitor {
-    
+
     private:
-    
+
         // Fields are moved in iZone/fZone model
         StructInstVisitor fStructVisitor;
-    
+
     public:
-    
+
         CInstVisitor1(std::ostream* out, const string& structname, int tab = 0)
         :CInstVisitor(out, structname, tab)
         {}
-    
+
         virtual void visit(AddSoundfileInst* inst)
         {
             // Not supported for now
             throw faustexception("ERROR : AddSoundfileInst not supported for -osX mode\n");
         }
-    
+
         virtual void visit(DeclareVarInst* inst)
         {
             Address::AccessType access = inst->fAddress->getAccess();
@@ -487,12 +487,12 @@ class CInstVisitor1 : public CInstVisitor {
                 CInstVisitor::visit(inst);
             }
         }
-    
+
         virtual void visit(NamedAddress* named)
         {
             Typed::VarType type;
             string name = named->getName();
-            
+
             if (fStructVisitor.hasField(name, type)) {
                 if (type == Typed::kInt32) {
                     FIRIndex value = FIRIndex(fStructVisitor.getFieldIntOffset(name)/sizeof(int));
@@ -505,12 +505,12 @@ class CInstVisitor1 : public CInstVisitor {
                 CInstVisitor::visit(named);
             }
         }
-    
+
         virtual void visit(IndexedAddress* indexed)
         {
             Typed::VarType type;
             string name = indexed->getName();
-            
+
             if (fStructVisitor.hasField(name, type)) {
                 if (type == Typed::kInt32) {
                     FIRIndex value = FIRIndex(indexed->getIndex()) + fStructVisitor.getFieldIntOffset(name)/sizeof(int);
@@ -523,11 +523,11 @@ class CInstVisitor1 : public CInstVisitor {
                 TextInstVisitor::visit(indexed);
             }
         }
-    
+
         // Size is expressed in unit of the actual type (so 'int' or 'float/double')
         int getIntZoneSize() { return fStructVisitor.getStructIntSize()/sizeof(int); }
         int getRealZoneSize() { return fStructVisitor.getStructRealSize()/ifloatsize(); }
-   
+
 };
 
 /**
@@ -535,18 +535,18 @@ class CInstVisitor1 : public CInstVisitor {
  */
 
 class CInstVisitor2 : public CInstVisitor {
-    
+
     protected:
-        
+
         // Fields are distributed between the DSP struct and iZone/fZone model
         StructInstVisitor1 fStructVisitor;
-         
+
     public:
-        
+
         CInstVisitor2(std::ostream* out, const string& structname, int external_memory, int tab = 0)
         :CInstVisitor(out, structname, tab), fStructVisitor(external_memory, 4)
         {}
-        
+
         virtual void visit(DeclareVarInst* inst)
         {
             Address::AccessType access = inst->fAddress->getAccess();
@@ -561,12 +561,12 @@ class CInstVisitor2 : public CInstVisitor {
                 CInstVisitor::visit(inst);
             }
         }
-        
+
         virtual void visit(IndexedAddress* indexed)
         {
             Typed::VarType type;
             string name = indexed->getName();
-            
+
             if (fStructVisitor.hasField(name, type) && fStructVisitor.getFieldMemoryType(name) == MemoryDesc::kExternal) {
                 if (type == Typed::kInt32) {
                     FIRIndex value = FIRIndex(indexed->getIndex()) + fStructVisitor.getFieldIntOffset(name)/sizeof(int);
@@ -579,11 +579,11 @@ class CInstVisitor2 : public CInstVisitor {
                 TextInstVisitor::visit(indexed);
             }
         }
-      
+
         // Size is expressed in unit of the actual type (so 'int' or 'float/double')
         int getIntZoneSize() { return fStructVisitor.getStructIntSize()/sizeof(int); }
         int getRealZoneSize() { return fStructVisitor.getStructRealSize()/ifloatsize(); }
-    
+
 };
 
 /**
@@ -591,18 +591,18 @@ class CInstVisitor2 : public CInstVisitor {
  */
 
 class CInstVisitor3 : public CInstVisitor2 {
-    
+
     public:
-        
+
         CInstVisitor3(std::ostream* out, const string& structname, int external_memory, int tab = 0)
         :CInstVisitor2(out, structname, external_memory, tab)
         {}
-         
+
         virtual void visit(IndexedAddress* indexed)
         {
             Typed::VarType type;
             string name = indexed->getName();
-            
+
             if (fStructVisitor.hasField(name, type) && fStructVisitor.getFieldMemoryType(name) == MemoryDesc::kExternal) {
                 if (type == Typed::kInt32) {
                     FIRIndex value = FIRIndex(indexed->getIndex()) + fStructVisitor.getFieldIntOffset(name)/sizeof(int);
@@ -615,7 +615,7 @@ class CInstVisitor3 : public CInstVisitor2 {
                 TextInstVisitor::visit(indexed);
             }
         }
-     
+
 };
 
 #endif

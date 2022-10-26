@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#include "text_instructions.hh"
+#include "text_instruction_visitor.hh"
 #include "string_type_manager.hh"
 
 class DLangInstVisitor : public TextInstVisitor {

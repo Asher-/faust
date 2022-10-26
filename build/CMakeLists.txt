@@ -72,24 +72,32 @@ file (GLOB SRC ${SRCDIR}/cli/*.cpp
 							 ${SRCDIR}/target/*.cpp
 							 ${SRCDIR}/target/code_container/*.cpp
 							 ${SRCDIR}/target/fir/*.cpp
+               ${SRCDIR}/target/language/*.cpp
                ${SRCDIR}/target/language/*/*.cpp
+               ${SRCDIR}/target/language/*/*/*.cpp
+               ${SRCDIR}/target/language/*/*/*/*.cpp
 							 ${SRCDIR}/tlib/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
 							 ${ROOT}/architecture/faust/export.cpp
  						   ${SRCDIR}/documentator/*.cpp )
-file (GLOB HH  ${SRCDIR}/cli/*.hh
-               ${SRCDIR}/instructions/*.hh
+file (GLOB HH  ${SRCDIR}/*.hh
+               ${SRCDIR}/cli/*.hh
+							 ${SRCDIR}/instructions/*.hh
 							 ${SRCDIR}/instructions/*/*.hh
 							 ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
                ${SRCDIR}/compiler/*/*/*.hh
                ${SRCDIR}/compiler/*/*/*/*.hh
                ${SRCDIR}/compiler/*/*/*/*/*.hh
+               ${SRCDIR}/compiler/*/*/*/*/*/*.hh
                ${SRCDIR}/draw/*.hh
                ${SRCDIR}/draw/*/*.hh
                ${SRCDIR}/target/*.hh
                ${SRCDIR}/target/*/*.hh
                ${SRCDIR}/target/*/*/*.hh
+               ${SRCDIR}/target/*/*/*/*.hh
+               ${SRCDIR}/target/*/*/*/*/*.hh
+               ${SRCDIR}/target/*/*/*/*/*.hh
                ${SRCDIR}/tlib/*.hh
 							 ${ROOT}/benchmark/timing.hh
 							 ${ROOT}/architecture/faust/export.h
@@ -98,6 +106,7 @@ file (GLOB HH  ${SRCDIR}/cli/*.hh
 ####################################
 # include directories
 set (FAUST_INC ${SRCDIR}
+	${SRCDIR}
 	${SRCDIR}/documentator
 	${ROOT}/benchmark
 	${SRCDIR}/cli
@@ -117,6 +126,14 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/language/c
 	${SRCDIR}/target/language/clang
 	${SRCDIR}/target/language/cpp
+	${SRCDIR}/target/language/cpp/gpu
+	${SRCDIR}/target/language/cpp/gpu/visitor
+	${SRCDIR}/target/language/cpp/gpu/cuda
+	${SRCDIR}/target/language/cpp/gpu/cuda/vector
+	${SRCDIR}/target/language/cpp/gpu/cuda/visitor
+	${SRCDIR}/target/language/cpp/gpu/opencl
+	${SRCDIR}/target/language/cpp/gpu/opencl/vector
+	${SRCDIR}/target/language/cpp/gpu/opencl/visitor
 	${SRCDIR}/target/language/csharp
 	${SRCDIR}/target/language/java
 	${SRCDIR}/target/language/julia
@@ -126,6 +143,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/language/wast
 	${SRCDIR}/target/language/rust
 	${SRCDIR}/target/language/soul
+	${SRCDIR}/target/language/soul/visitor
 	${SRCDIR}/instructions
 	${SRCDIR}/instructions/cast
 	${SRCDIR}/instructions/control_flow

@@ -23,7 +23,7 @@
 #include "fir_to_fir.hh"
 #include "global.hh"
 #include "instructions_complexity.hh"
-#include "struct_manager.hh"
+#include "struct_instruction_visitor.hh"
 
 using namespace std;
 
@@ -102,7 +102,7 @@ void FIRCodeContainer::dumpGlobalsAndInit(FIRInstVisitor& firvisitor, ostream* d
     *dst << endl;
     generateGetOutputs(subst("$0::getNumOutputs", fKlassName), "dsp", true, FunTyped::kDefault)->accept(&firvisitor);
     *dst << endl;
-   
+
     if (fStaticInitInstructions->fCode.size() > 0) {
         *dst << "======= Static Init begin ==========" << endl << endl;
         fStaticInitInstructions->accept(&firvisitor);
@@ -203,13 +203,13 @@ void FIRCodeContainer::dumpMemory(ostream* dst)
         *dst << "Total heap size = " << heap_counter3.fSizeBytes + total_heap_size << " bytes" << endl;
         *dst << "Stack size in compute = " << stack_counter.fSizeBytes << " bytes"
              << "\n\n";
-        
+
         *dst << "======= Variable access in compute control ==========" << endl << endl;
         {
             StructInstVisitor struct_visitor;
             fDeclarationInstructions->accept(&struct_visitor);
             fComputeBlockInstructions->accept(&struct_visitor);
-            
+
             for (const auto& it : struct_visitor.getFieldTable()) {
                 *dst << "Field = " << it.first << " size = " << it.second.fSize;
                 *dst << " r_count = " << it.second.fRAccessCount;
@@ -217,15 +217,15 @@ void FIRCodeContainer::dumpMemory(ostream* dst)
                 *dst << " ratio = " << float(it.second.fRAccessCount + it.second.fWAccessCount) / float(it.second.fSize) << endl;
             }
         }
-        
+
         *dst << endl << "======= Variable access in compute DSP ==========" << endl << endl;
         {
             StructInstVisitor struct_visitor;
             fDeclarationInstructions->accept(&struct_visitor);
-            
+
             ForLoopInst* loop = fCurLoop->generateScalarLoop("count");
             loop->accept(&struct_visitor);
-            
+
             for (const auto& it : struct_visitor.getFieldTable()) {
                 *dst << "Field = " << it.first << " size = " << it.second.fSize;
                 *dst << " r_count = " << it.second.fRAccessCount;
@@ -259,7 +259,7 @@ void FIRCodeContainer::produceClass()
         (it.second)->accept(&firvisitor);
         *fOut << endl;
     }
-   
+
     dumpSubContainers(firvisitor, fOut);
     dumpUserInterface(firvisitor, fOut);
     dumpGlobalsAndInit(firvisitor, fOut);

@@ -22,7 +22,7 @@
 #ifndef _JAX_CODE_CONTAINER_H
 #define _JAX_CODE_CONTAINER_H
 
-#include "jax_instructions.hh"
+#include "target/language/jax/visitor/instruction.hh"
 #include "code_container.hh"
 #include "dsp_factory.hh"
 #include "omp_code_container.hh"

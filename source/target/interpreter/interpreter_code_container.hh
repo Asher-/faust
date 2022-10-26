@@ -26,7 +26,7 @@
 #include "fir_to_fir.hh"
 #include "instructions_compiler.hh"
 #include "interpreter_dsp.hh"
-#include "interpreter_instructions.hh"
+#include "interpreter_instruction_visitor.hh"
 #include "vec_code_container.hh"
 
 using namespace std;

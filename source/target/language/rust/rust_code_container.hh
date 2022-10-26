@@ -25,7 +25,7 @@
 #include "code_container.hh"
 #include "dsp_factory.hh"
 #include "omp_code_container.hh"
-#include "rust_instructions.hh"
+#include "target/language/rust/visitor/instruction.hh"
 #include "vec_code_container.hh"
 #include "wss_code_container.hh"
 

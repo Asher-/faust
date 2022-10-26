@@ -37,7 +37,7 @@
 #include "fir_to_fir.hh"
 #include "global.hh"
 #include "instructions.hh"
-#include "struct_manager.hh"
+#include "struct_instruction_visitor.hh"
 
 #include <llvm/IR/DataLayout.h>
 #include <llvm/IR/DerivedTypes.h>

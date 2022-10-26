@@ -25,8 +25,8 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#include "cpp_code_container.hh"
-#include "cpp_gpu_code_container.hh"
+#include "target/language/cpp/code_container.hh"
+#include "target/language/cpp/gpu/code_container.hh"
 
 namespace Faust {
   namespace Compiler {

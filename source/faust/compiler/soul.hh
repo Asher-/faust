@@ -25,7 +25,7 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#include "soul_code_container.hh"
+#include "target/language/soul/code_container.hh"
 
 namespace Faust {
   namespace Compiler {

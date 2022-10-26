@@ -27,7 +27,7 @@
 #include <sstream>
 
 #include "c_code_container.hh"
-#include "cpp_code_container.hh"
+#include "target/language/cpp/code_container.hh"
 #include "dag_instructions_compiler.hh"
 
 using namespace std;

@@ -27,10 +27,11 @@
 #include "code_container.hh"
 #include "fir_instructions.hh"
 #include "instructions.hh"
-#include "typing_instructions.hh"
+#include "typing_instruction_visitor.hh"
 #include "instructions/numbers/number_value_instruction.hh"
 #include "fir/fir_index.hh"
 #include "global.hh"
+#include "remover_clone_visitor.hh"
 
 // Tools to dump FIR
 inline void dump2FIR(StatementInst* inst, std::ostream& out = cerr, bool complete = true)
@@ -149,18 +150,6 @@ struct VariableMover {
     }
 };
 
-// Remove all variable declarations marked as "Address::kLink"
-struct RemoverCloneVisitor : public BasicCloneVisitor {
-    // Rewrite Declare as a no-op (DropInst)
-    StatementInst* visit(DeclareVarInst* inst)
-    {
-        if (inst->fAddress->getAccess() == Address::kLink) {
-            return InstBuilder::genDropInst();
-        } else {
-            return BasicCloneVisitor::visit(inst);
-        }
-    }
-};
 
 // ========================================
 // Used in WebAssembly and Interp backends

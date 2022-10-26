@@ -38,6 +38,7 @@ using namespace std;
 #include "global.hh"
 #include "instructions.hh"
 #include "visitors/dispatch_visitor.hh"
+#include "visitors/loop_clone_visitor.hh"
 
 /*
     void compute(int count, float** inputs, float** ouputs)
@@ -194,21 +195,6 @@ struct Loop2FunctionBuider : public DispatchVisitor {
         // This prepare fArgsTypeList and fArgsValueList
         block->accept(this);
 
-        // Change the status of all variables used in function parameter list
-        struct LoopCloneVisitor : public BasicCloneVisitor {
-            list<std::string>& fAddedVarTable;
-
-            LoopCloneVisitor(list<std::string>& table) : fAddedVarTable(table) {}
-
-            virtual Address* visit(NamedAddress* address)
-            {
-                if (find(fAddedVarTable.begin(), fAddedVarTable.end(), address->fName) != fAddedVarTable.end()) {
-                    return InstBuilder::genNamedAddress(address->fName, Address::kFunArgs);
-                } else {
-                    return BasicCloneVisitor::visit(address);
-                }
-            }
-        };
 
         // Put loop in new function
         LoopCloneVisitor cloner(fAddedVarTable);

@@ -31,7 +31,7 @@
 #include "floats.hh"
 #include "garbageable.hh"
 #include "instructions.hh"
-#include "json_instructions.hh"
+#include "json_instruction_visitor.hh"
 #include "property.hh"
 #include "sigtype.hh"
 #include "tlib.hh"

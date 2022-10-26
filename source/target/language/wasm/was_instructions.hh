@@ -25,9 +25,9 @@
 #include <iomanip>
 
 #include "binop.hh"
-#include "struct_manager.hh"
-#include "text_instructions.hh"
-#include "typing_instructions.hh"
+#include "memory_description.hh"
+#include "text_instruction_visitor.hh"
+#include "typing_instruction_visitor.hh"
 
 #define offStrNum ((gGlobal->gFloatSize == 1) ? 2 : ((gGlobal->gFloatSize == 2) ? 3 : 0))
 #define audioPtrSize gGlobal->audioSampleSize()
