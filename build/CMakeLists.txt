@@ -122,6 +122,10 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/generator
 	${SRCDIR}/compiler/faust
 	${SRCDIR}/faust
+	${SRCDIR}/faust/api
+	${SRCDIR}/faust/api/c
+	${SRCDIR}/faust/api/cpp
+	${SRCDIR}/faust/compiler
 	${SRCDIR}/tlib
 	${SRCDIR}/target
 	${SRCDIR}/target/code_container
@@ -158,28 +162,28 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/instruction/memory
 	${SRCDIR}/instruction/numbers
 	${SRCDIR}/instruction/ui
-	${SRCDIR}/compiler/generator/address
-	${SRCDIR}/compiler/generator/compile
-	${SRCDIR}/compiler/generator/compile/scalar
+	${SRCDIR}/compiler/compile
+	${SRCDIR}/compiler/compile/scalar
+	${SRCDIR}/compiler/type_manager
+	${SRCDIR}/compiler/type_manager/address
+	${SRCDIR}/compiler/terms
+	${SRCDIR}/compiler/types
+	${SRCDIR}/compiler/visitors
 	${SRCDIR}/compiler/generator/fir
-	${SRCDIR}/compiler/generator/parallelize
-	${SRCDIR}/compiler/generator/string_type_manager
-	${SRCDIR}/compiler/generator/terms
-	${SRCDIR}/compiler/generator/types
 	${SRCDIR}/compiler/generator/util
-	${SRCDIR}/compiler/generator/visitors
 	${SRCDIR}/compiler/parser
 	${SRCDIR}/compiler/math_primitives
 	${SRCDIR}/compiler/file_handling
 	${SRCDIR}/compiler/block_diagram
 	${SRCDIR}/compiler/block_diagram/boxes
+	${SRCDIR}/compiler/block_diagram/parallelize
 	${SRCDIR}/compiler/block_diagram/patternmatcher
 	${SRCDIR}/compiler/block_diagram/propagate
 	${SRCDIR}/compiler/block_diagram/simplify
 	${SRCDIR}/compiler/signals
-	${SRCDIR}/tlib
-	${SRCDIR}/compiler/transform
+	${SRCDIR}/compiler/signals/transform
 	${SRCDIR}/compiler/utils
+	${SRCDIR}/tlib
 	${SRCDIR}/draw
 	${SRCDIR}/draw/device
 	${SRCDIR}/draw/schema
