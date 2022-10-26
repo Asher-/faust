@@ -34,14 +34,13 @@ namespace Faust {
     struct LLVM : public Common
     {
       static constexpr const char* TargetString = "LLVM IR";
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate)
+      void compile(Tree signals, int numInputs, int numOutputs, bool generate)
       override
       {
           #ifndef LLVM_BUILD
               throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
           #endif
-          static ::Faust::Compiler::Return compiler_return;
-          compiler_return.container = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+          this->_codeContainer = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
 
           // libc functions will be found by the LLVM linker, but not user defined ones...
           gGlobal->gAllowForeignFunction = false;
@@ -50,22 +49,21 @@ namespace Faust {
           gGlobal->gUseDefaultSound     = false;
 
           if (gGlobal->gVectorSwitch) {
-              compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              compiler_return.new_comp = new InstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
+          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
 
           if (generate) {
-              compiler_return.new_comp->compileMultiSignal(signals);
+              this->_instructionCompiler->compileMultiSignal(signals);
           } else {
               // To trigger 'sig.dot' generation
-              compiler_return.new_comp->prepare(signals);
+              this->_instructionCompiler->prepare(signals);
           }
-          return compiler_return;
       }
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "bool generate required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "bool generate required."; };
 
       const char* const& targetString()
       override

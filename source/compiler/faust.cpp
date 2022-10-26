@@ -44,10 +44,7 @@
 #include "floats.hh"
 #include "garbageable.hh"
 #include "global.hh"
-#include "instructions_compiler.hh"
-#include "instructions_compiler1.hh"
 #include "labels.hh"
-#include "instructions_compiler_jax.hh"
 #include "libfaust.h"
 #include "normalform.hh"
 #include "ppbox.hh"
@@ -86,19 +83,11 @@
 #include "faust/compiler/wasm.hh"
 #include "faust/compiler/wast.hh"
 
-#include "faust/compiler/return.hh"
-
 using namespace std;
 
 /****************************************************************
  Global context
  *****************************************************************/
-
-// FIR container
-static ::Faust::Compiler::Return compiler_return;
-static InstructionsCompiler*& new_comp  = compiler_return.new_comp;
-static CodeContainer*&        container = compiler_return.container;
-static Compiler*& old_comp = compiler_return.old_comp;
 
 // Shared context
 global* gGlobal = nullptr;

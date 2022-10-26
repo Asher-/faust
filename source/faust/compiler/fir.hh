@@ -33,25 +33,23 @@ namespace Faust {
     struct FIR : public Common
     {
       static constexpr const char* TargetString = "FIR";
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
           #ifndef FIR_BUILD
               throw faustexception("ERROR : -lang fir not supported since FIR backend is not built\n");
           #endif
-          static ::Faust::Compiler::Return compiler_return;
-          compiler_return.container = FIRCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out, true);
+          this->_codeContainer = FIRCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out, true);
 
           if (gGlobal->gVectorSwitch) {
-              compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              compiler_return.new_comp = new InstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          compiler_return.new_comp->compileMultiSignal(signals);
-          return compiler_return;
+          this->_instructionCompiler->compileMultiSignal(signals);
       }
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
       const char* const& targetString()
       override

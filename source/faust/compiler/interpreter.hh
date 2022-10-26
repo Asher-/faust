@@ -34,18 +34,17 @@ namespace Faust {
     struct Interpreter : public Common
     {
       static constexpr const char* TargetString = "Interpreter";
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      void compile(Tree signals, int numInputs, int numOutputs)
       override
       {
           #ifndef INTERP_BUILD
               throw faustexception("ERROR : -lang interp not supported since Interpreter backend is not built\n");
           #endif
-          static ::Faust::Compiler::Return compiler_return;
 
           if (gGlobal->gFloatSize == 1) {
-            compiler_return.container = InterpreterCodeContainer<float>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+            this->_codeContainer = InterpreterCodeContainer<float>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
           } else if (gGlobal->gFloatSize == 2) {
-            compiler_return.container = InterpreterCodeContainer<double>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+            this->_codeContainer = InterpreterCodeContainer<double>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
           } else {
               throw faustexception("ERROR : quad format not supported in Interp\n");
           }
@@ -60,14 +59,13 @@ namespace Faust {
           gGlobal->gRemoveVarAddress    = true;   // To be used in -vec mode
 
           if (gGlobal->gVectorSwitch) {
-              compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              compiler_return.new_comp = new InterpreterInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new InterpreterInstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
-          compiler_return.new_comp->compileMultiSignal(signals);
-          return compiler_return;
+          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          this->_instructionCompiler->compileMultiSignal(signals);
       }
 
       const char* const& targetString()

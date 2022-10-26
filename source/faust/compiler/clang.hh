@@ -32,27 +32,25 @@ namespace Faust {
     struct Clang : public Common
     {
       static constexpr const char* TargetString = "Clang-LLVM";
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      void compile(Tree signals, int numInputs, int numOutputs)
       override
       {
           #ifndef CLANG_BUILD
               throw faustexception("ERROR : -lang cllcm not supported since LLVM backend is not built\n");
           #endif
-          static ::Faust::Compiler::Return compiler_return;
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
           gGlobal->gFAUSTFLOAT2Internal = true;
 
-          compiler_return.container = ClangCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+          this->_codeContainer = ClangCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
 
           // To trigger 'sig.dot' generation
           if (gGlobal->gVectorSwitch) {
-              compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              compiler_return.new_comp = new InstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
-          compiler_return.new_comp->prepare(signals);
-          return compiler_return;
+          this->_instructionCompiler->prepare(signals);
       }
 
       const char* const& targetString()

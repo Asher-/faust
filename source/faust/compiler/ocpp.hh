@@ -40,6 +40,8 @@ namespace Faust {
 
       static unique_ptr<ifstream> enrobage;
 
+      ::Compiler* _instructionCompiler = nullptr;
+
       static void printHeader(ostream& dst)
       {
           // defines the metadata we want to print as comments at the begin of in the C++ file
@@ -68,7 +70,7 @@ namespace Faust {
           dst << "//----------------------------------------------------------" << endl << endl;
       }
 
-      void generateCode(::Faust::Compiler::Return compiler_return, unique_ptr<ostream>& dst)
+      void generateCode(unique_ptr<ostream>& dst)
       {
           // Check for architecture file
           if (gGlobal->gArchFile != "") {
@@ -80,12 +82,12 @@ namespace Faust {
           }
 
           // Possibly inject code
-          this->injectCode(compiler_return, enrobage, *dst.get());
+          this->injectCode(enrobage, *dst.get());
 
           printHeader(*dst);
-          compiler_return.old_comp->getClass()->printLibrary(*dst.get());
-          compiler_return.old_comp->getClass()->printIncludeFile(*dst.get());
-          compiler_return.old_comp->getClass()->printAdditionalCode(*dst.get());
+          this->_instructionCompiler->getClass()->printLibrary(*dst.get());
+          this->_instructionCompiler->getClass()->printIncludeFile(*dst.get());
+          this->_instructionCompiler->getClass()->printAdditionalCode(*dst.get());
 
           if (gGlobal->gArchFile != "") {
               streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
@@ -101,12 +103,12 @@ namespace Faust {
 
               streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
               printfloatdef(*dst.get());
-              compiler_return.old_comp->getClass()->println(0, *dst.get());
+              this->_instructionCompiler->getClass()->println(0, *dst.get());
               streamCopyUntilEnd(*enrobage.get(), *dst.get());
 
           } else {
               printfloatdef(*dst.get());
-              compiler_return.old_comp->getClass()->println(0, *dst.get());
+              this->_instructionCompiler->getClass()->println(0, *dst.get());
           }
 
           /****************************************************************
@@ -115,7 +117,7 @@ namespace Faust {
 
           if (gGlobal->gGraphSwitch) {
               ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
-              compiler_return.old_comp->getClass()->printGraphDotFormat(dotfile);
+              this->_instructionCompiler->getClass()->printGraphDotFormat(dotfile);
           }
 
           if (gGlobal->gOutputFile == "") {
@@ -123,31 +125,52 @@ namespace Faust {
           }
       }
 
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      void compile(Tree signals, int numInputs, int numOutputs)
       override
       {
           #ifndef OCPP_BUILD
               throw faustexception("ERROR : -lang ocpp not supported since old CPP backend is not built\n");
           #endif
-          static ::Faust::Compiler::Return compiler_return;
 
           if (gGlobal->gSchedulerSwitch) {
-              compiler_return.old_comp = new SchedulerCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
+              this->_instructionCompiler = new SchedulerCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
           } else if (gGlobal->gVectorSwitch) {
-              compiler_return.old_comp = new VectorCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
+              this->_instructionCompiler = new VectorCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
           } else {
-              compiler_return.old_comp = new ScalarCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
+              this->_instructionCompiler = new ScalarCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.old_comp->setDescription(new Description());
-          compiler_return.old_comp->compileMultiSignal(signals);
-          return compiler_return;
+          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          this->_instructionCompiler->compileMultiSignal(signals);
       }
 
       const char* const& targetString()
       override
       {
           return OCPP::TargetString;
+      }
+
+      using Common::printXML;
+      
+      void
+      printXML()
+      override
+      {
+          this->printXML(
+              this->_instructionCompiler->getDescription(),
+              this->_instructionCompiler->getClass()->inputs(),
+              this->_instructionCompiler->getClass()->outputs()
+          );
+      }
+
+      virtual
+      void
+      printGraphDotFormat(
+        std::ofstream&  dotfile
+      )
+      override
+      {
+          this->_instructionCompiler->getClass()->printGraphDotFormat(dotfile);
       }
 
     };

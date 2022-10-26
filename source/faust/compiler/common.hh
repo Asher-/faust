@@ -26,7 +26,6 @@
 
 #include "faust.hh"
 #include "faust/architectures.hh"
-#include "faust/compiler/return.hh"
 #include "faust/controller.hh"
 
 #include "sigprint.hh"
@@ -36,6 +35,10 @@
 #include "drawschema.hh"
 
 #include "timing.hh"
+
+#include "instructions_compiler.hh"
+#include "doc.hh"
+
 
 #ifdef DLANG_BUILD
 #include "dlang_code_container.hh"
@@ -53,6 +56,9 @@ namespace Faust {
       unique_ptr<ifstream> _injcode;
       unique_ptr<ostream>  _helpers;
       Tree _lsignals{nullptr};
+
+      InstructionsCompiler* _instructionCompiler = nullptr;
+      CodeContainer*        _codeContainer = nullptr;
 
       static constexpr const char* DSPtoTargetString = "   DSP to ";
 
@@ -133,7 +139,23 @@ namespace Faust {
           }
       }
 
-      static void printXML(Description* description, int inputs, int outputs)
+      virtual
+      void
+      printXML()
+      {
+          this->printXML(
+              this->_instructionCompiler->getDescription(),
+              this->_codeContainer->inputs(),
+              this->_codeContainer->outputs()
+          );
+      }
+
+      void
+      printXML(
+        Description* description,
+        int inputs,
+        int outputs
+      )
       {
           faustassert(description);
           ofstream xout(subst("$0.xml", gGlobal->makeDrawPath()).c_str());
@@ -184,12 +206,12 @@ namespace Faust {
           }
       }
 
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) = 0;
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return this->compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      virtual void compile(Tree signals, int numInputs, int numOutputs) = 0;
+      virtual void compile(Tree signals, int numInputs, int numOutputs, bool generate) { return this->compile(signals, numInputs, numOutputs); };
+      virtual void compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
+      virtual void compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
-      void injectCode(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& enrobage, ostream& dst)
+      void injectCode(unique_ptr<ifstream>& enrobage, ostream& dst)
       {
           /****************************************************************
            1.7 - Inject code instead of compile
@@ -203,7 +225,7 @@ namespace Faust {
                   throw faustexception(error.str());
               } else {
                   streamCopyUntil(*enrobage.get(), dst, "<<includeIntrinsic>>");
-                  compiler_return.container->printMacros(dst, 0);
+                  this->_codeContainer->printMacros(dst, 0);
                   streamCopyUntil(*enrobage.get(), dst, "<<includeclass>>");
                   streamCopyUntilEnd(*_injcode.get(), dst);
                   streamCopyUntilEnd(*enrobage.get(), dst);
@@ -471,6 +493,52 @@ namespace Faust {
           compileCode(_lsignals, numInputs, numOutputs);
       }
 
+      virtual void generateXMLDescription()
+      {
+          /****************************************************************
+           1 - generate XML description (if required)
+          *****************************************************************/
+
+          if (gGlobal->gPrintXMLSwitch) {
+            this->printXML();
+          }
+      }
+
+      void generateOutputFiles()
+      {
+          /****************************************************************
+           1 - generate XML description (if required)
+          *****************************************************************/
+
+          this->generateXMLDescription();
+
+          /****************************************************************
+           2 - generate documentation from Faust comments (if required)
+          *****************************************************************/
+
+          if (gGlobal->gPrintDocSwitch && gGlobal->gLatexDocSwitch) {
+              printDoc(subst("$0-mdoc", gGlobal->makeDrawPathNoExt()).c_str(), "tex", FAUSTVERSION);
+          }
+
+          /****************************************************************
+           3 - generate the task graph file in dot format
+          *****************************************************************/
+
+          if (gGlobal->gGraphSwitch) {
+              ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
+              this->printGraphDotFormat(dotfile);
+          }
+      }
+
+      virtual
+      void
+      printGraphDotFormat(
+        std::ofstream&  dotfile
+      )
+      {
+          this->_codeContainer->printGraphDotFormat(dotfile);
+      }
+
       /* From Source */
       void createFactory()
       {
@@ -539,7 +607,7 @@ namespace Faust {
           compileCode(signals, numInputs, numOutputs);
       }
 
-      void generateCode(::Faust::Compiler::Return compiler_return, unique_ptr<ostream>& dst)
+      void generateCode(unique_ptr<ostream>& dst)
       {
         unique_ptr<ifstream> enrobage;
           if (gGlobal->gArchFile != "") {
@@ -548,15 +616,15 @@ namespace Faust {
                       *dst.get() << "namespace " << gGlobal->gNameSpace << " {" << endl;
       #ifdef DLANG_BUILD
                   else if (gGlobal->gOutputLang == "dlang") {
-                      DLangCodeContainer::printDRecipeComment(*dst.get(), compiler_return.container->getClassName());
-                      DLangCodeContainer::printDModuleStmt(*dst.get(), compiler_return.container->getClassName());
+                      DLangCodeContainer::printDRecipeComment(*dst.get(), this->_codeContainer->getClassName());
+                      DLangCodeContainer::printDModuleStmt(*dst.get(), this->_codeContainer->getClassName());
                   }
       #endif
 
                   // Possibly inject code
-                  this->injectCode(compiler_return, enrobage, *dst.get());
+                  this->injectCode(enrobage, *dst.get());
 
-                  compiler_return.container->printHeader();
+                  this->_codeContainer->printHeader();
 
                   streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
                   streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
@@ -565,8 +633,8 @@ namespace Faust {
                       includeFile("thread.h", *dst.get());
                   }
 
-                  compiler_return.container->printFloatDef();
-                  compiler_return.container->produceClass();
+                  this->_codeContainer->printFloatDef();
+                  this->_codeContainer->produceClass();
 
                   streamCopyUntilEnd(*enrobage.get(), *dst.get());
 
@@ -574,10 +642,10 @@ namespace Faust {
                       includeFile("scheduler.cpp", *dst.get());
                   }
 
-                  compiler_return.container->printFooter();
+                  this->_codeContainer->printFooter();
 
                   // Generate factory
-                  gGlobal->gDSPFactory = compiler_return.container->produceFactory();
+                  gGlobal->gDSPFactory = this->_codeContainer->produceFactory();
 
                   if (gGlobal->gOutputFile == "string") {
                       gGlobal->gDSPFactory->write(dst.get(), false, false);
@@ -601,13 +669,13 @@ namespace Faust {
               }
 
           } else {
-              compiler_return.container->printHeader();
-              compiler_return.container->printFloatDef();
-              compiler_return.container->produceClass();
-              compiler_return.container->printFooter();
+              this->_codeContainer->printHeader();
+              this->_codeContainer->printFloatDef();
+              this->_codeContainer->produceClass();
+              this->_codeContainer->printFooter();
 
               // Generate factory
-              gGlobal->gDSPFactory = compiler_return.container->produceFactory();
+              gGlobal->gDSPFactory = this->_codeContainer->produceFactory();
 
               if (gGlobal->gOutputFile == "string") {
                   gGlobal->gDSPFactory->write(dst.get(), false, false);
@@ -664,13 +732,13 @@ namespace Faust {
            ****************************************************************/
 
 
-          ::Faust::Compiler::Return compiler_return = this->compile(signals, numInputs, numOutputs, dst.get(), outpath);
+          this->compile(signals, numInputs, numOutputs, dst.get(), outpath);
 
           /****************************************************************
            * generate output file
            ****************************************************************/
 
-          this->generateCode(compiler_return, dst);
+          this->generateCode(dst);
 
           endTiming("generateCode");
       }

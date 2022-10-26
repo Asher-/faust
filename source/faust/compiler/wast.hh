@@ -35,7 +35,7 @@ namespace Faust {
     struct WAST : public Common
     {
       static constexpr const char* TargetString = "WebAssembly (wast)";
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
+      void compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
       override
       {
         #ifndef WASM_BUILD
@@ -44,7 +44,6 @@ namespace Faust {
 
           assert(out!=nullptr);
           assert(outpath!="");
-          static ::Faust::Compiler::Return compiler_return;
 
           gGlobal->gAllowForeignFunction = false;  // No foreign functions
           gGlobal->gAllowForeignConstant = false;  // No foreign constant
@@ -65,22 +64,21 @@ namespace Faust {
           // This speedup (freeverb for instance) ==> to be done at signal level
           // gGlobal->gComputeIOTA = true;     // Ensure IOTA base fixed delays are computed once
 
-          compiler_return.container =
+          this->_codeContainer =
               WASTCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out,
                                                  ((gGlobal->gOutputLang == "wast") || (gGlobal->gOutputLang == "wast-i")));
           this->createHelperFile(outpath);
 
           if (gGlobal->gVectorSwitch) {
-              compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              compiler_return.new_comp = new InstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
-          compiler_return.new_comp->compileMultiSignal(signals);
-          return compiler_return;
+          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          this->_instructionCompiler->compileMultiSignal(signals);
       }
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream and std::string required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream and std::string required."; };
 
       const char* const& targetString()
       override

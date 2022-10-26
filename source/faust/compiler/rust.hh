@@ -33,29 +33,27 @@ namespace Faust {
     struct Rust : public Common
     {
       static constexpr const char* TargetString = "Rust";
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
           #ifndef RUST_BUILD
               throw faustexception("ERROR : -lang rust not supported since Rust backend is not built\n");
           #endif
-          static ::Faust::Compiler::Return compiler_return;
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
           gGlobal->gFAUSTFLOAT2Internal = true;
-          compiler_return.container     = RustCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+          this->_codeContainer     = RustCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
 
           if (gGlobal->gVectorSwitch) {
-              compiler_return.new_comp = new DAGInstructionsCompiler(compiler_return.container);
+              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              compiler_return.new_comp = new InstructionsCompiler1(compiler_return.container);
+              this->_instructionCompiler = new InstructionsCompiler1(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
-          compiler_return.new_comp->compileMultiSignal(signals);
-          return compiler_return;
+          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          this->_instructionCompiler->compileMultiSignal(signals);
       }
-      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
       const char* const& targetString()
       override
