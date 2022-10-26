@@ -28,7 +28,7 @@
 #include "fbc_interpreter.hh"
 #include "instructions.hh"
 #include "memory_description.hh"
-#include "typing_instruction_visitor.hh"
+#include "visitor/typing_instruction_visitor.hh"
 
 template <class REAL>
 struct InterpreterInstVisitor : public DispatchVisitor {

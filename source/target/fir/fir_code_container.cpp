@@ -23,7 +23,7 @@
 #include "fir_to_fir.hh"
 #include "global.hh"
 #include "instructions_complexity.hh"
-#include "struct_instruction_visitor.hh"
+#include "visitor/struct_instruction_visitor.hh"
 
 using namespace std;
 

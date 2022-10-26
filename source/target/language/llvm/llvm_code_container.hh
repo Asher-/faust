@@ -25,7 +25,7 @@
 #include "code_container.hh"
 #include "llvm_instructions.hh"
 #include "omp_code_container.hh"
-#include "struct_instruction_visitor.hh"
+#include "visitor/struct_instruction_visitor.hh"
 #include "vec_code_container.hh"
 #include "wss_code_container.hh"
 

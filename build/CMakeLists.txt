@@ -62,6 +62,7 @@ file (GLOB SRC ${SRCDIR}/cli/*.cpp
 							 ${SRCDIR}/instruction/*/*.cpp
                ${SRCDIR}/faust/*.cpp
                ${SRCDIR}/faust/*/*.cpp
+               ${SRCDIR}/faust/*/*/*.cpp
 							 ${SRCDIR}/compiler/*.cpp
                ${SRCDIR}/compiler/*/*.cpp
                ${SRCDIR}/compiler/*/*/*.cpp
@@ -84,6 +85,9 @@ file (GLOB HH  ${SRCDIR}/*.hh
                ${SRCDIR}/cli/*.hh
 							 ${SRCDIR}/instruction/*.hh
 							 ${SRCDIR}/instruction/*/*.hh
+               ${SRCDIR}/faust/*.hh
+               ${SRCDIR}/faust/*/*.hh
+               ${SRCDIR}/faust/*/*/*.hh
 							 ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
                ${SRCDIR}/compiler/*/*/*.hh
@@ -165,10 +169,10 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/generator/util
 	${SRCDIR}/compiler/generator/visitors
 	${SRCDIR}/compiler/parser
-	${SRCDIR}/compiler/boxes
 	${SRCDIR}/compiler/math_primitives
 	${SRCDIR}/compiler/file_handling
 	${SRCDIR}/compiler/block_diagram
+	${SRCDIR}/compiler/block_diagram/boxes
 	${SRCDIR}/compiler/block_diagram/patternmatcher
 	${SRCDIR}/compiler/block_diagram/propagate
 	${SRCDIR}/compiler/block_diagram/simplify

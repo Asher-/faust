@@ -24,9 +24,9 @@
 
 #include <string>
 
-#include "text_instruction_visitor.hh"
+#include "visitor/text_instruction_visitor.hh"
 #include "memory_description.hh"
-#include "string_type_manager/julia.hh"
+#include "target/language/julia/type_manager/string.hh"
 
 using namespace std;
 

@@ -22,7 +22,7 @@
 #ifndef __SOUL_TABLE_SIZE_CLONE_VISITOR_HH__
 #define __SOUL_TABLE_SIZE_CLONE_VISITOR_HH__
 
-#include "basic_clone_visitor.hh"
+#include "visitor/basic_clone_visitor.hh"
 
 // Look for the "fillXXX" function call and rename it
 struct TableSizeCloneVisitor : public BasicCloneVisitor {

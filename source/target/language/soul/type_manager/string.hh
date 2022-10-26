@@ -19,42 +19,40 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _STRING_TYPE_MANAGER_C_
-#define _STRING_TYPE_MANAGER_C_
+#ifndef _STRING_TYPE_MANAGER_SOUL_
+#define _STRING_TYPE_MANAGER_SOUL_
 
- #include "string_type_manager.hh"
+ #include "type_manager/string.hh"
 
-// StringTypeManager for C/C++, Java and FIR backends
+// StringTypeManager for SOUL backend
 
-class CStringTypeManager : public StringTypeManager {
+class SOULStringTypeManager : public StringTypeManager {
    public:
-    CStringTypeManager(const std::string& float_macro_name, const std::string& ptr_ref, const std::string& struct_name = "")
+    SOULStringTypeManager(const std::string& float_macro_name, const std::string& ptr_ref)
         : StringTypeManager(float_macro_name, ptr_ref)
     {
         fPtrRef = ptr_ref;
 
-        fTypeDirectTable[Typed::kInt32]     = "int";
-        fTypeDirectTable[Typed::kInt32_ptr] = "int" + fPtrRef;
-        fTypeDirectTable[Typed::kInt32_vec] = "vector<int>";
+        fTypeDirectTable[Typed::kInt32]     = "int32";
+        fTypeDirectTable[Typed::kInt32_ptr] = "int32" + fPtrRef;
+        fTypeDirectTable[Typed::kInt32_vec] = "vector<i32>";
 
-        fTypeDirectTable[Typed::kInt64]     = "int64_t";
-        fTypeDirectTable[Typed::kInt64_ptr] = "int64_t" + fPtrRef;
-        fTypeDirectTable[Typed::kInt64_vec] = "vector<int64_t>";
+        fTypeDirectTable[Typed::kInt64]     = "int64";
+        fTypeDirectTable[Typed::kInt64_ptr] = "int64" + fPtrRef;
+        fTypeDirectTable[Typed::kInt64_vec] = "vector<i64>";
 
-        fTypeDirectTable[Typed::kFloat]         = "float";
-        fTypeDirectTable[Typed::kFloat_ptr]     = "float" + fPtrRef;
-        fTypeDirectTable[Typed::kFloat_ptr_ptr] = "float" + fPtrRef + fPtrRef;
-        fTypeDirectTable[Typed::kFloat_vec]     = "vector<float>";
+        fTypeDirectTable[Typed::kFloat]     = "float32";
+        fTypeDirectTable[Typed::kFloat_ptr] = "float32" + fPtrRef;
+        fTypeDirectTable[Typed::kFloat_ptr_ptr] = "float32" + fPtrRef + fPtrRef;
+        fTypeDirectTable[Typed::kFloat_vec] = "vector<float32>";
 
-        fTypeDirectTable[Typed::kDouble]         = "double";
-        fTypeDirectTable[Typed::kDouble_ptr]     = "double" + fPtrRef;
-        fTypeDirectTable[Typed::kDouble_ptr_ptr] = "double" + fPtrRef + fPtrRef;
-        fTypeDirectTable[Typed::kDouble_vec]     = "vector<double>";
+        fTypeDirectTable[Typed::kDouble]     = "float64";
+        fTypeDirectTable[Typed::kDouble_ptr] = "float64" + fPtrRef;
+        fTypeDirectTable[Typed::kDouble_ptr_ptr] = "float64" + fPtrRef + fPtrRef;
+        fTypeDirectTable[Typed::kDouble_vec] = "vector<float64>";
 
-        fTypeDirectTable[Typed::kQuad]         = "quad";
-        fTypeDirectTable[Typed::kQuad_ptr]     = "quad" + fPtrRef;
-        fTypeDirectTable[Typed::kQuad_ptr_ptr] = "quad" + fPtrRef + fPtrRef;
-        fTypeDirectTable[Typed::kQuad_vec]     = "vector<quad>";
+        fTypeDirectTable[Typed::kQuad]     = "quad";
+        fTypeDirectTable[Typed::kQuad_ptr] = "quad" + fPtrRef;
 
         fTypeDirectTable[Typed::kFixedPoint]     = "fixpoint_t";
         fTypeDirectTable[Typed::kFixedPoint_ptr] = "fixpoint_t" + fPtrRef;
@@ -68,14 +66,12 @@ class CStringTypeManager : public StringTypeManager {
         fTypeDirectTable[Typed::kVoid]     = "void";
         fTypeDirectTable[Typed::kVoid_ptr] = "void" + fPtrRef;
 
-        fTypeDirectTable[Typed::kSound]     = "Soundfile";
-        fTypeDirectTable[Typed::kSound_ptr] = "Soundfile" + fPtrRef;
+        // TODO : handling Soundfile
 
-        // DSP has to be empty here
-        fTypeDirectTable[Typed::kObj]     = struct_name;
-        fTypeDirectTable[Typed::kObj_ptr] = struct_name + fPtrRef;
+        fTypeDirectTable[Typed::kObj]     = "";
+        fTypeDirectTable[Typed::kObj_ptr] = fPtrRef;
 
-        fTypeDirectTable[Typed::kUint_ptr] = "uintptr_t";
+        // TODO : handling kUint_ptr
     }
 
     virtual std::string generateType(Typed* type, NamedTyped::Attribute attr = NamedTyped::kDefault)
@@ -83,21 +79,13 @@ class CStringTypeManager : public StringTypeManager {
         BasicTyped* basic_typed = dynamic_cast<BasicTyped*>(type);
         NamedTyped* named_typed = dynamic_cast<NamedTyped*>(type);
         ArrayTyped* array_typed = dynamic_cast<ArrayTyped*>(type);
-        StructTyped* struct_typed = dynamic_cast<StructTyped*>(type);
 
         if (basic_typed) {
             return fTypeDirectTable[basic_typed->fType];
         } else if (named_typed) {
-            return generateType(named_typed->fType) + NamedTyped::AttributeMap[attr] + named_typed->fName;
+            return generateType(named_typed->fType) + " " + named_typed->fName;
         } else if (array_typed) {
             return fTypeDirectTable[array_typed->getType()];
-        } else if (struct_typed) {
-            std::string res = "typedef struct " + struct_typed->fName + " { ";
-            for (const auto& it : struct_typed->fFields) {
-                res = res + generateType(it) + "; ";
-            }
-            res += "} " + struct_typed->fName + ";";
-            return res;
         } else {
             faustassert(false);
             return "";
@@ -117,7 +105,7 @@ class CStringTypeManager : public StringTypeManager {
         } else if (array_typed) {
             return (array_typed->fSize == 0)
                     ? generateType(array_typed->fType) + fPtrRef + " " + name
-                    : generateType(array_typed->fType) + " " + name + "[" + std::to_string(array_typed->fSize) + "]";
+                    : generateType(array_typed->fType) + "[" + std::to_string(array_typed->fSize) + "] " + name;
         } else {
             faustassert(false);
             return "";

@@ -36,7 +36,7 @@
 #include "xml_description.hh"
 #include "doc.hh"
 #include "drawschema.hh"
-#include "architectures.hh"
+#include "string_substitution.hh"
 #include "errormsg.hh"
 #include "eval.hh"
 #include "exception.hh"

@@ -22,7 +22,7 @@
 #ifndef __STRUCT_INSTRUCTION_CLONE_VISITOR_1_HH__
 #define __STRUCT_INSTRUCTION_CLONE_VISITOR_1_HH__
 
-#include "struct_instruction_visitor.hh"
+#include "visitor/struct_instruction_visitor.hh"
 
 /*
  A version that separates some of the fields for the iZone/fZone model

@@ -26,7 +26,7 @@
 #include <cctype>
 #include <climits>
 
-#include "architectures.hh"
+#include "string_substitution.hh"
 #include "compatibility.hh"
 #include "exception.hh"
 #include "garbageable.hh"

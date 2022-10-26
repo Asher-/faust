@@ -22,7 +22,7 @@
 #ifndef _STRING_TYPE_MANAGER_RUST_
 #define _STRING_TYPE_MANAGER_RUST_
 
- #include "string_type_manager.hh"
+ #include "type_manager/string.hh"
 
 // StringTypeManager for Rust backend
 

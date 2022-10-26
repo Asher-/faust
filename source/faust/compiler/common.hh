@@ -28,7 +28,7 @@
 #include "file_handling/string_substitution.hh"
 #include "faust/controller.hh"
 
-#include "architectures.hh"
+#include "string_substitution.hh"
 #include "exception.hh"
 #include "propagate.hh"
 

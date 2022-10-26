@@ -22,7 +22,7 @@
 #ifndef __REMOVER_CLONE_VISITOR_HH__
 #define __REMOVER_CLONE_VISITOR_HH__
 
-#include "basic_clone_visitor.hh"
+#include "visitor/basic_clone_visitor.hh"
 #include "statement_instruction.hh"
 #include "instruction_builder.hh"
 #include "declarations/declare_var_instruction.hh"

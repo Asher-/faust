@@ -27,11 +27,11 @@
 #include "code_container.hh"
 #include "fir_instructions.hh"
 #include "instructions.hh"
-#include "typing_instruction_visitor.hh"
+#include "visitor/typing_instruction_visitor.hh"
 #include "instruction/numbers/number_value_instruction.hh"
 #include "fir/fir_index.hh"
 #include "global.hh"
-#include "remover_clone_visitor.hh"
+#include "visitor/remover_clone_visitor.hh"
 
 // Tools to dump FIR
 inline void dump2FIR(StatementInst* inst, std::ostream& out = cerr, bool complete = true)

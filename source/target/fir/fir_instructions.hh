@@ -33,7 +33,7 @@
 #include "binop.hh"
 #include "dsp_factory.hh"
 #include "instructions.hh"
-#include "string_type_manager/c.hh"
+#include "target/language/c/type_manager/string.hh"
 
 using namespace std;
 

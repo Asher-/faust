@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#include "text_instruction_visitor.hh"
+#include "visitor/text_instruction_visitor.hh"
 
 class OpenCLInstVisitor : public TextInstVisitor {
    private:

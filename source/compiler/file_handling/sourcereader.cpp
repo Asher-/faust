@@ -47,7 +47,7 @@
 #include "global.hh"
 #include "Text.hh"
 
-#include "architectures.hh"
+#include "string_substitution.hh"
 
 using namespace std;
 

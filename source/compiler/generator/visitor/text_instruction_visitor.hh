@@ -32,7 +32,7 @@
 #include "Text.hh"
 #include "fir_to_fir.hh"
 #include "instructions.hh"
-#include "string_type_manager.hh"
+#include "type_manager/string.hh"
 #include "global.hh"
 
 // To check all control fields in the DSP structure

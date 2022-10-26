@@ -32,7 +32,7 @@
 #include "doc_lang.hh"
 #include "doc_metadatas.hh"
 #include "doc_notice.hh"
-#include "architectures.hh"
+#include "string_substitution.hh"
 #include "exception.hh"
 #include "global.hh"
 #include "lateq.hh"

@@ -26,7 +26,7 @@
 #include "floats.hh"
 #include "global.hh"
 #include "interpreter_code_container.hh"
-#include "interpreter_instruction_visitor.hh"
+#include "visitor/interpreter_instruction_visitor.hh"
 
 using namespace std;
 

@@ -27,9 +27,9 @@
 #include "floats.hh"
 #include "global.hh"
 #include "recursivness.hh"
-#include "text_instruction_visitor.hh"
-#include "string_type_manager.hh"
-#include "struct_instruction_visitor.hh"
+#include "visitor/text_instruction_visitor.hh"
+#include "type_manager/string.hh"
+#include "visitor/struct_instruction_visitor.hh"
 
 using namespace std;
 

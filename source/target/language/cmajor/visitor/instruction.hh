@@ -28,9 +28,9 @@
 #include <utility>
 #include <cctype>
 
-#include "text_instruction_visitor.hh"
+#include "visitor/text_instruction_visitor.hh"
 #include "faust/gui/PathBuilder.h"
-#include "string_type_manager/soul.hh"
+#include "target/language/soul/type_manager/string.hh"
 
 using namespace std;
 

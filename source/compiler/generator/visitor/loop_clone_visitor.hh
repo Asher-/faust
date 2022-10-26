@@ -27,7 +27,7 @@
 
 #include "named_address.hh"
 #include "instruction_builder.hh"
-#include "basic_clone_visitor.hh"
+#include "visitor/basic_clone_visitor.hh"
 
 // Change the status of all variables used in function parameter list
 struct LoopCloneVisitor : public BasicCloneVisitor {

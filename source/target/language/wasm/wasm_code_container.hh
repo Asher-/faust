@@ -27,7 +27,7 @@
 #include "fir_to_fir.hh"
 #include "vec_code_container.hh"
 #include "wasm_instructions.hh"
-#include "json_instruction_visitor.hh"
+#include "visitor/json_instruction_visitor.hh"
 
 using namespace std;
 
