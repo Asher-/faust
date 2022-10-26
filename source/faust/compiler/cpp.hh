@@ -25,20 +25,21 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-
-#ifdef CPP_BUILD
 #include "cpp_code_container.hh"
 #include "cpp_gpu_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct CPP : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      static constexpr const char* TargetString = "C++";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      override
       {
-      #ifdef CPP_BUILD
+          #ifndef CPP_BUILD
+              throw faustexception("ERROR : -lang cpp not supported since CPP backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
 
           compiler_return.container =
@@ -53,18 +54,13 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang cpp not supported since CPP backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "C++" << endl;
+          return TargetString;
       }
     };
 

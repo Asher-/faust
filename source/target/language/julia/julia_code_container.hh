@@ -33,13 +33,13 @@
 
 class JuliaCodeContainer : public virtual CodeContainer {
    protected:
-    static JuliaInstVisitor* gJuliaVisitor;
+    JuliaInstVisitor* _visitor = nullptr;
     std::ostream* fOut;
 
     virtual void produceClass();
-    
+
     void produceMetadata(int tabs);
-    
+
     // Not used
     virtual void produceInternal() {}
 
@@ -47,12 +47,12 @@ class JuliaCodeContainer : public virtual CodeContainer {
     JuliaCodeContainer()
     {}
     JuliaCodeContainer(const std::string& name, int numInputs, int numOutputs, std::ostream* out);
-    
+
     virtual ~JuliaCodeContainer()
     {
         // fCodeProducer is a 'Garbageable'
     }
-    
+
     virtual dsp_factory_base* produceFactory();
 
     CodeContainer* createScalarContainer(const std::string& name, int sub_container_type);
@@ -66,7 +66,7 @@ class JuliaCodeContainer : public virtual CodeContainer {
 
 class JuliaScalarCodeContainer : public JuliaCodeContainer {
    protected:
-   
+
    public:
     JuliaScalarCodeContainer()
     {}
@@ -83,7 +83,7 @@ class JuliaScalarCodeContainer : public JuliaCodeContainer {
 
 class JuliaVectorCodeContainer : public VectorCodeContainer, public JuliaCodeContainer {
    protected:
-    
+
    public:
     JuliaVectorCodeContainer(const std::string& name, int numInputs, int numOutputs, std::ostream* out);
     virtual ~JuliaVectorCodeContainer()

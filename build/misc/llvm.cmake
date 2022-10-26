@@ -99,7 +99,7 @@ macro (llvm_config)
 	string ( REPLACE "C:\\Program Files\\LLVM\\lib\\" "" LLVM_LIBS ${LLVM_LIBS_TMP2})
 	execute_process (COMMAND ${LLVM_CONFIG}  --system-libs OUTPUT_VARIABLE LLVM_SYS_LIBS_TMP)
 	string ( STRIP ${LLVM_SYS_LIBS_TMP} LLVM_SYS_LIBS)
-	
+
     string ( APPEND LLVM_LIBS " ${LLVM_SYS_LIBS}")
     string ( REPLACE " " ";" LLVM_LIBS ${LLVM_LIBS} )
 endmacro()

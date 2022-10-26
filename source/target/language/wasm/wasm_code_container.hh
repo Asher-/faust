@@ -32,6 +32,7 @@
 using namespace std;
 
 class WASMCodeContainer : public virtual CodeContainer {
+      WASMInstVisitor* _visitor = nullptr;;
    protected:
     std::ostream*          fOut;
     BufferWithRandomAccess fBinaryOut;
@@ -46,17 +47,17 @@ class WASMCodeContainer : public virtual CodeContainer {
                                                        bool isvirtual);
 
     void generateComputeAux(BlockInst* compute_block);
-    
+
     template <typename REAL>
     string generateJSON()
     {
         // JSON generation
-        JSONInstVisitor<REAL> json_visitor1;
-        generateUserInterface(&json_visitor1);
+        JSONInstVisitor<REAL> json_visitor_1;
+        generateUserInterface(&json_visitor_1);
 
         PathTableType path_index_table;
-        map<string, MemoryDesc>&      fieldTable1 = gGlobal->gWASMVisitor->getFieldTable();
-        for (const auto& it : json_visitor1.fPathTable) {
+        map<string, MemoryDesc>&      fieldTable1 = this->_visitor->getFieldTable();
+        for (const auto& it : json_visitor_1.fPathTable) {
             faustassert(path_index_table.find(it.second) == path_index_table.end());
             // Get field index
             MemoryDesc tmp              = fieldTable1[it.first];
@@ -64,14 +65,14 @@ class WASMCodeContainer : public virtual CodeContainer {
         }
 
         // "name", "filename" found in metadata
-        JSONInstVisitor<REAL> json_visitor2("", "", fNumInputs, fNumOutputs,
+        JSONInstVisitor<REAL> json_visitor_2("", "", fNumInputs, fNumOutputs,
                                             -1, "", "", FAUSTVERSION, gGlobal->printCompilationOptions1(),
                                             gGlobal->gReader.listLibraryFiles(), gGlobal->gImportDirList,
-                                            gGlobal->gWASMVisitor->getStructSize(), path_index_table, MemoryLayoutType());
-        generateUserInterface(&json_visitor2);
-        generateMetaData(&json_visitor2);
+                                            this->_visitor->getStructSize(), path_index_table, MemoryLayoutType());
+        generateUserInterface(&json_visitor_2);
+        generateMetaData(&json_visitor_2);
 
-        return json_visitor2.JSON(true);
+        return json_visitor_2.JSON(true);
     }
 
    public:

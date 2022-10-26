@@ -26,18 +26,17 @@
 #include "faust/compiler/common.hh"
 #include "instructions_compiler1.hh"
 
-#ifdef OCPP_BUILD
 #include "compile_scalar.hh"
 #include "compile_sched.hh"
 #include "compile_vect.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct OCPP : public Common
     {
-      #ifdef OCPP_BUILD
+
+      static constexpr const char* TargetString = "old C++";
 
       static unique_ptr<ifstream> enrobage;
 
@@ -124,12 +123,12 @@ namespace Faust {
           }
       }
 
-      #endif
-
-
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      override
       {
-      #ifdef OCPP_BUILD
+          #ifndef OCPP_BUILD
+              throw faustexception("ERROR : -lang ocpp not supported since old CPP backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
 
           if (gGlobal->gSchedulerSwitch) {
@@ -143,18 +142,12 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.old_comp->setDescription(new Description());
           compiler_return.old_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang ocpp not supported since old CPP backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs); };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "old C++" << endl;
+          return OCPP::TargetString;
       }
 
     };

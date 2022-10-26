@@ -93,24 +93,22 @@ namespace Faust {
 
       static Common* compiler( const std::string& output_lang );
 
-      static void enumBackends(ostream& out)
-      {
-          out << DSPtoTargetString;
-      }
+      /****************************************************************
+                           Required Overrides
+      *****************************************************************/
+
+      virtual const char* const& targetString() = 0;
 
       /****************************************************************
                            Help and Version information
       *****************************************************************/
 
-      static void printVersion()
+      void printVersion()
       {
-          cout << "FAUST Version " << FAUSTVERSION << "\n";
-          cout << "Embedded backends: \n";
-          enumBackends(cout);
-      #ifdef LLVM_BUILD
-          cout << "Build with LLVM version " << LLVM_VERSION << "\n";
-      #endif
-          cout << "Copyright (C) 2002-2022, GRAME - Centre National de Creation Musicale. All rights reserved. \n";
+          std::cout << "FAUST Version " << FAUSTVERSION << std::endl;
+          std::cout << "Embedded backends: " << std::endl;
+          std::cout << DSPtoTargetString << this->targetString() << std::endl;
+          std::cout << "Copyright (C) 2002-2022, GRAME - Centre National de Creation Musicale. All rights reserved." << std::endl;
       }
 
       static void printDeclareHeader(ostream& dst)
@@ -135,9 +133,9 @@ namespace Faust {
           }
       }
 
-      static void printXML(Description* D, int inputs, int outputs)
+      static void printXML(Description* description, int inputs, int outputs)
       {
-          faustassert(D);
+          faustassert(description);
           ofstream xout(subst("$0.xml", gGlobal->makeDrawPath()).c_str());
 
           MetaDataSet::const_iterator it1;
@@ -147,25 +145,25 @@ namespace Faust {
               for (it2 = it1.second.begin(); it2 != it1.second.end(); ++it2) {
                   const string value = tree2str(*it2);
                   if (key == "name") {
-                      D->name(value);
+                      description->name(value);
                   } else if (key == "author") {
-                      D->author(value);
+                      description->author(value);
                   } else if (key == "copyright") {
-                      D->copyright(value);
+                      description->copyright(value);
                   } else if (key == "license") {
-                      D->license(value);
+                      description->license(value);
                   } else if (key == "version") {
-                      D->version(value);
+                      description->version(value);
                   } else {
-                      D->declare(key, value);
+                      description->declare(key, value);
                   }
               }
           }
 
-          D->className(gGlobal->gClassName);
-          D->inputs(inputs);
-          D->outputs(outputs);
-          D->print(0, xout);
+          description->className(gGlobal->gClassName);
+          description->inputs(inputs);
+          description->outputs(outputs);
+          description->print(0, xout);
       }
 
       void createHelperFile(const string& outpath)
@@ -187,9 +185,9 @@ namespace Faust {
       }
 
       virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) = 0;
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) = 0;
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string& ) = 0;
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) = 0;
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return this->compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
+      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
 
       void injectCode(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& enrobage, ostream& dst)
       {

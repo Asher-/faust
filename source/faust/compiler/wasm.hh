@@ -25,19 +25,21 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#ifdef WASM_BUILD
 #include "wasm_code_container.hh"
-#include "wast_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct WASM : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
+      static constexpr const char* TargetString = "WebAssembly (wasm)";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
+      override
       {
-      #ifdef WASM_BUILD
+      #ifndef WASM_BUILD
+          throw faustexception("ERROR : -lang wasm not supported since WASM backend is not built\n");
+      #endif
+
           assert(out!=nullptr);
           assert(outpath!="");
           static ::Faust::Compiler::Return compiler_return;
@@ -76,18 +78,13 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang wasm not supported since WASM backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr, ""); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr, ""); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs, out, ""); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream and std::string required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "WebAssembly (wasm)" << endl;
+          return TargetString;
       }
 
     };

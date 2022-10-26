@@ -22,7 +22,9 @@ set (SRCDIR ${ROOT}/source)
 set (BINDIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set (LIBDIR ${CMAKE_CURRENT_SOURCE_DIR}/${LIBSDIR})
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_COMPUTED_DEFAULT 17)
+set (CMAKE_CXX_STANDARD_REQUIRED on)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -44,7 +46,7 @@ option ( MSVC_STATIC		"Use static runtimes with MSVC" off)
 option ( SELF_CONTAINED_LIBRARY	"Don't search system architecture files." off)
 
 if (NOT DEFINED DEPLOYMENT_TARGET_VERSION)
-	set ( DEPLOYMENT_TARGET_VERSION  10.12)
+	set ( DEPLOYMENT_TARGET_VERSION  12)
 endif()
 
 #######################################
@@ -69,16 +71,7 @@ file (GLOB SRC ${SRCDIR}/instructions/*.cpp
 							 ${SRCDIR}/target/*.cpp
 							 ${SRCDIR}/target/code_container/*.cpp
 							 ${SRCDIR}/target/fir/*.cpp
-							 ${SRCDIR}/target/language/c/*.cpp
-							 ${SRCDIR}/target/language/cpp/*.cpp
-							 ${SRCDIR}/target/language/jax/*.cpp
-							 ${SRCDIR}/target/language/java/*.cpp
-							 ${SRCDIR}/target/language/julia/*.cpp
-							 ${SRCDIR}/target/language/rust/*.cpp
-							 ${SRCDIR}/target/language/dlang/*.cpp
-							 ${SRCDIR}/target/language/csharp/*.cpp
-							 ${SRCDIR}/target/language/soul/*.cpp
-							 ${SRCDIR}/target/language/wasm/*.cpp
+               ${SRCDIR}/target/language/*/*.cpp
 							 ${SRCDIR}/tlib/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
 							 ${ROOT}/architecture/faust/export.cpp
@@ -119,6 +112,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/interpreter
 	${SRCDIR}/target/language/dlang
 	${SRCDIR}/target/language/c
+	${SRCDIR}/target/language/clang
 	${SRCDIR}/target/language/cpp
 	${SRCDIR}/target/language/csharp
 	${SRCDIR}/target/language/java
@@ -126,6 +120,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/language/jax
 	${SRCDIR}/target/language/llvm
 	${SRCDIR}/target/language/wasm
+	${SRCDIR}/target/language/wast
 	${SRCDIR}/target/language/rust
 	${SRCDIR}/target/language/soul
 	${SRCDIR}/instructions
@@ -194,7 +189,7 @@ endif()
 	set (FAUST_DEFINITIONS ${FAUST_DEFINITIONS} -DLLVM_VERSION="${LLVM_PACKAGE_VERSION}")
 
 	if("${LLVM_PACKAGE_VERSION}" VERSION_GREATER_EQUAL 10)
-        set (CMAKE_CXX_STANDARD 14)
+        set (CMAKE_CXX_STANDARD 17)
 	endif()
 endif()
 

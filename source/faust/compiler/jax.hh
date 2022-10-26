@@ -26,18 +26,20 @@
 #include "faust/compiler/common.hh"
 #include "instructions_compiler_jax.hh"
 
-#ifdef JAX_BUILD
 #include "jax_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct JAX : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      static constexpr const char* TargetString = "JAX";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      override
       {
-      #ifdef JAX_BUILD
+          #ifndef JAX_BUILD
+              throw faustexception("ERROR : -lang jax not supported since JAX backend is not built\n");
+          #endif
           gGlobal->gAllowForeignFunction = true;  // foreign functions are supported (we use jax.random.PRNG for example)
           gGlobal->gNeedManualPow        = false;
           gGlobal->gFAUSTFLOAT2Internal  = true;
@@ -53,18 +55,13 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang jax not supported since JAX backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "JAX" << endl;
+          return TargetString;
       }
 
     };

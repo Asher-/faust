@@ -25,19 +25,21 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#ifdef LLVM_BUILD
 #include "clang_code_container.hh"
 #include "llvm_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct LLVM : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate)
+      static constexpr const char* TargetString = "LLVM IR";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate)
+      override
       {
-      #ifdef LLVM_BUILD
+          #ifndef LLVM_BUILD
+              throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
           compiler_return.container = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
 
@@ -62,18 +64,18 @@ namespace Faust {
               compiler_return.new_comp->prepare(signals);
           }
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, false); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs, false); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, false); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "bool generate required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "LLVM IR" << endl;
+          return TargetString;
+      }
+
+      virtual void printVersionTargetDetail()
+      {
+          std::cout << "Build with LLVM version " << LLVM_VERSION << "\n";
       }
 
     };

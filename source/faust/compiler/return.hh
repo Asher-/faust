@@ -35,9 +35,9 @@ namespace Faust {
       Return ( InstructionsCompiler* new_comp, CodeContainer* container )
       : new_comp(new_comp), container(container) {}
       InstructionsCompiler* new_comp  = nullptr;
-      #ifdef OCPP_BUILD
+      // #ifdef OCPP_BUILD
       class Compiler* old_comp = nullptr;
-      #endif
+      // #endif
       CodeContainer*        container = nullptr;
     };
 

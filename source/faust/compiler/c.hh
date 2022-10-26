@@ -29,18 +29,27 @@
 #include "dag_instructions_compiler.hh"
 #include "instructions_compiler.hh"
 
-#ifdef C_BUILD
 #include "c_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct C : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      static constexpr const char* TargetString = "C";
+
+      ::Faust::Compiler::Return
+      compile(
+          Tree signals,
+          int numInputs,
+          int numOutputs,
+          ostream* out
+      )
+      override
       {
-      #ifdef C_BUILD
+          #ifndef C_BUILD
+            throw faustexception("ERROR : -lang c not supported since C backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
           compiler_return.container = CCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
 
@@ -53,17 +62,13 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang c not supported since C backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          out << "C" << endl;
+          return TargetString;
       }
     };
 

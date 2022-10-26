@@ -42,6 +42,17 @@ class BufferWithRandomAccess : public std::vector<uint8_t> {
     bool debug;
 
    public:
+
+    // Type punning needs to be done through this function to avoid undefined
+    // behavior: unions and reinterpret_cast aren't valid approaches.
+    template <class Destination, class Source>
+    inline Destination bit_cast(const Source& source)
+    {
+        Destination destination;
+        memcpy(&destination, &source, sizeof(destination));
+        return destination;
+    }
+
     BufferWithRandomAccess(bool dbg = false) : debug(dbg) {}
 
     BufferWithRandomAccess& operator<<(int8_t x)
@@ -458,7 +469,7 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
     {
         bool is_struct = (inst->fAddress->getAccess() & Address::kStruct)
                         || (inst->fAddress->getAccess() & Address::kStaticStruct);
-        
+
         ArrayTyped* array_typed = dynamic_cast<ArrayTyped*>(inst->fType);
         string name = inst->fAddress->getName();
 
@@ -497,7 +508,7 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
             MathFunDesc desc = fMathLibTable[inst->fName];
 
             if (desc.fMode == MathFunDesc::Gen::kExtMath || desc.fMode == MathFunDesc::Gen::kExtWAS) {
-                
+
                 // Build function type (args type same as return type)
                 Names args;
                 if (desc.fArgs == 1) {
@@ -808,7 +819,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         }
         finishSection(start);
     }
-    
+
     virtual void visit(AddSoundfileInst* inst)
     {
         // Not supported for now
@@ -821,7 +832,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         bool                is_struct   = (access & Address::kStruct) || (access & Address::kStaticStruct);
         ArrayTyped*         array_typed = dynamic_cast<ArrayTyped*>(inst->fType);
         string              name        = inst->fAddress->getName();
-    
+
         // fSampleRate may appear several time (in subcontainers and in main DSP)
         if (name != "fSampleRate") {
             if (fFieldTable.find(name) != fFieldTable.end() && (access & Address::kStaticStruct)) {
@@ -830,7 +841,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             }
             faustassert(fFieldTable.find(name) == fFieldTable.end());
         }
-    
+
         if (array_typed && array_typed->fSize > 1) {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, array_typed->fSize, array_typed->getSizeBytes(), array_typed->fType->getType());
@@ -916,7 +927,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             }
             // Possibly used offset (if > 0)
             generateMemoryAccess(offset);
-    
+
         } else {
             faustassert(fLocalVarTable.find(name) != fLocalVarTable.end());
             LocalVarDesc local = fLocalVarTable[name];
@@ -1165,7 +1176,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
     virtual void visit(BinopInst* inst)
     {
         Typed::VarType type1 = TypingVisitor::getType(inst->fInst1);
-    
+
         if (isRealType(type1)) {
             visitAuxReal(inst, type1);
         } else {
@@ -1187,7 +1198,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
     virtual void visit(::CastInst* inst)
     {
         Typed::VarType type = TypingVisitor::getType(inst->fInst);
-    
+
         switch (inst->fType->getType()) {
             case Typed::kInt32:
                 if (isInt32Type(type)) {
@@ -1203,11 +1214,11 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
                                                          : int8_t(BinaryConsts::I32STruncF64));
                 }
                 break;
-                
+
             case Typed::kInt64:
                 faustassert(false);
                 break;
-                
+
             case Typed::kFloat:
             case Typed::kDouble:
                 if (isRealType(type)) {
@@ -1226,7 +1237,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
                     faustassert(false);
                 }
                 break;
-                
+
             default:
                 faustassert(false);
                 break;
@@ -1316,7 +1327,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         *fOut << int8_t(BinaryConsts::Select);
      }
     */
-    
+
     // Select that only computes one branch
     virtual void visit(Select2Inst* inst)
     {
@@ -1340,7 +1351,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         // End of if
         *fOut << int8_t(BinaryConsts::End);
     }
-  
+
     // Conditional : if (TO CHECK : use drop ?)
     virtual void visit(IfInst* inst)
     {

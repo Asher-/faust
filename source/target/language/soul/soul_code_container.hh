@@ -76,6 +76,8 @@ struct TableSizeCloneVisitor : public BasicCloneVisitor {
 };
 
 class CmajorCodeContainer : public virtual CodeContainer {
+    TableSizeVisitor* _visitor = nullptr;
+
    protected:
     CmajorInstVisitor fCodeProducer;
     CmajorInstUIVisitor fUIVisitor;
@@ -91,11 +93,11 @@ class CmajorCodeContainer : public virtual CodeContainer {
         initialize(numInputs, numOutputs);
         fKlassName = name;
 
-        if (!gGlobal->gTableSizeVisitor) {
-            gGlobal->gTableSizeVisitor = new TableSizeVisitor();
+        if (!this->_visitor) {
+            this->_visitor = new TableSizeVisitor();
         }
     }
-   
+
     CodeContainer* createScalarContainer(const string& name, int sub_container_type);
     void           produceInternal();
     void           produceClass();

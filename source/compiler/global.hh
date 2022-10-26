@@ -43,6 +43,12 @@
 #include "sigtype.hh"
 #include "sourcereader.hh"
 
+namespace Faust {
+  namespace Compiler {
+    struct Common;
+  }
+}
+
 class CTree;
 typedef CTree* Tree;
 
@@ -61,6 +67,7 @@ class JAXInstVisitor;
 class JuliaInstVisitor;
 class TemplateInstVisitor;
 struct TableSizeVisitor;
+
 struct DeclareStructTypeInst;
 
 struct Typed;
@@ -81,14 +88,18 @@ extern bool           gAllWarning;
 
 // Global singleton like compiler state
 struct global {
-    
-    // Parsing
+
+    ::Faust::Compiler::Common* compiler = nullptr;
+
+
+    Tree gResult;
+    Tree gResult2;
+
     SourceReader gReader;
     Tree         gExpandedDefList;
     string       gInputString;
     list<string> gInputFiles;
     tvec         gWaveForm;  // used in the parser to keep values parsed for a given waveform
-    Tree         gResult;
     
     // Metadata handling
     MetaDataSet gMetaDataSet;
@@ -545,7 +556,12 @@ struct global {
     TemplateInstVisitor* gTemplateVisitor;
 #endif
 
-    // Info on the compiler
+    int gAllocationCount;  // Internal signal types counter
+
+    int gMaskDelayLineThreshold;  // Power-of-two and mask delay-lines treshold
+
+    bool gEnableFlag;
+
     bool gHelpSwitch;
     bool gVersionSwitch;
     bool gLibDirSwitch;

@@ -18,7 +18,7 @@ if ("${INCLUDE_DIR}" STREQUAL "")
 endif()
 
 #######################################
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 ####################################
 # LLVM

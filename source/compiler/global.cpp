@@ -50,54 +50,7 @@
 #include "sqrtprim.hh"
 #include "tanprim.hh"
 #include "tree.hh"
-
-#ifdef WIN32
-#pragma warning(disable : 4996)
-#endif
-
-#ifdef C_BUILD
-#include "c_code_container.hh"
-#endif
-
-#ifdef CPP_BUILD
-#include "cpp_code_container.hh"
-#endif
-
-#ifdef FIR_BUILD
-#include "fir_code_container.hh"
-#endif
-
-#ifdef LLVM_BUILD
 #include "llvm_dsp_aux.hh"
-#endif
-
-#ifdef INTERP_BUILD
-#include "interpreter_instructions.hh"
-#endif
-
-#ifdef JAVA_BUILD
-#include "java_code_container.hh"
-#endif
-
-#ifdef CSHARP_BUILD
-#include "csharp_code_container.hh"
-#endif
-
-#ifdef RUST_BUILD
-#include "rust_code_container.hh"
-#endif
-
-#ifdef DLANG_BUILD
-#include "dlang_code_container.hh"
-#endif
-
-#ifdef JULIA_BUILD
-#include "julia_code_container.hh"
-#endif
-
-#ifdef JAX_BUILD
-#include "jax_code_container.hh"
-#endif
 
 #ifdef TEMPLATE_BUILD
 #include "template_code_container.hh"
@@ -335,146 +288,6 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
 
     gMachineMaxStackSize = MAX_MACHINE_STACK_SIZE;
 }
-
-// Part of the state that needs to be initialized between consecutive calls to Box/Signal API
-void global::reset()
-{
-    gAllWarning = false;
-    gWarningMessages.clear();
-    
-    gResult          = nullptr;
-    gExpandedDefList = nullptr;
-    
-    gDetailsSwitch    = false;
-    gDrawSignals      = false;
-    gDrawRouteFrame   = false;
-    gShadowBlur       = false;  // note: svg2pdf doesn't like the blur filter
-    gScaledSVG        = false;
-    gStripDocSwitch   = false;  // Strip <mdoc> content from doc listings.
-    gFoldThreshold    = 25;
-    gFoldComplexity   = 2;
-    gMaxNameSize      = 40;
-    gSimpleNames      = false;
-    gSimplifyDiagrams = false;
-    gMaxCopyDelay     = 16;
-    
-    gVectorSwitch      = false;
-    gDeepFirstSwitch   = false;
-    gVecSize           = 32;
-    gVectorLoopVariant = 0;
-    
-    gOpenMPSwitch    = false;
-    gOpenMPLoop      = false;
-    gSchedulerSwitch = false;
-    gOpenCLSwitch    = false;
-    gCUDASwitch      = false;
-    gGroupTaskSwitch = false;
-    gFunTaskSwitch   = false;
-    
-    gUIMacroSwitch = false;
-    gDumpNorm      = -1;
-    gFTZMode       = 0;
-    gRangeUI       = false;
-    
-    gFloatSize = 1; // -single by default
-    
-    gPrintFileListSwitch = false;
-    gInlineArchSwitch    = false;
-    
-    gDSPStruct  = false;
-    gLightMode  = false;
-    gClang      = false;
-    gNoVirtual  = false;
-    gCheckTable = true;
-    
-    gMathExceptions = false;
-    
-    gClassName      = "mydsp";
-    gSuperClassName = "dsp";
-    gProcessName    = "process";
-    
-    gDSPFactory = nullptr;
-    
-    gInputString = "";
-    gInputFiles.clear();
-    gMetaDataSet.clear();
-    
-    // Backend configuration : default values
-    gAllowForeignFunction = true;
-    gAllowForeignConstant = true;
-    gAllowForeignVar      = true;
-    gComputeIOTA          = false;
-    gFAUSTFLOAT2Internal  = false;
-    gInPlace              = false;
-    gStrictSelect         = false;
-    gHasExp10             = false;
-    gLoopVarInBytes       = false;
-    gWaveformInDSP        = false;
-    gUseDefaultSound      = true;
-    gHasTeeLocal          = false;
-    gFastMath             = false;
-    gMathApprox           = false;
-    gNeedManualPow        = true;
-    gRemoveVarAddress     = false;
-    gOneSample            = -1;
-    gOneSampleControl     = false;
-    gComputeMix           = false;
-    gBool2Int             = false;
-    gFastMathLib          = "default";
-    gNamespace            = "";
-    gFullParentheses      = false;
-    
-    gNarrowingLimit = 0;
-    gWideningLimit  = 0;
-    
-    gLstDependenciesSwitch = true;  // mdoc listing management.
-    gLstMdocTagsSwitch     = true;  // mdoc listing management.
-    gLstDistributedSwitch  = true;  // mdoc listing management.
-    
-    gLatexDocSwitch = true;  // Only LaTeX outformat is handled for the moment.
-    
-    gFileNum = 0;
-    
-    gBoxCounter    = 0;
-    gSignalCounter = 0;
-    
-    gCountInferences = 0;
-    gCountMaximal    = 0;
-    
-    gDummyInput = 10000;
-    
-    gBoxSlotNumber = 0;
-    gMemoryManager = false;
-    
-    gLocalCausalityCheck = false;
-    gCausality           = false;
-    
-    gOccurrences = nullptr;
-    gFoldingFlag = false;
-    gDevSuffix   = nullptr;
-    
-    gOutputLang  = "";
-    
-#ifdef WASM_BUILD
-    gWASMVisitor = nullptr;  // Will be (possibly) allocated in WebAssembly backend
-    gWASTVisitor = nullptr;  // Will be (possibly) allocated in WebAssembly backend
-#endif
-    
-#ifdef INTERP_BUILD
-    gInterpreterVisitor = nullptr;  // Will be (possibly) allocated in Interp backend
-#endif
-    
-#ifdef JULIA_BUILD
-    gJuliaVisitor = nullptr;  // Will be (possibly) allocated in Julia backend
-#endif
-
-#ifdef CMAJOR_BUILD
-    gTableSizeVisitor = nullptr;  // Will be (possibly) allocated in Cmajor backend
-#endif
-    
-#ifdef JAX_BUILD
-    gJAXVisitor = nullptr;    // Will be (possibly) allocated in JAX backend
-#endif
 
 #ifdef TEMPLATE_BUILD
     gTemplateVisitor = nullptr;    // Will be (possibly) allocated in Template backend
@@ -825,6 +638,8 @@ global::~global()
     setlocale(LC_ALL, gCurrentLocal);
     free(gCurrentLocal);
 
+// FIX - what's the point? none of this has been allocated
+/*
     // Cleanup
 #ifdef C_BUILD
     CInstVisitor::cleanup();
@@ -856,6 +671,7 @@ global::~global()
 #ifdef RUST_BUILD
     RustInstVisitor::cleanup();
 #endif
+*/
 }
 
 void global::allocate()

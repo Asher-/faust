@@ -32,6 +32,7 @@
 using namespace std;
 
 class WASTCodeContainer : public virtual CodeContainer {
+      WASTInstVisitor* _visitor = nullptr;;
    protected:
     std::ostream*     fOut;
     std::stringstream fOutAux;
@@ -43,39 +44,39 @@ class WASTCodeContainer : public virtual CodeContainer {
         // Moves all variables declaration at the beginning of the block
         MoveVariablesInFront3 mover;
         BlockInst*            block_res = mover.getCode(block);
-        block_res->accept(gGlobal->gWASTVisitor);
+        block_res->accept(this->_visitor);
     }
 
     DeclareFunInst* generateInstanceInitFun(const string& name, const string& obj, bool ismethod, bool isvirtual);
 
     void generateComputeAux1(int n);
     void generateComputeAux2(BlockInst* compute_block, int n);
-    
+
     template <typename REAL>
     string generateJSON()
     {
         // JSON generation
-        JSONInstVisitor<REAL> json_visitor1;
-        generateUserInterface(&json_visitor1);
-        
+        JSONInstVisitor<REAL> json_visitor_1;
+        generateUserInterface(&json_visitor_1);
+
         PathTableType path_index_table;
-        map<string, MemoryDesc>& fieldTable1 = gGlobal->gWASTVisitor->getFieldTable();
-        for (const auto& it : json_visitor1.fPathTable) {
+        map<string, MemoryDesc>& fieldTable1 = this->_visitor->getFieldTable();
+        for (const auto& it : json_visitor_1.fPathTable) {
             faustassert(path_index_table.find(it.second) == path_index_table.end());
             // Get field index
             MemoryDesc tmp              = fieldTable1[it.first];
             path_index_table[it.second] = tmp.fOffset;
         }
-        
+
         // "name", "filename" found in medata
-        JSONInstVisitor<REAL> json_visitor2("", "", fNumInputs, fNumOutputs, -1,
+        JSONInstVisitor<REAL> json_visitor_2("", "", fNumInputs, fNumOutputs, -1,
                                             "", "", FAUSTVERSION, gGlobal->printCompilationOptions1(),
                                             gGlobal->gReader.listLibraryFiles(), gGlobal->gImportDirList,
-                                            gGlobal->gWASTVisitor->getStructSize(), path_index_table, MemoryLayoutType());
-        generateUserInterface(&json_visitor2);
-        generateMetaData(&json_visitor2);
-        
-        return json_visitor2.JSON(true);
+                                            this->_visitor->getStructSize(), path_index_table, MemoryLayoutType());
+        generateUserInterface(&json_visitor_2);
+        generateMetaData(&json_visitor_2);
+
+        return json_visitor_2.JSON(true);
     }
 
    public:

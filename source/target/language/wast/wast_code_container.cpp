@@ -66,8 +66,8 @@ WASTCodeContainer::WASTCodeContainer(const string& name, int numInputs, int numO
     fInternalMemory = internal_memory;
 
     // Allocate one static visitor to be shared by main and sub containers
-    if (!gGlobal->gWASTVisitor) {
-        gGlobal->gWASTVisitor = new WASTInstVisitor(&fOutAux, fInternalMemory);
+    if (!this->_visitor) {
+        this->_visitor = new WASTInstVisitor(&fOutAux, fInternalMemory);
     }
 }
 
@@ -131,14 +131,14 @@ DeclareFunInst* WASTCodeContainer::generateInstanceInitFun(const string& name, c
         args.push_back(InstBuilder::genNamedTyped(obj, Typed::kObj_ptr));
     }
     args.push_back(InstBuilder::genNamedTyped("sample_rate", Typed::kInt32));
-    
+
     BlockInst* init_block = InstBuilder::genBlockInst();
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fStaticInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fPostInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fResetUserInterfaceInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fClearInstructions));
-    
+
     init_block->pushBackInst(InstBuilder::genRetInst());
 
     // Creates function
@@ -148,20 +148,20 @@ DeclareFunInst* WASTCodeContainer::generateInstanceInitFun(const string& name, c
 void WASTCodeContainer::produceClass()
 {
     int n = 0;
-    gGlobal->gWASTVisitor->Tab(n);
+    this->_visitor->Tab(n);
 
     tab(n, fOutAux);
     fOutAux << "(module";
 
     // Global declarations (mathematical functions, global variables...)
-    gGlobal->gWASTVisitor->Tab(n + 1);
+    this->_visitor->Tab(n + 1);
 
     // Sub containers are merged in the main module, before functions generation
     mergeSubContainers();
 
     // All mathematical functions (got from math library as variables) have to be first
-    generateGlobalDeclarations(gGlobal->gWASTVisitor);
-    generateExtGlobalDeclarations(gGlobal->gWASTVisitor);
+    generateGlobalDeclarations(this->_visitor);
+    generateExtGlobalDeclarations(this->_visitor);
 
     // Exported functions
     tab(n + 1, fOutAux);
@@ -194,26 +194,26 @@ void WASTCodeContainer::produceClass()
     fOutAux << "(import \"env\" \"tableBase\" (global $tableBase i32))";
 
     // Fields : compute the structure size to use in 'new'
-    gGlobal->gWASTVisitor->Tab(n + 1);
-    generateDeclarations(gGlobal->gWASTVisitor);
+    this->_visitor->Tab(n + 1);
+    generateDeclarations(this->_visitor);
 
     // Keep location of memory generation
     streampos begin_memory = fOutAux.tellp();
 
     // Always generated mathematical functions
     tab(n + 1, fOutAux);
-    WASInst::generateIntMin()->accept(gGlobal->gWASTVisitor);
-    WASInst::generateIntMax()->accept(gGlobal->gWASTVisitor);
-    
+    WASInst::generateIntMin()->accept(this->_visitor);
+    WASInst::generateIntMax()->accept(this->_visitor);
+
     // getNumInputs/getNumOutputs
-    generateGetInputs("getNumInputs", "dsp", false, FunTyped::kDefault)->accept(gGlobal->gWASTVisitor);
-    generateGetOutputs("getNumOutputs", "dsp", false, FunTyped::kDefault)->accept(gGlobal->gWASTVisitor);
+    generateGetInputs("getNumInputs", "dsp", false, FunTyped::kDefault)->accept(this->_visitor);
+    generateGetOutputs("getNumOutputs", "dsp", false, FunTyped::kDefault)->accept(this->_visitor);
 
     // Inits
     tab(n + 1, fOutAux);
     fOutAux << "(func $classInit (param $dsp i32) (param $sample_rate i32)";
     tab(n + 2, fOutAux);
-    gGlobal->gWASTVisitor->Tab(n + 2);
+    this->_visitor->Tab(n + 2);
     {
         BlockInst* inlined = inlineSubcontainersFunCalls(fStaticInitInstructions);
         generateWASTBlock(inlined);
@@ -224,7 +224,7 @@ void WASTCodeContainer::produceClass()
     tab(n + 1, fOutAux);
     fOutAux << "(func $instanceConstants (param $dsp i32) (param $sample_rate i32)";
     tab(n + 2, fOutAux);
-    gGlobal->gWASTVisitor->Tab(n + 2);
+    this->_visitor->Tab(n + 2);
     {
         BlockInst* inlined = inlineSubcontainersFunCalls(fInitInstructions);
         generateWASTBlock(inlined);
@@ -235,7 +235,7 @@ void WASTCodeContainer::produceClass()
     tab(n + 1, fOutAux);
     fOutAux << "(func $instanceResetUserInterface (param $dsp i32)";
     tab(n + 2, fOutAux);
-    gGlobal->gWASTVisitor->Tab(n + 2);
+    this->_visitor->Tab(n + 2);
     {
         // Rename 'sig' in 'dsp' and remove 'dsp' allocation
         generateWASTBlock(DspRenamer().getCode(fResetUserInterfaceInstructions));
@@ -246,7 +246,7 @@ void WASTCodeContainer::produceClass()
     tab(n + 1, fOutAux);
     fOutAux << "(func $instanceClear (param $dsp i32)";
     tab(n + 2, fOutAux);
-    gGlobal->gWASTVisitor->Tab(n + 2);
+    this->_visitor->Tab(n + 2);
     {
         // Rename 'sig' in 'dsp' and remove 'dsp' allocation
         generateWASTBlock(DspRenamer().getCode(fClearInstructions));
@@ -254,22 +254,22 @@ void WASTCodeContainer::produceClass()
     back(1, fOutAux);
     fOutAux << ")";
 
-    gGlobal->gWASTVisitor->Tab(n + 1);
+    this->_visitor->Tab(n + 1);
 
     // TO REMOVE when 'soundfile' is implemented
     {
         // Generate UI: only to trigger exception when using 'soundfile' primitive
-        generateUserInterface(gGlobal->gWASTVisitor);
+        generateUserInterface(this->_visitor);
     }
 
     // init
-    generateInit("init", "dsp", false, false)->accept(gGlobal->gWASTVisitor);
+    generateInit("init", "dsp", false, false)->accept(this->_visitor);
 
     // instanceInit
-    generateInstanceInit("instanceInit", "dsp", false, false)->accept(gGlobal->gWASTVisitor);
+    generateInstanceInit("instanceInit", "dsp", false, false)->accept(this->_visitor);
 
     // getSampleRate
-    generateGetSampleRate("getSampleRate", "dsp", false, false)->accept(gGlobal->gWASTVisitor);
+    generateGetSampleRate("getSampleRate", "dsp", false, false)->accept(this->_visitor);
 
     // setParamValue
     tab(n + 1, fOutAux);
@@ -297,9 +297,9 @@ void WASTCodeContainer::produceClass()
     generateCompute(n);
 
     // Possibly generate separated functions
-    gGlobal->gWASTVisitor->Tab(n + 1);
+    this->_visitor->Tab(n + 1);
     tab(n + 1, fOutAux);
-    generateComputeFunctions(gGlobal->gWASTVisitor);
+    generateComputeFunctions(this->_visitor);
 
     back(1, fOutAux);
     fOutAux << ")";
@@ -325,7 +325,7 @@ void WASTCodeContainer::produceClass()
     string json1 = flattenJSON(json);
     tab(n + 1, *fOut);
     if (fInternalMemory) {
-        int memory_size = genMemSize(gGlobal->gWASTVisitor->getStructSize(), fNumInputs + fNumOutputs, (int)json1.size());
+        int memory_size = genMemSize(this->_visitor->getStructSize(), fNumInputs + fNumOutputs, (int)json1.size());
         *fOut << "(memory (export \"memory\") ";
         // Since JSON is written in data segment at offset 0, the memory size
         // must be computed taking account JSON size and DSP + audio buffer size
@@ -409,7 +409,7 @@ void WASTCodeContainer::generateComputeAux1(int n)
     tab(n + 1, fOutAux);
     fOutAux << "(func $compute (param $dsp i32) (param $count i32) (param $inputs i32) (param $outputs i32)";
     tab(n + 2, fOutAux);
-    gGlobal->gWASTVisitor->Tab(n + 2);
+    this->_visitor->Tab(n + 2);
 }
 
 void WASTCodeContainer::generateComputeAux2(BlockInst* compute_block, int n)
@@ -429,7 +429,7 @@ void WASTCodeContainer::generateComputeAux2(BlockInst* compute_block, int n)
     // Put local variables at the begining
     BlockInst* block = MoveVariablesInFront2().getCode(fComputeBlockInstructions, true);
 
-    block->accept(gGlobal->gWASTVisitor);
+    block->accept(this->_visitor);
     back(1, fOutAux);
     fOutAux << ")";
 }
@@ -441,7 +441,7 @@ void WASTScalarCodeContainer::generateCompute(int n)
     // Loop 'i' variable is moved by bytes
     BlockInst* compute_block = InstBuilder::genBlockInst();
     compute_block->pushBackInst(fCurLoop->generateScalarLoop(fFullCount, gGlobal->gLoopVarInBytes));
-    
+
     // Generates post DSP loop code
     compute_block->pushBackInst(fPostComputeBlockInstructions);
 

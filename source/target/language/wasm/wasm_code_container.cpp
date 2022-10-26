@@ -69,8 +69,8 @@ WASMCodeContainer::WASMCodeContainer(const string& name, int numInputs, int numO
     fInternalMemory = internal_memory;
 
     // Allocate one static visitor to be shared by main and sub containers
-    if (!gGlobal->gWASMVisitor) {
-        gGlobal->gWASMVisitor = new WASMInstVisitor(&fBinaryOut, internal_memory);
+    if (!this->_visitor) {
+        this->_visitor = new WASMInstVisitor(&fBinaryOut, internal_memory);
     }
 }
 
@@ -218,109 +218,109 @@ DeclareFunInst* WASMCodeContainer::generateInstanceInitFun(const string& name, c
 void WASMCodeContainer::produceClass()
 {
     // Module definition
-    gGlobal->gWASMVisitor->generateModuleHeader();
+    this->_visitor->generateModuleHeader();
 
     // Sub containers are merged in the main module, before functions generation
     mergeSubContainers();
 
     // Mathematical functions and global variables are handled in a separated visitor that creates functions types and
     // global variable offset
-    generateGlobalDeclarations(gGlobal->gWASMVisitor->getFunAndTypeCounter());
-    generateExtGlobalDeclarations(gGlobal->gWASMVisitor->getFunAndTypeCounter());
+    generateGlobalDeclarations(this->_visitor->getFunAndTypeCounter());
+    generateExtGlobalDeclarations(this->_visitor->getFunAndTypeCounter());
 
     // Update struct offset to take account of global variables defined in 'generateGlobalDeclarations' in the separated
     // visitor
-    gGlobal->gWASMVisitor->updateStructOffsetAndFieldTable();
+    this->_visitor->updateStructOffsetAndFieldTable();
 
     // Functions types
-    gGlobal->gWASMVisitor->generateFunTypes();
+    this->_visitor->generateFunTypes();
 
     // Imported functions
-    gGlobal->gWASMVisitor->generateImports(fNumInputs + fNumOutputs, fInternalMemory);
+    this->_visitor->generateImports(fNumInputs + fNumOutputs, fInternalMemory);
 
     // Functions signature
-    gGlobal->gWASMVisitor->generateFuncSignatures();
+    this->_visitor->generateFuncSignatures();
 
     // Fields : compute the structure size to use in 'new'
-    generateDeclarations(gGlobal->gWASMVisitor);
+    generateDeclarations(this->_visitor);
 
     // Memory
 
     // Keep location of memory generation
     size_t begin_memory = -1;
     if (fInternalMemory) {
-        begin_memory = gGlobal->gWASMVisitor->generateInternalMemory();
+        begin_memory = this->_visitor->generateInternalMemory();
     }
 
     // Exports
-    gGlobal->gWASMVisitor->generateExports(fInternalMemory);
+    this->_visitor->generateExports(fInternalMemory);
 
     // Functions
-    int32_t functions_start = gGlobal->gWASMVisitor->startSection(BinaryConsts::Section::Code);
+    int32_t functions_start = this->_visitor->startSection(BinaryConsts::Section::Code);
     fBinaryOut << U32LEB(14);  // num functions
-    
+
     // TO REMOVE when 'soundfile' is implemented
     {
         // Generate UI: only to trigger exception when using 'soundfile' primitive
-        generateUserInterface(gGlobal->gWASMVisitor);
+        generateUserInterface(this->_visitor);
     }
 
     // Internal functions in alphabetical order
 
     // 1) classInit
-    generateClassInit("classInit")->accept(gGlobal->gWASMVisitor);
+    generateClassInit("classInit")->accept(this->_visitor);
 
     // 2) compute
     generateCompute();
 
     // 3) getNumInputs
-    generateGetInputs("getNumInputs", "dsp", false, FunTyped::kDefault)->accept(gGlobal->gWASMVisitor);
+    generateGetInputs("getNumInputs", "dsp", false, FunTyped::kDefault)->accept(this->_visitor);
 
     // 4) getNumOutputs
-    generateGetOutputs("getNumOutputs", "dsp", false, FunTyped::kDefault)->accept(gGlobal->gWASMVisitor);
+    generateGetOutputs("getNumOutputs", "dsp", false, FunTyped::kDefault)->accept(this->_visitor);
 
     // 5) getParamValue (adhoc generation for now since currently FIR cannot be generated to handle this case)
-    gGlobal->gWASMVisitor->generateGetParamValue();
+    this->_visitor->generateGetParamValue();
 
     // 6) getSampleRate
-    generateGetSampleRate("getSampleRate", "dsp", false, false)->accept(gGlobal->gWASMVisitor);
+    generateGetSampleRate("getSampleRate", "dsp", false, false)->accept(this->_visitor);
 
     // 7) init
-    generateInit("init", "dsp", false, false)->accept(gGlobal->gWASMVisitor);
+    generateInit("init", "dsp", false, false)->accept(this->_visitor);
 
     // 8) instanceClear
-    generateInstanceClear("instanceClear", "dsp", false, false)->accept(gGlobal->gWASMVisitor);
+    generateInstanceClear("instanceClear", "dsp", false, false)->accept(this->_visitor);
 
     // 9) instanceConstants
-    generateInstanceConstants("instanceConstants", "dsp", false, false)->accept(gGlobal->gWASMVisitor);
+    generateInstanceConstants("instanceConstants", "dsp", false, false)->accept(this->_visitor);
 
     // 10) instanceInit
-    generateInstanceInit("instanceInit", "dsp", false, false)->accept(gGlobal->gWASMVisitor);
+    generateInstanceInit("instanceInit", "dsp", false, false)->accept(this->_visitor);
 
     // 11) instanceResetUserInterface
     generateInstanceResetUserInterface("instanceResetUserInterface", "dsp", false, false)
-        ->accept(gGlobal->gWASMVisitor);
+        ->accept(this->_visitor);
 
     // Always generated mathematical functions
 
     // 12) max_i
-    WASInst::generateIntMax()->accept(gGlobal->gWASMVisitor);
+    WASInst::generateIntMax()->accept(this->_visitor);
 
     // 13) min_i
-    WASInst::generateIntMin()->accept(gGlobal->gWASMVisitor);
-    
+    WASInst::generateIntMin()->accept(this->_visitor);
+
     // 14) setParamValue (adhoc generation for now since currently FIR cannot be generated to handle this case)
-    gGlobal->gWASMVisitor->generateSetParamValue();
+    this->_visitor->generateSetParamValue();
 
     // Possibly generate separated functions : TO REMOVE ?
-    generateComputeFunctions(gGlobal->gWASMVisitor);
+    generateComputeFunctions(this->_visitor);
 
-    gGlobal->gWASMVisitor->finishSection(functions_start);
+    this->_visitor->finishSection(functions_start);
 
     // TO REMOVE when 'soundfile' is implemented
     {
         // Generate UI: only to trigger exception when using 'soundfile' primitive
-        generateUserInterface(gGlobal->gWASMVisitor);
+        generateUserInterface(this->_visitor);
     }
 
     // JSON generation
@@ -330,10 +330,10 @@ void WASMCodeContainer::produceClass()
     } else {
         json = generateJSON<double>();
     }
-  
+
     // Memory size can now be written
     if (fInternalMemory) {
-        int memory_size = genMemSize(gGlobal->gWASMVisitor->getStructSize(), fNumInputs + fNumOutputs, (int)json.size());
+        int memory_size = genMemSize(this->_visitor->getStructSize(), fNumInputs + fNumOutputs, (int)json.size());
         // Since JSON is written in data segment at offset 0, the memory size
         // must be computed taking account JSON size and DSP + audio buffer size
         fBinaryOut.writeAt(begin_memory, U32LEB(memory_size));
@@ -342,7 +342,7 @@ void WASMCodeContainer::produceClass()
     }
 
     // Data segment contains the JSON string starting at offset 0,
-    gGlobal->gWASMVisitor->generateJSON(json);
+    this->_visitor->generateJSON(json);
 
     // Finally produce output stream
     fBinaryOut.writeTo(*fOut);
@@ -426,7 +426,7 @@ void WASMCodeContainer::generateComputeAux(BlockInst* compute_block)
 
     // Put local variables at the begining
     BlockInst* block = MoveVariablesInFront2().getCode(fComputeBlockInstructions, true);
-    
+
     // Creates function and visit it
     Names args;
     args.push_back(InstBuilder::genNamedTyped("dsp", Typed::kObj_ptr));
@@ -434,8 +434,8 @@ void WASMCodeContainer::generateComputeAux(BlockInst* compute_block)
     args.push_back(InstBuilder::genNamedTyped("inputs", Typed::kVoid_ptr));
     args.push_back(InstBuilder::genNamedTyped("outputs", Typed::kVoid_ptr));
     FunTyped* fun_type = InstBuilder::genFunTyped(args, InstBuilder::genVoidTyped(), FunTyped::kDefault);
-    
-    InstBuilder::genDeclareFunInst("compute", fun_type, block)->accept(gGlobal->gWASMVisitor);
+
+    InstBuilder::genDeclareFunInst("compute", fun_type, block)->accept(this->_visitor);
 }
 
 void WASMScalarCodeContainer::generateCompute()
@@ -443,7 +443,7 @@ void WASMScalarCodeContainer::generateCompute()
     // Loop 'i' variable is moved by bytes
     BlockInst* compute_block = InstBuilder::genBlockInst();
     compute_block->pushBackInst(fCurLoop->generateScalarLoop(fFullCount, gGlobal->gLoopVarInBytes));
-    
+
     // Generates post DSP loop code
     compute_block->pushBackInst(fPostComputeBlockInstructions);
 

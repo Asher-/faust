@@ -31,16 +31,6 @@
 
 using namespace std;
 
-// Type punning needs to be done through this function to avoid undefined
-// behavior: unions and reinterpret_cast aren't valid approaches.
-template <class Destination, class Source>
-inline Destination bit_cast(const Source& source)
-{
-    Destination destination;
-    memcpy(&destination, &source, sizeof(destination));
-    return destination;
-}
-
 template <typename T, typename MiniT>
 struct LEB {
     T value;

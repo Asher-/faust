@@ -7,7 +7,7 @@ set(ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 option (USE_LLVM_CONFIG "Use llvm-config" on)
 
 #######################################
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 #######################################
 # Max part
@@ -49,7 +49,7 @@ if (WIN32)
     set (SNDFILELIB ${LIBSNDFILE}/lib/libsndfile-1.lib)
 	set (SNDFILEINC ${LIBSNDFILE}/include)
 else()
-	set (SNDFILEINC ${ROOT}/MacOS/sndfile) 
+	set (SNDFILEINC ${ROOT}/MacOS/sndfile)
 	file (GLOB SNDFILELIB MacOS/sndfile/*.a)
 endif()
 
@@ -86,7 +86,7 @@ target_include_directories (faustgen PRIVATE ${ROOT}/src/ ${MAXINCL} ${FAUSTINC}
 target_link_libraries (faustgen ${FAUSTLIBS}  ${MAXLIBS} ${SNDFILELIB} ${LLVM_LD_FLAGS} ${LLVM_LIBS} )
 
 if (APPLE)
-set_target_properties (faustgen PROPERTIES 
+set_target_properties (faustgen PROPERTIES
 	LINK_FLAGS "${MACLIBS} -Wl,-U,_object_new_imp -Wl,-U,_object_method_imp ${LLVM_LD_FLAGS}"
 	BUNDLE TRUE
 	BUNDLE_EXTENSION mxo
@@ -95,7 +95,7 @@ set_target_properties (faustgen PROPERTIES
 	OUTPUT_NAME faustgen~)
 
 elseif (WIN32)
-set_target_properties (faustgen PROPERTIES 
+set_target_properties (faustgen PROPERTIES
 	COMPILE_FLAGS "-DWIN_VERSION -DWIN_EXT_VERSION"
 	LINK_FLAGS "winmm.lib ws2_32.lib"
 	SUFFIX ".mxe64"
@@ -177,4 +177,3 @@ install (
     CODE  "execute_process (COMMAND hdiutil create ${PACKDIR}/${DST}-macosx.dmg -fs HFS+ -srcfolder ${PACKDIR}/${DST} -format UDBZ -ov)"
 )
 endif()
-

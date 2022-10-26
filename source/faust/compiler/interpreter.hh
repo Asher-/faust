@@ -25,18 +25,21 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#ifdef INTERP_BUILD
 #include "interpreter_code_container.cpp"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
+
     struct Interpreter : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      static constexpr const char* TargetString = "Interpreter";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      override
       {
-      #ifdef INTERP_BUILD
+          #ifndef INTERP_BUILD
+              throw faustexception("ERROR : -lang interp not supported since Interpreter backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
 
           if (gGlobal->gFloatSize == 1) {
@@ -65,18 +68,12 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang interp not supported since Interpreter backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs); };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "Interpreter" << endl;
+          return TargetString;
       }
 
     };

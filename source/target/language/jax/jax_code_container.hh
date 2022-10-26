@@ -35,11 +35,11 @@
 
 class JAXCodeContainer : public virtual CodeContainer {
    protected:
-    static JAXInstVisitor* gJAXVisitor;
+    JAXInstVisitor* _visitor = nullptr;;
     std::ostream* fOut;
 
     virtual void produceClass();
-        
+
     // Not used
     virtual void produceInternal() {}
 
@@ -49,12 +49,12 @@ class JAXCodeContainer : public virtual CodeContainer {
     JAXCodeContainer()
     {}
     JAXCodeContainer(const std::string& name, int numInputs, int numOutputs, std::ostream* out);
-    
+
     virtual ~JAXCodeContainer()
     {
         // fCodeProducer is a 'Garbageable'
     }
-    
+
     virtual dsp_factory_base* produceFactory();
 
     CodeContainer* createScalarContainer(const std::string& name, int sub_container_type);
@@ -67,7 +67,7 @@ class JAXCodeContainer : public virtual CodeContainer {
 
 class JAXScalarCodeContainer : public JAXCodeContainer {
    protected:
-   
+
    public:
     JAXScalarCodeContainer()
     {}

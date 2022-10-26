@@ -54,21 +54,21 @@ namespace Faust {
       global::allocate();
       ::Faust::Controller::initFaustDirectories( _argv[0] );
       parseArgs();
-      resolveParsedState();
-      ::Faust::Type::Float::init();
       ::Faust::Compiler::Common* compiler = ::Faust::Compiler::Common::compiler( gGlobal->gOutputLang );
+      resolveParsedState( compiler );
+      ::Faust::Type::Float::init();
       compiler->_compileOptions = reorganizeCompilationOptions(_argc, _argv);
       return compiler;
     }
 
-    void resolveParsedState()
+    void resolveParsedState( ::Faust::Compiler::Common* compiler )
     {
       if (gGlobal->gHelpSwitch) {
           ::Faust::CLI::printHelp();
           throw faustexception("");
       }
       if (gGlobal->gVersionSwitch) {
-          ::Faust::Compiler::Common::printVersion();
+          compiler->printVersion();
           throw faustexception("");
       }
       if (gGlobal->gLibDirSwitch) {

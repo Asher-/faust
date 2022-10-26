@@ -110,7 +110,7 @@ void CmajorCodeContainer::produceInternal()
     // Retrieves the table size kept in gTableSizeVisitor to generate the correct table type
     string fun_name = "fill" + fKlassName;
     // We possibly have to generate several versions of the function with a different table size
-    for (const auto& it : gGlobal->gTableSizeVisitor->fSizeTable) {
+    for (const auto& it : this->_visitor->fSizeTable) {
         string fun_name_aux = it.first;
         int    table_size   = it.second;
         if (startWith(fun_name_aux, fun_name)) {
@@ -188,11 +188,11 @@ void CmajorCodeContainer::produceInit(int tabs)
 void CmajorCodeContainer::produceClass()
 {
     int n = 0;
-   
+
     // Look for the "fillXXX" function
-    generateStaticInit(gGlobal->gTableSizeVisitor);
-    generateInit(gGlobal->gTableSizeVisitor);
- 
+    generateStaticInit(this->_visitor);
+    generateInit(this->_visitor);
+
     // Processor generation
     tab(n, *fOut);
     *fOut << "processor " << fKlassName;
@@ -202,7 +202,7 @@ void CmajorCodeContainer::produceClass()
     // Fields
     tab(n + 1, *fOut);
     fCodeProducer.Tab(n + 1);
-    
+
     if (gGlobal->gOutputLang == "cmajor-dsp") {
         string json = generateJSONAux();
         *fOut << "// Event used to call additional methods";
@@ -219,11 +219,11 @@ void CmajorCodeContainer::produceClass()
         tab(n + 1, *fOut);
         tab(n + 1, *fOut);
     }
-    
+
     generateUserInterface(&fUIVisitor);
     *fOut << fUIVisitor.fOut.str();
     generateDeclarations(&fCodeProducer);
-  
+
     // Control
     *fOut << "bool fUpdated;";
     tab(n + 1, *fOut);
@@ -231,7 +231,7 @@ void CmajorCodeContainer::produceClass()
         *fOut << "int fControlSlice;";
         tab(n + 1, *fOut);
     }
- 
+
     // For control computation
     if (fInt32ControlNum > 0) {
         *fOut << "int32[" << fInt32ControlNum << "] iControl;";
@@ -254,7 +254,7 @@ void CmajorCodeContainer::produceClass()
         fCodeProducer.Tab(n + 1);
         generateUserInterface(&fCodeProducer);
     }
-    
+
     /*
     // Debug version
     if (gGlobal->gOutputLang == "cmajor-dsp") {
@@ -273,7 +273,7 @@ void CmajorCodeContainer::produceClass()
         tab(n + 1, *fOut);
     }
     */
-    
+
     if (gGlobal->gOutputLang == "cmajor-dsp") {
         *fOut << "// Event handler used to call additional methods";
         tab(n + 1, *fOut);
@@ -289,10 +289,10 @@ void CmajorCodeContainer::produceClass()
         tab(n + 1, *fOut);
         tab(n + 1, *fOut);
     }
-  
+
     // Generate gub containers
     generateSubContainers();
-    
+
     // Missing math functions
     tab(n + 1, *fOut);
     if (gGlobal->gFloatSize == 1) {
@@ -355,7 +355,7 @@ void CmajorCodeContainer::produceClass()
     // Control
     *fOut << "fUpdated = true;";
     tab(n + 2, *fOut);
- 
+
     fCodeProducer.Tab(n + 2);
     generateResetUserInterface(&fCodeProducer);
     back(1, *fOut);
@@ -389,7 +389,7 @@ void CmajorCodeContainer::produceClass()
     generateComputeBlock(&fCodeProducer);
     back(1, *fOut);
     *fOut << "}" << endl;
- 
+
     // Compute
     generateCompute(n + 1);
     *fOut << "}" << endl;
@@ -411,7 +411,7 @@ void CmajorScalarCodeContainer::generateCompute(int n)
     *fOut << "if (fUpdated) { fUpdated = false; control(); }";
     tab(n + 2, *fOut);
     tab(n + 2, *fOut);
-   
+
     // Generates one sample computation
     fCodeProducer.Tab(n + 2);
     *fOut << "// Computes one sample";
@@ -462,7 +462,7 @@ void CmajorVectorCodeContainer::generateCompute(int n)
     *fOut << "if (fUpdated) { fUpdated = false; control(); }";
     tab(n + 2, *fOut);
     tab(n + 2, *fOut);
- 
+
     // TODO
     fCodeProducer.Tab(n + 2);
 

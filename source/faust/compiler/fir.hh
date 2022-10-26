@@ -25,18 +25,20 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#ifdef FIR_BUILD
 #include "fir_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct FIR : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      static constexpr const char* TargetString = "FIR";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      override
       {
-      #ifdef FIR_BUILD
+          #ifndef FIR_BUILD
+              throw faustexception("ERROR : -lang fir not supported since FIR backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
           compiler_return.container = FIRCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out, true);
 
@@ -48,18 +50,13 @@ namespace Faust {
 
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang fir not supported since FIR backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "FIR" << endl;
+          return TargetString;
       }
 
     };

@@ -25,18 +25,20 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#ifdef SOUL_BUILD
 #include "soul_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct Soul : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      static constexpr const char* TargetString = "SOUL";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      override
       {
-      #ifdef SOUL_BUILD
+          #ifndef SOUL_BUILD
+              throw faustexception("ERROR : -lang soul not supported since SOUL backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
 
           gGlobal->gAllowForeignFunction = false;  // No foreign functions
@@ -61,18 +63,13 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang soul not supported since SOUL backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "SOUL" << endl;
+          return TargetString;
       }
 
     };

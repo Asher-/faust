@@ -71,10 +71,10 @@ JAXCodeContainer::JAXCodeContainer(const std::string& name, int numInputs, int n
     initialize(numInputs, numOutputs);
     fKlassName = name;
     fOut = out;
-    
+
     // Allocate one static visitor
-    if (!gGlobal->gJAXVisitor) {
-        gGlobal->gJAXVisitor = new JAXInstVisitor(out, name);
+    if (! this->_visitor) {
+        this->_visitor = new JAXInstVisitor(out, name);
     }
 }
 
@@ -133,7 +133,7 @@ inline string flattenJSONforPython(const string& src)
 void JAXCodeContainer::produceClass()
 {
     int n = 0;
-    
+
     // Print header
     *fOut << "\"\"\"" << endl
           << "Code generated with Faust version " << FAUSTVERSION << endl;
@@ -168,23 +168,23 @@ void JAXCodeContainer::produceClass()
 
     // Functions
     tab(n, *fOut);
-    gGlobal->gJAXVisitor->Tab(n);
-       
+    this->_visitor->Tab(n);
+
     *fOut << "class " << fKlassName << "(nn.Module):";
     tab(n + 1, *fOut);
 
     // Fields
-    gGlobal->gJAXVisitor->Tab(n + 1);
+    this->_visitor->Tab(n + 1);
 
     tab(n + 1, *fOut);
     *fOut << "sample_rate: int";
 
     tab(n + 1, *fOut);
-    gGlobal->gJAXVisitor->Tab(n);
+    this->_visitor->Tab(n);
 
     tab(n + 1, *fOut);
-    produceInfoFunctions(n + 1, "", "self", false, FunTyped::kDefault, gGlobal->gJAXVisitor);
-    
+    produceInfoFunctions(n + 1, "", "self", false, FunTyped::kDefault, this->_visitor);
+
     *fOut << "def initialize(self, sample_rate, x, T):";
     {
         tab(n + 2, *fOut);
@@ -204,23 +204,23 @@ void JAXCodeContainer::produceClass()
         tab(n + 2, *fOut);
         *fOut << "# init constants:";
         tab(n + 2, *fOut);
-        gGlobal->gJAXVisitor->Tab(n + 2);
-        inlineSubcontainersFunCalls(fInitInstructions)->accept(gGlobal->gJAXVisitor);
+        this->_visitor->Tab(n + 2);
+        inlineSubcontainersFunCalls(fInitInstructions)->accept(this->_visitor);
         tab(n + 2, *fOut);
         *fOut << "# inline subcontainers:";
         tab(n + 2, *fOut);
-        gGlobal->gJAXVisitor->Tab(n + 2);
-        inlineSubcontainersFunCalls(fStaticInitInstructions)->accept(gGlobal->gJAXVisitor);
+        this->_visitor->Tab(n + 2);
+        inlineSubcontainersFunCalls(fStaticInitInstructions)->accept(this->_visitor);
         tab(n + 2, *fOut);
         *fOut << "# instance clear:";
         tab(n + 2, *fOut);
-        generateClear(gGlobal->gJAXVisitor);
+        generateClear(this->_visitor);
         tab(n + 2, *fOut);
         *fOut << "return state";
         tab(n + 1, *fOut);
     }
     back(1, *fOut);
-    
+
     // JSON generation
     tab(n+1, *fOut);
     *fOut << "def getJSON(self):";
@@ -243,12 +243,11 @@ void JAXCodeContainer::produceClass()
     *fOut << "def build_interface(self, state, x, T: int):";
     tab(n + 2, *fOut);
     *fOut << "ui_path = []";
-    tab(n + 2, *fOut);
-    gGlobal->gJAXVisitor->Tab(n + 2);
-    generateUserInterface(gGlobal->gJAXVisitor);
+    this->_visitor->Tab(n + 2);
+    generateUserInterface(this->_visitor);
     tab(n + 2, *fOut);
     *fOut << "return state";
-    
+
     // Compute
     tab(n + 1, *fOut);
     generateCompute(n+1);
@@ -265,17 +264,59 @@ void JAXCodeContainer::generateCompute(int n)
     tab(n + 1, *fOut);
 
     tab(n + 1, *fOut);
-    gGlobal->gJAXVisitor->Tab(n + 1);
+    this->_visitor->Tab(n + 1);
 
     // Generates local variables declaration and setup
-    gGlobal->gJAXVisitor->fUseNumpy = false;
-    generateComputeBlock(gGlobal->gJAXVisitor);
+    this->_visitor->fUseNumpy = false;
+    generateComputeBlock(this->_visitor);
 
     auto loop = fCurLoop->generateOneSample();
-    loop->accept(gGlobal->gJAXVisitor);
+    loop->accept(this->_visitor);
 
-    generatePostComputeBlock(gGlobal->gJAXVisitor);
-    gGlobal->gJAXVisitor->fUseNumpy = true;
+    generatePostComputeBlock(this->_visitor);
+    this->_visitor->fUseNumpy = true;
+
+    tab(n, *fOut);
+    *fOut << "@nn.compact";
+    tab(n, *fOut);
+    *fOut << "def __call__(self, x, T: int) -> jnp.array:";
+    tab(n + 1, *fOut);
+    *fOut << "state = self.initialize(self.sample_rate, x, T)";
+    tab(n + 1, *fOut);
+    *fOut << "state = self.build_interface(state, x, T)";
+    tab(n + 1, *fOut);
+    *fOut << "# convert numpy array to jax numpy array";
+    tab(n + 1, *fOut);
+    *fOut << "state = jax.tree_map(jnp.array, state)";
+    tab(n + 1, *fOut);
+    *fOut << "return jnp.transpose(jax.lax.scan(self.tick, state, jnp.transpose(x, axes=(1, 0)))[1], axes=(1,0))";
+    tab(n, *fOut);
+}
+
+BlockInst* JAXCodeContainer::inlineSubcontainersFunCalls(BlockInst* block)
+{
+    // Rename 'sig' in 'dsp' and remove 'dsp' allocation
+    block = DspRenamer().getCode(block);
+    // dump2FIR(block);
+
+    // Inline subcontainers 'instanceInit' and 'fill' function call
+    for (const auto& it : fSubContainers) {
+        // Build the function to be inlined (prototype and code)
+        DeclareFunInst* inst_init_fun =
+            it->generateInstanceInitFun("instanceInit" + it->getClassName(), "dsp", true, false);
+        // dump2FIR(inst_init_fun);
+        block = FunctionCallInliner(inst_init_fun).getCode(block);
+        // dump2FIR(block);
+
+        // Build the function to be inlined (prototype and code)
+        DeclareFunInst* fill_fun = it->generateFillFun("fill" + it->getClassName(), "dsp", true, false);
+        // dump2FIR(fill_fun);
+        block = FunctionCallInliner(fill_fun).getCode(block);
+        // dump2FIR(block);
+    }
+    // dump2FIR(block);
+
+    return block;
 }
 
 // Scalar

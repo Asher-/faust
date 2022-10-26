@@ -26,18 +26,20 @@
 #include "faust/compiler/common.hh"
 #include "instructions_compiler1.hh"
 
-#ifdef JULIA_BUILD
 #include "julia_code_container.hh"
-#endif
 
 namespace Faust {
   namespace Compiler {
 
     struct Julia : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      static constexpr const char* TargetString = "Julia";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      override
       {
-      #ifdef JULIA_BUILD
+        #ifndef JULIA_BUILD
+          throw faustexception("ERROR : -lang julia not supported since Julia backend is not built\n");
+        #endif
           gGlobal->gAllowForeignFunction = false;  // No foreign functions
           static ::Faust::Compiler::Return compiler_return;
           compiler_return.container = JuliaCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
@@ -51,18 +53,13 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) compiler_return.new_comp->setDescription(new Description());
           compiler_return.new_comp->compileMultiSignal(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang julia not supported since Julia backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs, nullptr); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs, out); };
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "Julia" << endl;
+          return TargetString;
       }
 
     };

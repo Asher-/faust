@@ -51,25 +51,25 @@ template <class REAL>
 map<string, FBCInstruction::Opcode> InterpreterInstVisitor<REAL>::gMathLibTable;
 
 template <class REAL>
-static FBCBlockInstruction<REAL>* getCurrentBlock()
+FBCBlockInstruction<REAL>* InterpreterCodeContainer<REAL>::getCurrentBlock()
 {
     FBCBlockInstruction<REAL>* block =
-        static_cast<InterpreterInstVisitor<REAL>*>(gGlobal->gInterpreterVisitor)->fCurrentBlock;
+        static_cast<InterpreterInstVisitor<REAL>*>(this->_visitor)->fCurrentBlock;
     // Add kReturn in generated block
     block->push(new FBCBasicInstruction<REAL>(FBCInstruction::kReturn));
     return block;
 }
 
 template <class REAL>
-static InterpreterInstVisitor<REAL>* getInterpreterVisitor()
+InterpreterInstVisitor<REAL>* InterpreterCodeContainer<REAL>::getInterpreterVisitor()
 {
-    return static_cast<InterpreterInstVisitor<REAL>*>(gGlobal->gInterpreterVisitor);
+    return static_cast<InterpreterInstVisitor<REAL>*>(this->_visitor);
 }
 
 template <class REAL>
-static void setCurrentBlock(FBCBlockInstruction<REAL>* block)
+void InterpreterCodeContainer<REAL>::setCurrentBlock(FBCBlockInstruction<REAL>* block)
 {
-    static_cast<InterpreterInstVisitor<REAL>*>(gGlobal->gInterpreterVisitor)->fCurrentBlock = block;
+    static_cast<InterpreterInstVisitor<REAL>*>(this->_visitor)->fCurrentBlock = block;
 }
 
 template <class REAL>
@@ -79,8 +79,8 @@ InterpreterCodeContainer<REAL>::InterpreterCodeContainer(const string& name, int
     fKlassName = name;
 
     // Allocate one static visitor
-    if (!gGlobal->gInterpreterVisitor) {
-        gGlobal->gInterpreterVisitor = new InterpreterInstVisitor<REAL>();
+    if (!this->_visitor) {
+        this->_visitor = new InterpreterInstVisitor<REAL>();
     }
 }
 
@@ -147,42 +147,42 @@ dsp_factory_base* InterpreterCodeContainer<REAL>::produceFactory()
     // Sub containers are merged
     mergeSubContainers();
 
-    generateGlobalDeclarations(gGlobal->gInterpreterVisitor);
-    generateDeclarations(gGlobal->gInterpreterVisitor);
+    generateGlobalDeclarations(this->_visitor);
+    generateDeclarations(this->_visitor);
 
     // Rename 'sig' in 'dsp', remove 'dsp' allocation, inline subcontainers 'instanceInit' and 'fill' function call
-    inlineSubcontainersFunCalls(fStaticInitInstructions)->accept(gGlobal->gInterpreterVisitor);
-   
+    inlineSubcontainersFunCalls(fStaticInitInstructions)->accept(this->_visitor);
+
     // Keep "init_static_block"
-    FBCBlockInstruction<REAL>* init_static_block = getCurrentBlock<REAL>();
-    setCurrentBlock<REAL>(new FBCBlockInstruction<REAL>());
+    FBCBlockInstruction<REAL>* init_static_block = getCurrentBlock();
+    setCurrentBlock(new FBCBlockInstruction<REAL>());
 
     // Rename 'sig' in 'dsp', remove 'dsp' allocation, inline subcontainers 'instanceInit' and 'fill' function call
-    inlineSubcontainersFunCalls(fInitInstructions)->accept(gGlobal->gInterpreterVisitor);
-  
+    inlineSubcontainersFunCalls(fInitInstructions)->accept(this->_visitor);
+
     // Keep "init_block"
-    FBCBlockInstruction<REAL>* init_block = getCurrentBlock<REAL>();
-    setCurrentBlock<REAL>(new FBCBlockInstruction<REAL>);
+    FBCBlockInstruction<REAL>* init_block = getCurrentBlock();
+    setCurrentBlock(new FBCBlockInstruction<REAL>);
 
     // Keep "resetui_block"
-    generateResetUserInterface(gGlobal->gInterpreterVisitor);
-    FBCBlockInstruction<REAL>* resetui_block = getCurrentBlock<REAL>();
-    setCurrentBlock<REAL>(new FBCBlockInstruction<REAL>);
+    generateResetUserInterface(this->_visitor);
+    FBCBlockInstruction<REAL>* resetui_block = getCurrentBlock();
+    setCurrentBlock(new FBCBlockInstruction<REAL>);
 
     // Keep "clear_block"
-    generateClear(gGlobal->gInterpreterVisitor);
-    FBCBlockInstruction<REAL>* clear_block = getCurrentBlock<REAL>();
-    setCurrentBlock<REAL>(new FBCBlockInstruction<REAL>);
+    generateClear(this->_visitor);
+    FBCBlockInstruction<REAL>* clear_block = getCurrentBlock();
+    setCurrentBlock(new FBCBlockInstruction<REAL>);
 
     // Generate UI
-    generateUserInterface(gGlobal->gInterpreterVisitor);
+    generateUserInterface(this->_visitor);
 
     // Generate local variables declaration and setup
-    generateComputeBlock(gGlobal->gInterpreterVisitor);
+    generateComputeBlock(this->_visitor);
 
     // Keep "compute_control_block"
-    FBCBlockInstruction<REAL>* compute_control_block = getCurrentBlock<REAL>();
-    setCurrentBlock<REAL>(new FBCBlockInstruction<REAL>);
+    FBCBlockInstruction<REAL>* compute_control_block = getCurrentBlock();
+    setCurrentBlock(new FBCBlockInstruction<REAL>);
 
     // Keep "compute_dsp_block"
     FBCBlockInstruction<REAL>* compute_dsp_block = generateCompute();
@@ -198,79 +198,79 @@ dsp_factory_base* InterpreterCodeContainer<REAL>::produceFactory()
     // Prepare compilation options
     stringstream compile_options;
     gGlobal->printCompilationOptions(compile_options);
- 
+
     switch (mode) {
         case 1:
             return new interpreter_dsp_factory_aux<REAL, 1>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         case 2:
             return new interpreter_dsp_factory_aux<REAL, 2>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         case 3:
             return new interpreter_dsp_factory_aux<REAL, 3>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         case 4:
             return new interpreter_dsp_factory_aux<REAL, 4>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         case 5:
             return new interpreter_dsp_factory_aux<REAL, 5>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         case 6:
             return new interpreter_dsp_factory_aux<REAL, 6>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         case 7:
             return new interpreter_dsp_factory_aux<REAL, 7>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
 
         default:
             // Default case, no trace...
             return new interpreter_dsp_factory_aux<REAL, 0>(
                 name, compile_options.str(), "", INTERP_FILE_VERSION, fNumInputs, fNumOutputs,
-                getInterpreterVisitor<REAL>()->fIntHeapOffset, getInterpreterVisitor<REAL>()->fRealHeapOffset,
-                getInterpreterVisitor<REAL>()->getFieldOffset("fSampleRate"),
-                getInterpreterVisitor<REAL>()->getFieldOffset("count"), getInterpreterVisitor<REAL>()->getFieldOffset("IOTA"),
-                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor<REAL>()->fUserInterfaceBlock, init_static_block,
+                getInterpreterVisitor()->fIntHeapOffset, getInterpreterVisitor()->fRealHeapOffset,
+                getInterpreterVisitor()->getFieldOffset("fSampleRate"),
+                getInterpreterVisitor()->getFieldOffset("count"), getInterpreterVisitor()->getFieldOffset("IOTA"),
+                INTER_MAX_OPT_LEVEL, metadata_block, getInterpreterVisitor()->fUserInterfaceBlock, init_static_block,
                 init_block, resetui_block, clear_block, compute_control_block, compute_dsp_block);
     }
 }
@@ -280,12 +280,12 @@ FBCBlockInstruction<REAL>* InterpreterScalarCodeContainer<REAL>::generateCompute
 {
     BlockInst* compute_block = InstBuilder::genBlockInst();
     compute_block->pushBackInst(this->fCurLoop->generateScalarLoop(fFullCount));
-                                
+
     // Generates post DSP loop code
     compute_block->pushBackInst(this->fPostComputeBlockInstructions);
-    
-    compute_block->accept(gGlobal->gInterpreterVisitor);
-    return getCurrentBlock<REAL>();
+
+    compute_block->accept(this->_visitor);
+    return this->getCurrentBlock();
 }
 
 template <class REAL>
@@ -293,9 +293,9 @@ FBCBlockInstruction<REAL>* InterpreterVectorCodeContainer<REAL>::generateCompute
 {
     // Rename all loop variables name to avoid name clash
     LoopVariableRenamer loop_renamer;
-    loop_renamer.getCode(this->fDAGBlock)->accept(gGlobal->gInterpreterVisitor);
+    loop_renamer.getCode(this->fDAGBlock)->accept(this->_visitor);
 
-    return getCurrentBlock<REAL>();
+    return this->getCurrentBlock();
 }
 
 template <class REAL>
@@ -330,4 +330,3 @@ FIRMetaBlockInstruction* InterpreterCodeContainer<REAL>::produceMetadata(string&
 
     return block;
 }
-

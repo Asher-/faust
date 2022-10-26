@@ -24,21 +24,25 @@
 
 #include "faust.hh"
 #include "faust/compiler/common.hh"
+#include "clang_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
     struct Clang : public Common
     {
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      static constexpr const char* TargetString = "Clang-LLVM";
+      ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs)
+      override
       {
-      #ifdef CLANG_BUILD
+          #ifndef CLANG_BUILD
+              throw faustexception("ERROR : -lang cllcm not supported since LLVM backend is not built\n");
+          #endif
           static ::Faust::Compiler::Return compiler_return;
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
           gGlobal->gFAUSTFLOAT2Internal = true;
 
-          static ::Faust::Compiler::Return compiler_return;
           compiler_return.container = ClangCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
 
           // To trigger 'sig.dot' generation
@@ -49,18 +53,12 @@ namespace Faust {
           }
           compiler_return.new_comp->prepare(signals);
           return compiler_return;
-      #else
-          throw faustexception("ERROR : -lang cllcm not supported since LLVM backend is not built\n");
-      #endif
       }
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, bool generate) { return compile(signals, numInputs, numOutputs); };
-      virtual ::Faust::Compiler::Return compile(Tree signals, int numInputs, int numOutputs, ostream* out, const std::string&) { return compile(signals, numInputs, numOutputs); };
 
-      virtual void enumBackends(ostream& out)
+      const char* const& targetString()
+      override
       {
-          Common::enumBackends(out);
-          out << "Clang-LLVM" << endl;
+          return TargetString;
       }
     };
 
