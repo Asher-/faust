@@ -71,7 +71,9 @@ file (GLOB SRC ${SRCDIR}/cli/*.cpp
 						   ${SRCDIR}/draw/*.cpp
 							 ${SRCDIR}/draw/*/*.cpp
 							 ${SRCDIR}/target/*.cpp
-							 ${SRCDIR}/target/code_container/*.cpp
+							 ${SRCDIR}/target/openmp/*.cpp
+							 ${SRCDIR}/target/vector/*.cpp
+							 ${SRCDIR}/target/wss/*.cpp
 							 ${SRCDIR}/target/fir/*.cpp
                ${SRCDIR}/target/language/*.cpp
                ${SRCDIR}/target/language/*/*.cpp
@@ -150,7 +152,9 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/faust/compiler
 	${SRCDIR}/tlib
 	${SRCDIR}/target
-	${SRCDIR}/target/code_container
+	${SRCDIR}/target/openmp
+	${SRCDIR}/target/vector
+	${SRCDIR}/target/wss
 	${SRCDIR}/target/fir
 	${SRCDIR}/target/interpreter
 	${SRCDIR}/target/language/dlang
