@@ -121,6 +121,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler
 	${SRCDIR}/compiler/generator
 	${SRCDIR}/compiler/faust
+	${SRCDIR}/compiler/util
 	${SRCDIR}/faust
 	${SRCDIR}/faust/api
 	${SRCDIR}/faust/api/c
