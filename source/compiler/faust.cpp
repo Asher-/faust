@@ -94,15 +94,11 @@ using namespace std;
  Global context
  *****************************************************************/
 
-// Old CPP compiler
-#ifdef OCPP_BUILD
-static Compiler* old_comp = nullptr;
-#endif
-
 // FIR container
 static ::Faust::Compiler::Return compiler_return;
 static InstructionsCompiler*& new_comp  = compiler_return.new_comp;
 static CodeContainer*&        container = compiler_return.container;
+static Compiler*& old_comp = compiler_return.old_comp;
 
 // Shared context
 global* gGlobal = nullptr;
@@ -927,10 +923,6 @@ void includeFile(const string& file, ostream& dst)
         streamCopyUntilEnd(*file_include.get(), dst);
     }
 }
-
-
-
-
 
 void createHelperFile(const string& outpath)
 {
