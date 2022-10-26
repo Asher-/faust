@@ -57,8 +57,9 @@ endif()
 
 ####################################
 # source and headers files
-file (GLOB SRC ${SRCDIR}/instructions/*.cpp
-               ${SRCDIR}/instructions/*/*.cpp
+file (GLOB SRC ${SRCDIR}/cli/*.cpp
+				 		 	 ${SRCDIR}/instructions/*.cpp
+							 ${SRCDIR}/instructions/*/*.cpp
                ${SRCDIR}/faust/*.cpp
                ${SRCDIR}/faust/*/*.cpp
 							 ${SRCDIR}/compiler/*.cpp
@@ -76,8 +77,9 @@ file (GLOB SRC ${SRCDIR}/instructions/*.cpp
 							 ${ROOT}/benchmark/timing.cpp
 							 ${ROOT}/architecture/faust/export.cpp
  						   ${SRCDIR}/documentator/*.cpp )
-file (GLOB HH  ${SRCDIR}/instructions/*.hh
-               ${SRCDIR}/instructions/*/*.hh
+file (GLOB HH  ${SRCDIR}/cli/*.hh
+               ${SRCDIR}/instructions/*.hh
+							 ${SRCDIR}/instructions/*/*.hh
 							 ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
                ${SRCDIR}/compiler/*/*/*.hh
@@ -98,6 +100,7 @@ file (GLOB HH  ${SRCDIR}/instructions/*.hh
 set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/documentator
 	${ROOT}/benchmark
+	${SRCDIR}/cli
 	${SRCDIR}/compiler/draw
 	${SRCDIR}/compiler/errors
 	${SRCDIR}/compiler/evaluate

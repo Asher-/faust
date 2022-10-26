@@ -64,6 +64,8 @@ extern const char* yyfilename;
 list<Garbageable*> global::gObjectTable;
 bool               global::gHeapCleanup = false;
 
+global* gGlobal = nullptr;
+
 /*
 faust1 uses a loop size of 512, but 512 makes faust2 crash (stack allocation error).
 So we use a lower value here.

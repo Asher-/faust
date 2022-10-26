@@ -34,8 +34,6 @@ unsigned faust_alarm(unsigned seconds)
 
 #include "faust/cli.hh"
 
-using namespace std;
-
 // Standalone compiler uses the real 'alarm' function
 unsigned faust_alarm(unsigned seconds)
 {
@@ -73,7 +71,7 @@ int main(int argc, const char* argv[])
     if (error_msg == "") {
         return EXIT_SUCCESS;
     } else {
-        cerr << error_msg;
+        std::cerr << error_msg;
         return EXIT_FAILURE;
     }
 }

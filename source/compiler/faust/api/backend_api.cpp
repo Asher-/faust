@@ -80,6 +80,40 @@ dsp_factory_base* createFactory(const char* name, tvec signals, int argc, const 
     return factory;
 }
 
+string expandDSPInternal(int argc, const char* argv[], const char* name, const char* dsp_content)
+{
+    /****************************************************************
+     1 - process command line
+    *****************************************************************/
+
+    ::Faust::CLI faust_cli(argc, argv);
+    ::Faust::Compiler::Common* compiler = faust_cli.parse();
+    compiler->_dspContent = dsp_content;
+
+    /****************************************************************
+     2 - parse source files
+    *****************************************************************/
+    if (dsp_content) {
+        gGlobal->gInputString = dsp_content;
+        gGlobal->gInputFiles.push_back(name);
+    }
+    ::Faust::Controller::initDocumentNames();
+
+    compiler->parseSourceFiles();
+
+    /****************************************************************
+     3 - evaluate 'process' definition
+    *****************************************************************/
+    compiler->evaluateBlockDiagramInNewThread();
+    if (!gGlobal->gProcessTree) {
+        throw faustexception(gGlobal->gErrorMessage);
+    }
+
+    stringstream out;
+    compiler->expandDSPInternalAux(out);
+    return out.str();
+}
+
 /* From Sources with encryption */
 string expandDSP(int argc, const char* argv[], const char* name, const char* dsp_content, string& sha_key,
                  string& error_msg)

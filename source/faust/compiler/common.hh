@@ -28,6 +28,10 @@
 #include "faust/architectures.hh"
 #include "faust/controller.hh"
 
+#include "architectures.hh"
+#include "exception.hh"
+#include "propagate.hh"
+
 #include "sigprint.hh"
 #include "ppsig.hh"
 #include "eval.hh"
@@ -220,7 +224,7 @@ namespace Faust {
           // Check if this is a code injection
           if (gGlobal->gInjectFlag) {
               if (gGlobal->gArchFile == "") {
-                  stringstream error;
+                  std::stringstream error;
                   error << "ERROR : no architecture file specified to inject \"" << gGlobal->gInjectFile << "\"" << endl;
                   throw faustexception(error.str());
               } else {
@@ -436,6 +440,14 @@ namespace Faust {
         return false;
       }
 
+      void includeFile(const std::string& file, std::ostream& dst)
+      {
+          std::unique_ptr<ifstream> file_include = openArchStream(file.c_str());
+          if (file_include) {
+              streamCopyUntilEnd(*file_include.get(), dst);
+          }
+      }
+
       void expandDSPInternalAux(ostream& out)
       {
           // Encode compilation options as a 'declare' : has to be located first in the string
@@ -453,6 +465,17 @@ namespace Faust {
 
           this->printDeclareHeader(out);
           boxppShared(gGlobal->gProcessTree, out);
+      }
+
+      static void* threadBoxPropagateSig(void* arg)
+      {
+          try {
+              gGlobal->gLsignalsTree =
+                  boxPropagateSig(gGlobal->nil, gGlobal->gProcessTree, makeSigInputList(gGlobal->gNumInputs));
+          } catch (faustexception& e) {
+              gGlobal->gErrorMessage = e.Message();
+          }
+          return 0;
       }
 
       void computeOutputSignals()

@@ -807,7 +807,15 @@ LIBFAUST_API unsigned int xtendedArity(Tree tree)
     return ((xtended*)userData)->arity();
 }
 
-LIBFAUST_API Tree DSPToBoxes(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[], int* inputs, int* outputs, std::string& error_msg)
+LIBFAUST_API Tree DSPToBoxes(
+  const std::string& name_app,
+  const std::string& dsp_content,
+  int argc,
+  const char* argv[],
+  int* inputs,
+  int* outputs,
+  std::string& error_msg
+)
 {
     int argc_plus1 = 0;
     const char* argv_plus1[64];
