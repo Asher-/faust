@@ -19,43 +19,32 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _ITERATOR_FOR_LOOP_INSTRUCTION_
+#define _ITERATOR_FOR_LOOP_INSTRUCTION_
 
-#include "address.hh"
-#include "instruction/value_instruction.hh"
 #include <vector>
-#include <string>
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "instruction/statement_instruction.hh"
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+struct IteratorForLoopInst : public StatementInst {
+    std::vector<NamedAddress*> fIterators;
+    const bool                 fReverse;
+    BlockInst*                 fCode;
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
+    IteratorForLoopInst(const std::vector<NamedAddress*>& iterators, bool reverse, BlockInst* code)
+        : fIterators(iterators), fReverse(reverse), fCode(code)
     {
-        fIndices.push_back(index);
     }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
+    virtual ~IteratorForLoopInst() {}
 
-    virtual ~IndexedAddress() {}
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode->pushFrontInst(inst); }
 
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode->pushBackInst(inst); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

@@ -19,43 +19,30 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _IF_INSTRUCTION_
+#define _IF_INSTRUCTION_
 
-#include "address.hh"
-#include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "instruction/statement_instruction.hh"
+#include "instruction/block_instruction.hh"
+#include "instruction/declarations.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct IfInst : public StatementInst {
+    ValueInst* fCond;
+    BlockInst* fThen;
+    BlockInst* fElse;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
-
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
+    IfInst(ValueInst* cond_inst, BlockInst* then_inst, BlockInst* else_inst)
+        : fCond(cond_inst), fThen(then_inst), fElse(else_inst)
     {
-        fIndices.push_back(index);
     }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
+    IfInst(ValueInst* cond_inst, BlockInst* then_inst) : fCond(cond_inst), fThen(then_inst), fElse(new BlockInst()) {}
 
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    virtual ~IfInst() {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

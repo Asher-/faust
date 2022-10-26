@@ -19,34 +19,23 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NAMED_ADDRESS_
-#define _NAMED_ADDRESS_
+#include "instruction/declarations/declare_buffer_iterators.hh"
+#include "global.hh"
 
-#include <string>
-#include "address.hh"
-
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
-#include "instruction/block_instruction.hh"
-
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-
-struct NamedAddress : public Address {
-    std::string fName;
-    AccessType   fAccess;
-
-    NamedAddress(const std::string& name, AccessType access) : fName(name), fAccess(access) {}
-
-    void                setAccess(Address::AccessType access) { fAccess = access; }
-    Address::AccessType getAccess() const { return fAccess; }
-
-    void   setName(const std::string& name) { fName = name; }
-    std::string getName() const { return fName; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-};
-
-#endif
+// A list of channels variables also kept in the global name <===> type table (use in Rust and Julia backends)
+DeclareBufferIterators::DeclareBufferIterators(const std::string& name1,
+                                            const std::string& name2,
+                                            int channels,
+                                            Typed* type,
+                                            bool mut)
+    : fBufferName1(name1), fBufferName2(name2), fChannels(channels), fType(type), fMutable(mut)
+{
+    for (int i = 0; i < channels; i++) {
+        std::string chan_name = name1 + std::to_string(i);
+        if (gGlobal->gVarTypeTable.find(chan_name) == gGlobal->gVarTypeTable.end()) {
+            gGlobal->gVarTypeTable[chan_name] = type;
+        } else {
+            faustassert(false);
+        }
+    }
+}

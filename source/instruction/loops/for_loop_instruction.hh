@@ -19,43 +19,34 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _FOR_LOOP_INSTRUCTION_
+#define _FOR_LOOP_INSTRUCTION_
 
-#include "address.hh"
-#include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "instruction/statement_instruction.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct ForLoopInst : public StatementInst {
+    StatementInst* fInit;
+    StatementInst* fIncrement;
+    ValueInst*     fEnd;
+    BlockInst*     fCode;
+    const bool     fIsRecursive;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
-
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
+    ForLoopInst(StatementInst* init, ValueInst* end, StatementInst* increment, BlockInst* code, bool is_recursive)
+        : fInit(init), fIncrement(increment), fEnd(end), fCode(code), fIsRecursive(is_recursive)
     {
-        fIndices.push_back(index);
     }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
+    virtual ~ForLoopInst() {}
 
-    virtual ~IndexedAddress() {}
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode->pushFrontInst(inst); }
 
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode->pushBackInst(inst); }
 
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    std::string getName() const { return fInit->getName(); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

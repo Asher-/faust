@@ -19,43 +19,30 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _TEE_VAR_INSTRUCTION_
+#define _TEE_VAR_INSTRUCTION_
 
-#include "address.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "address/named_address.hh"
 
 #include "visitor/instruction_visitor.hh"
 #include "visitor/clone_visitor.hh"
 
-struct IndexedAddress : public Address {
+// Special for wast/wasm backend : combine a store and a load
+struct TeeVarInst : public ValueInst {
     Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+    ValueInst* fValue;
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
+    TeeVarInst(Address* address, ValueInst* value) : ValueInst(), fAddress(address), fValue(value) {}
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
+    virtual ~TeeVarInst() {}
 
     void   setName(const std::string& name) { fAddress->setName(name); }
     std::string getName() const { return fAddress->getName(); }
 
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

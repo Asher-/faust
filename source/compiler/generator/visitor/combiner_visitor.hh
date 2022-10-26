@@ -19,43 +19,25 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _COMBINER_VISITOR_
+#define _COMBINER_VISITOR_
 
-#include "address.hh"
-#include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "visitor/dispatch_visitor.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+// ===================
+// Combining visitors
+// ===================
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+class CombinerVisitor : public DispatchVisitor {
+   protected:
+    InstVisitor* fVisitor1;
+    InstVisitor* fVisitor2;
+    InstVisitor* fCurVisitor;
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
+   public:
+    CombinerVisitor(InstVisitor* v1, InstVisitor* v2) : fVisitor1(v1), fVisitor2(v2) { fCurVisitor = v1; }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
+    virtual ~CombinerVisitor() {}
 };
 
 #endif

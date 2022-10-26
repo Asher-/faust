@@ -19,34 +19,13 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NAMED_ADDRESS_
-#define _NAMED_ADDRESS_
+#include "instruction/loops/simple_for_loop_instruction.hh"
 
-#include <string>
-#include "address.hh"
+#include "instruction_builder.hh"
 
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
-#include "instruction/block_instruction.hh"
-
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-
-struct NamedAddress : public Address {
-    std::string fName;
-    AccessType   fAccess;
-
-    NamedAddress(const std::string& name, AccessType access) : fName(name), fAccess(access) {}
-
-    void                setAccess(Address::AccessType access) { fAccess = access; }
-    Address::AccessType getAccess() const { return fAccess; }
-
-    void   setName(const std::string& name) { fName = name; }
-    std::string getName() const { return fName; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-};
-
-#endif
+SimpleForLoopInst::SimpleForLoopInst(const std::string& name, ValueInst* upperBound, ValueInst* lowerBound, bool reverse, BlockInst* code)
+: fUpperBound(upperBound), fLowerBound(lowerBound), fName(name), fReverse(reverse), fCode(code)
+{
+    // Define the loop variable in order to have it correctly typed when checking in FIRChecker
+    fInit = InstBuilder::genDecLoopVar(name, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(0));
+}

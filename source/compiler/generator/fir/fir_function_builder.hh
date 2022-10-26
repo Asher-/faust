@@ -37,8 +37,8 @@ using namespace std;
 #include "exception.hh"
 #include "global.hh"
 #include "instructions.hh"
-#include "visitors/dispatch_visitor.hh"
-#include "visitors/loop_clone_visitor.hh"
+#include "visitor/dispatch_visitor.hh"
+#include "visitor/loop_clone_visitor.hh"
 
 /*
     void compute(int count, float** inputs, float** ouputs)

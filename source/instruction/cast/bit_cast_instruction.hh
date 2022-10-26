@@ -19,43 +19,24 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _BIT_CAST_INSTRUCTION_
+#define _BIT_CAST_INSTRUCTION_
 
-#include "address.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct BitcastInst : public ValueInst {
+    Typed*     fType;
+    ValueInst* fInst;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+    BitcastInst(ValueInst* inst, Typed* typed) : ValueInst(), fType(typed), fInst(inst) {}
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
-
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    virtual ~BitcastInst() {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    virtual int size() const { return fInst->size(); }
 };
 
 #endif

@@ -19,43 +19,29 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _VARIABLE_SCOPE_VISITOR_
+#define _VARIABLE_SCOPE_VISITOR_
 
-#include "address.hh"
-#include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "visitor/dispatch_visitor.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct VariableScopeVisitor : public DispatchVisitor {
+    stack<std::list<DeclareVarInst*> > fBlockVarTable;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+    VariableScopeVisitor() {}
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
+    virtual void visit(DeclareVarInst* inst)
     {
-        fIndices.push_back(index);
+        fBlockVarTable.top().push_back(inst);
+        DispatchVisitor::visit(inst);
     }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
+    virtual void visit(BlockInst* inst)
+    {
+        list<DeclareVarInst*> variable_block;
+        fBlockVarTable.push(variable_block);
+        DispatchVisitor::visit(inst);
+        fBlockVarTable.pop();
+    }
 };
 
 #endif

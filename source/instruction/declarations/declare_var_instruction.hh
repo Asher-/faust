@@ -19,43 +19,42 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _DECLARE_VAR_INSTRUCTION_
+#define _DECLARE_VAR_INSTRUCTION_
 
 #include "address.hh"
+
+#include "instruction/statement_instruction.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "instruction/memory/store_var_instruction.hh"
+#include "instruction/memory/load_var_instruction.hh"
+#include "types/typed.hh"
+#include "types/named_typed.hh"
+#include "types/array_typed.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-
-struct IndexedAddress : public Address {
+struct DeclareVarInst : public StatementInst {
     Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+    Typed*     fType;
+    ValueInst* fValue;
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
+    static void cleanup();
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
+    DeclareVarInst(Address* address, Typed* typed, ValueInst* value);
 
-    virtual ~IndexedAddress() {}
+    virtual ~DeclareVarInst() {}
 
     void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
+    Address::AccessType getAccess() const  { return fAddress->getAccess(); }
 
     void   setName(const std::string& name) { fAddress->setName(name); }
     std::string getName() const { return fAddress->getName(); }
 
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    struct StoreVarInst* store(ValueInst* val);
+    struct LoadVarInst*  load();
 };
 
 #endif

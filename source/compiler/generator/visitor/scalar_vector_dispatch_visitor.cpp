@@ -19,34 +19,18 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NAMED_ADDRESS_
-#define _NAMED_ADDRESS_
+#include "visitor/scalar_vector_dispatch_visitor.hh"
 
-#include <string>
-#include "address.hh"
+void ScalVecDispatcherVisitor::Dispatch2Visitor(ValueInst* inst)
+{
+    std::cout << "Dispatch2Visitor %d\n";
+    fScalarVisitor->visit(inst);
 
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
-#include "instruction/block_instruction.hh"
-
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-
-struct NamedAddress : public Address {
-    std::string fName;
-    AccessType   fAccess;
-
-    NamedAddress(const std::string& name, AccessType access) : fName(name), fAccess(access) {}
-
-    void                setAccess(Address::AccessType access) { fAccess = access; }
-    Address::AccessType getAccess() const { return fAccess; }
-
-    void   setName(const std::string& name) { fName = name; }
-    std::string getName() const { return fName; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-};
-
-#endif
+    /*
+     if (inst->fSize == 1) {
+        fScalarVisitor->visit(inst);
+     } else {
+        fVectorVisitor->visit(inst);
+     }
+    */
+}

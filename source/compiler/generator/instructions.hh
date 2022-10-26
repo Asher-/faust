@@ -44,15 +44,15 @@
 #include "types/typed.hh"
 #include "property.hh"
 
-#include "instructions/declarations.hh"
+#include "instruction/declarations.hh"
 #include "is_type.hh"
 
-#include "visitors/clone_visitor.hh"
-#include "visitors/combiner_visitor.hh"
-#include "visitors/dispatch_visitor.hh"
-#include "visitors/instruction_visitor.hh"
-#include "visitors/scalar_vector_dispatch_visitor.hh"
-#include "visitors/variable_scope_visitor.hh"
+#include "visitor/clone_visitor.hh"
+#include "visitor/combiner_visitor.hh"
+#include "visitor/dispatch_visitor.hh"
+#include "visitor/instruction_visitor.hh"
+#include "visitor/scalar_vector_dispatch_visitor.hh"
+#include "visitor/variable_scope_visitor.hh"
 
 struct Printable;
 
@@ -431,10 +431,10 @@ struct CloneVisitor : public virtual Garbageable {
 
 // Printable is defined in instructions_type.h
 
-#include "instructions/value_instruction.hh"
-#include "instructions/statement_instruction.hh"
-#include "instructions/null_value_instruction.hh"
-#include "instructions/null_statement_instruction.hh"
+#include "instruction/value_instruction.hh"
+#include "instruction/statement_instruction.hh"
+#include "instruction/null_value_instruction.hh"
+#include "instruction/null_statement_instruction.hh"
 
 // =======
 //  Types
@@ -459,95 +459,95 @@ struct CloneVisitor : public virtual Garbageable {
 // User interface
 // ===============
 
-#include "instructions/ui/add_bargraph_instruction.hh"
-#include "instructions/ui/add_button_instruction.hh"
-#include "instructions/ui/add_meta_declare_instruction.hh"
-#include "instructions/ui/add_slider_instruction.hh"
-#include "instructions/ui/add_soundfile_instruction.hh"
-#include "instructions/ui/closebox_instruction.hh"
-#include "instructions/ui/label_instruction.hh"
-#include "instructions/ui/openbox_instruction.hh"
+#include "instruction/ui/add_bargraph_instruction.hh"
+#include "instruction/ui/add_button_instruction.hh"
+#include "instruction/ui/add_meta_declare_instruction.hh"
+#include "instruction/ui/add_slider_instruction.hh"
+#include "instruction/ui/add_soundfile_instruction.hh"
+#include "instruction/ui/closebox_instruction.hh"
+#include "instruction/ui/label_instruction.hh"
+#include "instruction/ui/openbox_instruction.hh"
 
 // ====================
 // Block of statements
 // ====================
 
-#include "instructions/block_instruction.hh"
+#include "instruction/block_instruction.hh"
 
 // =============
 // Declarations
 // =============
 
-#include "instructions/declarations/declare_buffer_iterators.hh"
-#include "instructions/declarations/declare_function_instruction.hh"
-#include "instructions/declarations/declare_struct_type_instruction.hh"
-#include "instructions/declarations/declare_var_instruction.hh"
+#include "instruction/declarations/declare_buffer_iterators.hh"
+#include "instruction/declarations/declare_function_instruction.hh"
+#include "instruction/declarations/declare_struct_type_instruction.hh"
+#include "instruction/declarations/declare_var_instruction.hh"
 
 // ==============
 // Memory access
 // ==============
 
-#include "instructions/memory/drop_instruction.hh"
-#include "instructions/memory/load_var_address_instruction.hh"
-#include "instructions/memory/load_var_instruction.hh"
-#include "instructions/memory/shift_array_var_instruction.hh"
-#include "instructions/memory/store_var_instruction.hh"
-#include "instructions/memory/tee_var_instruction.hh"
+#include "instruction/memory/drop_instruction.hh"
+#include "instruction/memory/load_var_address_instruction.hh"
+#include "instruction/memory/load_var_instruction.hh"
+#include "instruction/memory/shift_array_var_instruction.hh"
+#include "instruction/memory/store_var_instruction.hh"
+#include "instruction/memory/tee_var_instruction.hh"
 
 // ========
 // Numbers
 // ========
 
-#include "instructions/numbers/array_double_number_instruction.hh"
-#include "instructions/numbers/array_fixed_point_number_instruction.hh"
-#include "instructions/numbers/array_float_number_instruction.hh"
-#include "instructions/numbers/array_int32_number_instruction.hh"
-#include "instructions/numbers/array_number_instruction.hh"
-#include "instructions/numbers/bool_number_instruction.hh"
-#include "instructions/numbers/double_number_instruction.hh"
-#include "instructions/numbers/fixed_point_number_instruction.hh"
-#include "instructions/numbers/float_number_instruction.hh"
-#include "instructions/numbers/int32_number_instruction.hh"
-#include "instructions/numbers/int64_number_instruction.hh"
+#include "instruction/numbers/array_double_number_instruction.hh"
+#include "instruction/numbers/array_fixed_point_number_instruction.hh"
+#include "instruction/numbers/array_float_number_instruction.hh"
+#include "instruction/numbers/array_int32_number_instruction.hh"
+#include "instruction/numbers/array_number_instruction.hh"
+#include "instruction/numbers/bool_number_instruction.hh"
+#include "instruction/numbers/double_number_instruction.hh"
+#include "instruction/numbers/fixed_point_number_instruction.hh"
+#include "instruction/numbers/float_number_instruction.hh"
+#include "instruction/numbers/int32_number_instruction.hh"
+#include "instruction/numbers/int64_number_instruction.hh"
 
 // ===========
 // Math Binop
 // ===========
 
-#include "instructions/math/binary_op_instruction.hh"
+#include "instruction/math/binary_op_instruction.hh"
 
 // =====
 // Cast
 // =====
 
-#include "instructions/cast/cast_instruction.hh"
-#include "instructions/cast/bit_cast_instruction.hh"
+#include "instruction/cast/cast_instruction.hh"
+#include "instruction/cast/bit_cast_instruction.hh"
 
 // =============
 // Control flow
 // =============
 
-#include "instructions/control_flow/control_instruction.hh"
-#include "instructions/control_flow/function_call_instruction.hh"
-#include "instructions/control_flow/if_instruction.hh"
-#include "instructions/control_flow/return_instruction.hh"
-#include "instructions/control_flow/select_2_instruction.hh"
-#include "instructions/control_flow/switch_instruction.hh"
+#include "instruction/control_flow/control_instruction.hh"
+#include "instruction/control_flow/function_call_instruction.hh"
+#include "instruction/control_flow/if_instruction.hh"
+#include "instruction/control_flow/return_instruction.hh"
+#include "instruction/control_flow/select_2_instruction.hh"
+#include "instruction/control_flow/switch_instruction.hh"
 
 // ======
 // Loops
 // ======
 
-#include "instructions/loops/for_loop_instruction.hh"
-#include "instructions/loops/iterator_for_loop_instruction.hh"
-#include "instructions/loops/simple_for_loop_instruction.hh"
-#include "instructions/loops/while_loop_instruction.hh"
+#include "instruction/loops/for_loop_instruction.hh"
+#include "instruction/loops/iterator_for_loop_instruction.hh"
+#include "instruction/loops/simple_for_loop_instruction.hh"
+#include "instruction/loops/while_loop_instruction.hh"
 
 // ====================
 // Basic clone visitor
 // ====================
 
-#include "visitors/basic_clone_visitor.hh"
+#include "visitor/basic_clone_visitor.hh"
 
 // ======================
 // Instruction generator

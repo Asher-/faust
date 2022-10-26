@@ -28,7 +28,7 @@
 #include "fir_instructions.hh"
 #include "instructions.hh"
 #include "typing_instruction_visitor.hh"
-#include "instructions/numbers/number_value_instruction.hh"
+#include "instruction/numbers/number_value_instruction.hh"
 #include "fir/fir_index.hh"
 #include "global.hh"
 #include "remover_clone_visitor.hh"

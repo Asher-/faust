@@ -19,43 +19,22 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _FIXED_POINT_NUMBER_INSTRUCTION_
+#define _FIXED_POINT_NUMBER_INSTRUCTION_
 
-#include "address.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "instruction/numbers/number_value_instruction.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct FixedPointNumInst : public ValueInst, public NumValueInst {
+    const double fNum;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
-
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
-
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    FixedPointNumInst(double num) : ValueInst(), fNum(num) {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    virtual bool isSimpleValue() const { return true; }
 };
 
 #endif

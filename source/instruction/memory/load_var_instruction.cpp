@@ -19,34 +19,13 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NAMED_ADDRESS_
-#define _NAMED_ADDRESS_
+#include "instruction/memory/load_var_instruction.hh"
+#include "instruction/numbers/int32_number_instruction.hh"
+#include "address/indexed_address.hh"
 
-#include <string>
-#include "address.hh"
-
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
-#include "instruction/block_instruction.hh"
-
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-
-struct NamedAddress : public Address {
-    std::string fName;
-    AccessType   fAccess;
-
-    NamedAddress(const std::string& name, AccessType access) : fName(name), fAccess(access) {}
-
-    void                setAccess(Address::AccessType access) { fAccess = access; }
-    Address::AccessType getAccess() const { return fAccess; }
-
-    void   setName(const std::string& name) { fName = name; }
-    std::string getName() const { return fName; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-};
-
-#endif
+bool LoadVarInst::isSimpleValue() const
+{
+    NamedAddress* named = dynamic_cast<NamedAddress*>(fAddress);
+    IndexedAddress* indexed = dynamic_cast<IndexedAddress*>(fAddress);
+    return named || (indexed && dynamic_cast<Int32NumInst*>(indexed->getIndex()));
+}

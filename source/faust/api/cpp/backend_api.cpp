@@ -32,7 +32,7 @@
 #include "faust/cli.hh"
 #include "faust/compiler/common.hh"
 
-#include "visitors/max_inputs_visitor.hh"
+#include "visitor/max_inputs_visitor.hh"
 
 // ============
 // Backend API

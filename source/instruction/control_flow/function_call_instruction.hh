@@ -19,43 +19,28 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _FUNCTION_CALL_INSTRUCTION_
+#define _FUNCTION_CALL_INSTRUCTION_
 
-#include "address.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
+#include "instruction/declarations.hh"
 #include <string>
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct FunCallInst : public ValueInst {
+    const std::string     fName;
+    Values fArgs;  // List of arguments
+    const bool       fMethod;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
-
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
+    FunCallInst(const std::string& name, const Values& args, bool method)
+        : ValueInst(), fName(name), fArgs(args), fMethod(method)
     {
-        fIndices.push_back(index);
     }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    virtual ~FunCallInst() {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

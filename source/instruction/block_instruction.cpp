@@ -19,34 +19,27 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NAMED_ADDRESS_
-#define _NAMED_ADDRESS_
-
-#include <string>
-#include "address.hh"
-
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
 #include "instruction/block_instruction.hh"
+#include "instruction/control_flow/return_instruction.hh"
+#include "instruction_builder.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+bool BlockInst::hasReturn() const
+{
+    std::list<StatementInst*>::const_iterator it = fCode.end();
+    it--;
+    return dynamic_cast<RetInst*>(*it);
+}
 
-struct NamedAddress : public Address {
-    std::string fName;
-    AccessType   fAccess;
-
-    NamedAddress(const std::string& name, AccessType access) : fName(name), fAccess(access) {}
-
-    void                setAccess(Address::AccessType access) { fAccess = access; }
-    Address::AccessType getAccess() const { return fAccess; }
-
-    void   setName(const std::string& name) { fName = name; }
-    std::string getName() const { return fName; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-};
-
-#endif
+// Return the block value (if is has one) and remove it from the block
+ValueInst* BlockInst::getReturnValue()
+{
+    std::list<StatementInst*>::const_iterator it = fCode.end();
+    it--;
+    RetInst* ret = dynamic_cast<RetInst*>(*it);
+    if (ret) {
+        fCode.pop_back();
+        return ret->fResult;
+    } else {
+        return InstBuilder::genNullValueInst();
+    }
+}

@@ -19,43 +19,40 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _SIMPLE_FOR_LOOP_INSTRUCTION_
+#define _SIMPLE_FOR_LOOP_INSTRUCTION_
 
-#include "address.hh"
+#include "instruction/statement_instruction.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "instruction/block_instruction.hh"
 
 #include "visitor/instruction_visitor.hh"
 #include "visitor/clone_visitor.hh"
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+struct InstructionBuilder;
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
+// To be used for the Rust backend
+struct SimpleForLoopInst : public StatementInst {
+    StatementInst* fInit;
+    ValueInst*   fUpperBound;
+    ValueInst*   fLowerBound;
+    const std::string fName;
+    const bool   fReverse;
+    BlockInst* fCode;
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
+    SimpleForLoopInst(const std::string& name, ValueInst* upperBound, ValueInst* lowerBound, bool reverse, BlockInst* code);
 
-    virtual ~IndexedAddress() {}
+    std::string getName() const { return fName; }
 
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
+    virtual ~SimpleForLoopInst() {}
 
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode->pushFrontInst(inst); }
 
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode->pushBackInst(inst); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

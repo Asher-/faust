@@ -19,43 +19,29 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _SELECT_2_INSTRUCTION_
+#define _SELECT_2_INSTRUCTION_
 
-#include "address.hh"
 #include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
+#include "instruction/declarations.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+struct Select2Inst : public ValueInst {
+    ValueInst* fCond;
+    ValueInst* fThen;
+    ValueInst* fElse;
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
-
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
+    Select2Inst(ValueInst* cond_inst, ValueInst* then_inst, ValueInst* else_inst)
+        : ValueInst(), fCond(cond_inst), fThen(then_inst), fElse(else_inst)
     {
-        fIndices.push_back(index);
     }
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
-
-    virtual ~IndexedAddress() {}
-
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
-
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
-
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    virtual ~Select2Inst() {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    virtual int size() const { return std::max(fThen->size(), fElse->size()); }
 };
 
 #endif

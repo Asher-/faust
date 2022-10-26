@@ -19,43 +19,52 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INDEXED_ADDRESS_
-#define _INDEXED_ADDRESS_
+#ifndef _BLOCK_INSTRUCTION_
+#define _BLOCK_INSTRUCTION_
 
-#include "address.hh"
-#include "instruction/value_instruction.hh"
-#include <vector>
-#include <string>
-
+#include "instruction/statement_instruction.hh"
+#include "instruction/declarations.hh"
 #include "visitor/instruction_visitor.hh"
 #include "visitor/clone_visitor.hh"
 
-struct IndexedAddress : public Address {
-    Address*   fAddress;
-    std::vector<ValueInst*> fIndices;
+#include <list>
 
-    IndexedAddress(Address* address, ValueInst* index) : fAddress(address)
-    {
-        fIndices.push_back(index);
-    }
+// ====================
+// Block of statements
+// ====================
 
-    IndexedAddress(Address* address, const std::vector<ValueInst*>& indices) : fAddress(address), fIndices(indices)
-    {}
+struct BlockInst : public StatementInst {
+    std::list<StatementInst*> fCode;
+    bool                 fIndent;
 
-    virtual ~IndexedAddress() {}
+    BlockInst(std::list<StatementInst*> code) : fCode(code), fIndent(false) {}
 
-    void                setAccess(Address::AccessType type) { fAddress->setAccess(type); }
-    Address::AccessType getAccess() const { return fAddress->getAccess(); }
+    BlockInst() : fIndent(false) {}
 
-    void   setName(const std::string& name) { fAddress->setName(name); }
-    std::string getName() const { return fAddress->getName(); }
+    virtual ~BlockInst() {}
 
-    ValueInst* getIndex(int index = 0) const { return fIndices[index]; }
-    std::vector<ValueInst*> getIndices() const { return fIndices; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    void setIndent(bool indent) { fIndent = indent; }
+    bool getIndent() { return fIndent; }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode.push_front(inst); }
+
+    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode.push_back(inst); }
+
+    void merge(BlockInst* inst)
+    {
+        for (const auto& it : inst->fCode) {
+            fCode.push_back(it);
+        }
+    }
+
+    int size() const { return int(fCode.size()); }
+
+    bool hasReturn() const;
+    ValueInst* getReturnValue();
 };
 
 #endif

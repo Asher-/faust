@@ -19,34 +19,16 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NAMED_ADDRESS_
-#define _NAMED_ADDRESS_
+#include "instruction/control_flow/control_instruction.hh"
+#include <sstream>
+#include "fir_to_fir.hh"
 
-#include <string>
-#include "address.hh"
-
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
-#include "instruction/block_instruction.hh"
-
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-
-struct NamedAddress : public Address {
-    std::string fName;
-    AccessType   fAccess;
-
-    NamedAddress(const std::string& name, AccessType access) : fName(name), fAccess(access) {}
-
-    void                setAccess(Address::AccessType access) { fAccess = access; }
-    Address::AccessType getAccess() const { return fAccess; }
-
-    void   setName(const std::string& name) { fName = name; }
-    std::string getName() const { return fName; }
-
-    Address* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-};
-
-#endif
+bool ControlInst::hasCondition(ValueInst* cond)
+{
+    // Compare std::string representation of both conditions
+    std::stringstream res1;
+    std::stringstream res2;
+    dump2FIR(fCond, res1, false);
+    dump2FIR(cond, res2, false);
+    return (res1.str() == res2.str());
+}

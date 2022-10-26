@@ -58,8 +58,8 @@ endif()
 ####################################
 # source and headers files
 file (GLOB SRC ${SRCDIR}/cli/*.cpp
-				 		 	 ${SRCDIR}/instructions/*.cpp
-							 ${SRCDIR}/instructions/*/*.cpp
+				 		 	 ${SRCDIR}/instruction/*.cpp
+							 ${SRCDIR}/instruction/*/*.cpp
                ${SRCDIR}/faust/*.cpp
                ${SRCDIR}/faust/*/*.cpp
 							 ${SRCDIR}/compiler/*.cpp
@@ -82,8 +82,8 @@ file (GLOB SRC ${SRCDIR}/cli/*.cpp
  						   ${SRCDIR}/documentator/*.cpp )
 file (GLOB HH  ${SRCDIR}/*.hh
                ${SRCDIR}/cli/*.hh
-							 ${SRCDIR}/instructions/*.hh
-							 ${SRCDIR}/instructions/*/*.hh
+							 ${SRCDIR}/instruction/*.hh
+							 ${SRCDIR}/instruction/*/*.hh
 							 ${SRCDIR}/compiler/*.hh
                ${SRCDIR}/compiler/*/*.hh
                ${SRCDIR}/compiler/*/*/*.hh
@@ -145,15 +145,15 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/language/rust
 	${SRCDIR}/target/language/soul
 	${SRCDIR}/target/language/soul/visitor
-	${SRCDIR}/instructions
-	${SRCDIR}/instructions/cast
-	${SRCDIR}/instructions/control_flow
-	${SRCDIR}/instructions/declarations
-	${SRCDIR}/instructions/loops
-	${SRCDIR}/instructions/math
-	${SRCDIR}/instructions/memory
-	${SRCDIR}/instructions/numbers
-	${SRCDIR}/instructions/ui
+	${SRCDIR}/instruction
+	${SRCDIR}/instruction/cast
+	${SRCDIR}/instruction/control_flow
+	${SRCDIR}/instruction/declarations
+	${SRCDIR}/instruction/loops
+	${SRCDIR}/instruction/math
+	${SRCDIR}/instruction/memory
+	${SRCDIR}/instruction/numbers
+	${SRCDIR}/instruction/ui
 	${SRCDIR}/compiler/generator/address
 	${SRCDIR}/compiler/generator/compile
 	${SRCDIR}/compiler/generator/compile/scalar
