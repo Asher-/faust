@@ -13,10 +13,10 @@ validfiles = $(outfiles:%.txt=%.valid)
 #########################################################################
 #all: osclistener $(outfiles)
 
-all: osclistener 
+all: osclistener
 	$(MAKE) -f Make.size size=float
 	$(MAKE) -f Make.size size=double
-	
+
 
 help:
 	@echo "Available target are:"
@@ -28,12 +28,12 @@ help:
 	@echo "                  It produces impulse response files on output, located in the $(version) folder."
 	@echo " 'validate VERSION=n.n.n' : compares the current output with a previous one"
 	@echo "                  that is read from a 'n.n.n' folder."
-	@echo 
+	@echo
 	@echo "Note: $(version) is taken from the 'osc-version.txt' file that you can freely modify."
-	
+
 validate: $(validfiles)
-	@echo "Validating version $(version) with version $(VERSION)"	
-	
+	@echo "Validating version $(version) with version $(VERSION)"
+
 
 osclistener: tools/osclistener.cpp
 	$(CXX) $(OPTIONS) -I../../architecture/osclib/oscpack $(LIBDIR)/libOSCFaust.a  tools/osclistener.cpp -o osclistener
@@ -42,6 +42,6 @@ osclistener: tools/osclistener.cpp
 #########################################################################
 # rules for validation
 %.valid : %.txt
-	$(eval tmp := $(patsubst $(version)/%, $(VERSION)/%, $<))	
+	$(eval tmp := $(patsubst $(version)/%, $(VERSION)/%, $<))
 	@[ -f  $(tmp) ] || echo $< : new file
 	@diff $<  $(tmp) 2>/dev/null >/dev/null || ([ -f  $(tmp) ] && echo "open -t $< $(patsubst $(version)/%, $(VERSION)/%, $<) # to check changes")

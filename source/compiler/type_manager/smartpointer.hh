@@ -21,48 +21,10 @@
 
 */
 
-#ifndef __smartpointer__
-#define __smartpointer__
+#ifndef __FAUST__SMART_POINTER__HH__
+#define __FAUST__SMART_POINTER__HH__
 
 #include "exception.hh"
-
-/*!
-\brief the base class for smart pointers implementation
-
-    Any object that want to support smart pointers should
-    inherit from the smartable class which provides reference counting
-    and automatic delete when the reference count drops to zero.
-*/
-class smartable {
-   private:
-    unsigned refCount;
-
-   public:
-    //! gives the reference count of the object
-    unsigned refs() const { return refCount; }
-    //! addReference increments the ref count and checks for refCount overflow
-    void addReference()
-    {
-        refCount++;
-        faustassert(refCount != 0);
-    }
-    //! removeReference delete the object when refCount is zero
-    void removeReference()
-    {
-        if (--refCount == 0) delete this;
-    }
-
-   protected:
-    smartable() : refCount(0) {}
-    smartable(const smartable&) : refCount(0) {}
-    //! destructor checks for non-zero refCount
-    virtual ~smartable()
-    {
-        // printf(" ~smartable() \n");
-        // faustassert(refCount == 0);
-    }
-    smartable& operator=(const smartable&) { return *this; }
-};
 
 /*!
 \brief the smart pointer implementation
@@ -70,38 +32,38 @@ class smartable {
     A smart pointer is in charge of maintaining the objects reference count
     by the way of pointers operators overloading. It supports class
     inheritance and conversion whenever possible.
-\n	Instances of the SMARTP class are supposed to use \e smartable types (or at least
+\n	Instances of the smartptr class are supposed to use \e smartable types (or at least
     objects that implements the \e addReference and \e removeReference
     methods in a consistent way).
 */
 template <class T>
-class SMARTP {
+class smartptr {
    private:
     //! the actual pointer to the class
     T* fSmartPtr;
 
    public:
     //! an empty constructor - points to null
-    SMARTP() : fSmartPtr(0) {}
+    smartptr() : fSmartPtr(0) {}
     //! build a smart pointer from a class pointer
-    SMARTP(T* rawptr) : fSmartPtr(rawptr)
+    smartptr(T* rawptr) : fSmartPtr(rawptr)
     {
         if (fSmartPtr) fSmartPtr->addReference();
     }
     //! build a smart pointer from an convertible class reference
     template <class T2>
-    SMARTP(const SMARTP<T2>& ptr) : fSmartPtr((T*)ptr)
+    smartptr(const smartptr<T2>& ptr) : fSmartPtr((T*)ptr)
     {
         if (fSmartPtr) fSmartPtr->addReference();
     }
     //! build a smart pointer from another smart pointer reference
-    SMARTP(const SMARTP& ptr) : fSmartPtr((T*)ptr)
+    smartptr(const smartptr& ptr) : fSmartPtr((T*)ptr)
     {
         if (fSmartPtr) fSmartPtr->addReference();
     }
 
     //! the smart pointer destructor: simply removes one reference count
-    ~SMARTP()
+    ~smartptr()
     {
         if (fSmartPtr) fSmartPtr->removeReference();
     }
@@ -127,14 +89,14 @@ class SMARTP {
 
     //! operator = that moves the actual class pointer
     template <class T2>
-    SMARTP& operator=(T2 p1_)
+    smartptr& operator=(T2 p1_)
     {
         *this = (T*)p1_;
         return *this;
     }
 
     //! operator = that moves the actual class pointer
-    SMARTP& operator=(T* p_)
+    smartptr& operator=(T* p_)
     {
         // check first that pointers differ
         if (fSmartPtr != p_) {
@@ -147,19 +109,19 @@ class SMARTP {
         }
         return *this;
     }
-    //! operator < to support SMARTP map with Visual C++
-    bool operator<(const SMARTP<T>& p_) const { return fSmartPtr < ((T*)p_); }
+    //! operator < to support smartptr map with Visual C++
+    bool operator<(const smartptr<T>& p_) const { return fSmartPtr < ((T*)p_); }
     //! operator = to support inherited class reference
-    SMARTP& operator=(const SMARTP<T>& p_) { return operator=((T*)p_); }
+    smartptr& operator=(const smartptr<T>& p_) { return operator=((T*)p_); }
     //! dynamic cast support
     template <class T2>
-    SMARTP& cast(T2* p_)
+    smartptr& cast(T2* p_)
     {
         return operator=(dynamic_cast<T*>(p_));
     }
     //! dynamic cast support
     template <class T2>
-    SMARTP& cast(const SMARTP<T2>& p_)
+    smartptr& cast(const smartptr<T2>& p_)
     {
         return operator=(dynamic_cast<T*>(p_));
     }

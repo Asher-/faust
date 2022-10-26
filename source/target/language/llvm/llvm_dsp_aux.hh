@@ -36,7 +36,8 @@
 
 #include "dsp_aux.hh"
 #include "dsp_factory.hh"
-#include "smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
 #include "timing.hh"
 
 #include <llvm/ExecutionEngine/ObjectCache.h>
@@ -117,7 +118,7 @@ class LIBFAUST_API llvm_dsp : public dsp {
 class FaustObjectCache : public llvm::ObjectCache {
    private:
     std::string fMachineCode;
-    
+
     virtual void anchor() {}
 
    public:
@@ -138,7 +139,7 @@ class FaustObjectCache : public llvm::ObjectCache {
     std::string getMachineCode() { return fMachineCode; }
 };
 
-typedef class faust_smartptr<llvm_dsp_factory> SDsp_factory;
+typedef class smartptr<llvm_dsp_factory> SDsp_factory;
 
 // Internal API
 typedef void (* deleteDspFun) (dsp_imp* dsp);
@@ -181,7 +182,7 @@ class llvm_dsp_factory_aux : public dsp_factory_imp {
     void stopLLVMLibrary();
 
     std::string writeDSPFactoryToMachineAux(const std::string& target);
-    
+
     void checkDecoder()
     {
         if (!fDecoder) fDecoder = createJSONUIDecoder(fGetJSON());
@@ -252,7 +253,7 @@ class llvm_dsp_factory_aux : public dsp_factory_imp {
 
 // Public C++ interface
 
-class LIBFAUST_API llvm_dsp_factory : public dsp_factory, public faust_smartable {
+class LIBFAUST_API llvm_dsp_factory : public dsp_factory, public smartable {
    private:
     llvm_dsp_factory_aux* fFactory;
 
@@ -260,7 +261,7 @@ class LIBFAUST_API llvm_dsp_factory : public dsp_factory, public faust_smartable
 
    public:
     llvm_dsp_factory(llvm_dsp_factory_aux* factory) : fFactory(factory) {}
-  
+
     std::string getName() { return fFactory->getName(); }
 
     std::string getSHAKey() { return fFactory->getSHAKey(); }

@@ -27,7 +27,8 @@
 
 #include <string>
 #include <vector>
-#include "faust/osc/smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
 
 namespace oscfaust
 {
@@ -35,7 +36,7 @@ namespace oscfaust
 class OSCStream;
 template <typename T> class MsgParam;
 class baseparam;
-typedef SMARTP<baseparam>	Sbaseparam;
+typedef smartptr<baseparam>	Sbaseparam;
 
 //--------------------------------------------------------------------------
 /*!
@@ -55,30 +56,30 @@ class baseparam : public smartable
 		 \param errvalue the returned value when no conversion applies
 		 \return the parameter value when the type matches
 		*/
-		template<typename X> X	value(X errvalue) const 
+		template<typename X> X	value(X errvalue) const
 			{ const MsgParam<X>* o = dynamic_cast<const MsgParam<X>*> (this); return o ? o->getValue() : errvalue; }
 		/*!
 		 \brief utility for parameter comparison
 		*/
-		template<typename X> bool	equal(const baseparam& p) const 
-			{ 
-				const MsgParam<X>* a = dynamic_cast<const MsgParam<X>*> (this); 
+		template<typename X> bool	equal(const baseparam& p) const
+			{
+				const MsgParam<X>* a = dynamic_cast<const MsgParam<X>*> (this);
 				const MsgParam<X>* b = dynamic_cast<const MsgParam<X>*> (&p);
 				return a && b && (a->getValue() == b->getValue());
 			}
 		/*!
 		 \brief utility for parameter comparison
 		*/
-		bool operator==(const baseparam& p) const 
-			{ 
+		bool operator==(const baseparam& p) const
+			{
 				return equal<float>(p) || equal<int>(p) || equal<std::string>(p);
 			}
 		bool operator!=(const baseparam& p) const
-			{ 
+			{
 				return !equal<float>(p) && !equal<int>(p) && !equal<std::string>(p);
 			}
-			
-		virtual SMARTP<baseparam> copy() const = 0;
+
+		virtual smartptr<baseparam> copy() const = 0;
 };
 
 //--------------------------------------------------------------------------
@@ -91,16 +92,16 @@ template <typename T> class MsgParam : public baseparam
 	public:
 				 MsgParam(T val) : fParam(val)	{}
 		virtual ~MsgParam() {}
-		
+
 		T getValue() const { return fParam; }
-		
+
 		virtual Sbaseparam copy() const { return new MsgParam<T>(fParam); }
 };
 
 //--------------------------------------------------------------------------
 /*!
 	\brief a message description
-	
+
 	A message is composed of an address (actually an OSC address),
 	a message string that may be viewed as a method name
 	and a list of message parameters.
@@ -108,7 +109,7 @@ template <typename T> class MsgParam : public baseparam
 class Message
 {
     public:
-        typedef SMARTP<baseparam>		argPtr;		///< a message argument ptr type
+        typedef smartptr<baseparam>		argPtr;		///< a message argument ptr type
         typedef std::vector<argPtr>		argslist;	///< args list type
 
     private:
@@ -127,14 +128,14 @@ class Message
                 \param address the message destination address
             */
             Message(const std::string& address) : fAddress(address), fAlias("") {}
-             
+
             Message(const std::string& address, const std::string& alias) : fAddress(address), fAlias(alias) {}
             /*!
                 \brief a message constructor
                 \param address the message destination address
                 \param args the message parameters
             */
-            Message(const std::string& address, const argslist& args) 
+            Message(const std::string& address, const argslist& args)
                 : fAddress(address), fArguments(args) {}
             /*!
                 \brief a message constructor
@@ -153,19 +154,19 @@ class Message
         \param val the parameter value
     */
     void	add(float val)					{ add<float>(val); }
-    
+
     /*!
      \brief adds a double parameter to the message
      \param val the parameter value
      */
     void	add(double val)					{ add<double>(val); }
-    
+
     /*!
         \brief adds an int parameter to the message
         \param val the parameter value
     */
     void	add(int val)					{ add<int>(val); }
-    
+
     /*!
         \brief adds a string parameter to the message
         \param val the parameter value
@@ -213,12 +214,12 @@ class Message
     const argslist&		params() const		{ return fArguments; }
     /// \brief gives the message parameters list
     argslist&			params()			{ return fArguments; }
-    /// \brief gives the message source IP 
+    /// \brief gives the message source IP
     unsigned long		src() const			{ return fSrcIP; }
     /// \brief gives the message parameters count
     int					size() const		{ return (int)fArguments.size(); }
 
-    bool operator == (const Message& other) const;	
+    bool operator == (const Message& other) const;
 
     /*!
         \brief gives a message float parameter
@@ -227,7 +228,7 @@ class Message
         \return false when types don't match
     */
     bool	param(int i, float& val) const		{ val = params()[i]->value<float>(val); return params()[i]->isType<float>(); }
-    
+
     /*!
      \brief gives a message double parameter
      \param i the parameter index (0 <= i < size())
@@ -235,7 +236,7 @@ class Message
      \return false when types don't match
      */
     bool	param(int i, double& val) const		{ val = params()[i]->value<double>(val); return params()[i]->isType<double>(); }
-    
+
     /*!
         \brief gives a message int parameter
         \param i the parameter index (0 <= i < size())

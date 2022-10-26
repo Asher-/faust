@@ -85,7 +85,7 @@ template <typename C> class FaustNode : public MessageDriven
 		virtual ~FaustNode() {}
 
 	public:
-		typedef SMARTP<FaustNode<C> > SFaustNode;
+		typedef smartptr<FaustNode<C> > SFaustNode;
 		static SFaustNode create(const char* name, C* zone, C min, C max, const char* prefix, bool initZone)
 							{ return new FaustNode(name, zone, min, max, prefix, initZone); }
 		static SFaustNode create(const char* name, C* zone, C init, C min, C max, const char* prefix, bool initZone)	

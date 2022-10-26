@@ -29,149 +29,13 @@
 #include <string>
 #include <vector>
 
-#ifdef WIN32
-#pragma warning(disable : 4800)
-#endif
-
 #include "faust/export.h"
 #include "faust/dsp/dsp.h"
 
 #include "exception.hh"
 
-/*!
-    \brief the base class for smart pointers implementation
-
-    Any object that want to support smart pointers should
-    inherit from the smartable class which provides reference counting
-    and automatic delete when the reference count drops to zero.
- */
-class faust_smartable {
-   private:
-    unsigned refCount;
-
-   public:
-    //! gives the reference count of the object
-    unsigned refs() const { return refCount; }
-    //! addReference increments the ref count and checks for refCount overflow
-    void addReference()
-    {
-        refCount++;
-        faustassert(refCount != 0);
-    }
-    //! removeReference delete the object when refCount is zero
-    void removeReference()
-    {
-        if (--refCount == 0) delete this;
-    }
-
-   protected:
-    faust_smartable() : refCount(0) {}
-    faust_smartable(const faust_smartable&) : refCount(0) {}
-    //! destructor checks for non-zero refCount
-    virtual ~faust_smartable() { faustassert(refCount == 0); }
-    faust_smartable& operator=(const faust_smartable&) { return *this; }
-};
-
-/*!
-    \brief the smart pointer implementation
-
-    A smart pointer is in charge of maintaining the objects reference count
-    by the way of pointers operators overloading. It supports class
-    inheritance and conversion whenever possible.
-    \n Instances of the SMARTP class are supposed to use \e smartable types (or at least
-    objects that implements the \e addReference and \e removeReference
-    methods in a consistent way).
- */
-template <class T>
-class faust_smartptr {
-   private:
-    //! the actual pointer to the class
-    T* fSmartPtr;
-
-   public:
-    //! an empty constructor - points to null
-    faust_smartptr() : fSmartPtr(0) {}
-    //! build a smart pointer from a class pointer
-    faust_smartptr(T* rawptr) : fSmartPtr(rawptr)
-    {
-        if (fSmartPtr) fSmartPtr->addReference();
-    }
-    //! build a smart pointer from an convertible class reference
-    template <class T2>
-    faust_smartptr(const faust_smartptr<T2>& ptr) : fSmartPtr((T*)ptr)
-    {
-        if (fSmartPtr) fSmartPtr->addReference();
-    }
-    //! build a smart pointer from another smart pointer reference
-    faust_smartptr(const faust_smartptr& ptr) : fSmartPtr((T*)ptr)
-    {
-        if (fSmartPtr) fSmartPtr->addReference();
-    }
-
-    //! the smart pointer destructor: simply removes one reference count
-    ~faust_smartptr()
-    {
-        if (fSmartPtr) fSmartPtr->removeReference();
-    }
-
-    //! cast operator to retrieve the actual class pointer
-    operator T*() const { return fSmartPtr; }
-
-    //! '*' operator to access the actual class pointer
-    T& operator*() const
-    {
-        // checks for null dereference
-        faustassert(fSmartPtr != 0);
-        return *fSmartPtr;
-    }
-
-    //! operator -> overloading to access the actual class pointer
-    T* operator->() const
-    {
-        // checks for null dereference
-        faustassert(fSmartPtr != 0);
-        return fSmartPtr;
-    }
-
-    //! operator = that moves the actual class pointer
-    template <class T2>
-    faust_smartptr& operator=(T2 p1_)
-    {
-        *this = (T*)p1_;
-        return *this;
-    }
-
-    //! operator = that moves the actual class pointer
-    faust_smartptr& operator=(T* p_)
-    {
-        // check first that pointers differ
-        if (fSmartPtr != p_) {
-            // increments the ref count of the new pointer if not null
-            if (p_ != 0) p_->addReference();
-            // decrements the ref count of the old pointer if not null
-            if (fSmartPtr != 0) fSmartPtr->removeReference();
-            // and finally stores the new actual pointer
-            fSmartPtr = p_;
-        }
-        return *this;
-    }
-    //! operator < to support faust_smartptr map with Visual C++
-    bool operator<(const faust_smartptr<T>& p_) const { return fSmartPtr < ((T*)p_); }
-    //! operator = to support inherited class reference
-    faust_smartptr& operator=(const faust_smartptr<T>& p_) { return operator=((T*)p_); }
-    //! dynamic cast support
-    template <class T2>
-    faust_smartptr& cast(T2* p_)
-    {
-        return operator=(dynamic_cast<T*>(p_));
-    }
-    //! dynamic cast support
-    template <class T2>
-    faust_smartptr& cast(const faust_smartptr<T2>& p_)
-    {
-        return operator=(dynamic_cast<T*>(p_));
-    }
-};
+#include "smartable.hh"
+#include "smartpointer.hh"
 
 //----------------------------------------------------------------
 // Smart DSP factory table
@@ -345,20 +209,20 @@ struct Soundfile {
     int fChannels;     // max number of channels of all concatenated files
     int fParts;        // the total number of loaded parts
     bool fIsDouble;    // keep the sample format (float or double)
-    
+
     Soundfile(int max_chan)
     {
         fBuffers = new double*[max_chan];
         fLength  = new int[MAX_SOUNDFILE_PARTS];
         fSR      = new int[MAX_SOUNDFILE_PARTS];
         fOffset  = new int[MAX_SOUNDFILE_PARTS];
-        
+
         for (int part = 0; part < MAX_SOUNDFILE_PARTS; part++) {
             fLength[part] = BUFFER_SIZE;
             fSR[part]     = SAMPLE_RATE;
             fOffset[part] = 0;
         }
-        
+
         // Allocate 1 channel
         fChannels = 1;
         fParts = 0;
@@ -366,13 +230,13 @@ struct Soundfile {
         faustassert(fBuffers[0]);
         fIsDouble = true;
         memset(fBuffers[0], 0, BUFFER_SIZE * sizeof(double));
-        
+
         // Share the same buffer for all other channels so that we have max_chan channels available
         for (int chan = fChannels; chan < max_chan; chan++) {
             fBuffers[chan] = fBuffers[0];
         }
     }
-    
+
     ~Soundfile()
     {
         // Free the real channels only
@@ -384,7 +248,7 @@ struct Soundfile {
         delete[] fSR;
         delete[] fOffset;
     }
-    
+
 } POST_PACKED_STRUCTURE;
 
 typedef std::map<std::string, Soundfile*> soundTable;

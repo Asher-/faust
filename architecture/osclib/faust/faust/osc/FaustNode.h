@@ -30,7 +30,7 @@
 #include "faust/osc/MessageDriven.h"
 #include "faust/osc/Message.h"
 #include "faust/gui/GUI.h"
-#include "faust/osc/smartpointer.h"
+#include "smartpointer.hh"
 #include "faust/osc/RootNode.h"
 
 namespace oscfaust
@@ -78,7 +78,7 @@ template <typename C> class FaustNode : public MessageDriven, public uiTypedItem
 		virtual ~FaustNode() {}
 
 	public:
-		typedef SMARTP<FaustNode<C> > SFaustNode;
+		typedef smartptr<FaustNode<C> > SFaustNode;
 		static SFaustNode create(RootNode* root, const char* name, C* zone, C init, C min, C max, const char* prefix, GUI* ui, bool initZone, bool input)	
         { 
             SFaustNode node = new FaustNode(root, name, zone, init, min, max, prefix, ui, initZone, input); 

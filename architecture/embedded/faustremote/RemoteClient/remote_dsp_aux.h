@@ -38,7 +38,8 @@
 #include "faust/dsp/dsp.h"
 #include "faust/dsp/proxy-dsp.h"
 #include "faust/midi/jack-midi.h"
-#include "smartpointer.h"
+#include "smartable.hh"
+#include "smartpointer.hh"
 #include "lo/lo.h"
 #include "TMutex.h"
 
@@ -111,7 +112,7 @@ class remote_dsp_aux;
 class remote_audio_aux;
 class remote_dsp_factory;
 
-typedef class SMARTP<remote_dsp_factory> Sremote_dsp_factory;
+typedef class smartptr<remote_dsp_factory> Sremote_dsp_factory;
 
 // The proxy DSP factory
 

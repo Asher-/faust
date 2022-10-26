@@ -34,6 +34,9 @@
 #include "dsp_factory.hh"
 #include "wasm_binary.hh"
 
+#include "smartpointer.hh"
+#include "smartable.hh"
+
 class wasm_dsp_factory;
 struct JSONUIDecoderBase;
 
@@ -56,7 +59,7 @@ struct WasmBinaryReader {
         data_segment_pos = -1;
         if (debug) std::cerr << "WasmBinaryReader size : " << size << std::endl;
     }
-    
+
     ~WasmBinaryReader() { free(input); }
 
     bool more() { return pos < size; }
@@ -302,16 +305,16 @@ class LIBFAUST_API wasm_dsp : public dsp, public JSONControl {
     virtual void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs);
 
     virtual void computeJS(int count, uintptr_t inputs, uintptr_t outputs);
-    
+
     virtual void setParamValue(const std::string& path, FAUSTFLOAT value);
-    
+
     virtual FAUSTFLOAT getParamValue(const std::string& path);
 
 };
 
-typedef class faust_smartptr<wasm_dsp_factory> SDsp_factory;
+typedef class smartptr<wasm_dsp_factory> SDsp_factory;
 
-class LIBFAUST_API wasm_dsp_factory : public dsp_factory, public faust_smartable {
+class LIBFAUST_API wasm_dsp_factory : public dsp_factory, public smartable {
     friend class wasm_dsp;
    protected:
     dsp_factory_base*   fFactory;
@@ -351,7 +354,7 @@ class LIBFAUST_API wasm_dsp_factory : public dsp_factory, public faust_smartable
 
     wasm_dsp* createDSPInstance();
     void deleteDSPInstance(wasm_dsp* dsp);
-  
+
     void                setMemoryManager(dsp_memory_manager* manager);
     dsp_memory_manager* getMemoryManager();
 
@@ -363,13 +366,13 @@ class LIBFAUST_API wasm_dsp_factory : public dsp_factory, public faust_smartable
     static wasm_dsp_factory* readWasmDSPFactoryFromMachineFile2(const std::string& machine_code_path);
 
     static wasm_dsp_factory* readWasmDSPFactoryFromMachine2(const std::string& machine_code);
-    
+
     static wasm_dsp_factory* createWasmDSPFactory(int instance, const std::string& json);
-    
+
     static bool deleteWasmDSPFactory2(wasm_dsp_factory* factory);
-    
+
     static std::string extractJSON(const std::string& code);
-   
+
     static std::string gErrorMessage;
 
     static const std::string& getErrorMessage();

@@ -28,14 +28,15 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include "smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
 
 namespace httpdfaust
 {
 
 template <typename T> class MsgParam;
 class baseparam;
-typedef SMARTP<baseparam>	Sbaseparam;
+typedef smartptr<baseparam>	Sbaseparam;
 
 //--------------------------------------------------------------------------
 /*!
@@ -55,30 +56,30 @@ class baseparam : public smartable
 		 \param errvalue the returned value when no conversion applies
 		 \return the parameter value when the type matches
 		*/
-		template<typename X> X	value(X errvalue) const 
+		template<typename X> X	value(X errvalue) const
 			{ const MsgParam<X>* o = dynamic_cast<const MsgParam<X>*> (this); return o ? o->getValue() : errvalue; }
 		/*!
 		 \brief utility for parameter comparison
 		*/
-		template<typename X> bool	equal(const baseparam& p) const 
-			{ 
-				const MsgParam<X>* a = dynamic_cast<const MsgParam<X>*> (this); 
+		template<typename X> bool	equal(const baseparam& p) const
+			{
+				const MsgParam<X>* a = dynamic_cast<const MsgParam<X>*> (this);
 				const MsgParam<X>* b = dynamic_cast<const MsgParam<X>*> (&p);
 				return a && b && (a->getValue() == b->getValue());
 			}
 		/*!
 		 \brief utility for parameter comparison
 		*/
-		bool operator==(const baseparam& p) const 
-			{ 
+		bool operator==(const baseparam& p) const
+			{
 				return equal<float>(p) || equal<int>(p) || equal<std::string>(p);
 			}
 		bool operator!=(const baseparam& p) const
-			{ 
+			{
 				return !equal<float>(p) && !equal<int>(p) && !equal<std::string>(p);
 			}
-			
-		virtual SMARTP<baseparam> copy() const = 0;
+
+		virtual smartptr<baseparam> copy() const = 0;
 };
 
 //--------------------------------------------------------------------------
@@ -91,16 +92,16 @@ template <typename T> class MsgParam : public baseparam
 	public:
 				 MsgParam(T val) : fParam(val)	{}
 		virtual ~MsgParam() {}
-		
+
 		T	getValue() const { return fParam; }
-		
-		virtual SMARTP<baseparam> copy() const { return new MsgParam<T>(fParam); }
+
+		virtual smartptr<baseparam> copy() const { return new MsgParam<T>(fParam); }
 };
 
 //--------------------------------------------------------------------------
 /*!
 	\brief a message description
-	
+
 	A message is composed of an address (actually the path of an url)
 	a message string that may be viewed as a method name
 	and a list of message parameters.
@@ -108,14 +109,14 @@ template <typename T> class MsgParam : public baseparam
 class Message
 {
 	public:
-		typedef SMARTP<baseparam>		argPtr;		///< a message argument ptr type
+		typedef smartptr<baseparam>		argPtr;		///< a message argument ptr type
 		typedef std::vector<argPtr>		argslist;	///< args list type
 
 	private:
 		std::string	fAddress;			///< the message destination address
 		std::string	fMIME;				///< the message MIME type
 		argslist	fArguments;			///< the message arguments
-	
+
 	public:
 			/*!
 				\brief an empty message constructor
@@ -134,7 +135,7 @@ class Message
 		\param val the parameter
 	*/
 	template <typename T> void add(T val)	{ fArguments.push_back(new MsgParam<T>(val)); }
-	
+
 	/*!
 		\brief adds a parameter to the message
 		\param val the parameter
@@ -168,8 +169,8 @@ class Message
 	argslist&			params()			{ return fArguments; }
 	/// \brief gives the message parameters count
 	int					size() const		{ return (int)fArguments.size(); }
-	
-	bool operator == (const Message& other) const;	
+
+	bool operator == (const Message& other) const;
 
 
 	/*!

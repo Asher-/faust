@@ -65,6 +65,8 @@ set( INCLUDE
 	${SRCDIR}/nodes
 	${ARCHDIR}
 	${ROOT}/source/tlib
+	../../source/compiler/type_manager
+	../../source/compiler/errors
 	)
 
 #######################################

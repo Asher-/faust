@@ -36,7 +36,7 @@ namespace oscfaust
 
 class OSCIO;
 class RootNode;
-typedef class SMARTP<RootNode> SRootNode;
+typedef class smartptr<RootNode> SRootNode;
 
 /**
  * an alias target includes a map to rescale input values to output values

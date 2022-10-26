@@ -29,28 +29,29 @@
 #include <vector>
 
 #include "MessageProcessor.h"
-#include "smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
 
 namespace httpdfaust
 {
 
 class Message;
 class MessageDriven;
-typedef class SMARTP<MessageDriven>	SMessageDriven;
+typedef class smartptr<MessageDriven>	SMessageDriven;
 
 //--------------------------------------------------------------------------
 /*!
 	\brief a base class for objects accepting messages
-	
+
 	Message driven objects are hierarchically organized in a tree.
 	They provides the necessary to dispatch a message to its destination
-	node, according to the message address. 
-	
+	node, according to the message address.
+
 	The principle of the dispatch is the following:
 	- first the processMessage() method should be called on the top level node
-	- next processMessage call propose 
-	
-	
+	- next processMessage call propose
+
+
 */
 class MessageDriven : public MessageProcessor, public smartable
 {
@@ -77,21 +78,21 @@ class MessageDriven : public MessageProcessor, public smartable
 			\param msg the osc message currently processed
 			\param regexp a regular expression based on the osc address head
 			\param addrTail the osc address tail
-			
-			The method first tries to match the regular expression with the object name. 
+
+			The method first tries to match the regular expression with the object name.
 			When it matches:
-			- it calls \c accept when \c addrTail is empty 
-			- or it \c propose the message to its subnodes when \c addrTail is not empty. 
+			- it calls \c accept when \c addrTail is empty
+			- or it \c propose the message to its subnodes when \c addrTail is not empty.
 			  In this case a new \c regexp is computed with the head of \c addrTail and a new \c addrTail as well.
 		*/
 		virtual bool	propose( const Message* msg, const char* address, const std::string addrTail, std::vector<Message*>& outMsg);
 
 		/*!
-			\brief accept a message. 
+			\brief accept a message.
 			\param msg the message currently processed
 			\return true when the message is processed by the node
-			
-			The method is called only for the destination nodes. The real message acceptance is the node 
+
+			The method is called only for the destination nodes. The real message acceptance is the node
 			responsability and may depend on the message content.
 		*/
 		virtual bool	accept( const Message* msg, std::vector<Message*>& outMsg );
@@ -99,7 +100,7 @@ class MessageDriven : public MessageProcessor, public smartable
 		/*!
 			\brief handler for the \c 'get' message
 			\param ipdest the output message destination IP
-			
+
 			The \c 'get' message is supported by every node:
 			- it is propagated to the subnodes until it reaches terminal nodes
 			- a terminal node send its state on \c 'get' request to the IP address given as parameter.
@@ -111,7 +112,7 @@ class MessageDriven : public MessageProcessor, public smartable
 		const char*		getName() const				{ return fName.c_str(); }
 		std::string		getAddress() const;
 		int				size () const				{ return (int)fSubNodes.size (); }
-		
+
 		const std::string&	name() const			{ return fName; }
 		SMessageDriven	subnode (int i) 			{ return fSubNodes[i]; }
 };

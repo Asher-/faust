@@ -32,30 +32,33 @@ set (CMAKE_BUILD_TYPE Release)
 
 #######################################
 # collect source files
-FILE(GLOB SRC ${OSC}/oscpack/osc/*.cpp  ${OSC}/oscpack/ip/*.cpp  
-	${FAUSTOSC}/*.cpp 
-	${FAUSTOSC}/lib/*.cpp 
-	${FAUSTOSC}/msg/*.cpp 
-	${FAUSTOSC}/nodes/*.cpp 
+FILE(GLOB SRC ${OSC}/oscpack/osc/*.cpp  ${OSC}/oscpack/ip/*.cpp
+	${FAUSTOSC}/*.cpp
+	${FAUSTOSC}/lib/*.cpp
+	${FAUSTOSC}/msg/*.cpp
+	${FAUSTOSC}/nodes/*.cpp
 	${FAUSTOSC}/osc/*.cpp)
 
-FILE(GLOB SRCH ${OSC}/oscpack/osc/*.h  ${OSC}/oscpack/ip/*.h  
-	${FAUST}/*.h 
-	${FAUST}/osc/*.h 
-	${FAUSTOSC}/*.h 
-	${FAUSTOSC}/lib/*.h 
-	${FAUSTOSC}/msg/*.h 
-	${FAUSTOSC}/nodes/*.h 
+FILE(GLOB SRCH ${OSC}/oscpack/osc/*.h  ${OSC}/oscpack/ip/*.h
+	${FAUST}/*.h
+	${FAUST}/osc/*.h
+	${FAUSTOSC}/*.h
+	${FAUSTOSC}/lib/*.h
+	${FAUSTOSC}/msg/*.h
+	${FAUSTOSC}/nodes/*.h
 	${FAUSTOSC}/osc/*.h)
 
 set( INCLUDE
-	${OSC}/oscpack 
-	${OSC}/faust 
-	${FAUSTOSC} 
-	${FAUSTOSC}/lib 
-	${FAUSTOSC}/osc  
-	${FAUSTOSC}/threads  
-	${OSC}/..)
+	${OSC}/oscpack
+	${OSC}/faust
+	${FAUSTOSC}
+	${FAUSTOSC}/lib
+	${FAUSTOSC}/osc
+	${FAUSTOSC}/threads
+	${OSC}/..
+	../../source/compiler/type_manager
+	../../source/compiler/errors
+)
 
 if (WIN32 OR MSYS)
 	file (GLOB PLATFORM_SRC	${OSC}/oscpack/ip/win32/*.cpp ${OSC}/faust/src/threads/winthreads_impl.cpp)
@@ -78,7 +81,7 @@ if (INCLUDE_OSC)
 	target_link_libraries(oscstatic  ws2_32 winmm)
 	set (TARGETS oscstatic)
 	if (MSVC)
-		set_target_properties(oscstatic  PROPERTIES 
+		set_target_properties(oscstatic  PROPERTIES
 			OUTPUT_NAME libOSCFaust
 			COMPILE_DEFINITIONS _CRT_SECURE_NO_WARNINGS)
 	else()
@@ -89,11 +92,11 @@ endif()
 if (NOT IOS AND OSCDYNAMIC)
 	add_library( oscdynamic SHARED ${SRC} ${SRCH} ${PLATFORM_SRC} )
 	target_include_directories (oscdynamic PRIVATE ${INCLUDE} )
-	set_target_properties(oscdynamic PROPERTIES 
+	set_target_properties(oscdynamic PROPERTIES
 		VERSION ${VERSION}
 		SOVERSION ${SOVERS}
 		OUTPUT_NAME OSCFaust)
-	if (WIN32 OR MSYS) 
+	if (WIN32 OR MSYS)
 		target_link_libraries(oscdynamic ws2_32 winmm)
 	else()
 		target_link_libraries(oscdynamic pthread)
@@ -103,7 +106,7 @@ endif()
 
 
 file (GLOB HEADERS ${OSC}/faust/faust/osc/*.h)
-set_target_properties(${TARGETS} PROPERTIES 
+set_target_properties(${TARGETS} PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY_RELEASE ${LIBDIR}
 	LIBRARY_OUTPUT_DIRECTORY_RELEASE ${LIBDIR}
 	ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${LIBDIR})
@@ -113,7 +116,7 @@ if (INCLUDE_OSC)
 	set_target_properties(oscstatic PROPERTIES PUBLIC_HEADER "${HEADERS}")
 else()
 	set_target_properties(oscdynamic PROPERTIES PUBLIC_HEADER "${HEADERS}")
-endif()	
+endif()
 
 if (IOS)
 	set_target_properties(oscstatic PROPERTIES OUTPUT_NAME OSCFaust.ios)
@@ -130,7 +133,7 @@ else()
 	else()
 		set_target_properties(${TARGETS} PROPERTIES COMPILE_DEFINTIONS  -DOSC_HOST_LITTLE_ENDIAN=1)
 	endif()
-endif()	
+endif()
 
 
 ####################################
@@ -151,4 +154,3 @@ install (
     FILES     ${FAUSTH}/OSCControler.h ${FAUSTH}/OSCIO.h DESTINATION ${CMAKE_INSTALL_PREFIX}/include/faust/gui
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
-

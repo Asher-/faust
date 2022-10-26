@@ -30,7 +30,9 @@
 #include <vector>
 #include <sstream>
 
-#include "smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
+
 #include "jsonnode.h"
 
 namespace httpdfaust
@@ -44,7 +46,7 @@ class jsonroot : public smartable
 {
 
     private:
-    
+
         std::string fName;
         std::string fAddress;
         int			fPort;
@@ -53,7 +55,7 @@ class jsonroot : public smartable
         std::map<std::string, std::string> fMeta;
         std::vector<Sjsonnode> fUi;
         std::stringstream fJSON;
-    
+
         inline std::string flatten(const std::string& src)
         {
             std::stringstream dst;
@@ -70,12 +72,12 @@ class jsonroot : public smartable
             }
             return dst.str();
         }
-	
+
 	public:
 				 jsonroot(const char *name, const char* address, int port)
 					:fName(name), fAddress(address), fPort(port), fInputs(0), fOutputs(0) {}
 		virtual ~jsonroot() {}
-		
+
 		void print(std::ostream& out) const;
 		void add(const Sjsonnode& node)					{ fUi.push_back(node); }
 		void setPort(int port)							{ fPort = port; }

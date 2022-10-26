@@ -35,7 +35,7 @@ namespace httpdfaust
 {
 
 class jsonnode;
-typedef SMARTP<jsonnode>	Sjsonnode;
+typedef smartptr<jsonnode>	Sjsonnode;
 
 //--------------------------------------------------------------------------
 /*!

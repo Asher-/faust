@@ -25,14 +25,15 @@
 #ifndef __OSCListener__
 #define __OSCListener__
 
-#include "faust/osc/smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
 #include "faust/osc/MessageProcessor.h"
 
 // oscpack include files
 #include "ip/UdpSocket.h"
 #include "osc/OscPacketListener.h"
 
-typedef void (*ErrorCallback)(void*);  
+typedef void (*ErrorCallback)(void*);
 
 namespace oscfaust
 {
@@ -40,7 +41,7 @@ namespace oscfaust
 //--------------------------------------------------------------------------
 /*!
 	\brief an OSC listener that converts OSC input to Messages
-	
+
 	OSCListener makes the glue between the oscpack library
 	and the faust lib osc messages representation
 	\see Message in Message.h
@@ -54,7 +55,7 @@ class OSCListener : public osc::OscPacketListener, public smartable
 	int		fPort;
 
 	public:
-		static SMARTP<OSCListener> create(MessageProcessor* mp, int port, const char* bindAddress=0)
+		static smartptr<OSCListener> create(MessageProcessor* mp, int port, const char* bindAddress=0)
 			{ return new OSCListener(mp, port, bindAddress); }
 
 		/*!
@@ -74,7 +75,7 @@ class OSCListener : public osc::OscPacketListener, public smartable
 		virtual ~OSCListener();
 
 };
-typedef class SMARTP<OSCListener> SOSCListener;
+typedef class smartptr<OSCListener> SOSCListener;
 
 } // end namespoace
 

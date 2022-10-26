@@ -28,6 +28,7 @@
 #include "garbageable.hh"
 #include "interval.hh"
 #include "smartpointer.hh"
+#include "smartable.hh"
 #include "tree.hh"
 
 /*********************************************************************
@@ -76,7 +77,7 @@ using namespace std;
 
 class AudioType;
 
-typedef P<AudioType> Type;
+typedef smartptr<AudioType> Type;
 typedef const vector<Type>& ConstTypes;
 
 /**
@@ -86,7 +87,7 @@ typedef const vector<Type>& ConstTypes;
  * also a "nature" (integer or floating point).
  */
 
-class AudioType : public virtual Garbageable {
+class AudioType : public virtual Garbageable, public virtual smartable {
    protected:
     int      fNature;         ///< the kind of data represented
     int      fVariability;    ///< how fast values change
@@ -479,7 +480,7 @@ inline bool operator<(const Type& t1, const Type& t2)
 }
 inline bool operator>(const Type& t1, const Type& t2)
 {
-    return t2 < t1;
+    return ! (t2 <= t1);
 }
 inline bool operator>=(const Type& t1, const Type& t2)
 {

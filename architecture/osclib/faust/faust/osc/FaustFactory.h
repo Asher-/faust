@@ -29,7 +29,7 @@
 #include <sstream>
 
 #include "faust/osc/FaustNode.h"
-#include "faust/osc/smartpointer.h"
+#include "smartpointer.hh"
 #include "faust/gui/JSONUI.h"
 
 class GUI;
@@ -38,9 +38,9 @@ namespace oscfaust
 
 class OSCIO;
 class RootNode;
-typedef class SMARTP<RootNode> SRootNode;
+typedef class smartptr<RootNode> SRootNode;
 class MessageDriven;
-typedef class SMARTP<MessageDriven>	SMessageDriven;
+typedef class smartptr<MessageDriven>	SMessageDriven;
 
 //--------------------------------------------------------------------------
 /*!

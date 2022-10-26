@@ -28,13 +28,14 @@
 #include <vector>
 #include <map>
 
-#include "smartpointer.h"
+#include "smartpointer.hh"
+#include "smartable.hh"
 
 namespace httpdfaust
 {
 
 class jsonnode;
-typedef SMARTP<jsonnode>	Sjsonnode;
+typedef smartptr<jsonnode>	Sjsonnode;
 
 typedef std::map<std::string, std::string>	TMetas;
 

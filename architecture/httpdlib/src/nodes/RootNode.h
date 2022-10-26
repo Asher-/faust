@@ -32,7 +32,7 @@ namespace httpdfaust
 {
 
 class RootNode;
-typedef class SMARTP<RootNode>	SRootNode;
+typedef class smartptr<RootNode>	SRootNode;
 
 //--------------------------------------------------------------------------
 /*!

@@ -44,7 +44,7 @@ static inline void checkToken(const std::string& token, const std::string& expec
 
 class interpreter_dsp_factory;
 
-typedef class faust_smartptr<interpreter_dsp_factory> SDsp_factory;
+typedef class smartptr<interpreter_dsp_factory> SDsp_factory;
 extern dsp_factory_table<SDsp_factory> gInterpreterFactoryTable;
 
 template <class REAL, int TRACE>
@@ -123,7 +123,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
     }
 
     void optimize(); // moved in interpreted_dsp.hh
- 
+
     void write(std::ostream* out, bool binary = false, bool small = false)
     {
         *out << std::setprecision(std::numeric_limits<REAL>::digits10+1);
@@ -203,7 +203,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
             fComputeDSPBlock->write(out, small);
         }
     }
-    
+
     std::string getCompileOptions() { return fCompileOptions; };
 
     // Factory reader
@@ -450,7 +450,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
             meta->declare(it->fKey.c_str(), it->fValue.c_str());
         }
     }
-    
+
     void metadata(MetaGlue* meta)
     {
         for (const auto& it : fMetaBlock->fInstructions) {
@@ -462,7 +462,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
 };
 
 struct interpreter_dsp_base : public dsp {
-    
+
     virtual ~interpreter_dsp_base() {}
 
     // Not implemented...
@@ -478,9 +478,9 @@ struct interpreter_dsp_base : public dsp {
     virtual void instanceResetUserInterface() {}
 
     virtual void instanceClear() {}
-    
+
     virtual void metadata(Meta* meta) {}
-    
+
     virtual void metadata(MetaGlue* meta) {}
 
     // Not implemented...
@@ -537,7 +537,7 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
     }
 
     virtual void metadata(Meta* meta) { fFactory->metadata(meta); }
-    
+
     virtual void metadata(MetaGlue* meta) { fFactory->metadata(meta); }
 
     virtual int getSampleRate() { return fFBCExecutor->getIntValue(fFactory->fSROffset); }
@@ -563,7 +563,7 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
             std::cout << "------------------------" << std::endl;
             std::cout << "classInit " << sample_rate << std::endl;
         }
-        
+
         try {
             // Execute static init instructions
             fFBCExecutor->ExecuteBlock(fFactory->fStaticInitBlock);
@@ -579,7 +579,7 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
             std::cout << "------------------------" << std::endl;
             std::cout << "instanceConstants " << sample_rate << std::endl;
         }
-        
+
         // Store sample_rate in 'fSampleRate' variable at correct offset in fIntHeap
         fFBCExecutor->setIntValue(fFactory->fSROffset, sample_rate);
 
@@ -598,7 +598,7 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
             std::cout << "------------------------" << std::endl;
             std::cout << "instanceResetUserInterface " << std::endl;
         }
-        
+
         try {
             // Execute reset UI instructions
             fFBCExecutor->ExecuteBlock(fFactory->fResetUIBlock);
@@ -614,7 +614,7 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
             std::cout << "------------------------" << std::endl;
             std::cout << "instanceClear " << std::endl;
         }
-        
+
         try {
             // Execute clear instructions
             fFBCExecutor->ExecuteBlock(fFactory->fClearBlock);
@@ -630,10 +630,10 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
             std::cout << "------------------------" << std::endl;
             std::cout << "instanceInit " << sample_rate << std::endl;
         }
-        
+
         // classInit has to be called for each instance since the tables are actually not shared between instances
         classInit(sample_rate);
-        
+
         instanceConstants(sample_rate);
         instanceResetUserInterface();
         instanceClear();
@@ -645,13 +645,13 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
             std::cout << "------------------------" << std::endl;
             std::cout << "init " << sample_rate << std::endl;
         }
-        
+
         fInitialized = true;
-        
+
         // classInit is not called here since the tables are actually not shared between instances
         instanceInit(sample_rate);
     }
-    
+
     virtual void buildUserInterface(UIInterface* glue)
     {
         try {
@@ -695,12 +695,12 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
         if (TRACE > 0 && !fInitialized) {
             std::cout << "======== DSP is not initialized ! ========" << std::endl;
         } else {
-            
+
             if (TRACE > 0) {
                 std::cout << "------------------------" << std::endl;
                 std::cout << "compute " << count << std::endl;
             }
-            
+
             REAL** inputs  = reinterpret_cast<REAL**>(inputs_aux);
             REAL** outputs = reinterpret_cast<REAL**>(outputs_aux);
 
@@ -714,20 +714,20 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
 
             // Set count in 'count' variable at the correct offset in fIntHeap
             fFBCExecutor->setIntValue(fFactory->fCountOffset, count);
-            
+
             try {
                 // Needed when used in DSPProxy
                 fFBCExecutor->updateInputControls();
-                
+
                 // Executes the 'control' block
                 fFBCExecutor->ExecuteBlock(fFactory->fComputeBlock);
 
                 // Executes the 'DSP' block
                 fFBCExecutor->ExecuteBlock(fFactory->fComputeDSPBlock);
-                
+
                 // Needed when used in DSPProxy
                 fFBCExecutor->updateOutputControls();
-                
+
             } catch (faustexception& e) {
                 std::cerr << e.Message();
                 std::vector<FBCBlockInstruction<REAL>*> blocks = {
@@ -848,9 +848,9 @@ class LIBFAUST_API interpreter_dsp : public dsp {
     int getNumOutputs();
 
     void buildUserInterface(UI* ui_interface);
-    
+
     void buildUserInterface(UIGlue* glue);
-    
+
     int getSampleRate();
 
     void init(int sample_rate);
@@ -866,13 +866,13 @@ class LIBFAUST_API interpreter_dsp : public dsp {
     interpreter_dsp* clone();
 
     void metadata(Meta* meta);
-    
+
     void metadata(MetaGlue* meta);
 
     void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs);
 };
 
-class LIBFAUST_API interpreter_dsp_factory : public dsp_factory, public faust_smartable {
+class LIBFAUST_API interpreter_dsp_factory : public dsp_factory, public smartable {
    protected:
     dsp_factory_base* fFactory;
 

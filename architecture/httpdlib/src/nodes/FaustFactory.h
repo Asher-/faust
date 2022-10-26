@@ -35,7 +35,7 @@ namespace httpdfaust
 {
 
 class MessageDriven;
-typedef class SMARTP<MessageDriven>	SMessageDriven;
+typedef class smartptr<MessageDriven>	SMessageDriven;
 
 //--------------------------------------------------------------------------
 /*!
