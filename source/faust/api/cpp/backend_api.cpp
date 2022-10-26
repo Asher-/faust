@@ -28,7 +28,7 @@
 
 #include "tlib/compatibility.hh"
 
-#include "faust/architectures.hh"
+#include "file_handling/string_substitution.hh"
 #include "faust/cli.hh"
 #include "faust/compiler/common.hh"
 

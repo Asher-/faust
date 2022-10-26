@@ -24,7 +24,7 @@
 // =============
 
 #include "faust.hh"
-#include "signal_api.hh"
+#include "faust/api/cpp/signal_api.hh"
 #include "normalform.hh"
 
 #ifdef __cplusplus

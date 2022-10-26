@@ -23,7 +23,7 @@
 // Box C++ API
 // ============
 
-#include "signal_api.hh"
+#include "faust/api/cpp/signal_api.hh"
 
 #ifndef _BOX_API_H_
 #define _BOX_API_H_

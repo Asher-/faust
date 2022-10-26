@@ -27,7 +27,7 @@
 #include "normalform.hh"
 #include "xtended.hh"
 
-#include "c_signal_api.hh"
+#include "faust/api/c/signal_api.hh"
 
 // ============
 // Box C++ API

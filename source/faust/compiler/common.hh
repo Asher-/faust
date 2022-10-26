@@ -25,7 +25,7 @@
 #include <cassert>
 
 #include "faust.hh"
-#include "faust/architectures.hh"
+#include "file_handling/string_substitution.hh"
 #include "faust/controller.hh"
 
 #include "architectures.hh"

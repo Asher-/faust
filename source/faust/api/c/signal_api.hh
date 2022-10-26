@@ -26,7 +26,7 @@
 #ifndef _C_SIGNAL_API_H_
 #define _C_SIGNAL_API_H_
 
-#include "signal_api.hh"
+#include "faust/api/cpp/signal_api.hh"
 
 #ifdef __cplusplus
 extern "C" {

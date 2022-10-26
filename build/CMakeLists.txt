@@ -110,6 +110,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/documentator
 	${ROOT}/benchmark
 	${SRCDIR}/cli
+	${SRCDIR}/compiler
 	${SRCDIR}/compiler/draw
 	${SRCDIR}/compiler/errors
 	${SRCDIR}/compiler/evaluate

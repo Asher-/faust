@@ -23,7 +23,7 @@
 // Signal C++ API
 // ===============
 
-#include "signal_api.hh"
+#include "faust/api/cpp/signal_api.hh"
 #include "dsp_factory.hh"
 #include "global.hh"
 #include "faust.hh"

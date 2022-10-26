@@ -24,7 +24,7 @@
 // ==========
 
 #include "faust.hh"
-#include "box_api.hh"
+#include "faust/api/cpp/box_api.hh"
 
 #ifdef __cplusplus
 extern "C" {
