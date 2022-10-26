@@ -24,7 +24,7 @@
 
 #include "code_container.hh"
 #include "dsp_factory.hh"
-#include "java_instructions.hh"
+#include "target/language/java/java_instructions.hh"
 
 using namespace std;
 

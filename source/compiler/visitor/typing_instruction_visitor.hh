@@ -22,7 +22,7 @@
 #ifndef _TYPING_INSTRUCTIONS_H
 #define _TYPING_INSTRUCTIONS_H
 
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 #include "global.hh"
 
 using namespace std;

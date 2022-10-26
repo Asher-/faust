@@ -57,9 +57,10 @@ endif()
 
 ####################################
 # source and headers files
-file (GLOB SRC ${SRCDIR}/cli/*.cpp
-				 		 	 ${SRCDIR}/instruction/*.cpp
-							 ${SRCDIR}/instruction/*/*.cpp
+file (GLOB SRC ${SRCDIR}/*.cpp
+				 		 	 ${SRCDIR}/cli/*.cpp
+							 ${SRCDIR}/compiler/instruction/*.cpp
+							 ${SRCDIR}/compiler/instruction/*/*.cpp
                ${SRCDIR}/faust/*.cpp
                ${SRCDIR}/faust/*/*.cpp
                ${SRCDIR}/faust/*/*/*.cpp
@@ -85,8 +86,8 @@ file (GLOB SRC ${SRCDIR}/cli/*.cpp
  						   ${SRCDIR}/documentator/*.cpp )
 file (GLOB HH  ${SRCDIR}/*.hh
                ${SRCDIR}/cli/*.hh
-							 ${SRCDIR}/instruction/*.hh
-							 ${SRCDIR}/instruction/*/*.hh
+							 ${SRCDIR}/compiler/instruction/*.hh
+							 ${SRCDIR}/compiler/instruction/*/*.hh
                ${SRCDIR}/faust/*.hh
                ${SRCDIR}/faust/*/*.hh
                ${SRCDIR}/faust/*/*/*.hh
@@ -123,6 +124,7 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler
 	${SRCDIR}/compiler/block_diagram
 	${SRCDIR}/compiler/block_diagram/boxes
+	${SRCDIR}/compiler/block_diagram/eval
 	${SRCDIR}/compiler/block_diagram/parallelize
 	${SRCDIR}/compiler/block_diagram/patternmatcher
 	${SRCDIR}/compiler/block_diagram/propagate
@@ -131,11 +133,11 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/compile/scalar
 	${SRCDIR}/compiler/errors
 	${SRCDIR}/compiler/file_handling
-	${SRCDIR}/compiler/fir
-	${SRCDIR}/compiler/generator
-	${SRCDIR}/compiler/generator/util
+	${SRCDIR}/compiler/instruction_compiler
+	${SRCDIR}/compiler/dsp_factory
+	${SRCDIR}/compiler/dsp_factory/util
 	${SRCDIR}/compiler/lexer
-	${SRCDIR}/compiler/lock
+	${SRCDIR}/compiler/instruction/lock
 	${SRCDIR}/compiler/math_primitives
 	${SRCDIR}/compiler/parser
 	${SRCDIR}/compiler/signals
@@ -180,14 +182,14 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/target/language/soul
 	${SRCDIR}/target/language/soul/visitor
 	${SRCDIR}/instruction
-	${SRCDIR}/instruction/cast
-	${SRCDIR}/instruction/control_flow
-	${SRCDIR}/instruction/declarations
-	${SRCDIR}/instruction/loops
-	${SRCDIR}/instruction/math
-	${SRCDIR}/instruction/memory
-	${SRCDIR}/instruction/numbers
-	${SRCDIR}/instruction/ui
+	${SRCDIR}/compiler/instruction/cast
+	${SRCDIR}/compiler/instruction/control_flow
+	${SRCDIR}/compiler/instruction/declarations
+	${SRCDIR}/compiler/instruction/loops
+	${SRCDIR}/compiler/instruction/math
+	${SRCDIR}/compiler/instruction/memory
+	${SRCDIR}/compiler/instruction/numbers
+	${SRCDIR}/compiler/instruction/ui
 	${SRCDIR}/tlib
 	${SRCDIR}/draw
 	${SRCDIR}/draw/device
@@ -214,7 +216,7 @@ if (INCLUDE_LLVM )
         endif()
 
 	# the declarations below are redundant but necessary to cope with different cmake behaviors on different platforms
-	set (TMP ${SRCDIR}/generator/llvm)
+	set (TMP ${SRCDIR}/dsp_factory/llvm)
 if (NOT MSVC)
 	set_property(SOURCE ${TMP}/llvm_dsp_aux.cpp ${TMP}/llvm_dynamic_dsp_aux.cpp APPEND_STRING PROPERTY COMPILE_FLAGS "-fno-rtti ${LLVM_DEFINITIONS}")
 	set_property(SOURCE ${TMP}/llvm_dsp_aux.cpp ${TMP}/llvm_dynamic_dsp_aux.cpp APPEND_STRING PROPERTY CMAKE_CXX_FLAGS "-fno-rtti ${LLVM_DEFINITIONS}")

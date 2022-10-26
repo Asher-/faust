@@ -24,7 +24,7 @@
 
 #include "faust.hh"
 #include "faust/compiler/common.hh"
-#include "instructions_compiler_jax.hh"
+#include "target/language/jax/instruction_compiler_jax.hh"
 
 #include "jax_code_container.hh"
 

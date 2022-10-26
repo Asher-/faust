@@ -29,7 +29,7 @@
 
 #include "exception.hh"
 #include "faust/gui/PathBuilder.h"
-#include "fbc_opcode.hh"
+#include "fbc/fbc_opcode.hh"
 
 static inline std::string quote1(std::string str)
 {

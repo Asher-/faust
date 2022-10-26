@@ -27,7 +27,7 @@
 #endif
 
 #include "code_container.hh"
-#include "fir_instructions.hh"
+#include "target/fir/fir_instructions.hh"
 #include "omp_code_container.hh"
 #include "vec_code_container.hh"
 #include "wss_code_container.hh"

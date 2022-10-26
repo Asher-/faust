@@ -32,7 +32,7 @@
 
 #include "faust.hh"
 #include "compatibility.hh"
-#include "dag_instructions_compiler.hh"
+#include "dag_instruction_compiler.hh"
 #include "xml_description.hh"
 #include "doc.hh"
 #include "drawschema.hh"

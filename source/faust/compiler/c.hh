@@ -25,8 +25,8 @@
 #include "faust.hh"
 #include "faust/compiler/common.hh"
 
-#include "dag_instructions_compiler.hh"
-#include "instructions_compiler.hh"
+#include "dag_instruction_compiler.hh"
+#include "instruction_compiler.hh"
 
 #include "c_code_container.hh"
 

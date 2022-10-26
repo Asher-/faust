@@ -25,9 +25,9 @@
 #include <string>
 #include "address.hh"
 
-#include "instruction/statement_instruction.hh"
-#include "instruction/value_instruction.hh"
-#include "instruction/block_instruction.hh"
+#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/block_instruction.hh"
 
 #include "visitor/instruction_visitor.hh"
 #include "visitor/clone_visitor.hh"

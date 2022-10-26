@@ -28,7 +28,7 @@
 #include <string>
 
 #include "exception.hh"
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 
 // Base class for type manager
 

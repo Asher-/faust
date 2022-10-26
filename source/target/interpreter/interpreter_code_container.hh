@@ -24,7 +24,7 @@
 
 #include "code_container.hh"
 #include "fir_to_fir.hh"
-#include "instructions_compiler.hh"
+#include "instruction_compiler.hh"
 #include "interpreter_dsp.hh"
 #include "visitor/interpreter_instruction_visitor.hh"
 #include "vec_code_container.hh"

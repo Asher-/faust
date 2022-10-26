@@ -23,7 +23,7 @@
 #define _INDEXED_ADDRESS_
 
 #include "address.hh"
-#include "instruction/value_instruction.hh"
+#include "compiler/instruction/value_instruction.hh"
 #include <vector>
 #include <string>
 

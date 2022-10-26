@@ -22,7 +22,7 @@
 #include "fir_code_container.hh"
 #include "fir_to_fir.hh"
 #include "global.hh"
-#include "instructions_complexity.hh"
+#include "compiler/instruction/instructions_complexity.hh"
 #include "visitor/struct_instruction_visitor.hh"
 
 using namespace std;

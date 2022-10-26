@@ -23,9 +23,9 @@
 #define __REMOVER_CLONE_VISITOR_HH__
 
 #include "visitor/basic_clone_visitor.hh"
-#include "statement_instruction.hh"
+#include "compiler/instruction/statement_instruction.hh"
 #include "instruction_builder.hh"
-#include "declarations/declare_var_instruction.hh"
+#include "compiler/instruction/declarations/declare_var_instruction.hh"
 #include "address.hh"
 
 // Remove all variable declarations marked as "Address::kLink"

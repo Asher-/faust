@@ -29,7 +29,7 @@
 #include "fir_to_fir.hh"
 #include "global.hh"
 #include "llvm_dynamic_dsp_aux.hh"
-#include "llvm_instructions.hh"
+#include "target/language/llvm/llvm_instructions.hh"
 
 /*
  LLVM module description:

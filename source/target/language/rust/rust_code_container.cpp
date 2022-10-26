@@ -34,7 +34,7 @@ using namespace std;
  - 'usize' type has to be used for all array access: cast index as 'usize' only when using it (load/store arrays)
  - TODO: local stack variables (shared computation) are normally non-mutable
  - inputN/outputN local buffer variables in 'compute' are not created at all: they are replaced directly in the code
- with inputs[N]/outputs[N] (done in instructions_compiler.cpp)
+ with inputs[N]/outputs[N] (done in instruction_compiler.cpp)
  - BoolOpcode BinOps always casted to integer
  - 'delete' for SubContainers is not generated
  - add 'kMutable' and 'kReference' address access type

@@ -23,7 +23,7 @@
 #define _DLANG_CODE_CONTAINER_H
 
 #include "code_container.hh"
-#include "dlang_instructions.hh"
+#include "target/language/dlang/dlang_instructions.hh"
 #include "dsp_factory.hh"
 #include "omp_code_container.hh"
 #include "vec_code_container.hh"

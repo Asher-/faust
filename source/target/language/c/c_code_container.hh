@@ -22,7 +22,7 @@
 #ifndef _C_CODE_CONTAINER_H
 #define _C_CODE_CONTAINER_H
 
-#include "c_instructions.hh"
+#include "target/language/c/c_instructions.hh"
 #include "code_container.hh"
 #include "dsp_factory.hh"
 #include "omp_code_container.hh"
@@ -45,16 +45,16 @@ class CCodeContainer : public virtual CodeContainer {
     virtual void produceClass();
     void produceMetadata(int tabs);
     virtual void produceInternal();
-    
+
     virtual void generateComputeAux(int tab) = 0;
-    
+
     void generateCompute(int n)
     {
         // Possibly generate separated functions
         tab(n, *fOut);
         fCodeProducer->Tab(n);
         generateComputeFunctions(fCodeProducer);
-        
+
         char* archs = getenv("FAUST_ARCHS");
         if (archs) {
             tab(n, *fOut);
@@ -93,7 +93,7 @@ class CCodeContainer : public virtual CodeContainer {
         addIncludeFile("<stdlib.h>");
         // For int64_t type
         addIncludeFile("<stdint.h>");
-        
+
         fCodeProducer = new CInstVisitor(out, name);
     }
 
@@ -101,7 +101,7 @@ class CCodeContainer : public virtual CodeContainer {
     {
         // fCodeProducer is a 'Garbageable'
     }
-    
+
     virtual dsp_factory_base* produceFactory();
 
     virtual void printHeader()
@@ -135,7 +135,7 @@ class CCodeContainer : public virtual CodeContainer {
 
 class CScalarCodeContainer : public CCodeContainer {
    protected:
-   
+
    public:
     CScalarCodeContainer()
     {}
@@ -167,7 +167,7 @@ class CScalarOneSampleCodeContainer1 : public CScalarCodeContainer {
         initialize(numInputs, numOutputs);
         fKlassName = name;
         fOut = out;
-        
+
         // For mathematical functions
         if (gGlobal->gFastMath) {
             addIncludeFile((gGlobal->gFastMathLib == "def") ? "\"faust/dsp/fastmath.cpp\""
@@ -175,19 +175,19 @@ class CScalarOneSampleCodeContainer1 : public CScalarCodeContainer {
         } else {
             addIncludeFile("<math.h>");
         }
-        
+
         // For malloc/free
         addIncludeFile("<stdlib.h>");
         // For int64_t type
         addIncludeFile("<stdint.h>");
-        
+
         fSubContainerType = sub_container_type;
         fCodeProducer = new CInstVisitor(out, name);
     }
 
     virtual ~CScalarOneSampleCodeContainer1()
     {}
-    
+
     void generateComputeAux(int tab);
 };
 
@@ -210,7 +210,7 @@ class CScalarOneSampleCodeContainer2 : public CScalarCodeContainer {
             initialize(numInputs, numOutputs);
             fKlassName = name;
             fOut = out;
-            
+
             // For mathematical functions
             if (gGlobal->gFastMath) {
                 addIncludeFile((gGlobal->gFastMathLib == "def") ? "\"faust/dsp/fastmath.cpp\""
@@ -218,19 +218,19 @@ class CScalarOneSampleCodeContainer2 : public CScalarCodeContainer {
             } else {
                 addIncludeFile("<math.h>");
             }
-            
+
             // For malloc/free
             addIncludeFile("<stdlib.h>");
             // For int64_t type
             addIncludeFile("<stdint.h>");
-            
+
             fSubContainerType = sub_container_type;
             fCodeProducer = new CInstVisitor1(out, name);
         }
-    
+
         virtual ~CScalarOneSampleCodeContainer2()
         {}
-    
+
         void generateComputeAux(int tab);
 };
 
@@ -251,7 +251,7 @@ class CScalarOneSampleCodeContainer3 : public CScalarOneSampleCodeContainer2 {
             initialize(numInputs, numOutputs);
             fKlassName = name;
             fOut = out;
-            
+
             // For mathematical functions
             if (gGlobal->gFastMath) {
                 addIncludeFile((gGlobal->gFastMathLib == "def") ? "\"faust/dsp/fastmath.cpp\""
@@ -259,21 +259,21 @@ class CScalarOneSampleCodeContainer3 : public CScalarOneSampleCodeContainer2 {
             } else {
                 addIncludeFile("<math.h>");
             }
-            
+
             // For malloc/free
             addIncludeFile("<stdlib.h>");
             // For int64_t type
             addIncludeFile("<stdint.h>");
-            
+
             fSubContainerType = sub_container_type;
-        
+
             // Setup in produceClass
             fCodeProducer = nullptr;
         }
-        
+
         virtual ~CScalarOneSampleCodeContainer3()
         {}
-    
+
 };
 
 /**
@@ -291,12 +291,12 @@ class CScalarOneSampleCodeContainer4 : public CScalarOneSampleCodeContainer3 {
                                        int sub_container_type)
         :CScalarOneSampleCodeContainer3(name, numInputs, numOutputs, out, sub_container_type)
         {}
-        
+
         virtual ~CScalarOneSampleCodeContainer4()
         {}
-        
+
         void generateComputeAux(int tab);
-    
+
 };
 
 /**

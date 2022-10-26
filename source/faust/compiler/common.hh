@@ -40,7 +40,7 @@
 
 #include "timing.hh"
 
-#include "instructions_compiler.hh"
+#include "instruction_compiler.hh"
 #include "doc.hh"
 
 

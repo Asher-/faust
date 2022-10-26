@@ -23,7 +23,7 @@
 #define interpreter_comp_dsp_aux_h
 
 #include "interpreter_dsp_aux.hh"
-#include "fbc_compiler.hh"
+#include "fbc/fbc_compiler.hh"
 
 // Interpreter factory using a LLVM or MIR compiler for the 'compute' method
 

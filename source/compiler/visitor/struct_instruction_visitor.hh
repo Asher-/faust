@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 #include "memory_description.hh"
 
 /*

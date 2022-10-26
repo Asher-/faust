@@ -156,7 +156,7 @@ autres fichiers à changer pour le backend -ocpp
 
 + `boxes/ppbox.cpp`, pour les diagrammes
 
-+ `generator/compile_scalar.cpp`, ce fichier est celui qui contient la compilation proprement dite
++ `dsp_factory/compile_scalar.cpp`, ce fichier est celui qui contient la compilation proprement dite
 
 + `sigprint.cpp`, si a besoin d'un dessin spécial
 

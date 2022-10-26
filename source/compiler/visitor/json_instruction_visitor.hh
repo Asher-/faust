@@ -27,7 +27,7 @@
 #include <vector>
 
 #include "faust/gui/JSONUI.h"
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 #include "exception.hh"
 
 using namespace std;

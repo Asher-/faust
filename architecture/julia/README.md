@@ -4,7 +4,7 @@
 
 [Julia](https://julialang.org) is a high-level, high-performance, dynamic programming language. While it is a general-purpose language and can be used to write any application, many of its features are well suited for numerical analysis and computational science.
 
-A [Julia backend](https://github.com/grame-cncm/faust/tree/master-dev/compiler/generator/julia) allows to generate Julia code from the DSP program as a data structure (subtype of a `dsp` type) and a set of methods using this type. Several architecture files have been developed to use the resulting Julia code:
+A [Julia backend](https://github.com/grame-cncm/faust/tree/master-dev/compiler/dsp_factory/julia) allows to generate Julia code from the DSP program as a data structure (subtype of a `dsp` type) and a set of methods using this type. Several architecture files have been developed to use the resulting Julia code:
 
 - `gui/meta.jl`: contains the base Meta type definition and associated method
 - `gui/UI.jl`: contains the base UI type definition and associated methods

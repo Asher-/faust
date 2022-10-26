@@ -25,7 +25,7 @@
 #include <iostream>
 #include <float.h>
 
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 
 #define FLOATMACRO "FAUSTFLOAT"
 #define FLOATMACROPTR "FAUSTFLOAT*"

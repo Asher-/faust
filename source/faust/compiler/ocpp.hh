@@ -24,7 +24,7 @@
 
 #include "faust.hh"
 #include "faust/compiler/common.hh"
-#include "instructions_compiler1.hh"
+#include "instruction_compiler1.hh"
 
 #include "compile_scalar.hh"
 #include "compile_sched.hh"

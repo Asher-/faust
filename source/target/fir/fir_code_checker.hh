@@ -36,7 +36,7 @@ using namespace std;
 
 #include "exception.hh"
 #include "global.hh"
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 
 /*
 

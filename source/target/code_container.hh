@@ -30,7 +30,7 @@
 #include "dsp_factory.hh"
 #include "floats.hh"
 #include "garbageable.hh"
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 #include "visitor/json_instruction_visitor.hh"
 #include "property.hh"
 #include "sigtype.hh"

@@ -32,7 +32,7 @@
 #include "Text.hh"
 #include "binop.hh"
 #include "dsp_factory.hh"
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 #include "target/language/c/type_manager/string.hh"
 #include "floats.hh"
 

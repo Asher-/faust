@@ -22,7 +22,7 @@
 #ifndef _BINOP_
 #define _BINOP_
 
-#include "fbc_opcode.hh"
+#include "fbc/fbc_opcode.hh"
 #include "node.hh"
 
 typedef const Node (*comp)(const Node& a, const Node& b);

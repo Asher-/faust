@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "garbageable.hh"
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 #include "klass.hh"
 #include "lateq.hh"
 #include "sigtype.hh"

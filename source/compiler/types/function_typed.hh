@@ -24,7 +24,7 @@
 
 #include "types/basic_typed.hh"
 #include "types/named_typed.hh"
-#include "is_type.hh"
+#include "compiler/types/is_type.hh"
 #include "Text.hh"
 #include "types/typed.hh"
 

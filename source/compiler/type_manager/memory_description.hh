@@ -26,7 +26,7 @@
 #include <utility>
 #include <vector>
 
-#include "instructions.hh"
+#include "compiler/instruction/instructions.hh"
 
 // Describe a field memory location in the DSP structure
 struct MemoryDesc {

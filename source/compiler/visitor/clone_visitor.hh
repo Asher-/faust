@@ -23,7 +23,7 @@
 #define _CLONE_VISITOR_
 
 #include "garbageable.hh"
-#include "instruction/declarations.hh"
+#include "compiler/instruction/declarations.hh"
 
 // Clone a FIR expression
 

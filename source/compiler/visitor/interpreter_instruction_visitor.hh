@@ -25,8 +25,8 @@
 #include <cstdlib>
 
 #include "exception.hh"
-#include "fbc_interpreter.hh"
-#include "instructions.hh"
+#include "fbc/fbc_interpreter.hh"
+#include "compiler/instruction/instructions.hh"
 #include "memory_description.hh"
 #include "visitor/typing_instruction_visitor.hh"
 
