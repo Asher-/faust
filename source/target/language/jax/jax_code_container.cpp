@@ -25,6 +25,7 @@
 #include "fir_function_builder.hh"
 #include "floats.hh"
 #include "global.hh"
+#include "fir/visitor/function_call_inliner.hh"
 
 using namespace std;
 

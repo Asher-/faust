@@ -27,6 +27,7 @@
 #include "global.hh"
 #include "interpreter_code_container.hh"
 #include "visitor/interpreter_instruction_visitor.hh"
+#include "fir/visitor/loop_variable_renamer.hh"
 
 using namespace std;
 

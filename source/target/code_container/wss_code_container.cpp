@@ -22,6 +22,8 @@
 #include "wss_code_container.hh"
 #include "fir_to_fir.hh"
 #include "global.hh"
+#include "variable_mover.hh"
+#include "visitor/remover_clone_visitor.hh"
 
 using namespace std;
 
@@ -36,7 +38,7 @@ void WSSCodeContainer::moveCompute2ComputeThread()
     struct Compute2ComputeThread : public DispatchVisitor {
         WSSCodeContainer* fContainer;
         vector<std::string>    fVariables;
-        
+
         bool containVar(const std::string& name)
         {
             for (const auto& it : fVariables) {
@@ -71,7 +73,7 @@ void WSSCodeContainer::moveCompute2ComputeThread()
     // To move variables in "computeThread"
     Compute2ComputeThread mover(this, { "fSoundfile", "Then", "Else", "Slow", "Vec", "fInput", "fOutput", "pfPerm", "pfTemp" });
     fComputeBlockInstructions->accept(&mover);
-  
+
     // Remove marked variables from fComputeBlockInstructions
     RemoverCloneVisitor remover;
     fComputeBlockInstructions = static_cast<BlockInst*>(fComputeBlockInstructions->clone(&remover));

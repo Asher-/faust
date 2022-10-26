@@ -24,6 +24,8 @@
 #include "exception.hh"
 #include "floats.hh"
 #include "global.hh"
+#include "fir/visitor/function_call_inliner.hh"
+#include "fir/visitor/loop_variable_renamer.hh"
 
 using namespace std;
 

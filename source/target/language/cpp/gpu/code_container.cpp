@@ -28,6 +28,7 @@
 
 #include "target/language/cpp/gpu/cuda/code_container.hh"
 #include "target/language/cpp/gpu/cuda/vector/code_container.hh"
+#include "fir/sort_declarations.hh"
 
 static void tab1(int n, ostream& fout)
 {

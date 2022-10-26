@@ -129,8 +129,8 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/compile/scalar
 	${SRCDIR}/compiler/errors
 	${SRCDIR}/compiler/file_handling
+	${SRCDIR}/compiler/fir
 	${SRCDIR}/compiler/generator
-	${SRCDIR}/compiler/generator/fir
 	${SRCDIR}/compiler/generator/util
 	${SRCDIR}/compiler/lexer
 	${SRCDIR}/compiler/lock

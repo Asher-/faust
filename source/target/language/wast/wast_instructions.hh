@@ -25,6 +25,7 @@
 #include <ostream>
 
 #include "was_instructions.hh"
+#include "fir/visitor/move_variables_in_front_3.hh"
 
 #define realStr ((gGlobal->gFloatSize == 1) ? "f32" : ((gGlobal->gFloatSize == 2) ? "f64" : ""))
 #define offStr ((gGlobal->gFloatSize == 1) ? "2" : ((gGlobal->gFloatSize == 2) ? "3" : ""))
@@ -99,14 +100,14 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         // Not supported for now
         throw faustexception("ERROR : 'soundfile' primitive not yet supported for wast\n");
     }
-    
+
     virtual void visit(DeclareVarInst* inst)
     {
         Address::AccessType access      = inst->fAddress->getAccess();
         bool                is_struct   = (access & Address::kStruct) || (access & Address::kStaticStruct);
         ArrayTyped*         array_typed = dynamic_cast<ArrayTyped*>(inst->fType);
         string              name        = inst->fAddress->getName();
-  
+
         // fSampleRate may appear several time (in subcontainers and in main DSP)
         if (name != "fSampleRate") {
             // When inlined in classInit and instanceConstants, kStaticStruct may appear several times
@@ -115,7 +116,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
             }
             faustassert(fFieldTable.find(name) == fFieldTable.end());
         }
-      
+
         if (array_typed && array_typed->fSize > 1) {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, array_typed->fSize, array_typed->getSizeBytes(), array_typed->fType->getType());
@@ -227,6 +228,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         IndexedAddress*    indexed = dynamic_cast<IndexedAddress*>(inst->fAddress);
 
         if (access & Address::kStruct || access & Address::kStaticStruct || indexed) {
+
             int offset;
             if ((offset = getConstantOffset(inst->fAddress)) > 0) {
                 if (isRealType(type)) {
@@ -252,7 +254,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
                 inst->fAddress->accept(this);
                 *fOut << ")";
             }
-        
+
         } else {
             *fOut << "(local.get $" << name << ")";
         }
@@ -424,7 +426,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
             }
         }
     }
-  
+
     virtual void visit(LoadVarAddressInst* inst)
     {
         // Not implemented in WASM
@@ -513,7 +515,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
     virtual void visit(::CastInst* inst)
     {
         Typed::VarType type = TypingVisitor::getType(inst->fInst);
-     
+
         switch (inst->fType->getType()) {
             case Typed::kInt32:
                 if (isInt32Type(type)) {
@@ -530,11 +532,11 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
                     *fOut << ")";
                 }
                 break;
-            
+
              case Typed::kInt64:
                 faustassert(false);
                 break;
-                
+
             case Typed::kFloat:
             case Typed::kDouble:
                 if (isRealType(type)) {
@@ -553,7 +555,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
                     faustassert(false);
                 }
                 break;
-                
+
             default:
                 faustassert(false);
                 break;
@@ -624,7 +626,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         generateFunCallArgs(inst->fArgs.begin(), inst->fArgs.end(), (int)inst->fArgs.size());
         *fOut << ")";
     }
-    
+
     /*
     // Select that computes both branches
     virtual void visit(Select2Inst* inst)
@@ -656,7 +658,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         // Result type
         Typed::VarType then = TypingVisitor::getType(inst->fThen);
         *fOut << "(result " << type2String(then) << ") ";
-        
+
         // Compile 'cond'
         Typed::VarType cond = TypingVisitor::getType(inst->fCond);
         // Possibly convert i64 to i32
@@ -676,7 +678,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         inst->fElse->accept(this);
         *fOut << ")";
     }
- 
+
     // Conditional : if
     virtual void visit(IfInst* inst)
     {

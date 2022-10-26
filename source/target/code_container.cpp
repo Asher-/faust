@@ -30,6 +30,9 @@
 #include "visitor/text_instruction_visitor.hh"
 #include "type_manager/string.hh"
 #include "visitor/struct_instruction_visitor.hh"
+#include "sort_declarations.hh"
+#include "fir/visitor/function_call_inliner.hh"
+#include "fir/visitor/loop_variable_renamer.hh"
 
 using namespace std;
 

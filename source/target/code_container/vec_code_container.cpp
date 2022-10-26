@@ -24,6 +24,8 @@
 #include "fir_code_checker.hh"
 #include "fir_to_fir.hh"
 #include "global.hh"
+#include "variable_mover.hh"
+#include "visitor/remover_clone_visitor.hh"
 
 using namespace std;
 

@@ -34,6 +34,7 @@
 #include "dsp_factory.hh"
 #include "instructions.hh"
 #include "target/language/c/type_manager/string.hh"
+#include "floats.hh"
 
 using namespace std;
 

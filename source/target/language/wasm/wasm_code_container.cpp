@@ -25,6 +25,8 @@
 #include "floats.hh"
 #include "global.hh"
 #include "rn_base64.h"
+#include "fir/visitor/function_call_inliner.hh"
+#include "fir/visitor/loop_variable_renamer.hh"
 
 using namespace std;
 
