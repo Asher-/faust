@@ -19,44 +19,49 @@
  ************************************************************************
  ************************************************************************/
 
-#include <string.h>
+#ifndef __FAUST_COMPILERS_HH__
+#define __FAUST_COMPILERS_HH__
 
-#include "faust/compiler/common.hh"
-
-#include "faust/compiler/types.hh"
+#include "faust/compiler/c.hh"
+#include "faust/compiler/clang.hh"
+#include "faust/compiler/cpp.hh"
+#include "faust/compiler/csharp.hh"
+#include "faust/compiler/dlang.hh"
+#include "faust/compiler/fir.hh"
+#include "faust/compiler/interpreter.hh"
+#include "faust/compiler/java.hh"
+#include "faust/compiler/jax.hh"
+#include "faust/compiler/julia.hh"
+#include "faust/compiler/llvm.hh"
+#include "faust/compiler/ocpp.hh"
+#include "faust/compiler/rust.hh"
+#include "faust/compiler/soul.hh"
+#include "faust/compiler/wasm.hh"
+#include "faust/compiler/wast.hh"
 
 namespace Faust {
-  namespace Compiler {
 
-    namespace Helper {
-      template <typename Compilers> struct FindCompiler;
-      template <typename...CompilerType>
-      struct FindCompiler<::Faust::CompilerTypes<CompilerType...>>
-      {
-        static constexpr Common* type( const std::string& output_lang )
-        {
-          bool found_compiler = false;
-          Common*  compiler = nullptr;
-          ( ( ( ( output_lang == CompilerType::LanguageString ) && ! found_compiler)
-              ? ( found_compiler = true,compiler = new CompilerType() )
-              : nullptr ), ... );
-          return compiler;
-        }
-      };
-    }
-    using FindCompiler = Helper::FindCompiler<::Faust::Compilers>;
+  template <typename... Compilers> struct CompilerTypes {};
+  using Compilers = CompilerTypes
+  <
+    ::Faust::Compiler::Clang,
+    ::Faust::Compiler::LLVM,
+    ::Faust::Compiler::Interpreter,
+    ::Faust::Compiler::FIR,
+    ::Faust::Compiler::C,
+    ::Faust::Compiler::CPP,
+    ::Faust::Compiler::OCPP,
+    ::Faust::Compiler::Rust,
+    ::Faust::Compiler::Java,
+    ::Faust::Compiler::JAX,
+    ::Faust::Compiler::Julia,
+    ::Faust::Compiler::CSharp,
+    ::Faust::Compiler::Soul,
+    ::Faust::Compiler::WAST,
+    ::Faust::Compiler::WASM,
+    ::Faust::Compiler::Dlang
+  >;
 
-    Common* Common::compiler( const std::string& output_lang )
-    {
-        Common* compiler = FindCompiler::type( output_lang );
-        if ( ! compiler ) {
-            stringstream error;
-            error << "ERROR : cannot find backend for "
-                  << "\"" << output_lang << "\"" << endl;
-            throw faustexception(error.str());
-        }
-        return compiler;
-    }
-
-  }
 }
+
+#endif

@@ -31,10 +31,11 @@
 namespace Faust {
   namespace Compiler {
 
-
     struct WAST : public Common
     {
       static constexpr const char* TargetString = "WebAssembly (wast)";
+      static constexpr const char* LanguageString = "wast";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
       override
       {

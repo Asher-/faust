@@ -33,6 +33,8 @@ namespace Faust {
     struct Dlang : public Common
     {
       static constexpr const char* TargetString = "DLang";
+      static constexpr const char* LanguageString = "dlang";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

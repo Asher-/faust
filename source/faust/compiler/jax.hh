@@ -34,6 +34,8 @@ namespace Faust {
     struct JAX : public Common
     {
       static constexpr const char* TargetString = "JAX";
+      static constexpr const char* LanguageString = "jax";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

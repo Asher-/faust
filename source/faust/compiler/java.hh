@@ -33,6 +33,8 @@ namespace Faust {
     struct Java : public Common
     {
       static constexpr const char* TargetString = "Java";
+      static constexpr const char* LanguageString = "java";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

@@ -33,6 +33,8 @@ namespace Faust {
     struct Rust : public Common
     {
       static constexpr const char* TargetString = "Rust";
+      static constexpr const char* LanguageString = "rust";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

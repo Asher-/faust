@@ -34,6 +34,8 @@ namespace Faust {
     struct Interpreter : public Common
     {
       static constexpr const char* TargetString = "Interpreter";
+      static constexpr const char* LanguageString = "interp";
+
       void compile(Tree signals, int numInputs, int numOutputs)
       override
       {

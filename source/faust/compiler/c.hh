@@ -36,6 +36,7 @@ namespace Faust {
     struct C : public Common
     {
       static constexpr const char* TargetString = "C";
+      static constexpr const char* LanguageString = "c";
 
       void
       compile(
@@ -63,7 +64,7 @@ namespace Faust {
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
       const char* const& targetString() override  { return TargetString; }
-      
+
     };
 
   }

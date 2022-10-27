@@ -33,6 +33,8 @@ namespace Faust {
     struct WASM : public Common
     {
       static constexpr const char* TargetString = "WebAssembly (wasm)";
+      static constexpr const char* LanguageString = "wasm";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
       override
       {

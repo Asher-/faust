@@ -33,6 +33,8 @@ namespace Faust {
     struct FIR : public Common
     {
       static constexpr const char* TargetString = "FIR";
+      static constexpr const char* LanguageString = "fir";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

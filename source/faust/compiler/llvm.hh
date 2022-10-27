@@ -34,6 +34,8 @@ namespace Faust {
     struct LLVM : public Common
     {
       static constexpr const char* TargetString = "LLVM IR";
+      static constexpr const char* LanguageString = "llvm";
+
       void compile(Tree signals, int numInputs, int numOutputs, bool generate)
       override
       {

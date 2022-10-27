@@ -32,6 +32,8 @@ namespace Faust {
     struct Clang : public Common
     {
       static constexpr const char* TargetString = "Clang-LLVM";
+      static constexpr const char* LanguageString = "cllvm";
+
       void compile(Tree signals, int numInputs, int numOutputs)
       override
       {

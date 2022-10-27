@@ -34,6 +34,8 @@ namespace Faust {
     struct Julia : public Common
     {
       static constexpr const char* TargetString = "Julia";
+      static constexpr const char* LanguageString = "julia";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

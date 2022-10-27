@@ -33,6 +33,8 @@ namespace Faust {
     struct Soul : public Common
     {
       static constexpr const char* TargetString = "SOUL";
+      static constexpr const char* LanguageString = "soul";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

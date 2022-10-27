@@ -33,6 +33,8 @@ namespace Faust {
     struct CSharp : public Common
     {
       static constexpr const char* TargetString = "CSharp";
+      static constexpr const char* LanguageString = "csharp";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {

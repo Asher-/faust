@@ -37,6 +37,7 @@ namespace Faust {
     {
 
       static constexpr const char* TargetString = "old C++";
+      static constexpr const char* LanguageString = "ocpp";
 
       static unique_ptr<ifstream> enrobage;
 

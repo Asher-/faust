@@ -34,6 +34,7 @@ namespace Faust {
     struct CPP : public Common
     {
       static constexpr const char* TargetString = "C++";
+      static constexpr const char* LanguageString = "cpp";
 
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
