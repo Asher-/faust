@@ -125,9 +125,8 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/block_diagram
 	${SRCDIR}/compiler/block_diagram/boxes
 	${SRCDIR}/compiler/block_diagram/eval
+	${SRCDIR}/compiler/block_diagram/eval/patternmatcher
 	${SRCDIR}/compiler/block_diagram/parallelize
-	${SRCDIR}/compiler/block_diagram/patternmatcher
-	${SRCDIR}/compiler/block_diagram/propagate
 	${SRCDIR}/compiler/block_diagram/simplify
 	${SRCDIR}/compiler/compile
 	${SRCDIR}/compiler/compile/scalar

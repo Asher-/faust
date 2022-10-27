@@ -53,11 +53,8 @@ namespace Faust {
           this->_instructionCompiler->prepare(signals);
       }
 
-      const char* const& targetString()
-      override
-      {
-          return TargetString;
-      }
+      const char* const& targetString() override  { return TargetString; }
+
     };
 
   }

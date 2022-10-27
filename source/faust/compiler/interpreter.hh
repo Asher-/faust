@@ -68,11 +68,7 @@ namespace Faust {
           this->_instructionCompiler->compileMultiSignal(signals);
       }
 
-      const char* const& targetString()
-      override
-      {
-          return TargetString;
-      }
+      const char* const& targetString() override  { return TargetString; }
 
     };
 

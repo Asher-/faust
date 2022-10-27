@@ -144,14 +144,10 @@ namespace Faust {
           this->_instructionCompiler->compileMultiSignal(signals);
       }
 
-      const char* const& targetString()
-      override
-      {
-          return OCPP::TargetString;
-      }
+      const char* const& targetString() override  { return TargetString; }
 
       using Common::printXML;
-      
+
       void
       printXML()
       override

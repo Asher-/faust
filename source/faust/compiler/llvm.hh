@@ -65,11 +65,7 @@ namespace Faust {
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "bool generate required."; };
 
-      const char* const& targetString()
-      override
-      {
-          return TargetString;
-      }
+      const char* const& targetString() override  { return TargetString; }
 
       virtual void printVersionTargetDetail()
       {

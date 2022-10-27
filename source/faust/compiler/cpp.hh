@@ -34,6 +34,7 @@ namespace Faust {
     struct CPP : public Common
     {
       static constexpr const char* TargetString = "C++";
+
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
@@ -41,25 +42,28 @@ namespace Faust {
               throw faustexception("ERROR : -lang cpp not supported since CPP backend is not built\n");
           #endif
 
-          this->_codeContainer =
-              CPPCodeContainer::createContainer(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs, out);
+          this->_codeContainer = CPPCodeContainer::createContainer(
+            gGlobal->gClassName,
+            gGlobal->gSuperClassName,
+            numInputs,
+            numOutputs,
+            out
+          );
 
-          if (gGlobal->gVectorSwitch) {
-              this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
-          } else {
-              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
+          this->_instructionCompiler = gGlobal->gVectorSwitch ?
+            new DAGInstructionsCompiler(this->_codeContainer)
+          : new InstructionsCompiler(this->_codeContainer);
+
+          if ( gGlobal->gPrintXMLSwitch
+            || gGlobal->gPrintDocSwitch ) {
+            this->_instructionCompiler->setDescription( new Description() );
           }
-
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      const char* const& targetString()
-      override
-      {
-          return TargetString;
-      }
+      const char* const& targetString() override  { return TargetString; }
+
     };
 
   }

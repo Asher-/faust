@@ -51,11 +51,7 @@ namespace Faust {
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
-      const char* const& targetString()
-      override
-      {
-          return TargetString;
-      }
+      const char* const& targetString() override  { return TargetString; }
 
     };
 

@@ -357,15 +357,28 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
     // constants
     //-----------
 
-    if (xt || isBoxInt(exp) || isBoxReal(exp) || isBoxWire(exp) || isBoxCut(exp) || isBoxPrim0(exp) ||
-        isBoxPrim1(exp) || isBoxPrim2(exp) || isBoxPrim3(exp) || isBoxPrim4(exp) || isBoxPrim5(exp) || isBoxFFun(exp) ||
-        isBoxFConst(exp) || isBoxFVar(exp) || isBoxWaveform(exp)) {
+    if ( xt
+      || isBoxInt(exp)
+      || isBoxReal(exp)
+      || isBoxWire(exp)
+      || isBoxCut(exp)
+      || isBoxPrim0(exp)
+      || isBoxPrim1(exp)
+      || isBoxPrim2(exp)
+      || isBoxPrim3(exp)
+      || isBoxPrim4(exp)
+      || isBoxPrim5(exp)
+      || isBoxFFun(exp)
+      || isBoxFConst(exp)
+      || isBoxFVar(exp)
+      || isBoxWaveform(exp)) {
         return exp;
 
         // block-diagram constructors
         //---------------------------
 
-    } else if (isBoxSeq(exp, e1, e2)) {
+    }
+    else if (isBoxSeq(exp, e1, e2)) {
         Tree a1 = eval(e1, visited, localValEnv);
         Tree a2 = eval(e2, visited, localValEnv);
         Tree re = boxSeq(a1, a2);
@@ -373,7 +386,11 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         xtended* xxt = (xtended*)getUserData(a2);
         siglist  lsig;
         // try a numerical simplification of expressions of type 2,3:+
-        if (isNumericalTuple(a1, lsig) && (xxt || isBoxWire(a2) || isBoxPrim1(a2) || isBoxPrim2(a2))) {
+        if ( isNumericalTuple(a1, lsig)
+          && ( xxt
+            || isBoxWire(a2)
+            || isBoxPrim1(a2)
+            || isBoxPrim2(a2))) {
             // check that re is well typed before trying to simplify it
             int n, m;
             getBoxType(re, &n, &m);
@@ -1162,7 +1179,7 @@ static Tree applyList(Tree fun, Tree larg)
         // check arity of function
         Tree efun = a2sb(fun);
         // cerr << "TRACEPOINT 1 : " << boxpp(efun) << endl;
-        if (!getBoxType(efun, &ins, &outs)) {  // on laisse comme ca pour le moment
+        if (!getBoxType(efun, &ins, &outs)) {  // we leave it like this for the moment
             // we can't determine the input arity of the expression
             // hope for the best
             return boxSeq(larg2par(larg), fun);

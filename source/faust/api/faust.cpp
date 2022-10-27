@@ -19,46 +19,10 @@
  ************************************************************************
  ************************************************************************/
 
-#include <limits.h>
-#include <stdio.h>
-#include <string.h>
-#include <cstdlib>
-#include <fstream>
-#include <iostream>
-#include <list>
-#include <sstream>
 #include <string>
-#include <vector>
 
-#include "faust.hh"
-#include "compatibility.hh"
-#include "dag_instruction_compiler.hh"
-#include "xml_description.hh"
-#include "doc.hh"
-#include "drawschema.hh"
-#include "string_substitution.hh"
-#include "errormsg.hh"
-#include "eval.hh"
-#include "exception.hh"
-#include "exepath.hh"
-#include "floats.hh"
-#include "garbageable.hh"
-#include "global.hh"
-#include "labels.hh"
-#include "libfaust.h"
-#include "normalform.hh"
-#include "ppbox.hh"
-#include "ppsig.hh"
-#include "privatise.hh"
-#include "propagate.hh"
-#include "recursivness.hh"
-#include "schema.h"
-#include "signalVisitor.hh"
-#include "signals.hh"
-#include "sigprint.hh"
-#include "sigtype.hh"
-#include "sourcereader.hh"
-#include "timing.hh"
+#include "tlib/tree.hh"
+
 #include "xtended.hh"
 
 #include "faust/cli.hh"
