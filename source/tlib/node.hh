@@ -109,22 +109,22 @@ class Node : public virtual Garbageable {
     }
 
     // predicats
-    bool operator==(const Node& n) const { return fType == n.fType && fData.v == n.fData.v; }
-    bool operator!=(const Node& n) const { return fType != n.fType || fData.v != n.fData.v; }
+    virtual bool operator==(const Node& n) const { return fType == n.fType && fData.v == n.fData.v; }
+    virtual bool operator!=(const Node& n) const { return fType != n.fType || fData.v != n.fData.v; }
 
     // accessors
-    int type() const { return fType; }
+    virtual int type() const { return fType; }
 
-    int    getInt() const { return fData.i; }
-    double getDouble() const { return fData.f; }
-    Sym    getSym() const { return fData.s; }
-    void*  getPointer() const { return fData.p; }
+    virtual int    getInt() const { return fData.i; }
+    virtual double getDouble() const { return fData.f; }
+    virtual Sym    getSym() const { return fData.s; }
+    virtual void*  getPointer() const { return fData.p; }
 
     // conversions and promotion for numbers
-    operator int() const { return (fType == kIntNode) ? fData.i : (fType == kDoubleNode) ? int(fData.f) : 0; }
-    operator double() const { return (fType == kIntNode) ? double(fData.i) : (fType == kDoubleNode) ? fData.f : 0.0; }
+    virtual operator int() const { return (fType == kIntNode) ? fData.i : (fType == kDoubleNode) ? int(fData.f) : 0; }
+    virtual operator double() const { return (fType == kIntNode) ? double(fData.i) : (fType == kDoubleNode) ? fData.f : 0.0; }
 
-    ostream& print(ostream& fout) const;  ///< print a node on a stream
+    virtual ostream& print(ostream& fout) const;  ///< print a node on a stream
 };
 
 // printing

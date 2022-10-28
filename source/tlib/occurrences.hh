@@ -35,12 +35,12 @@ class Occurrences : public virtual Garbageable {
 
    public:
     Occurrences(Tree root);  // count the occurrences of each subtree of root
-    int getCount(Tree t);    // return the number of occurrences of t in root
+    virtual int getCount(Tree t);    // return the number of occurrences of t in root
 
    private:
-    Tree specificKey(Tree root);    // specific key for occurences counting in root
-    void countOccurrences(Tree t);  // increment the occurrences of t and its subtrees
-    void setCount(Tree t, int c);   // set the number of occurrences of t
+    virtual Tree specificKey(Tree root);    // specific key for occurences counting in root
+    virtual void countOccurrences(Tree t);  // increment the occurrences of t and its subtrees
+    virtual void setCount(Tree t, int c);   // set the number of occurrences of t
 };
 
 #endif

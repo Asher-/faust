@@ -66,8 +66,8 @@ class Symbol : public virtual Garbageable {
     ~Symbol();            ///< The destructor is never used
 
     // Others
-    bool                equiv(unsigned int hash,
-                              const char* str) const;  ///< Check if the name of the symbol is equal to string \p str
+    virtual bool equiv(unsigned int hash,
+                       const char* str) const;  ///< Check if the name of the symbol is equal to string \p str
     static unsigned int calcHashKey(const char* str);  ///< Compute the 32-bits hash key of string \p str
 
     // Static methods
@@ -77,7 +77,7 @@ class Symbol : public virtual Garbageable {
     static bool    isnew(const char* str);        ///< Returns \b true if no symbol of name \p str exists
 
    public:
-    std::ostream& print(std::ostream& fout) const;  ///< print a symbol on a stream
+    virtual std::ostream& print(std::ostream& fout) const;  ///< print a symbol on a stream
 
     friend Symbol*     symbol(const char* str);
     friend Symbol*     symbol(const std::string& str);

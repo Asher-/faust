@@ -29,7 +29,7 @@ template <class P>
 class property : public virtual Garbageable {
     Tree fKey;
 
-    P* access(Tree t)
+    virtual P* access(Tree t)
     {
         Tree d = t->getProperty(fKey);
         return d ? (P*)(d->node().getPointer()) : 0;
@@ -40,7 +40,7 @@ class property : public virtual Garbageable {
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
-    void set(Tree t, const P& data)
+    virtual void set(Tree t, const P& data)
     {
         P* p = access(t);
         if (p) {
@@ -50,7 +50,7 @@ class property : public virtual Garbageable {
         }
     }
 
-    bool get(Tree t, P& data)
+    virtual bool get(Tree t, P& data)
     {
         P* p = access(t);
         if (p) {
@@ -61,7 +61,7 @@ class property : public virtual Garbageable {
         }
     }
 
-    void clear(Tree t)
+    virtual void clear(Tree t)
     {
         P* p = access(t);
         if (p) {
@@ -80,9 +80,9 @@ class property<Tree> : public virtual Garbageable {
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
-    void set(Tree t, Tree data) { t->setProperty(fKey, data); }
+    virtual void set(Tree t, Tree data) { t->setProperty(fKey, data); }
 
-    bool get(Tree t, Tree& data)
+    virtual bool get(Tree t, Tree& data)
     {
         Tree d = t->getProperty(fKey);
         if (d) {
@@ -93,7 +93,7 @@ class property<Tree> : public virtual Garbageable {
         }
     }
 
-    void clear(Tree t) { t->clearProperty(fKey); }
+    virtual void clear(Tree t) { t->clearProperty(fKey); }
 };
 
 template <>
@@ -105,9 +105,9 @@ class property<int> : public virtual Garbageable {
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
-    void set(Tree t, int i) { t->setProperty(fKey, tree(Node(i))); }
+    virtual void set(Tree t, int i) { t->setProperty(fKey, tree(Node(i))); }
 
-    bool get(Tree t, int& i)
+    virtual bool get(Tree t, int& i)
     {
         Tree d = t->getProperty(fKey);
         if (d) {
@@ -118,7 +118,7 @@ class property<int> : public virtual Garbageable {
         }
     }
 
-    void clear(Tree t) { t->clearProperty(fKey); }
+    virtual void clear(Tree t) { t->clearProperty(fKey); }
 };
 
 template <>
@@ -130,9 +130,9 @@ class property<double> : public virtual Garbageable {
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
-    void set(Tree t, double x) { t->setProperty(fKey, tree(Node(x))); }
+    virtual void set(Tree t, double x) { t->setProperty(fKey, tree(Node(x))); }
 
-    bool get(Tree t, double& x)
+    virtual bool get(Tree t, double& x)
     {
         Tree d = t->getProperty(fKey);
         if (d) {
@@ -143,7 +143,7 @@ class property<double> : public virtual Garbageable {
         }
     }
 
-    void clear(Tree t) { t->clearProperty(fKey); }
+    virtual void clear(Tree t) { t->clearProperty(fKey); }
 };
 
 #endif

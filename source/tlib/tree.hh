@@ -87,7 +87,7 @@ typedef vector<Tree>    tvec;
 
 /**
  * A CTree = (Node x [CTree]) is the association of a content Node and a list of subtrees
- * called branches. In order to maximize the sharing of trees, hashconsing techniques are used.
+ * called branches. In order to maximize the sharing of trees, hash consing techniques are used.
  * Ctrees at different addresses always have a different content. A first consequence of this
  * approach is that a fast equality test on pointers can be used as an equality test on CTrees.
  * A second consequence is that a CTree can NEVER be modified. But a property list is associated
@@ -108,7 +108,7 @@ class LIBFAUST_API CTree : public virtual Garbageable {
     static Tree      gHashTable[kHashTableSize];  ///< hash table used for "hash consing"
 
    public:
-    
+
     static bool         gDetails;    ///< Ctree::print() print with more details when true
     static unsigned int gVisitTime;  ///< Should be incremented for each new visit to keep track of visited tree
 
@@ -126,7 +126,7 @@ class LIBFAUST_API CTree : public virtual Garbageable {
 
     CTree(size_t hk, const Node& n, const tvec& br);  ///< construction is private, uses tree::make instead
 
-    bool          equiv(const Node& n, const tvec& br) const;  ///< used to check if an equivalent tree already exists
+    virtual bool          equiv(const Node& n, const tvec& br) const;  ///< used to check if an equivalent tree already exists
     static size_t calcTreeHash(const Node& n,
                                const tvec& br);  ///< compute the hash key of a tree according to its node and branches
     static int    calcTreeAperture(const Node& n, const tvec& br);  ///< compute how open is a tree
@@ -138,41 +138,41 @@ class LIBFAUST_API CTree : public virtual Garbageable {
     static Tree make(const Node& n, const tvec& br);     ///< return a new tree or an existing equivalent one
 
     // Accessors
-    const Node& node() const { return fNode; }                 ///< return the content of the tree
-    int         arity() const { return (int)fBranch.size(); }  ///< return the number of branches (subtrees) of a tree
-    Tree        branch(int i) const { return fBranch[i]; }     ///< return the ith branch (subtree) of a tree
-    const tvec& branches() const { return fBranch; }           ///< return all branches (subtrees) of a tree
-    size_t      hashkey() const { return fHashKey; }           ///< return the hashkey of the tree
-    size_t      serial() const { return fSerial; }             ///< return the serial of the tree
-    int         aperture() const { return fAperture; }  ///< return how "open" is a tree in terms of free variables
-    void        setAperture(int a) { fAperture = a; }   ///< modify the aperture of a tree
+    virtual const Node& node() const { return fNode; }                 ///< return the content of the tree
+    virtual int         arity() const { return (int)fBranch.size(); }  ///< return the number of branches (subtrees) of a tree
+    virtual Tree        branch(int i) const { return fBranch[i]; }     ///< return the ith branch (subtree) of a tree
+    virtual const tvec& branches() const { return fBranch; }           ///< return all branches (subtrees) of a tree
+    virtual size_t      hashkey() const { return fHashKey; }           ///< return the hashkey of the tree
+    virtual size_t      serial() const { return fSerial; }             ///< return the serial of the tree
+    virtual int         aperture() const { return fAperture; }  ///< return how "open" is a tree in terms of free variables
+    virtual void        setAperture(int a) { fAperture = a; }   ///< modify the aperture of a tree
 
     // Print a tree and the hash table (for debugging purposes)
-    ostream&    print(ostream& fout) const;  ///< print recursively the content of a tree on a stream
+    virtual ostream&    print(ostream& fout) const;  ///< print recursively the content of a tree on a stream
     static void control();                   ///< print the hash table content (for debug purpose)
 
     static void init();
 
     // type information
-    void  setType(void* t) { fType = t; }
-    void* getType() { return fType; }
+    virtual void  setType(void* t) { fType = t; }
+    virtual void* getType() { return fType; }
 
     // Keep track of visited trees (WARNING : non reentrant)
     static void startNewVisit() { ++gVisitTime; }
-    bool        isAlreadyVisited() { return fVisitTime == gVisitTime; }
-    void        setVisited()
+    virtual bool        isAlreadyVisited() { return fVisitTime == gVisitTime; }
+    virtual void        setVisited()
     {
         fVisitTime = gVisitTime;
     }
 
     // Property list of a tree
-    void setProperty(Tree key, Tree value) { fProperties[key] = value; }
-    void clearProperty(Tree key) { fProperties.erase(key); }
-    void clearProperties() { fProperties = plist(); }
+    virtual void setProperty(Tree key, Tree value) { fProperties[key] = value; }
+    virtual void clearProperty(Tree key) { fProperties.erase(key); }
+    virtual void clearProperties() { fProperties = plist(); }
 
-    void exportProperties(vector<Tree>& keys, vector<Tree>& values);
+    virtual void exportProperties(vector<Tree>& keys, vector<Tree>& values);
 
-    Tree getProperty(Tree key)
+    virtual Tree getProperty(Tree key)
     {
         plist::iterator i = fProperties.find(key);
         if (i == fProperties.end()) {

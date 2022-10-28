@@ -56,6 +56,7 @@ set( INCLUDE
 	${FAUSTOSC}/osc
 	${FAUSTOSC}/threads
 	${OSC}/..
+	../../source/tlib
 	../../source/compiler/type_manager
 	../../source/compiler/errors
 )
