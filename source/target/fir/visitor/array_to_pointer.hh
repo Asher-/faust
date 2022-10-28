@@ -23,7 +23,7 @@
 #define __FAUST_ARRAY_TO_POINTER_HH__
 
 #include "instruction_builder.hh"
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "visitor/basic_clone_visitor.hh"
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
 

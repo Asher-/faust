@@ -22,7 +22,7 @@
 #ifndef __FAUST_SORT_DECLARATIONS_HH__
 #define __FAUST_SORT_DECLARATIONS_HH__
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 bool sortArrayDeclarations(StatementInst* a, StatementInst* b);
 bool sortTypeDeclarations(StatementInst* a, StatementInst* b);

@@ -33,9 +33,6 @@
 #include <string>
 #include <vector>
 
-#ifdef WIN32
-#pragma warning(disable : 4800)
-#endif
 
 #include "Text.hh"
 #include "binop.hh"
@@ -435,10 +432,10 @@ struct CloneVisitor : public virtual Garbageable {
 
 // Printable is defined in instructions_type.h
 
-#include "compiler/instruction/value_instruction.hh"
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/null_value_instruction.hh"
-#include "compiler/instruction/null_statement_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/value/null_value_instruction.hh"
+#include "compiler/instruction/statement/null_statement_instruction.hh"
 
 // =======
 //  Types
@@ -476,7 +473,7 @@ struct CloneVisitor : public virtual Garbageable {
 // Block of statements
 // ====================
 
-#include "compiler/instruction/block_instruction.hh"
+#include "compiler/instruction/statement/block_instruction.hh"
 
 // =============
 // Declarations
@@ -502,17 +499,17 @@ struct CloneVisitor : public virtual Garbageable {
 // Numbers
 // ========
 
-#include "compiler/instruction/numbers/array_double_number_instruction.hh"
-#include "compiler/instruction/numbers/array_fixed_point_number_instruction.hh"
-#include "compiler/instruction/numbers/array_float_number_instruction.hh"
-#include "compiler/instruction/numbers/array_int32_number_instruction.hh"
-#include "compiler/instruction/numbers/array_number_instruction.hh"
-#include "compiler/instruction/numbers/bool_number_instruction.hh"
-#include "compiler/instruction/numbers/double_number_instruction.hh"
-#include "compiler/instruction/numbers/fixed_point_number_instruction.hh"
-#include "compiler/instruction/numbers/float_number_instruction.hh"
-#include "compiler/instruction/numbers/int32_number_instruction.hh"
-#include "compiler/instruction/numbers/int64_number_instruction.hh"
+#include "compiler/instruction/value/numbers/array_double_number_instruction.hh"
+#include "compiler/instruction/value/numbers/array_fixed_point_number_instruction.hh"
+#include "compiler/instruction/value/numbers/array_float_number_instruction.hh"
+#include "compiler/instruction/value/numbers/array_int32_number_instruction.hh"
+#include "compiler/instruction/value/numbers/array_number_instruction.hh"
+#include "compiler/instruction/value/numbers/bool_number_instruction.hh"
+#include "compiler/instruction/value/numbers/double_number_instruction.hh"
+#include "compiler/instruction/value/numbers/fixed_point_number_instruction.hh"
+#include "compiler/instruction/value/numbers/float_number_instruction.hh"
+#include "compiler/instruction/value/numbers/int32_number_instruction.hh"
+#include "compiler/instruction/value/numbers/int64_number_instruction.hh"
 
 // ===========
 // Math Binop

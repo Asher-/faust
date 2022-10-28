@@ -22,7 +22,7 @@
 #ifndef _TEE_VAR_INSTRUCTION_
 #define _TEE_VAR_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "address/named_address.hh"
 
 #include "visitor/instruction_visitor.hh"

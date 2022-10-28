@@ -22,7 +22,7 @@
 #ifndef _CLOSEBOX_INSTRUCTION_
 #define _CLOSEBOX_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct CloseboxInst : public StatementInst {
     CloseboxInst() {}

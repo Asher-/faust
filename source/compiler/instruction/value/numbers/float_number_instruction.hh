@@ -22,8 +22,8 @@
 #ifndef _FLOAT_NUMBER_INSTRUCTION_
 #define _FLOAT_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
-#include "compiler/instruction/numbers/number_value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
+#include "compiler/instruction/value/numbers/number_value_instruction.hh"
 
 struct FloatNumInst : public ValueInst, public NumValueInst {
     const float fNum;

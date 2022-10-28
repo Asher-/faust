@@ -19,19 +19,22 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _ARRAY_FLOAT_NUMBER_INSTRUCTION_
-#define _ARRAY_FLOAT_NUMBER_INSTRUCTION_
+#ifndef _INT32_NUMBER_INSTRUCTION_
+#define _INT32_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/numbers/array_number_instruction.hh"
-#include <vector>
+#include "compiler/instruction/value/value_instruction.hh"
+#include "compiler/instruction/value/numbers/number_value_instruction.hh"
 
-struct FloatArrayNumInst : public ArrayNumInst<float> {
-    FloatArrayNumInst(const std::vector<float>& nums) : ArrayNumInst<float>(nums) {}
-    FloatArrayNumInst(int size) : ArrayNumInst<float>(size) {}
+struct Int32NumInst : public ValueInst, public NumValueInst {
+    const int fNum;
+
+    Int32NumInst(int num) : ValueInst(), fNum(num) {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 
     ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    virtual bool isSimpleValue() const { return true; }
 };
 
 #endif

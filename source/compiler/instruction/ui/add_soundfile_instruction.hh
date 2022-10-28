@@ -22,7 +22,7 @@
 #ifndef _ADD_SOUNDFILE_INSTRUCTION_
 #define _ADD_SOUNDFILE_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct AddSoundfileInst : public StatementInst {
     const std::string fLabel;

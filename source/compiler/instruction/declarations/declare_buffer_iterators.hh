@@ -22,7 +22,7 @@
 #ifndef _DECLARE_BUFFER_ITERATORS_INSTRUCTION_
 #define _DECLARE_BUFFER_ITERATORS_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "types/typed.hh"
 
 struct DeclareBufferIterators : public StatementInst {

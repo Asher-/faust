@@ -19,27 +19,19 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _ARRAY_NUMBER_INSTRUCTION_
-#define _ARRAY_NUMBER_INSTRUCTION_
+#ifndef _ARRAY_FLOAT_NUMBER_INSTRUCTION_
+#define _ARRAY_FLOAT_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/numbers/array_number_instruction.hh"
 #include <vector>
 
-template <class TYPE>
-struct ArrayNumInst : public ValueInst {
-    std::vector<TYPE> fNumTable;
-
-    ArrayNumInst(const std::vector<TYPE>& nums) : ValueInst(), fNumTable(nums) {}
-
-    ArrayNumInst(int size) : ValueInst() { fNumTable.resize(size); }
-
-    void setValue(int index, TYPE num) { fNumTable[index] = num; }
-    TYPE getValue(int index) { return fNumTable[index]; }
-    void addValue(TYPE num) { fNumTable.push_back(num); }
+struct FloatArrayNumInst : public ArrayNumInst<float> {
+    FloatArrayNumInst(const std::vector<float>& nums) : ArrayNumInst<float>(nums) {}
+    FloatArrayNumInst(int size) : ArrayNumInst<float>(size) {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 
-    virtual bool isSimpleValue() const { return true; }
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

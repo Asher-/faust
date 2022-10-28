@@ -22,7 +22,7 @@
 #ifndef _LABEL_INSTRUCTION_
 #define _LABEL_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct LabelInst : public StatementInst {
     const std::string fLabel;

@@ -22,7 +22,7 @@
 #ifndef _SWITCH_INSTRUCTION_
 #define _SWITCH_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/declarations.hh"
 #include <list>
 #include <utility>

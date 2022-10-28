@@ -22,7 +22,7 @@
 #ifndef _FUNCTION_CALL_INSTRUCTION_
 #define _FUNCTION_CALL_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/declarations.hh"
 #include <string>
 

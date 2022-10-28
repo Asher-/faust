@@ -19,22 +19,19 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _BOOL_NUMBER_INSTRUCTION_
-#define _BOOL_NUMBER_INSTRUCTION_
+#ifndef _ARRAY_INT32_NUMBER_INSTRUCTION_
+#define _ARRAY_INT32_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
-#include "compiler/instruction/numbers/number_value_instruction.hh"
+#include "compiler/instruction/value/numbers/array_number_instruction.hh"
+#include <vector>
 
-struct BoolNumInst : public ValueInst, public NumValueInst {
-    const bool fNum;
-
-    BoolNumInst(bool num) : ValueInst(), fNum(num) {}
+struct Int32ArrayNumInst : public ArrayNumInst<int> {
+    Int32ArrayNumInst(const std::vector<int>& nums) : ArrayNumInst<int>(nums) {}
+    Int32ArrayNumInst(int size) : ArrayNumInst<int>(size) {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 
     ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    virtual bool isSimpleValue() const { return true; }
 };
 
 #endif

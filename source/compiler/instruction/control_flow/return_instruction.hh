@@ -22,7 +22,7 @@
 #ifndef _RETURN_INSTRUCTION_
 #define _RETURN_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/declarations.hh"
 
 struct RetInst : public StatementInst {

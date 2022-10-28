@@ -19,27 +19,22 @@
  ************************************************************************
  ************************************************************************/
 
-#include "compiler/instruction/block_instruction.hh"
-#include "compiler/instruction/control_flow/return_instruction.hh"
-#include "instruction_builder.hh"
+#ifndef _INT64_NUMBER_INSTRUCTION_
+#define _INT64_NUMBER_INSTRUCTION_
 
-bool BlockInst::hasReturn() const
-{
-    std::list<StatementInst*>::const_iterator it = fCode.end();
-    it--;
-    return dynamic_cast<RetInst*>(*it);
-}
+#include "compiler/instruction/value/value_instruction.hh"
+#include "compiler/instruction/value/numbers/number_value_instruction.hh"
 
-// Return the block value (if is has one) and remove it from the block
-ValueInst* BlockInst::getReturnValue()
-{
-    std::list<StatementInst*>::const_iterator it = fCode.end();
-    it--;
-    RetInst* ret = dynamic_cast<RetInst*>(*it);
-    if (ret) {
-        fCode.pop_back();
-        return ret->fResult;
-    } else {
-        return InstBuilder::genNullValueInst();
-    }
-}
+struct Int64NumInst : public ValueInst, public NumValueInst {
+    const int64_t fNum;
+
+    Int64NumInst(int64_t num) : ValueInst(), fNum(num) {}
+
+    void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    virtual bool isSimpleValue() const { return true; }
+};
+
+#endif

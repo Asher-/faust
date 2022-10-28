@@ -26,9 +26,9 @@
 #include "instruction_builder.hh"
 #include "named_address.hh"
 #include "indexed_address.hh"
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/memory/load_var_address_instruction.hh"
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 
 /*
 

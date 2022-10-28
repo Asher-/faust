@@ -22,7 +22,7 @@
 #ifndef _SELECT_2_INSTRUCTION_
 #define _SELECT_2_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/declarations.hh"
 
 struct Select2Inst : public ValueInst {

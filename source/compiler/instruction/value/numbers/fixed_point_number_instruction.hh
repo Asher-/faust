@@ -19,16 +19,16 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _INT64_NUMBER_INSTRUCTION_
-#define _INT64_NUMBER_INSTRUCTION_
+#ifndef _FIXED_POINT_NUMBER_INSTRUCTION_
+#define _FIXED_POINT_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
-#include "compiler/instruction/numbers/number_value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
+#include "compiler/instruction/value/numbers/number_value_instruction.hh"
 
-struct Int64NumInst : public ValueInst, public NumValueInst {
-    const int64_t fNum;
+struct FixedPointNumInst : public ValueInst, public NumValueInst {
+    const double fNum;
 
-    Int64NumInst(int64_t num) : ValueInst(), fNum(num) {}
+    FixedPointNumInst(double num) : ValueInst(), fNum(num) {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 

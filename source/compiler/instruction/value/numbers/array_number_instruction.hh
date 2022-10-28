@@ -19,20 +19,25 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _FIXED_POINT_NUMBER_INSTRUCTION_
-#define _FIXED_POINT_NUMBER_INSTRUCTION_
+#ifndef _ARRAY_NUMBER_INSTRUCTION_
+#define _ARRAY_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
-#include "compiler/instruction/numbers/number_value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
+#include <vector>
 
-struct FixedPointNumInst : public ValueInst, public NumValueInst {
-    const double fNum;
+template <class TYPE>
+struct ArrayNumInst : public ValueInst {
+    std::vector<TYPE> fNumTable;
 
-    FixedPointNumInst(double num) : ValueInst(), fNum(num) {}
+    ArrayNumInst(const std::vector<TYPE>& nums) : ValueInst(), fNumTable(nums) {}
+
+    ArrayNumInst(int size) : ValueInst() { fNumTable.resize(size); }
+
+    void setValue(int index, TYPE num) { fNumTable[index] = num; }
+    TYPE getValue(int index) { return fNumTable[index]; }
+    void addValue(TYPE num) { fNumTable.push_back(num); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
-
-    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 
     virtual bool isSimpleValue() const { return true; }
 };

@@ -23,8 +23,8 @@
 #define __FAUST_CONSTANTS_COPY_FROM_MEMORY_HH__
 
 #include "constants_copy_memory.hh"
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/memory/store_var_instruction.hh"
 #include "address.hh"
 #include "instruction_builder.hh"

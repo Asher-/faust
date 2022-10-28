@@ -22,7 +22,7 @@
 #ifndef _LOAD_VAR_ADDRESS_INSTRUCTION_
 #define _LOAD_VAR_ADDRESS_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "address/named_address.hh"
 
 #include "visitor/instruction_visitor.hh"

@@ -22,7 +22,7 @@
 #ifndef __INSTRUCTION_
 #define __INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "types/struct_typed.hh"
 
 struct InstVisitor; // Cyclical

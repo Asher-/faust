@@ -22,8 +22,8 @@
 #ifndef _STORE_VAR_INSTRUCTION_
 #define _STORE_VAR_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "visitor/instruction_visitor.hh"
 #include "visitor/clone_visitor.hh"
 #include "address/named_address.hh"

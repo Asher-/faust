@@ -22,8 +22,8 @@
 #ifndef _DECLARE_FUNCTION_INSTRUCTION_
 #define _DECLARE_FUNCTION_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/block_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/statement/block_instruction.hh"
 #include "types/function_typed.hh"
 
 struct DeclareFunInst : public StatementInst {

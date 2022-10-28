@@ -22,7 +22,7 @@
 #ifndef _ADD_BARGRAPH_INSTRUCTION_
 #define _ADD_BARGRAPH_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct AddBargraphInst : public StatementInst {
     enum BargraphType { kHorizontal, kVertical };

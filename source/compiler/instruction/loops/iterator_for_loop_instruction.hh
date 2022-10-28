@@ -24,7 +24,7 @@
 
 #include <vector>
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct IteratorForLoopInst : public StatementInst {
     std::vector<NamedAddress*> fIterators;

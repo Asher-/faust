@@ -22,7 +22,7 @@
 #ifndef _ADD_SLIDER_INSTRUCTION_
 #define _ADD_SLIDER_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct AddSliderInst : public StatementInst {
     enum SliderType { kHorizontal, kVertical, kNumEntry };

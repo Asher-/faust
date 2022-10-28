@@ -22,7 +22,7 @@
 #ifndef _NULL_VALUE_INSTRUCTION_
 #define _NULL_VALUE_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 
 // =======================
 // Null value instruction

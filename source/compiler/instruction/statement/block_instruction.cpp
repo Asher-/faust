@@ -19,19 +19,27 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _ARRAY_INT32_NUMBER_INSTRUCTION_
-#define _ARRAY_INT32_NUMBER_INSTRUCTION_
+#include "compiler/instruction/statement/block_instruction.hh"
+#include "compiler/instruction/control_flow/return_instruction.hh"
+#include "instruction_builder.hh"
 
-#include "compiler/instruction/numbers/array_number_instruction.hh"
-#include <vector>
+bool BlockInst::hasReturn() const
+{
+    std::list<StatementInst*>::const_iterator it = fCode.end();
+    it--;
+    return dynamic_cast<RetInst*>(*it);
+}
 
-struct Int32ArrayNumInst : public ArrayNumInst<int> {
-    Int32ArrayNumInst(const std::vector<int>& nums) : ArrayNumInst<int>(nums) {}
-    Int32ArrayNumInst(int size) : ArrayNumInst<int>(size) {}
-
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
-
-    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-};
-
-#endif
+// Return the block value (if is has one) and remove it from the block
+ValueInst* BlockInst::getReturnValue()
+{
+    std::list<StatementInst*>::const_iterator it = fCode.end();
+    it--;
+    RetInst* ret = dynamic_cast<RetInst*>(*it);
+    if (ret) {
+        fCode.pop_back();
+        return ret->fResult;
+    } else {
+        return InstBuilder::genNullValueInst();
+    }
+}

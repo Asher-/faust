@@ -22,8 +22,8 @@
 #ifndef _IF_INSTRUCTION_
 #define _IF_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/block_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/statement/block_instruction.hh"
 #include "compiler/instruction/declarations.hh"
 
 struct IfInst : public StatementInst {

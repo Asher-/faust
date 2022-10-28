@@ -22,7 +22,7 @@
 #ifndef _SHIFT_ARRAY_VAR_INSTRUCTION_
 #define _SHIFT_ARRAY_VAR_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "address/named_address.hh"
 
 #include "visitor/instruction_visitor.hh"

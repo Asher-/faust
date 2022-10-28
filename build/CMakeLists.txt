@@ -187,8 +187,11 @@ set (FAUST_INC ${SRCDIR}
 	${SRCDIR}/compiler/instruction/loops
 	${SRCDIR}/compiler/instruction/math
 	${SRCDIR}/compiler/instruction/memory
-	${SRCDIR}/compiler/instruction/numbers
+	${SRCDIR}/compiler/instruction/value/numbers
+	${SRCDIR}/compiler/instruction/statement
 	${SRCDIR}/compiler/instruction/ui
+	${SRCDIR}/compiler/instruction/value
+	${SRCDIR}/compiler/instruction/value/numbers
 	${SRCDIR}/tlib
 	${SRCDIR}/draw
 	${SRCDIR}/draw/device

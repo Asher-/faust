@@ -22,7 +22,7 @@
 #ifndef _BINARY_OP_INSTRUCTION_
 #define _BINARY_OP_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 
 struct BinopInst : public ValueInst {
     const int  fOpcode;

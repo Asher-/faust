@@ -24,8 +24,8 @@
 
 #include "address.hh"
 
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/memory/store_var_instruction.hh"
 #include "compiler/instruction/memory/load_var_instruction.hh"
 #include "types/typed.hh"

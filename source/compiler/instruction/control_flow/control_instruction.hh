@@ -22,7 +22,7 @@
 #ifndef _CONTROL_INSTRUCTION_
 #define _CONTROL_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/declarations.hh"
 #include "visitor/instruction_visitor.hh"
 #include "visitor/clone_visitor.hh"

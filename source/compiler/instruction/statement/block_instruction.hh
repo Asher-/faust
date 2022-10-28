@@ -19,21 +19,52 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _NULL_STATEMENT_INSTRUCTION_
-#define _NULL_STATEMENT_INSTRUCTION_
+#ifndef _BLOCK_INSTRUCTION_
+#define _BLOCK_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
+#include "compiler/instruction/declarations.hh"
+#include "visitor/instruction_visitor.hh"
+#include "visitor/clone_visitor.hh"
 
-// ===========================
-// Null statement instruction
-// ===========================
+#include <list>
 
-struct NullStatementInst : public StatementInst {
-    NullStatementInst() {}
+// ====================
+// Block of statements
+// ====================
 
-    virtual void accept(InstVisitor* visitor) { visitor->visit(this); }
+struct BlockInst : public StatementInst {
+    std::list<StatementInst*> fCode;
+    bool                 fIndent;
+
+    BlockInst(std::list<StatementInst*> code) : fCode(code), fIndent(false) {}
+
+    BlockInst() : fIndent(false) {}
+
+    virtual ~BlockInst() {}
+
+    void setIndent(bool indent) { fIndent = indent; }
+    bool getIndent() { return fIndent; }
+
+    void accept(InstVisitor* visitor) { visitor->visit(this); }
 
     StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode.push_front(inst); }
+
+    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode.push_back(inst); }
+
+    void merge(BlockInst* inst)
+    {
+        for (const auto& it : inst->fCode) {
+            fCode.push_back(it);
+        }
+    }
+
+    int size() const { return int(fCode.size()); }
+
+    bool hasReturn() const;
+    ValueInst* getReturnValue();
 };
 
 #endif

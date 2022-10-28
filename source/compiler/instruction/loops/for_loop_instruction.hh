@@ -22,7 +22,7 @@
 #ifndef _FOR_LOOP_INSTRUCTION_
 #define _FOR_LOOP_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct ForLoopInst : public StatementInst {
     StatementInst* fInit;

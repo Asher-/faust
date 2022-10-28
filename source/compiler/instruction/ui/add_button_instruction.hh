@@ -22,7 +22,7 @@
 #ifndef _ADD_BUTTON_INSTRUCTION_
 #define _ADD_BUTTON_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct AddButtonInst : public StatementInst {
     enum ButtonType { kDefaultButton, kCheckButton };

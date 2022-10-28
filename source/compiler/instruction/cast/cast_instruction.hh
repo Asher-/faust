@@ -22,7 +22,7 @@
 #ifndef _CAST_INSTRUCTION_
 #define _CAST_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 
 struct CastInst : public ValueInst {
     Typed*     fType;

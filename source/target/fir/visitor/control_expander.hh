@@ -23,9 +23,9 @@
 #define __FAUST_CONTROL_EXPANDER_HH__
 
 #include "visitor/basic_clone_visitor.hh"
-#include "compiler/instruction/value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/control_flow/if_instruction.hh"
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 // Expand and rewrite ControlInst as 'IF (cond) {....}' instructions
 struct ControlExpander : public BasicCloneVisitor {

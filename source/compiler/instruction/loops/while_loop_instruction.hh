@@ -22,7 +22,7 @@
 #ifndef _WHILE_LOOP_INSTRUCTION_
 #define _WHILE_LOOP_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
+#include "compiler/instruction/statement/statement_instruction.hh"
 
 struct WhileLoopInst : public StatementInst {
     ValueInst* fCond;

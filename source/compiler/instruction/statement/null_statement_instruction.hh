@@ -19,19 +19,21 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _ARRAY_DOUBLE_NUMBER_INSTRUCTION_
-#define _ARRAY_DOUBLE_NUMBER_INSTRUCTION_
+#ifndef _NULL_STATEMENT_INSTRUCTION_
+#define _NULL_STATEMENT_INSTRUCTION_
 
-#include "compiler/instruction/numbers/array_number_instruction.hh"
-#include <vector>
+#include "compiler/instruction/statement/statement_instruction.hh"
 
-struct DoubleArrayNumInst : public ArrayNumInst<double> {
-    DoubleArrayNumInst(const std::vector<double>& nums) : ArrayNumInst<double>(nums) {}
-    DoubleArrayNumInst(int size) : ArrayNumInst<double>(size) {}
+// ===========================
+// Null statement instruction
+// ===========================
 
-    void accept(InstVisitor* visitor) { visitor->visit(this); }
+struct NullStatementInst : public StatementInst {
+    NullStatementInst() {}
 
-    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
+    virtual void accept(InstVisitor* visitor) { visitor->visit(this); }
+
+    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

@@ -19,52 +19,19 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef _BLOCK_INSTRUCTION_
-#define _BLOCK_INSTRUCTION_
+#ifndef _ARRAY_DOUBLE_NUMBER_INSTRUCTION_
+#define _ARRAY_DOUBLE_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/statement_instruction.hh"
-#include "compiler/instruction/declarations.hh"
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/instruction/value/numbers/array_number_instruction.hh"
+#include <vector>
 
-#include <list>
-
-// ====================
-// Block of statements
-// ====================
-
-struct BlockInst : public StatementInst {
-    std::list<StatementInst*> fCode;
-    bool                 fIndent;
-
-    BlockInst(std::list<StatementInst*> code) : fCode(code), fIndent(false) {}
-
-    BlockInst() : fIndent(false) {}
-
-    virtual ~BlockInst() {}
-
-    void setIndent(bool indent) { fIndent = indent; }
-    bool getIndent() { return fIndent; }
+struct DoubleArrayNumInst : public ArrayNumInst<double> {
+    DoubleArrayNumInst(const std::vector<double>& nums) : ArrayNumInst<double>(nums) {}
+    DoubleArrayNumInst(int size) : ArrayNumInst<double>(size) {}
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 
-    StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
-
-    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode.push_front(inst); }
-
-    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode.push_back(inst); }
-
-    void merge(BlockInst* inst)
-    {
-        for (const auto& it : inst->fCode) {
-            fCode.push_back(it);
-        }
-    }
-
-    int size() const { return int(fCode.size()); }
-
-    bool hasReturn() const;
-    ValueInst* getReturnValue();
+    ValueInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 };
 
 #endif

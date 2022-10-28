@@ -22,8 +22,8 @@
 #ifndef _DOUBLE_NUMBER_INSTRUCTION_
 #define _DOUBLE_NUMBER_INSTRUCTION_
 
-#include "compiler/instruction/value_instruction.hh"
-#include "compiler/instruction/numbers/number_value_instruction.hh"
+#include "compiler/instruction/value/value_instruction.hh"
+#include "compiler/instruction/value/numbers/number_value_instruction.hh"
 
 struct DoubleNumInst : public ValueInst, public NumValueInst {
     const double fNum;
