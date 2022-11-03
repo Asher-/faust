@@ -52,8 +52,6 @@ class SourceReader
         Tree parseLocal(const char* fname);
         Tree expandRec(Tree ldef, set<string>& visited, Tree lresult);
         bool cached(string fname);
-        Tree parseFile(const char* fname);
-        Tree parseString(const char* fname);
         void checkName();
 
     public:
@@ -67,6 +65,9 @@ class SourceReader
         Tree expandList(Tree ldef);
         vector<string> listSrcFiles();
         vector<string> listLibraryFiles();
+
+        Tree parseFile(const char* fname);
+        Tree parseString(const char* fname);
 
 };
 

@@ -59,12 +59,12 @@ NSID	 {ID}("::"{ID})*
 <doc>"<notice/>"				return NOTICE;  /* autoclosing tag */
 <doc>"<notice />"				return NOTICE;  /* autoclosing tag */
 <doc>"<listing"					{ BEGIN(lst);		return BLST; } /* autoclosing tag */
-<doc>"<equation>"				{ BEGIN(INITIAL); 	return BEQN; }
-"</equation>"					{ BEGIN(doc); 		return EEQN; }
-<doc>"<diagram>"				{ BEGIN(INITIAL); 	return BDGM; }
-"</diagram>"					{ BEGIN(doc); 		return EDGM; }
-<doc>"<metadata>"				{ BEGIN(INITIAL); 	return BMETADATA; }
-"</metadata>"					{ BEGIN(doc); 		return EMETADATA; }
+<doc>"[\s]*<equation>"				{ BEGIN(INITIAL); 	return BEQN; }
+"</equation>[\s]*"					{ BEGIN(doc); 		return EEQN; }
+<doc>"[\s]*<diagram>[\s]*"				{ BEGIN(INITIAL); 	return BDGM; }
+"</diagram>[\s]*"					{ BEGIN(doc); 		return EDGM; }
+<doc>"[\s]*<metadata>"				{ BEGIN(INITIAL); 	return BMETADATA; }
+"</metadata>[\s]*"					{ BEGIN(doc); 		return EMETADATA; }
 <doc>"</mdoc>"					{ BEGIN(INITIAL); 	return EDOC; }
 
 <lst>"true"						return LSTTRUE;
@@ -92,7 +92,7 @@ NSID	 {ID}("::"{ID})*
 "."{DIGIT}+e[-+]?{DIGIT}+"f"            return FLOAT;
 
 ":"   		return SEQ;
-","   		return PAR;
+","   		return COMMA;
 "<:"   		return SPLIT;
 "+>"   		return MIX;
 ":>"   		return MIX;
@@ -143,7 +143,7 @@ NSID	 {ID}("::"{ID})*
 
 "int"		return INTCAST;
 "float"		return FLOATCAST;
-"any"		return NOTYPECAST;
+"any"		return ANYCAST;
 
 "rdtable"	return RDTBL;
 "rwtable"	return RWTBL;
@@ -197,7 +197,7 @@ NSID	 {ID}("::"{ID})*
 "rint"		return RINT;
 
 "seq"		return ISEQ;
-"par"		return IPAR;
+"par"		return ITERATE_PARALLEL;
 "sum"		return ISUM;
 "prod"		return IPROD;
 
@@ -234,8 +234,8 @@ NSID	 {ID}("::"{ID})*
 
 "\""[^\"]*"\""	return STRING;
 
-"<"{LETTER}*"."{LETTER}">"	return FSTRING;
-"<"{LETTER}*">"				return FSTRING;
+"<"{LETTER}*"."{LETTER}">"	return TAGSTRING;
+"<"{LETTER}*">"				return TAGSTRING;
 
 
 "//"[^\x0a\x0d]*	/* eat up one-line comments */

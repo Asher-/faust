@@ -26,7 +26,7 @@
 #include <cctype>
 #include <climits>
 
-#include "string_substitution.hh"
+#include "compiler/file_handling/string_substitution.hh"
 #include "compatibility.hh"
 #include "exception.hh"
 #include "garbageable.hh"

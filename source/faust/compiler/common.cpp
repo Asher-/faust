@@ -25,6 +25,20 @@
 
 #include "faust/compiler/types.hh"
 
+#ifdef FAUST_LIB
+// 'libfaust' compiler uses an empty 'alarm' function
+unsigned faust_alarm(unsigned seconds)
+{
+    return 0;
+}
+#else
+// Standalone compiler uses the real 'alarm' function
+unsigned faust_alarm(unsigned seconds)
+{
+    return alarm(seconds);
+}
+#endif
+
 namespace Faust {
   namespace Compiler {
 

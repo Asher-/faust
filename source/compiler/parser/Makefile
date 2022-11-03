@@ -11,8 +11,8 @@ faustparser.hpp : faustparser.y
 faustparser.cpp : faustparser.y
 	$(YACC) -d -o faustparser.cpp $(OPTIONS) faustparser.y
 
-faustlexer.cpp : faustlexer.l
-	$(LEX) -I -ofaustlexer.cpp $(OPTIONS) faustlexer.l
+faustlexer.cpp : lexer/faustlexer.l
+	$(LEX) -I -olexer/faustlexer.cpp $(OPTIONS) lexer/faustlexer.l
 
 clean:
 	rm -f $(OUT)

@@ -27,177 +27,89 @@ set (CMAKE_CXX_STANDARD_COMPUTED_DEFAULT 17)
 set (CMAKE_CXX_STANDARD_REQUIRED on)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_BUILD_TYPE Debug)
 
 #######################################
 # Output options
-option ( DEPLOYMENT_TARGET 	"[MacOS]"	on )
-option ( UNIVERSAL 	"Compiles and combines i386 and x86_64 architectures [MacOS]"	off )
-option ( IOS     	"Compiles for iOS"	off )
-option ( USE_LLVM_CONFIG    "Force use off llvm-config"	on )
-option ( INCLUDE_EXECUTABLE	"Include runtime executable"	on )
-option ( INCLUDE_STATIC    	"Include static library"	off )
-option ( INCLUDE_DYNAMIC    "Include dynamic library"	off )
-option ( INCLUDE_OSC    	"Include Faust OSC library"	on )
-option ( INCLUDE_HTTP    	"Include Faust HTTPD library"	on )
-option ( INCLUDE_ITP    	"Include Faust Machine library"	off )
-option ( INCLUDE_EMCC    	"Include emcc targets"	on )
-option ( INCLUDE_WASM_GLUE  "Include wasm glue targets"	on )
-option ( MSVC_STATIC		"Use static runtimes with MSVC" off)
-option ( SELF_CONTAINED_LIBRARY	"Don't search system architecture files." off)
+option ( DEPLOYMENT_TARGET	      "[MacOS]"	on )
+option ( UNIVERSAL 	              "Compiles and combines i386 and x86_64 architectures [MacOS]"	off )
+option ( IOS               	      "Compiles for iOS"	off )
+option ( USE_LLVM_CONFIG          "Force use off llvm-config"	on )
+option ( INCLUDE_EXECUTABLE	      "Include runtime executable"	on )
+option ( INCLUDE_STATIC    	      "Include static library"	off )
+option ( INCLUDE_DYNAMIC          "Include dynamic library"	off )
+option ( INCLUDE_OSC    	        "Include Faust OSC library"	on )
+option ( INCLUDE_HTTP    	        "Include Faust HTTPD library"	on )
+option ( INCLUDE_ITP    	        "Include Faust Machine library"	off )
+option ( INCLUDE_EMCC    	        "Include emcc targets"	on )
+option ( INCLUDE_WASM_GLUE        "Include wasm glue targets"	on )
+option( INCLUDE_TESTS             "Include tests" on )
+option ( MSVC_STATIC		          "Use static runtimes with MSVC" off)
+option ( SELF_CONTAINED_LIBRARY	  "Don't search system architecture files." off)
 
 if (NOT DEFINED DEPLOYMENT_TARGET_VERSION)
 	set ( DEPLOYMENT_TARGET_VERSION  12)
 endif()
 
 #######################################
+
 # Check output options
 if (UNIVERSAL AND NOT APPLE)
 	message(WARNING "UNIVERSAL option is only available on MacOS or iOS")
 endif()
 
 ####################################
-# source and headers files
-file (GLOB SRC ${SRCDIR}/*.cpp
-				 		 	 ${SRCDIR}/cli/*.cpp
-							 ${SRCDIR}/compiler/instruction/*.cpp
-							 ${SRCDIR}/compiler/instruction/*/*.cpp
-               ${SRCDIR}/faust/*.cpp
-               ${SRCDIR}/faust/*/*.cpp
-               ${SRCDIR}/faust/*/*/*.cpp
-							 ${SRCDIR}/compiler/*.cpp
-               ${SRCDIR}/compiler/*/*.cpp
-               ${SRCDIR}/compiler/*/*/*.cpp
-               ${SRCDIR}/compiler/*/*/*/*.cpp
-               ${SRCDIR}/compiler/*/*/*/*/*.cpp
-						   ${SRCDIR}/draw/*.cpp
-							 ${SRCDIR}/draw/*/*.cpp
-							 ${SRCDIR}/target/*.cpp
-							 ${SRCDIR}/target/openmp/*.cpp
-							 ${SRCDIR}/target/vector/*.cpp
-							 ${SRCDIR}/target/wss/*.cpp
-							 ${SRCDIR}/target/fir/*.cpp
-               ${SRCDIR}/target/language/*.cpp
-               ${SRCDIR}/target/language/*/*.cpp
-               ${SRCDIR}/target/language/*/*/*.cpp
-               ${SRCDIR}/target/language/*/*/*/*.cpp
-							 ${SRCDIR}/tlib/*.cpp
-							 ${ROOT}/benchmark/timing.cpp
-							 ${ROOT}/architecture/faust/export.cpp
- 						   ${SRCDIR}/documentator/*.cpp )
-file (GLOB HH  ${SRCDIR}/*.hh
-               ${SRCDIR}/cli/*.hh
-							 ${SRCDIR}/compiler/instruction/*.hh
-							 ${SRCDIR}/compiler/instruction/*/*.hh
-               ${SRCDIR}/faust/*.hh
-               ${SRCDIR}/faust/*/*.hh
-               ${SRCDIR}/faust/*/*/*.hh
-							 ${SRCDIR}/compiler/*.hh
-               ${SRCDIR}/compiler/*/*.hh
-               ${SRCDIR}/compiler/*/*/*.hh
-               ${SRCDIR}/compiler/*/*/*/*.hh
-               ${SRCDIR}/compiler/*/*/*/*/*.hh
-               ${SRCDIR}/compiler/*/*/*/*/*/*.hh
-               ${SRCDIR}/draw/*.hh
-               ${SRCDIR}/draw/*/*.hh
-               ${SRCDIR}/target/*.hh
-               ${SRCDIR}/target/*/*.hh
-               ${SRCDIR}/target/*/*/*.hh
-               ${SRCDIR}/target/*/*/*/*.hh
-               ${SRCDIR}/target/*/*/*/*/*.hh
-               ${SRCDIR}/target/*/*/*/*/*.hh
-               ${SRCDIR}/tlib/*.hh
-							 ${ROOT}/benchmark/timing.hh
-							 ${ROOT}/architecture/faust/export.h
-							 ${SRCDIR}/documentator/*.hh )
+
+# source files
+file (GLOB_RECURSE SRC ${SRCDIR}/*.cpp )
+set ( SRC ${SRC}
+	${ROOT}/benchmark/timing.cpp
+	${ROOT}/architecture/faust/export.cpp
+)
+
+# header files
+file (GLOB_RECURSE SRC_HH
+	${SRCDIR}/*.hh
+	${SRCDIR}/*.h
+)
+set ( EXT_HH ${SRC_HH}
+	${ROOT}/benchmark/timing.hh
+	${ROOT}/architecture/faust/export.h
+)
+
+# tests
+file (GLOB TEST_SRC
+	${ROOT}/tests/parser-tests/*.cpp
+)
 
 ####################################
+
 # include directories
-set (FAUST_INC ${SRCDIR}
-	${SRCDIR}
-	${SRCDIR}/documentator
+
+# headers are currently referenced without path,
+# so any directory with a header is an include dir
+foreach(hh ${SRC_HH})
+	get_filename_component(INCLUDE_DIR ${hh} DIRECTORY)
+	set ( SOURCE_INCLUDE_DIRS ${SOURCE_INCLUDE_DIRS} ${INCLUDE_DIR} )
+	get_filename_component(INCLUDE_PARENT_DIR ${INCLUDE_DIR} DIRECTORY)
+	if ( NOT ${INCLUDE_DIR} STREQUAL ${SRCDIR} )
+		while( NOT ${INCLUDE_PARENT_DIR} STREQUAL ${SRCDIR} )
+			set ( SOURCE_INCLUDE_DIRS ${SOURCE_INCLUDE_DIRS} ${INCLUDE_PARENT_DIR} )
+			get_filename_component(INCLUDE_PARENT_DIR ${INCLUDE_PARENT_DIR} DIRECTORY)
+		endwhile()
+	endif()
+endforeach()
+set (FAUST_INC ${SOURCE_INCLUDE_DIRS} ${SRC_HH} ${EXT_HH}
+	${ROOT}/architecture/faust
 	${ROOT}/benchmark
-	${SRCDIR}/cli
-	${SRCDIR}/compiler
-	${SRCDIR}/compiler/draw
-	${SRCDIR}/compiler/errors
-	${SRCDIR}/compiler/evaluate
-	${SRCDIR}/compiler
-	${SRCDIR}/compiler/block_diagram
-	${SRCDIR}/compiler/block_diagram/boxes
-	${SRCDIR}/compiler/block_diagram/eval
-	${SRCDIR}/compiler/block_diagram/eval/patternmatcher
-	${SRCDIR}/compiler/block_diagram/parallelize
-	${SRCDIR}/compiler/block_diagram/simplify
-	${SRCDIR}/compiler/compile
-	${SRCDIR}/compiler/compile/scalar
-	${SRCDIR}/compiler/errors
-	${SRCDIR}/compiler/file_handling
-	${SRCDIR}/compiler/instruction_compiler
-	${SRCDIR}/compiler/dsp_factory
-	${SRCDIR}/compiler/dsp_factory/util
-	${SRCDIR}/compiler/lexer
-	${SRCDIR}/compiler/instruction/lock
-	${SRCDIR}/compiler/math_primitives
-	${SRCDIR}/compiler/parser
-	${SRCDIR}/compiler/signals
-	${SRCDIR}/compiler/signals/transform
-	${SRCDIR}/compiler/type_manager
-	${SRCDIR}/compiler/type_manager/address
-	${SRCDIR}/compiler/types
-	${SRCDIR}/compiler/visitor
-	${SRCDIR}/compiler/util
-	${SRCDIR}/faust
-	${SRCDIR}/faust/api
-	${SRCDIR}/faust/api/c
-	${SRCDIR}/faust/api/cpp
-	${SRCDIR}/faust/compiler
-	${SRCDIR}/tlib
-	${SRCDIR}/target
-	${SRCDIR}/target/openmp
-	${SRCDIR}/target/vector
-	${SRCDIR}/target/wss
-	${SRCDIR}/target/fir
-	${SRCDIR}/target/interpreter
-	${SRCDIR}/target/language/dlang
-	${SRCDIR}/target/language/c
-	${SRCDIR}/target/language/clang
-	${SRCDIR}/target/language/cpp
-	${SRCDIR}/target/language/cpp/gpu
-	${SRCDIR}/target/language/cpp/gpu/visitor
-	${SRCDIR}/target/language/cpp/gpu/cuda
-	${SRCDIR}/target/language/cpp/gpu/cuda/vector
-	${SRCDIR}/target/language/cpp/gpu/cuda/visitor
-	${SRCDIR}/target/language/cpp/gpu/opencl
-	${SRCDIR}/target/language/cpp/gpu/opencl/vector
-	${SRCDIR}/target/language/cpp/gpu/opencl/visitor
-	${SRCDIR}/target/language/csharp
-	${SRCDIR}/target/language/java
-	${SRCDIR}/target/language/julia
-	${SRCDIR}/target/language/jax
-	${SRCDIR}/target/language/llvm
-	${SRCDIR}/target/language/wasm
-	${SRCDIR}/target/language/wast
-	${SRCDIR}/target/language/rust
-	${SRCDIR}/target/language/soul
-	${SRCDIR}/target/language/soul/visitor
-	${SRCDIR}/instruction
-	${SRCDIR}/compiler/instruction/cast
-	${SRCDIR}/compiler/instruction/control_flow
-	${SRCDIR}/compiler/instruction/declarations
-	${SRCDIR}/compiler/instruction/loops
-	${SRCDIR}/compiler/instruction/math
-	${SRCDIR}/compiler/instruction/memory
-	${SRCDIR}/compiler/instruction/value/numbers
-	${SRCDIR}/compiler/instruction/statement
-	${SRCDIR}/compiler/instruction/ui
-	${SRCDIR}/compiler/instruction/value
-	${SRCDIR}/compiler/instruction/value/numbers
-	${SRCDIR}/tlib
-	${SRCDIR}/draw
-	${SRCDIR}/draw/device
-	${SRCDIR}/draw/schema
-	${ROOT}/architecture
-	/usr/local/include)
+	/usr/local/include
+)
+
+# test include directories
+set (FAUST_TEST_INC ${FAUST_INC}
+	${ROOT}/tests
+	${ROOT}/tests/parser-tests
+)
 
 ####################################
 # LLVM
@@ -284,8 +196,9 @@ endif()
 ####################################
 # Add the different targets
 ####################################
+
 if (INCLUDE_EXECUTABLE)
-	add_executable(faust ${SRC} ${HH})
+	add_executable(faust ${SRC} ${HH} ${ROOT}/source-main/cli.cpp)
 	target_compile_definitions (faust PRIVATE ${FAUST_DEFINITIONS})
 	target_include_directories (faust PRIVATE ${FAUST_INC} ${LLVM_INC})
 	target_link_libraries (faust PRIVATE ${FAUST_LIBS})
@@ -293,6 +206,18 @@ if (INCLUDE_EXECUTABLE)
 	set_target_properties(faust PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BINDIR})
 	set_target_properties(faust PROPERTIES COMPILE_FLAGS -DFAUST_EXE)
 	set (INSTALL_TARGETS faust)
+endif()
+
+if (INCLUDE_TESTS)
+	add_executable(test ${SRC} ${TEST_SRC} ${HH})
+	target_compile_definitions (test PRIVATE ${FAUST_DEFINITIONS})
+	target_include_directories (test PRIVATE ${FAUST_TEST_INC} ${FAUST_INC} ${LLVM_INC} ${FAUST_TEST_INC})
+	target_link_libraries (test PRIVATE ${FAUST_LIBS} -lgtest -lgtest_main)
+	target_link_directories (test PRIVATE ${LIBSDIR} /usr/local/lib)
+	scan_backends (test COMPILER)
+	set_target_properties(test PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BINDIR})
+	set_target_properties(test PROPERTIES COMPILE_FLAGS -DFAUST_EXE )
+
 endif()
 
 # static faust library

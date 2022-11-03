@@ -25,10 +25,10 @@
 #include <cassert>
 
 #include "faust.hh"
-#include "file_handling/string_substitution.hh"
+#include "compiler/file_handling/string_substitution.hh"
 #include "faust/controller.hh"
 
-#include "string_substitution.hh"
+#include "compiler/file_handling/string_substitution.hh"
 #include "exception.hh"
 #include "propagate.hh"
 

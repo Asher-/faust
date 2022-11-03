@@ -146,7 +146,7 @@ static bool printlist(Tree l, FILE* out)
             fprintf(out, " . ");
             print(l, out);
         }
-
+   
         fputc(')', out);
         return true;
 

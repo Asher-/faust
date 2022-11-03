@@ -19,6 +19,8 @@
 #include <string>
 #include <list>
 
+#include "string_substitution.hh"
+
 #define YYDEBUG 1
 #define YYERROR_VERBOSE 1
 #define YYMAXDEPTH	100000
@@ -31,65 +33,6 @@ extern int 			yylineno;
 extern int 			yyerr;
 
 int yylex();
-
-//----------------------------------------------------------
-// unquote() : remove enclosing quotes and carriage return
-// characters from string. Returns a Tree
-//----------------------------------------------------------
-inline char replaceCR(char c)
-{
-	return (c!='\n') ? c : ' ';
-}
-
-//----------------------------------------------------------
-// A definition is accepted if the prefixset is empty or if
-// the current float precision is member of the prefix set
-//----------------------------------------------------------
-inline bool acceptdefinition(int prefixset)
-{
-	int precisions[] = {0, 1, 2, 4, 8};
-	return (prefixset==0) || (prefixset & precisions[gGlobal->gFloatSize]);
-}
-
-//----------------------------------------------------------
-// 'atoi' does not work correctly on Windows with MSVC on values
-// greater than 2^31 (= 2147483648)
-//----------------------------------------------------------
-inline int str2int(const char* str)
-{
-    int result = 0;
-    while (*str != 0) {
-        result = result * 10 + *str - '0';
-        str++;
-    }
-    return result;
-}
-
-inline Tree unquote(char* str)
-{
-    size_t size = strlen(str) + 1;
-
-    //-----------copy unquoted filename-------------
-    char* buf = (char*)alloca(size);
-    size_t j=0;
-
-    if (str[0] == '"') {
-        // it is a quoted string, we remove the quotes
-        for (size_t i=1; j<size-1 && str[i];) {
-            buf[j++] = replaceCR(str[i++]);
-        }
-        // remove last quote
-        if (j>0) buf[j-1] = 0;
-    } else {
-        for (size_t i=0; j<size-1 && str[i];) {
-            buf[j++] = replaceCR(str[i++]);
-        }
-    }
-    buf[j] = 0;
-
-    return tree(buf);
-    //----------------------------------------------
-}
 
 %}
 
@@ -111,12 +54,13 @@ inline Tree unquote(char* str)
 /*%left SEQ SPLIT MIX*/
 %right SPLIT MIX
 %right SEQ
-%right PAR
+%right COMMA
 %left REC
 
 /* Primitive boxes */
 
-%left LT LE EQ GT GE NE
+//%left LT LE EQ GT GE NE
+%nonassoc LT LE EQ GT GE NE
 
 %left ADD SUB OR
 %left MUL DIV MOD AND XOR LSH RSH
@@ -131,7 +75,7 @@ inline Tree unquote(char* str)
 
 %token INTCAST
 %token FLOATCAST
-%token NOTYPECAST
+%token ANYCAST
 %token FFUNCTION
 %token FCONSTANT
 %token FVARIABLE
@@ -212,7 +156,7 @@ inline Tree unquote(char* str)
 %token ENABLE
 %token CONTROL
 
-%token IPAR
+%token ITERATE_PARALLEL
 %token ISEQ
 %token ISUM
 %token IPROD
@@ -221,7 +165,7 @@ inline Tree unquote(char* str)
 %token OUTPUTS
 
 %token STRING
-%token FSTRING
+%token TAGSTRING
 %token IDENT
 %token EXTRA
 
@@ -262,630 +206,943 @@ inline Tree unquote(char* str)
 %token LSTEQ
 %token LSTQ
 
+%type <exp> doc
+%type <exp> doc.attribute.list
+%type <exp> doc.attribute.definition
+%type <b> doc.attribute.value
+%type <cppstr> doc.text
+%type <exp> doc.equation
+%type <exp> doc.diagram
+%type <exp> doc.notice
+%type <exp> doc.list
+%type <exp> doc.metadata
+
+%type <exp> expression
+%type <exp> expression.component
+%type <exp> expression.composition
+%type <exp> expression.composition.mix
+%type <exp> expression.composition.record
+%type <exp> expression.composition.sequence
+%type <exp> expression.composition.split
+%type <exp> expression.composition.list
+%type <exp> expression.environment
+%type <exp> expression.infix
+%type <exp> expression.infix.definitions.local
+%type <exp> expression.infix.environment.access
+%type <exp> expression.infix.math
+%type <exp> expression.infix.math.algebra
+%type <exp> expression.infix.math.comparison
+%type <exp> expression.infix.math.logic
+%type <exp> expression.infix.math.shift
+%type <exp> expression.infix.prefix
+%type <exp> expression.infix.signal.delay
+%type <exp> expression.iterate.parallel
+%type <exp> expression.iterate.sequence
+%type <exp> expression.iterate.sum
+%type <exp> expression.iterate.product
+%type <exp> expression.lambda
+%type <exp> expression.lambda.params
+%type <exp> expression.lambda.params.start
+%type <exp> expression.lambda.params.append
+%type <exp> expression.letrec
+%type <exp> expression.letrec.list
+%type <exp> expression.letrec.list.start
+%type <exp> expression.letrec.list.append
+%type <exp> expression.letrec.equation
+%type <exp> expression.letrec.equation.name
+%type <exp> expression.library
+%type <exp> expression.math
+%type <exp> expression.math.comparison
+%type <exp> expression.math.rounding
+%type <exp> expression.math.scalar
+%type <exp> expression.math.signal
+%type <exp> expression.math.signal.algebra
+%type <exp> expression.math.signal.shift
+%type <exp> expression.math.signal.power
+%type <exp> expression.math.trigonometry
+%type <exp> expression.parallel
+%type <exp> expression.parenthesis
+%type <exp> expression.signal
+%type <exp> expression.signal.control
+%type <exp> expression.signal.delay
+%type <exp> expression.signal.logic
+
+%type <exp> primitive
+%type <exp> primitive.foreign
+%type <exp> primitive.foreign.constant
+%type <exp> primitive.foreign.function
+%type <exp> primitive.foreign.function.signature
+%type <exp> primitive.foreign.variable
+%type <exp> primitive.signal.input.implicit
+%type <exp> primitive.signal.input.terminate
+%type <exp> primitive.signal.inputs
+%type <exp> primitive.number
+%type <exp> primitive.type.number.list
+%type <exp> primitive.type.number.list.start
+%type <exp> primitive.type.number.list.append
+%type <exp> primitive.type.number.list.member
+%type <exp> primitive.signal.outputs
+%type <exp> primitive.signal
+%type <exp> primitive.signal.route
+%type <exp> primitive.signal.source
+%type <exp> primitive.signal.source.soundfile
+%type <exp> primitive.signal.source.table
+%type <exp> primitive.signal.source.waveform
+%type <exp> primitive.string.quoted
+%type <exp> primitive.string.tag
+%type <exp> primitive.string.unquoted
+%type <exp> primitive.type
+%type <exp> primitive.type.list
+%type <exp> primitive.type.list.start
+%type <exp> primitive.type.list.append
+%type <exp> primitive.type.number
+%type <exp> primitive.type.number.int
+%type <exp> primitive.type.number.float
+%type <exp> primitive.type.any
+
+%type <exp> primitive.ui
+%type <exp> primitive.ui.button
+%type <exp> primitive.ui.checkbox
+%type <exp> primitive.ui.vslider
+%type <exp> primitive.ui.hslider
+%type <exp> primitive.ui.nentry
+%type <exp> primitive.ui.vgroup
+%type <exp> primitive.ui.hgroup
+%type <exp> primitive.ui.tgroup
+%type <exp> primitive.ui.vbargraph
+%type <exp> primitive.ui.hbargraph
 
 %type <exp> program
 
-%type <exp> stmtlist
 %type <exp> statement
-
-%type <exp> deflist
-%type <exp> reclist
-%type <exp> vallist
-%type <exp> definition
-%type <exp> recinition
-
-%type <exp> params
-
-%type <exp> expression
-
-%type <exp> defname
-%type <exp> recname
-%type <exp> infixexp
-%type <exp> primitive
-%type <exp> argument
-%type <exp> number
-%type <exp> arglist
-
-%type <exp> ident
-%type <exp> name
-
-%type <exp> ffunction
-%type <exp> fconst
-%type <exp> fvariable
-%type <exp> signature
-%type <exp> string
-%type <exp> uqstring
-%type <exp> fstring
-%type <exp> type
-%type <exp> typelist
-%type <exp> argtype
-%type <exp> fun
-
-%type <exp> fpar
-%type <exp> fseq
-%type <exp> fsum
-%type <exp> fprod
-
-%type <exp> finputs
-%type <exp> foutputs
-
-%type <exp> button
-%type <exp> checkbox
-%type <exp> vslider
-%type <exp> hslider
-%type <exp> nentry
-%type <exp> vgroup
-%type <exp> hgroup
-%type <exp> tgroup
-
-%type <exp> vbargraph
-%type <exp> hbargraph
-
-%type <exp> soundfile
-
-%type <exp> rule
-%type <exp> rulelist
-
-%type <exp> doc
-%type <exp> docelem
-%type <cppstr> doctxt
-%type <exp> doceqn
-%type <exp> docdgm
-%type <exp> docntc
-%type <exp> doclst
-%type <exp> docmtd
-
-%type <exp> lstattrlist
-%type <exp> lstattrdef
-%type <b> lstattrval
-
-%type <numvariant> variant
-%type <numvariant> variantlist
+%type <exp> statement.definition
+%type <exp> statement.definition.substitution
+%type <exp> statement.definition.error
+%type <exp> statement.definition.function
+%type <exp> statement.definition.list
+%type <exp> statement.definition.list.start
+%type <exp> statement.definition.list.start.qualified
+%type <exp> statement.definition.list.append
+%type <exp> statement.definition.list.append.qualified
+%type <exp> statement.definition.with
+%type <exp> statement.declare.doc
+%type <exp> statement.declare.metadata
+%type <exp> statement.declare.feature.metadata
+%type <exp> statement.identifier
+%type <exp> statement.identifier.box
+%type <exp> statement.identifier.waveform
+%type <exp> statement.import
+%type <exp> statement.list
+%type <exp> statement.list.start
+%type <exp> statement.list.start.qualified
+%type <exp> statement.list.append
+%type <exp> statement.list.append.qualified
+%type <numvariant> statement.math.precision
+%type <numvariant> statement.math.precision.list
+%type <numvariant> statement.math.precision.list.start
+%type <numvariant> statement.math.precision.list.append
+%type <exp> statement.signal.pattern.rule
+%type <exp> statement.signal.pattern.rule.list
+%type <exp> statement.signal.pattern.rule.list.start
+%type <exp> statement.signal.pattern.rule.list.append
 
 %% /* grammar rules and actions follow; tokens in caps, rules lowercase */
 
+/***********************************************/
+/******************** Start ********************/
+/***********************************************/
+
 program:
-	stmtlist {
-		$$ = $1; gGlobal->gResult = formatDefinitions($$);
-	}
-;
-
-stmtlist:
-		/*empty*/ { $$ = gGlobal->nil; }
-	| stmtlist variantlist statement {
-			if (acceptdefinition($2))
-				$$ = cons ($3,$1);
-			else
-				$$=$1;
+		statement.list {
+			$$ = $[statement.list];
+			gGlobal->gResult = formatDefinitions($$);
 		}
-;
+  | /* empty */ { $$ = gGlobal->nil; }
 
-deflist:
-		/*empty*/ { $$ = gGlobal->nil; }
-  | deflist variantlist definition {
-			if (acceptdefinition($2))
-				$$ = cons ($3,$1);
-			else
-				$$=$1;
-		}
-;
+/*--------------------------------------------*
+|  Everything else is in alphabetical order.  |
+*--------------------------------------------*/
 
-variantlist:
-		/*empty*/ { $$ = 0; }
-  | variantlist variant { $$ = $1 | $2;}
-;
-
-variant:
-		FLOATMODE { $$ = 1; }
-  | DOUBLEMODE { $$ = 2; }
-  | QUADMODE { $$ = 4; }
-  | FIXEDPOINTMODE { $$ = 8; }
-;
-
-reclist:
-		/*empty*/ { $$ = gGlobal->nil; }
-  | reclist recinition { $$ = cons ($2,$1); }
-;
-
-vallist:
-		number { gGlobal->gWaveForm.push_back($1); }
-  | vallist PAR number { gGlobal->gWaveForm.push_back($3); }
-;
-
-number:
-		INT { $$ = boxInt(str2int(yytext)); }
-  | FLOAT { $$ = boxReal(atof(yytext)); }
-  | ADD INT { $$ = boxInt(str2int(yytext)); }
-  | ADD FLOAT { $$ = boxReal(atof(yytext)); }
-  | SUB INT { $$ = boxInt(-str2int(yytext)); }
-  | SUB FLOAT { $$ = boxReal(-atof(yytext)); }
-;
-
-statement:
-		IMPORT LPAR uqstring RPAR ENDDEF { $$ = importFile($3); }
-  | DECLARE name string  ENDDEF {
-			declareMetadata($2,$3);
-			$$ = gGlobal->nil;
-		}
-  | DECLARE name name string  ENDDEF {
-			declareDefinitionMetadata( $2, $3, $4 );
-			$$ = gGlobal->nil;
-		}
-  | definition { $$ = $1; }
-  | BDOC doc EDOC {
-			declareDoc($2);
-			$$ = gGlobal->nil;
-			/* cerr << "Yacc: doc: " << *$2 << endl; */
-		}
-;
+/*********************************************/
+/******************** Doc ********************/
+/*********************************************/
 
 doc:
-		/* empty */ { $$ = gGlobal->nil; }
-  | doc docelem { $$ = cons ($2,$1); }
-;
-
-docelem:
-		doctxt {
-			$$ = docTxt($1->c_str());
-			delete $1;
+		doc.text {
+			$$ = docTxt($[doc.text]->c_str());
+			delete $[doc.text];
 		}
-  | doceqn { $$ = docEqn($1); }
-  | docdgm { $$ = docDgm($1); }
-  | docntc { $$ = docNtc(); }
-  | doclst { $$ = docLst(); }
-  | docmtd { $$ = docMtd($1); }
-;
+  | doc.equation { $$ = docEqn($[doc.equation]); }
+  | doc.diagram { $$ = docDgm($[doc.diagram]); }
+  | doc.notice { $$ = docNtc(); }
+  | doc.list { $$ = docLst(); }
+  | doc.metadata { $$ = docMtd($[doc.metadata]); }
+	| /* empty */ { $$ = gGlobal->nil; }
 
-doctxt:
-		/* empty */ { $$ = new string(); }
-  | doctxt DOCCHAR { $$ = &($1->append(yytext)); }
-;
+  doc.text:
+      DOCCHAR { $$ = new string(yytext); }
+    | doc.text[prior] DOCCHAR { $$ = &($prior->append(yytext)); }
 
-doceqn:
-		BEQN expression EEQN { $$ = $2; }
-;
+  doc.equation:
+      BEQN expression EEQN { $$ = $expression; }
 
-docdgm:
-		BDGM expression EDGM { $$ = $2; }
-;
+  doc.diagram:
+      BDGM expression EDGM { $$ = $expression; }
 
-docntc:
-		NOTICE { }
-;
+  doc.notice:
+      NOTICE { }
 
-doclst:
-		BLST lstattrlist ELST { }
-;
+  doc.list:
+      BLST doc.attribute.list ELST { }
+   |  BLST /* Empty list */ ELST { }
 
-lstattrlist:
-		/* empty */ { }
-  | lstattrlist lstattrdef { }
-;
+    doc.attribute.list:
+        doc.attribute.definition {}
+      | doc.attribute.list doc.attribute.definition { }
 
-lstattrdef:
-		LSTDEPENDENCIES LSTEQ LSTQ lstattrval LSTQ {
-			gGlobal->gLstDependenciesSwitch = $4;
-		}
-  | LSTMDOCTAGS LSTEQ LSTQ lstattrval LSTQ {
-			gGlobal->gStripDocSwitch = $4;
-			gGlobal->gStripDocSwitch ? gGlobal->gStripDocSwitch=false
-														   : gGlobal->gStripDocSwitch=true;
-		}
-  | LSTDISTRIBUTED LSTEQ LSTQ lstattrval LSTQ {
-			gGlobal->gLstDistributedSwitch = $4;
-		}
-;
+    doc.attribute.definition:
+        LSTDEPENDENCIES LSTEQ LSTQ doc.attribute.value LSTQ {
+          gGlobal->gLstDependenciesSwitch = $[doc.attribute.value];
+        }
+      | LSTMDOCTAGS LSTEQ LSTQ doc.attribute.value LSTQ {
+          gGlobal->gStripDocSwitch = $[doc.attribute.value];
+          gGlobal->gStripDocSwitch ? gGlobal->gStripDocSwitch=false
+                                   : gGlobal->gStripDocSwitch=true;
+        }
+      | LSTDISTRIBUTED LSTEQ LSTQ doc.attribute.value LSTQ {
+          gGlobal->gLstDistributedSwitch = $[doc.attribute.value];
+        }
 
-lstattrval:
-		LSTTRUE { $$ = true; }
-  | LSTFALSE { $$ = false; }
-;
+    doc.attribute.value:
+        LSTTRUE { $$ = true; }
+      | LSTFALSE { $$ = false; }
 
-docmtd:
-	BMETADATA name EMETADATA { $$ = $2; }
-;
+  doc.metadata:
+    BMETADATA statement.identifier[metadata] EMETADATA { $$ = $metadata; }
 
-definition:
-		defname LPAR arglist RPAR DEF expression ENDDEF {
-			$$ = cons($1,cons($3,$6));
-			setDefProp($1, yyfilename, yylineno);
-		}
-  | defname DEF expression ENDDEF {
-			$$ = cons($1,cons(gGlobal->nil,$3));
-			setDefProp($1, yyfilename, yylineno);
-		}
-  | error ENDDEF { $$ = gGlobal->nil; yyerr++; }
-;
-
-recinition:
-		recname DEF expression ENDDEF {
-			$$ = cons($1,cons(gGlobal->nil,$3));
-			setDefProp($1, yyfilename, yylineno);
-		}
-  | error ENDDEF { $$ = gGlobal->nil; yyerr++; }
-;
-
-defname:
-		ident { $$=$1; }
-;
-
-recname:
-		DELAY1 ident { $$=$2; }
-;
-
-params:
-		ident { $$ = cons($1,gGlobal->nil); }
-  | params PAR ident { $$ = cons($3,$1); }
-;
+/****************************************************/
+/******************** Expression ********************/
+/****************************************************/
 
 expression:
-		expression WITH LBRAQ deflist RBRAQ {
-			$$ = boxWithLocalDef($1,formatDefinitions($4));
-		}
-  | expression LETREC LBRAQ reclist RBRAQ {
-			$$ = boxWithRecDef($1,formatDefinitions($4), gGlobal->nil);
-		}
-  | expression LETREC LBRAQ reclist WHERE deflist RBRAQ {
-			$$ = boxWithRecDef($1,formatDefinitions($4),formatDefinitions($6));
-		}
-  | expression PAR expression { $$ = boxPar($1,$3); }
-  | expression SEQ expression { $$ = boxSeq($1,$3); }
-  | expression SPLIT  expression { $$ = boxSplit($1,$3); }
-  | expression MIX expression { $$ = boxMerge($1,$3); }
-  | expression REC expression { $$ = boxRec($1,$3); }
-  | infixexp { $$ = $1; }
-;
+		statement.definition.with
+  | expression.letrec
+  | expression.parallel
+  | expression.composition
+  
+  /******************** Component ********************/
+  
+  expression.component:
+      COMPONENT LPAR primitive.string.unquoted RPAR { $$ = boxComponent($[primitive.string.unquoted]); }
 
-infixexp:
-		infixexp ADD infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigAdd)); }
-	| infixexp SUB infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigSub)); }
-	| infixexp MUL infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigMul)); }
-	| infixexp DIV infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigDiv)); }
-  | infixexp MOD infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigRem)); }
-  | infixexp POWOP infixexp {
-			$$ = boxSeq(boxPar($1,$3),gGlobal->gPowPrim->box());
+  /******************** Composition ********************/
+
+  expression.composition:
+      expression.composition.sequence
+    | expression.composition.split
+    | expression.composition.mix
+    | expression.composition.record
+    | expression.infix
+
+    expression.composition.list:
+        expression.composition { $$ = cons($[expression.composition],gGlobal->nil); }
+      | expression.composition.list[prior] COMMA expression.composition[next] { $$ = cons($next,$prior); }
+
+    expression.composition.mix:
+        expression.composition[lhs] MIX expression.composition[rhs] { $$ = boxMerge($lhs,$rhs); }
+        
+    expression.composition.record:
+        expression.composition[lhs] REC expression.composition[rhs] { $$ = boxRec($lhs,$rhs); }
+      
+    expression.composition.sequence:
+        expression.composition[lhs] SEQ expression.composition[rhs] { $$ = boxSeq($lhs,$rhs); }
+
+    expression.composition.split:
+        expression.composition[lhs] SPLIT expression.composition[rhs] { $$ = boxSplit($lhs,$rhs); }
+        
+  /******************** Environment ********************/
+
+  expression.environment:
+      ENVIRONMENT LBRAQ statement.list RBRAQ {
+        $$ = boxWithLocalDef(boxEnvironment(),formatDefinitions($[statement.list]));
+      }
+
+  /******************** Infix ********************/
+
+  expression.infix:
+      expression.infix.definitions.local
+    | expression.infix.environment.access
+    | expression.infix.math
+    | expression.infix.signal.delay
+    | expression.infix.prefix
+    | expression.component
+    | expression.environment
+    | expression.iterate.parallel
+    | expression.iterate.sequence
+    | expression.iterate.sum
+    | expression.iterate.product
+    | expression.lambda
+    | expression.library
+    | expression.math
+    | expression.parenthesis
+    | expression.signal
+
+    | statement.identifier.box
+
+    | primitive
+
+  expression.infix.definitions.local:
+      expression.infix[lhs] LCROC statement.definition.list[defs] RCROC {
+        $$ = boxModifLocalDef($lhs,formatDefinitions($defs));
+      }
+      
+  expression.infix.environment.access:
+      expression.infix[lhs] DOT statement.identifier.box[rhs] { $$ = boxAccess($lhs,$rhs); }
+
+  expression.infix.math:
+      expression.infix.math.algebra
+    | expression.infix.math.comparison
+    | expression.infix.math.logic
+    | expression.infix.math.shift
+
+  expression.infix.math.algebra:
+      expression.infix[lhs] ADD   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigAdd)); }
+    | expression.infix[lhs] SUB   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigSub)); }
+    | expression.infix[lhs] MUL   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigMul)); }
+    | expression.infix[lhs] DIV   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigDiv)); }
+    | expression.infix[lhs] MOD   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigRem)); }
+    | expression.infix[lhs] POWOP expression.infix[rhs] {
+        $$ = boxSeq(boxPar($lhs,$rhs),gGlobal->gPowPrim->box());
+      }
+
+  expression.infix.math.comparison:
+      expression.infix[lhs] LT expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigLT)); }
+    | expression.infix[lhs] LE expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigLE)); }
+    | expression.infix[lhs] GT expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigGT)); }
+    | expression.infix[lhs] GE expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigGE)); }
+    | expression.infix[lhs] EQ expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigEQ)); }
+    | expression.infix[lhs] NE expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigNE)); }
+
+  expression.infix.math.logic:
+      expression.infix[lhs] AND expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigAND)); }
+    | expression.infix[lhs] OR  expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigOR)); }
+    | expression.infix[lhs] XOR expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigXOR)); }
+
+  expression.infix.math.shift:
+      expression.infix[lhs] LSH expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigLeftShift)); }
+    | expression.infix[lhs] RSH expression.infix[rhs] {
+        $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigARightShift));
+      }
+
+  expression.infix.prefix:
+      expression.infix[lhs] LPAR  expression.composition.list RPAR { $$ = buildBoxAppl($lhs,$[expression.composition.list]); }
+  
+  expression.infix.signal.delay:
+      expression.infix[lhs] FDELAY expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigDelay)); }
+    | expression.infix[lhs] DELAY1 { $$ = boxSeq($lhs,boxPrim1(sigDelay1)); }
+
+  /******************** Iteration ********************/
+
+  expression.iterate.parallel:
+      ITERATE_PARALLEL LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
+        $$ = boxIPar($[statement.identifier.box],$[expression.composition],$expression);
+      }
+
+  expression.iterate.sequence:
+      ISEQ LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
+        $$ = boxISeq($[statement.identifier.box],$[expression.composition],$expression);
+      }
+
+  expression.iterate.sum:
+      ISUM LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
+        $$ = boxISum($[statement.identifier.box],$[expression.composition],$expression);
+      }
+
+  expression.iterate.product:
+      IPROD LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
+        $$ = boxIProd($[statement.identifier.box],$[expression.composition],$expression);
+      }
+
+  /******************** Lambda ********************/
+
+  expression.lambda:
+      LAMBDA LPAR expression.lambda.params RPAR DOT LPAR expression RPAR {
+        $$ = buildBoxAbstr($[expression.lambda.params],$expression);
+      }
+  
+  expression.lambda.params:
+		expression.lambda.params.start
+  | expression.lambda.params.append
+
+    expression.lambda.params.start:
+        statement.identifier.box { $$ = cons($[statement.identifier.box],gGlobal->nil); }
+
+    expression.lambda.params.append:
+        expression.lambda.params[prior] COMMA statement.identifier.box[next] { $$ = cons($next,$prior); }
+
+  /******************** Letrec ********************/
+
+  expression.letrec:
+    expression[lhs] LETREC LBRAQ /* empty expression.letrec.list */ RBRAQ {
+			$$ = boxWithRecDef($lhs,formatDefinitions(gGlobal->nil), gGlobal->nil);
 		}
-  | infixexp FDELAY infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigDelay)); }
-	| infixexp DELAY1 { $$ = boxSeq($1,boxPrim1(sigDelay1)); }
-	| infixexp DOT ident { $$ = boxAccess($1,$3); }
-
-	| infixexp AND infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigAND)); }
-	| infixexp OR infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigOR)); }
-	| infixexp XOR infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigXOR)); }
-
-	| infixexp LSH infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigLeftShift)); }
-	| infixexp RSH infixexp {
-			$$ = boxSeq(boxPar($1,$3),boxPrim2(sigARightShift));
+  | expression[lhs] LETREC LBRAQ expression.letrec.list RBRAQ {
+			$$ = boxWithRecDef($lhs,formatDefinitions($[expression.letrec.list]), gGlobal->nil);
+		}
+  | expression[lhs] LETREC LBRAQ expression.letrec.list WHERE statement.definition.list RBRAQ {
+			$$ = boxWithRecDef($lhs,formatDefinitions($[expression.letrec.list]),formatDefinitions($[expression.letrec.list]));
 		}
 
-	| infixexp LT infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigLT)); }
-	| infixexp LE infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigLE)); }
-	| infixexp GT infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigGT)); }
-	| infixexp GE infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigGE)); }
-	| infixexp EQ infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigEQ)); }
-	| infixexp NE infixexp { $$ = boxSeq(boxPar($1,$3),boxPrim2(sigNE)); }
+  expression.letrec.list:
+      expression.letrec.list.start
+    | expression.letrec.list.append
 
-	| infixexp LPAR arglist RPAR { $$ = buildBoxAppl($1,$3); }
-	| infixexp LCROC deflist RCROC {
-			$$ = boxModifLocalDef($1,formatDefinitions($3));
-		}
+    expression.letrec.list.start:
+        expression.letrec.equation[item] { $$ = cons($item, gGlobal->nil); }
+        
+    expression.letrec.list.append:
+        expression.letrec.list[prior] expression.letrec.equation[next] { $$ = cons ($next,$prior); }
+        
+  expression.letrec.equation:
+      expression.letrec.equation.name[variable] DEF expression ENDDEF {
+        $$ = cons($variable,cons(gGlobal->nil,$expression));
+        setDefProp($variable, yyfilename, yylineno);
+      }
+    | error ENDDEF { $$ = gGlobal->nil; yyerr++; }
 
-	| primitive { $$ = $1; }
-;
+    expression.letrec.equation.name:
+        DELAY1 statement.identifier.box { $$=$[statement.identifier.box]; }
+
+
+  /******************** Library ********************/
+
+  expression.library:
+      LIBRARY LPAR primitive.string.unquoted RPAR { $$ = boxLibrary($[primitive.string.unquoted]); }
+
+  /******************** Math ********************/
+
+  expression.math:
+      expression.math.signal
+    | expression.math.scalar
+    | expression.math.comparison
+    | expression.math.trigonometry
+    | expression.math.rounding
+
+    expression.math.comparison:
+        LT { $$ = boxPrim2(sigLT); }
+      | LE { $$ = boxPrim2(sigLE); }
+      | GT { $$ = boxPrim2(sigGT); }
+      | GE { $$ = boxPrim2(sigGE); }
+      | EQ { $$ = boxPrim2(sigEQ); }
+      | NE { $$ = boxPrim2(sigNE); }
+
+      expression.math.rounding:
+          ABS { $$ = gGlobal->gAbsPrim->box(); }
+        | MIN { $$ = gGlobal->gMinPrim->box(); }
+        | MAX { $$ = gGlobal->gMaxPrim->box(); }
+        | FLOOR { $$ = gGlobal->gFloorPrim->box(); }
+        | CEIL { $$ = gGlobal->gCeilPrim->box(); }
+        | ASSERTBOUNDS { $$ = boxPrim3(sigAssertBounds);}
+        | LOWEST { $$ = boxPrim1(sigLowest);}
+        | HIGHEST { $$ = boxPrim1(sigHighest);}
+        | RINT { $$ = gGlobal->gRintPrim->box(); }
+
+    expression.math.signal:
+        expression.math.signal.algebra
+      | expression.math.signal.shift
+      | expression.math.signal.power
+
+      expression.math.signal.algebra:
+          ADD { $$ = boxPrim2(sigAdd); }
+        | SUB { $$ = boxPrim2(sigSub); }
+        | MUL { $$ = boxPrim2(sigMul); }
+        | DIV { $$ = boxPrim2(sigDiv); }
+        | MOD { $$ = boxPrim2(sigRem); }
+        | FMOD { $$ = gGlobal->gFmodPrim->box(); }
+        | REMAINDER { $$ = gGlobal->gRemainderPrim->box(); }
+        | SUB statement.identifier.box { $$ = boxSeq(boxPar(boxInt(0),$[statement.identifier.box]),boxPrim2(sigSub)); }
+
+      expression.math.signal.shift:
+          LSH { $$ = boxPrim2(sigLeftShift); }
+        | RSH { $$ = boxPrim2(sigARightShift); }
+
+      expression.math.signal.power:
+          EXP { $$ = gGlobal->gExpPrim->box(); }
+        | LOG { $$ = gGlobal->gLogPrim->box(); }
+        | LOG10 { $$ = gGlobal->gLog10Prim->box(); }
+        | POWOP { $$ = gGlobal->gPowPrim->box(); }
+        | POWFUN { $$ = gGlobal->gPowPrim->box(); }
+        | SQRT { $$ = gGlobal->gSqrtPrim->box(); }
+
+      expression.math.scalar:
+          ADD INT { $$ = boxInt(str2int(yytext)); }
+        | ADD FLOAT { $$ = boxReal(atof(yytext)); }
+        | SUB INT { $$ = boxInt ( -str2int(yytext) ); }
+        | SUB FLOAT { $$ = boxReal( -atof(yytext) ); }
+
+      expression.math.trigonometry:
+          ACOS { $$ = gGlobal->gAcosPrim->box(); }
+        | ASIN { $$ = gGlobal->gAsinPrim->box(); }
+        | ATAN { $$ = gGlobal->gAtanPrim->box(); }
+        | ATAN2 { $$ = gGlobal->gAtan2Prim->box(); }
+        | COS { $$ = gGlobal->gCosPrim->box(); }
+        | SIN { $$ = gGlobal->gSinPrim->box(); }
+        | TAN { $$ = gGlobal->gTanPrim->box(); }
+
+  /******************** Parenthesis ********************/
+
+  expression.parenthesis:
+    LPAR expression RPAR { $$ = $expression; }
+
+  /******************** Parallel ********************/
+
+  expression.parallel:
+      expression[lhs] COMMA expression[rhs] {
+        $$ = boxPar($lhs,$rhs);
+      }
+      
+  /******************** Signal ********************/
+
+  expression.signal:
+      expression.signal.control
+    | expression.signal.delay
+    | expression.signal.logic
+  
+    expression.signal.control:
+        ATTACH { $$ = boxPrim2(sigAttach); }
+      | ENABLE { $$ = boxPrim2(sigEnable); }
+      | CONTROL { $$ = boxPrim2(sigControl); }
+
+    expression.signal.delay:
+        MEM { $$ = boxPrim1(sigDelay1); }
+      | PREFIX { $$ = boxPrim2(sigPrefix); }
+      | FDELAY { $$ = boxPrim2(sigDelay); }
+
+    expression.signal.logic:
+        AND { $$ = boxPrim2(sigAND); }
+      | OR { $$ = boxPrim2(sigOR); }
+      | XOR { $$ = boxPrim2(sigXOR); }
+      | SELECT2 { $$ = boxPrim3(sigSelect2); }
+      | SELECT3 { $$ = boxPrim4(sigSelect3); }
+      | CASE LBRAQ statement.signal.pattern.rule.list RBRAQ { $$ = boxCase(checkRulelist($[statement.signal.pattern.rule.list])); }
+
+/***************************************************/
+/******************** Primitive ********************/
+/***************************************************/
 
 primitive:
-		INT { $$ = boxInt(str2int(yytext)); }
-  | FLOAT { $$ = boxReal(atof(yytext)); }
+    primitive.foreign
+  | primitive.number
+  | primitive.type.number
+  | primitive.signal
+  | primitive.ui
+  
+  /******************** Foreign ********************/
 
-  | ADD INT { $$ = boxInt (str2int(yytext)); }
-  | ADD FLOAT { $$ = boxReal(atof(yytext)); }
+  primitive.foreign:
+    primitive.foreign.constant
+  | primitive.foreign.function
+  | primitive.foreign.variable
 
-  | SUB INT { $$ = boxInt ( -str2int(yytext) ); }
-  | SUB FLOAT { $$ = boxReal( -atof(yytext) ); }
+  /******************** Number ********************/
 
-  | WIRE { $$ = boxWire(); }
-  | CUT { $$ = boxCut(); }
+  primitive.number:
+      INT { $$ = boxInt(str2int(yytext)); }
+    | FLOAT { $$ = boxReal(atof(yytext)); }
 
-  | MEM { $$ = boxPrim1(sigDelay1); }
-  | PREFIX { $$ = boxPrim2(sigPrefix); }
+  /******************** String ********************/
+        
+  primitive.string.quoted:
+      STRING { $$ = tree(yytext); }
 
-  | INTCAST { $$ = boxPrim1(sigIntCast); }
-  | FLOATCAST { $$ = boxPrim1(sigFloatCast); }
+  primitive.string.unquoted:
+      STRING { $$ = unquote(yytext); }
 
-  | ADD { $$ = boxPrim2(sigAdd); }
-  | SUB { $$ = boxPrim2(sigSub); }
-  | MUL { $$ = boxPrim2(sigMul); }
-  | DIV { $$ = boxPrim2(sigDiv); }
-  | MOD { $$ = boxPrim2(sigRem); }
-  | FDELAY { $$ = boxPrim2(sigDelay); }
+  primitive.string.tag:
+      STRING { $$ = tree(yytext); }
+    | TAGSTRING { $$ = tree(yytext); }
 
-  | AND { $$ = boxPrim2(sigAND); }
-  | OR { $$ = boxPrim2(sigOR); }
-  | XOR { $$ = boxPrim2(sigXOR); }
+  /******************** Signal ********************/
 
-  | LSH { $$ = boxPrim2(sigLeftShift); }
-  | RSH { $$ = boxPrim2(sigARightShift); }
+  primitive.signal:
+    primitive.signal.inputs
+  | primitive.signal.input.implicit
+  | primitive.signal.input.terminate
+  | primitive.signal.outputs
+  | primitive.signal.route
+  | primitive.signal.source
+  
+  primitive.signal.input.implicit:
+      WIRE { $$ = boxWire(); }
 
-  | LT { $$ = boxPrim2(sigLT); }
-  | LE { $$ = boxPrim2(sigLE); }
-  | GT { $$ = boxPrim2(sigGT); }
-  | GE { $$ = boxPrim2(sigGE); }
-  | EQ { $$ = boxPrim2(sigEQ); }
-  | NE { $$ = boxPrim2(sigNE); }
+  primitive.signal.input.terminate:
+      CUT { $$ = boxCut(); }
 
-  | ATTACH { $$ = boxPrim2(sigAttach); }
-  | ENABLE { $$ = boxPrim2(sigEnable); }
-  | CONTROL { $$ = boxPrim2(sigControl); }
+  primitive.type:
+      primitive.type.number
+    | primitive.type.any
 
-  | ACOS { $$ = gGlobal->gAcosPrim->box(); }
-  | ASIN { $$ = gGlobal->gAsinPrim->box(); }
-  | ATAN { $$ = gGlobal->gAtanPrim->box(); }
-  | ATAN2 { $$ = gGlobal->gAtan2Prim->box(); }
-  | COS { $$ = gGlobal->gCosPrim->box(); }
-  | SIN { $$ = gGlobal->gSinPrim->box(); }
-  | TAN { $$ = gGlobal->gTanPrim->box(); }
+    /******************** Numbers ********************/
 
-  | EXP { $$ = gGlobal->gExpPrim->box(); }
-  | LOG { $$ = gGlobal->gLogPrim->box(); }
-  | LOG10 { $$ = gGlobal->gLog10Prim->box(); }
-  | POWOP { $$ = gGlobal->gPowPrim->box(); }
-  | POWFUN { $$ = gGlobal->gPowPrim->box(); }
-  | SQRT { $$ = gGlobal->gSqrtPrim->box(); }
+    primitive.type.number.list:
+        primitive.type.number.list.start
+      | primitive.type.number.list.append
 
-  | ABS { $$ = gGlobal->gAbsPrim->box(); }
-  | MIN { $$ = gGlobal->gMinPrim->box(); }
-  | MAX { $$ = gGlobal->gMaxPrim->box(); }
+      primitive.type.number.list.member:
+          primitive.number {
+            gGlobal->gWaveForm.push_back($[primitive.number]);
+          }
+        | expression.math.scalar {
+            gGlobal->gWaveForm.push_back($[expression.math.scalar]);
+          }
 
-  | FMOD { $$ = gGlobal->gFmodPrim->box(); }
-  | REMAINDER { $$ = gGlobal->gRemainderPrim->box(); }
+      primitive.type.number.list.start:
+        primitive.type.number.list.member
+        
+      primitive.type.number.list.append:
+          primitive.type.number.list COMMA primitive.type.number.list.member
 
-  | FLOOR { $$ = gGlobal->gFloorPrim->box(); }
-  | CEIL { $$ = gGlobal->gCeilPrim->box(); }
-  | RINT { $$ = gGlobal->gRintPrim->box(); }
+    primitive.type.number:
+        primitive.type.number.int
+      | primitive.type.number.float
 
-  | RDTBL { $$ = boxPrim3(sigReadOnlyTable); }
-  | RWTBL { $$ = boxPrim5(sigWriteReadTable); }
+      primitive.type.number.int:
+          INTCAST { $$ = boxPrim1(sigIntCast); }
 
-  | SELECT2 { $$ = boxPrim3(sigSelect2); }
-  | SELECT3 { $$ = boxPrim4(sigSelect3); }
+      primitive.type.number.float:
+          FLOATCAST { $$ = boxPrim1(sigFloatCast); }
 
-  | ASSERTBOUNDS { $$ = boxPrim3(sigAssertBounds);}
-  | LOWEST { $$ = boxPrim1(sigLowest);}
-  | HIGHEST { $$ = boxPrim1(sigHighest);}
+    primitive.type.any:
+        ANYCAST { $$ = tree(2); }
 
-  | ident { $$ = $1;  setUseProp($1, yyfilename, yylineno);}
-  | SUB ident { $$ = boxSeq(boxPar(boxInt(0),$2),boxPrim2(sigSub)); }
+    primitive.signal.route:
+        ROUTE[fake] LPAR expression.composition[arg1] COMMA expression.composition[arg2] RPAR {
+          $$ = boxRoute($arg1, $arg2, boxPar(boxInt(0),boxInt(0)));
+        } /* fake route */
+      | ROUTE LPAR expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression RPAR {
+          $$ = boxRoute($arg1, $arg2, $expression);
+        }
+        
+    primitive.signal.source:
+        primitive.signal.source.waveform
+      | primitive.signal.source.soundfile
+      | primitive.signal.source.table
 
-  | LPAR expression RPAR { $$ = $2; }
-  | LAMBDA LPAR params RPAR DOT LPAR expression RPAR {
-			$$ = buildBoxAbstr($3,$7);
-		}
+      primitive.signal.source.table:
+          RDTBL { $$ = boxPrim3(sigReadOnlyTable); }
+        | RWTBL { $$ = boxPrim5(sigWriteReadTable); }
 
-  | CASE LBRAQ rulelist RBRAQ { $$ = boxCase(checkRulelist($3)); }
+      primitive.signal.source.soundfile:
+          SOUNDFILE LPAR primitive.string.unquoted COMMA expression.composition RPAR {
+            $$ = boxSoundfile( $[primitive.string.unquoted], $[expression.composition] );
+          }
+        
+      primitive.signal.source.waveform:
+        WAVEFORM LBRAQ primitive.type.number.list RBRAQ {
+          $$ = boxWaveform(gGlobal->gWaveForm);
+          gGlobal->gWaveForm.clear();
+          /* primitive.type.number.list pushes values onto gGlobal->gWaveForm */
+        }
 
-  | ffunction { $$ = boxFFun($1); }
-  | fconst { $$ = $1; }
-  | fvariable { $$ = $1; }
-  | COMPONENT LPAR uqstring RPAR { $$ = boxComponent($3); }
-  | LIBRARY LPAR uqstring RPAR { $$ = boxLibrary($3); }
-  | ENVIRONMENT LBRAQ stmtlist RBRAQ {
-			$$ = boxWithLocalDef(boxEnvironment(),formatDefinitions($3));
-		}
-  | WAVEFORM LBRAQ vallist RBRAQ {
-			$$ = boxWaveform(gGlobal->gWaveForm); gGlobal->gWaveForm.clear();
-		}
-  | ROUTE LPAR argument PAR argument RPAR {
-			$$ = boxRoute($3, $5, boxPar(boxInt(0),boxInt(0)));
-		} // fake route
-  | ROUTE LPAR argument PAR argument PAR expression RPAR {
-			$$ = boxRoute($3, $5, $7);
-		}
-  | button { $$ = $1; }
-  | checkbox { $$ = $1; }
-  | vslider { $$ = $1; }
-  | hslider { $$ = $1; }
-  | nentry { $$ = $1; }
-  | vgroup { $$ = $1; }
-  | hgroup { $$ = $1; }
-  | tgroup { $$ = $1; }
-  | vbargraph { $$ = $1; }
-  | hbargraph { $$ = $1; }
-  | soundfile { $$ = $1; }
+    /******************** Type ********************/
 
-  | fpar { $$ = $1; }
-  | fseq { $$ = $1; }
-  | fsum { $$ = $1; }
-  | fprod { $$ = $1; }
+    primitive.type.list:
+        primitive.type.list.start
+      | primitive.type.list.append
 
-  | finputs { $$ = $1; }
-  | foutputs { $$ = $1; }
-;
+      primitive.type.list.start:
+          primitive.type { $$ = cons($[primitive.type],gGlobal->nil); }
+
+      primitive.type.list.append:
+          primitive.type.list[prior] COMMA primitive.type[next] { $$ = cons($next,$prior); }
 
 
-ident:
-		IDENT { $$ = boxIdent(yytext); setUseProp($$, yyfilename, yylineno); }
-;
+  /******************** UI ********************/
 
-name:
-		IDENT { $$ = tree(yytext); setUseProp($$, yyfilename, yylineno); }
-;
+  primitive.ui:
+      primitive.ui.button
+   |  primitive.ui.checkbox
+   |  primitive.ui.vslider
+   |  primitive.ui.hslider
+   |  primitive.ui.nentry
+   |  primitive.ui.vgroup
+   |  primitive.ui.hgroup
+   |  primitive.ui.tgroup
+   |  primitive.ui.vbargraph
+   |  primitive.ui.hbargraph
 
-arglist:
-		argument { $$ = cons($1,gGlobal->nil); }
-  | arglist PAR argument { $$ = cons($3,$1); }
-;
+    primitive.ui.button:
+        BUTTON LPAR primitive.string.unquoted RPAR { $$ = boxButton($[primitive.string.unquoted]); }
 
-argument:
-		argument SEQ argument { $$ = boxSeq($1,$3); }
-  | argument SPLIT argument { $$ = boxSplit($1,$3); }
-  | argument MIX argument { $$ = boxMerge($1,$3); }
-  | argument REC argument { $$ = boxRec($1,$3); }
-  | infixexp { $$ = $1; }
-;
+    primitive.ui.checkbox:
+        CHECKBOX LPAR primitive.string.unquoted RPAR { $$ = boxCheckbox($[primitive.string.unquoted]); }
 
-string:
-		STRING { $$ = tree(yytext); }
-;
+    primitive.ui.vslider:
+        VSLIDER LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression.composition[arg3] COMMA expression.composition[arg4] RPAR {
+          $$ = boxVSlider($[primitive.string.unquoted],$arg1,$arg2,$arg3,$arg4);
+        }
 
-uqstring:
-		STRING { $$ = unquote(yytext); }
-;
+    primitive.ui.hslider:
+        HSLIDER LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression.composition[arg3] COMMA expression.composition[arg4] RPAR {
+          $$ = boxHSlider($[primitive.string.unquoted],$arg1,$arg2,$arg3,$arg4);
+        }
 
-fstring:
-		STRING { $$ = tree(yytext); }
-  | FSTRING { $$ = tree(yytext); }
-;
+    primitive.ui.nentry:
+        NENTRY LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression.composition[arg3] COMMA expression.composition[arg4] RPAR {
+          $$ = boxNumEntry($[primitive.string.unquoted],$arg1,$arg2,$arg3,$arg4);
+        }
 
-/* description of iterative expressions */
+    primitive.ui.vgroup:
+        VGROUP LPAR primitive.string.unquoted COMMA expression RPAR { $$ = boxVGroup($[primitive.string.unquoted], $expression); }
 
-fpar:
-		IPAR LPAR ident PAR argument PAR expression RPAR {
-			$$ = boxIPar($3,$5,$7);
-		}
-;
+    primitive.ui.hgroup:
+        HGROUP LPAR primitive.string.unquoted COMMA expression RPAR { $$ = boxHGroup($[primitive.string.unquoted], $expression); }
 
-fseq:
-		ISEQ LPAR ident PAR argument PAR expression RPAR {
-			$$ = boxISeq($3,$5,$7);
-		}
-;
+    primitive.ui.tgroup:
+        TGROUP LPAR primitive.string.unquoted COMMA expression RPAR { $$ = boxTGroup($[primitive.string.unquoted], $expression); }
 
-fsum:
-		ISUM LPAR ident PAR argument PAR expression RPAR {
-			$$ = boxISum($3,$5,$7);
-		}
-;
+    primitive.ui.vbargraph:
+        VBARGRAPH LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] RPAR {
+          $$ = boxVBargraph($[primitive.string.unquoted],$arg1,$arg2);
+        }
 
-fprod:
-		IPROD LPAR ident PAR argument PAR expression RPAR {
-			$$ = boxIProd($3,$5,$7);
-		}
-;
+    primitive.ui.hbargraph:
+        HBARGRAPH LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] RPAR {
+          $$ = boxHBargraph($[primitive.string.unquoted],$arg1,$arg2);
+        }
 
-finputs:
-		INPUTS LPAR expression RPAR { $$ = boxInputs($3); }
-;
+    /******************** Foreign ********************/
 
-foutputs:
-		OUTPUTS LPAR expression RPAR { $$ = boxOutputs($3); }
-;
+    primitive.foreign.function:
+        FFUNCTION LPAR primitive.foreign.function.signature COMMA primitive.string.tag COMMA primitive.string.unquoted RPAR {
+          $$ = boxFFun(ffunction($[primitive.foreign.function.signature],$[primitive.string.tag],$[primitive.string.unquoted]));
+        }
 
-/* description of foreign functions */
+      primitive.foreign.function.signature:
+          primitive.type.number statement.identifier.waveform[fun] LPAR primitive.type.list RPAR {
+            $$ = cons($[primitive.type.number], cons(cons($fun,cons($fun,cons($fun,gGlobal->nil))), $[primitive.type.list]));
+          }
+        | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] LPAR primitive.type.list RPAR {
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun2,gGlobal->nil))), $[primitive.type.list]));
+          }
+        | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] OR statement.identifier.waveform[fun3] LPAR primitive.type.list RPAR {
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun3,gGlobal->nil))), $[primitive.type.list]));
+          }
+        | primitive.type.number statement.identifier.waveform[fun] LPAR RPAR {
+            $$ = cons($[primitive.type.number], cons(cons($fun,cons($fun,cons($fun,gGlobal->nil))), gGlobal->nil));
+          }
+        | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] LPAR RPAR {
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun2,gGlobal->nil))), gGlobal->nil));
+          }
+        | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] OR statement.identifier.waveform[fun3] LPAR RPAR {
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun3,gGlobal->nil))), gGlobal->nil));
+          }
 
-ffunction:
-		FFUNCTION LPAR signature PAR fstring PAR string RPAR {
-			$$ = ffunction($3,$5,$7);
-		}
-;
+    primitive.foreign.constant:
+        FCONSTANT LPAR primitive.type.number statement.identifier COMMA primitive.string.tag RPAR {
+          $$ = boxFConst( $[primitive.type.number], $[statement.identifier], $[primitive.string.tag]);
+        }
 
-fconst:
-		FCONSTANT LPAR type name PAR fstring RPAR { $$ = boxFConst($3,$4,$6); }
-;
+    primitive.foreign.variable:
+        FVARIABLE LPAR primitive.type.number statement.identifier COMMA primitive.string.tag RPAR {
+          $$ = boxFVar( $[primitive.type.number], $[statement.identifier], $[primitive.string.tag] );
+        }
 
-fvariable:
-		FVARIABLE LPAR type name PAR fstring RPAR { $$ = boxFVar($3,$4,$6); }
-;
+    /******************** I/O ********************/
 
-/* Description of user interface building blocks */
-button:
-		BUTTON LPAR uqstring RPAR { $$ = boxButton($3); }
-;
+    primitive.signal.inputs:
+        INPUTS LPAR expression RPAR { $$ = boxInputs($expression); }
 
-checkbox:
-		CHECKBOX LPAR uqstring RPAR { $$ = boxCheckbox($3); }
-;
+    primitive.signal.outputs:
+        OUTPUTS LPAR expression RPAR { $$ = boxOutputs($expression); }
 
-vslider:
-		VSLIDER LPAR uqstring PAR argument PAR argument PAR argument PAR argument RPAR {
-			$$ = boxVSlider($3,$5,$7,$9,$11);
-		}
-;
-hslider:
-		HSLIDER LPAR uqstring PAR argument PAR argument PAR argument PAR argument RPAR {
-			$$ = boxHSlider($3,$5,$7,$9,$11);
-		}
-;
-nentry:
-		NENTRY LPAR uqstring PAR argument PAR argument PAR argument PAR argument RPAR {
-			$$ = boxNumEntry($3,$5,$7,$9,$11);
-		}
-;
-vgroup:
-		VGROUP LPAR uqstring PAR expression RPAR { $$ = boxVGroup($3, $5); }
-;
-hgroup:
-		HGROUP LPAR uqstring PAR expression RPAR { $$ = boxHGroup($3, $5); }
-;
-tgroup:
-		TGROUP LPAR uqstring PAR expression RPAR { $$ = boxTGroup($3, $5); }
-;
+/***************************************************/
+/******************** Statement ********************/
+/***************************************************/
 
-vbargraph:
-		VBARGRAPH LPAR uqstring PAR argument PAR argument RPAR {
-			$$ = boxVBargraph($3,$5,$7);
-		}
-;
-hbargraph:
-		HBARGRAPH LPAR uqstring PAR argument PAR argument RPAR {
-			$$ = boxHBargraph($3,$5,$7);
-		}
-;
-soundfile:
-		SOUNDFILE LPAR uqstring PAR argument RPAR { $$ = boxSoundfile($3,$5); }
-;
 
-/* Description of foreign functions */
-/* float sinhf|sinh|sinhl(float) */
+statement:
+    statement.definition
+  | statement.declare.metadata
+  | statement.declare.feature.metadata
+  | statement.declare.doc
+  | statement.import
 
-signature:
-		type fun LPAR typelist RPAR {
-				$$ = cons($1, cons(cons($2,cons($2,cons($2,gGlobal->nil))), $4));
-		}
-  | type fun OR fun LPAR typelist RPAR {
-			$$ = cons($1, cons(cons($2,cons($4,cons($4,gGlobal->nil))), $6));
-		}
-  | type fun OR fun OR fun LPAR typelist RPAR {
-			$$ = cons($1, cons(cons($2,cons($4,cons($6,gGlobal->nil))), $8));
-		}
+  /******************** Definition ********************/
 
-  | type fun LPAR RPAR {
-			$$ = cons($1, cons(cons($2,cons($2,cons($2,gGlobal->nil))), gGlobal->nil));
-		}
-  | type fun OR fun LPAR RPAR {
-			$$ = cons($1, cons(cons($2,cons($4,cons($4,gGlobal->nil))), gGlobal->nil)); 
-		}
-  | type fun OR fun OR fun LPAR RPAR {
-			$$ = cons($1, cons(cons($2,cons($4,cons($6,gGlobal->nil))), gGlobal->nil));
-		}
-;
+  statement.definition:
+      statement.definition.function
+    | statement.definition.substitution
+    | statement.definition.error
 
-fun:
-		IDENT { $$ = tree(yytext); }
-;
+    statement.definition.function:
+        statement.identifier.box LPAR expression.composition.list RPAR DEF expression ENDDEF {
+          $$ = cons(
+            $[statement.identifier.box],
+            cons( $[expression.composition.list], $expression )
+          );
+          setDefProp($[statement.identifier.box], yyfilename, yylineno);
+        }
+      
+    statement.definition.substitution:
+        statement.identifier.box[substitution_name] DEF expression[body] ENDDEF {
+          $$ = cons($substitution_name,cons(gGlobal->nil,$body));
+          setDefProp($substitution_name, yyfilename, yylineno);
+        }
+    
+    statement.definition.with:
+      expression WITH LBRAQ statement.definition.list RBRAQ {
+        $$ = boxWithLocalDef($expression,formatDefinitions($[statement.definition.list]));
+      }
 
-typelist:
-		argtype { $$ = cons($1,gGlobal->nil); }
-  | typelist PAR argtype { $$ = cons($3,$1); }
-;
+    statement.definition.error:
+        error ENDDEF {
+          $$ = gGlobal->nil;
+          yyerr++;
+        }
 
-rulelist:
-		rule { $$ = cons($1,gGlobal->nil); }
-  | rulelist rule { $$ = cons($2,$1); }
-;
+    statement.definition.list:
+        statement.definition.list.start
+      | statement.definition.list.start.qualified
+      | statement.definition.list.append
+      | statement.definition.list.append.qualified
 
-rule:
-		LPAR arglist RPAR ARROW expression ENDDEF { $$ = cons($2,$5); }
-;
+      statement.definition.list.start:
+          statement.definition {
+            $$ = cons( $[statement.definition.list.start], gGlobal->nil );
+          }
 
-type:
-		INTCAST { $$ = tree(0); }
-  | FLOATCAST { $$ = tree(1); }
-;
+      statement.definition.list.start.qualified:
+          statement.math.precision.list statement.definition {
+            if (acceptdefinition($[statement.math.precision.list]))
+              $$ = cons( $[statement.definition], gGlobal->nil );
+            else
+              $$ = gGlobal->nil;
+          }
 
-argtype:
-		INTCAST { $$ = tree(0); }
-  | FLOATCAST { $$ = tree(1); }
-  | NOTYPECAST { $$ = tree(2); }
-;
+      statement.definition.list.append:
+          statement.definition.list statement.definition {
+            $$ = cons ($[statement.definition],$[statement.definition.list]);
+          }
+          
+      statement.definition.list.append.qualified:
+          statement.definition.list statement.math.precision.list statement.definition {
+            if (acceptdefinition($[statement.math.precision.list]))
+              $$ = cons ($[statement.definition],$[statement.definition.list]);
+            else
+              $$ = $[statement.definition.list];
+          }
+
+  /******************** Declare ********************/
+
+  statement.declare.metadata:
+      DECLARE statement.identifier[key] primitive.string.quoted[value] ENDDEF {
+        declareMetadata($key,$value);
+        $$ = gGlobal->nil;
+      }
+
+  statement.declare.feature.metadata:
+      DECLARE statement.identifier[feature] statement.identifier[key] primitive.string.quoted[value] ENDDEF {
+        declareDefinitionMetadata( $feature, $key, $value );
+        $$ = gGlobal->nil;
+      }
+
+  statement.declare.doc:
+      BDOC doc[body] EDOC {
+        declareDoc($body);
+        $$ = gGlobal->nil;
+      }
+
+  /******************** Identifier ********************/
+
+  statement.identifier:
+      IDENT {
+        $$ = tree(yytext);
+        setUseProp($$, yyfilename, yylineno);
+      }
+
+  statement.identifier.box:
+      IDENT {
+        $$ = boxIdent(yytext);
+        setUseProp($$, yyfilename, yylineno);
+      }
+
+  statement.identifier.waveform:
+      IDENT { $$ = tree(yytext); }
+
+  /******************** Import ********************/
+
+  statement.import:
+      IMPORT LPAR primitive.string.unquoted[filename] RPAR ENDDEF { $$ = importFile($filename); }
+
+  /******************** List ********************/
+
+  statement.list:
+      statement.list.start
+    | statement.list.start.qualified
+    | statement.list.append
+    | statement.list.append.qualified
+   
+    statement.list.start:
+        statement {
+          $$ = cons($statement, gGlobal->nil);
+        }
+
+    statement.list.start.qualified:
+        statement.math.precision.list statement {
+          if (acceptdefinition($[statement.math.precision.list]))
+            $$ = cons($statement, gGlobal->nil);
+          else
+            $$ = gGlobal->nil;
+        }
+
+    statement.list.append:
+        statement.list statement {
+          $$ = cons($statement,$[statement.list]);
+        }
+    
+    statement.list.append.qualified:
+        statement.list statement.math.precision.list statement {
+          if (acceptdefinition($[statement.math.precision.list]))
+            $$ = cons($[statement.list],$[statement]);
+          else
+            $$=$[statement.list];
+        }
+
+  /******************** Math ********************/
+
+    statement.math.precision:
+        FLOATMODE { $$ = 1; }
+      | DOUBLEMODE { $$ = 2; }
+      | QUADMODE { $$ = 4; }
+      | FIXEDPOINTMODE { $$ = 8; }
+
+      statement.math.precision.list:
+          statement.math.precision.list.start
+        | statement.math.precision.list.append
+
+        statement.math.precision.list.start:
+            statement.math.precision
+
+        statement.math.precision.list.append:
+            statement.math.precision.list statement.math.precision {
+              $$ = $[statement.math.precision.list] | $[statement.math.precision];
+            }
+
+  /******************** Rules ********************/
+
+  statement.signal.pattern.rule.list:
+      statement.signal.pattern.rule.list.start
+    | statement.signal.pattern.rule.list.append
+
+    statement.signal.pattern.rule.list.start:
+        statement.signal.pattern.rule { $$ = cons($[statement.signal.pattern.rule],gGlobal->nil); }
+    
+    statement.signal.pattern.rule.list.append:
+        statement.signal.pattern.rule.list[prior] statement.signal.pattern.rule[next] { $$ = cons($next,$prior); }
+
+  statement.signal.pattern.rule:
+      LPAR expression.composition.list RPAR ARROW expression ENDDEF { $$ = cons($[expression.composition.list],$expression); }
+
 
 %%

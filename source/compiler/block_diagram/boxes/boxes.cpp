@@ -551,7 +551,7 @@ LIBFAUST_API bool isBoxLibrary(Tree s, Tree& filename)
 
 Tree importFile(Tree filename)
 {
-    return tree(gGlobal->IMPORTFILE, filename);
+    return tree(gGlobal->IMPORTFILE, filename );
 }
 bool isImportFile(Tree s, Tree& filename)
 {
@@ -606,7 +606,7 @@ LIBFAUST_API bool isBoxPrim2(Tree s, prim2* p)
     Tree t;
     return isTree(s, gGlobal->BOXPRIM2, t) && isPointer(t->node(), (void**)p);
 }
-
+ 
 LIBFAUST_API Tree boxPrim3(prim3 foo)
 {
     return tree(gGlobal->BOXPRIM3, tree((void*)foo));

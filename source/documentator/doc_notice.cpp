@@ -29,7 +29,7 @@
 #include "compatibility.hh"
 #include "doc_lang.hh"
 #include "doc_notice.hh"
-#include "string_substitution.hh"
+#include "compiler/file_handling/string_substitution.hh"
 #include "global.hh"
 
 static void initDocNoticeKeySet();

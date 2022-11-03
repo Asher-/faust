@@ -47,7 +47,7 @@
 #include "global.hh"
 #include "Text.hh"
 
-#include "string_substitution.hh"
+#include "compiler/file_handling/string_substitution.hh"
 
 using namespace std;
 
@@ -503,7 +503,7 @@ Tree SourceReader::expandRec(Tree ldef, set<string>& visited, Tree lresult)
  *
  * @param rldef list of raw definitions in reverse order
  * @return the list of formatted definitions
- */
+ */ 
 
 Tree formatDefinitions(Tree rldef)
 {

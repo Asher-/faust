@@ -19,13 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#ifdef FAUST_LIB
-// 'libfaust' compiler uses an empty 'alarm' function
-unsigned faust_alarm(unsigned seconds)
-{
-    return 0;
-}
-#else
+#ifndef FAUST_LIB
 
 #include <iostream>
 #include "compatibility.hh"
@@ -33,12 +27,6 @@ unsigned faust_alarm(unsigned seconds)
 #include "global.hh"
 
 #include "faust/cli.hh"
-
-// Standalone compiler uses the real 'alarm' function
-unsigned faust_alarm(unsigned seconds)
-{
-    return alarm(seconds);
-}
 
 int main(int argc, const char* argv[])
 {

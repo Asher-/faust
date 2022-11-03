@@ -61,7 +61,7 @@
 #include "doc_lang.hh"
 #include "doc_notice.hh"
 #include "drawschema.hh"
-#include "string_substitution.hh"
+#include "compiler/file_handling/string_substitution.hh"
 #include "errormsg.hh"
 #include "eval.hh"
 #include "exception.hh"
