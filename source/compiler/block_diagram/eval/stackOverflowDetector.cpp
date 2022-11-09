@@ -21,9 +21,9 @@
 
 #include <cmath>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "stackOverflowDetector.hh"
-#include "ppbox.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 
 void stackOverflowDetector::detect()
 {

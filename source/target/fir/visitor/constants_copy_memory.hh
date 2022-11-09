@@ -22,10 +22,10 @@
 #ifndef __FAUST_CONSTANTS_COPY_MEMORY_HH__
 #define __FAUST_CONSTANTS_COPY_MEMORY_HH__
 
-#include "visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
-#include "instruction_builder.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 
 // Base class for iConst/fConst memory copy in -osX modes
 struct ConstantsCopyMemory : public BasicCloneVisitor {

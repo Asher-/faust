@@ -30,7 +30,7 @@
  *
  **/
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 
 #define MAX_STACK_SIZE 1024 * 1024 * 16  // 16 MO
 #define STACK_FRAME 65536 * 4

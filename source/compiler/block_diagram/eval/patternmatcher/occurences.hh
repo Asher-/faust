@@ -22,8 +22,8 @@
 #ifndef __OCCURENCES__
 #define __OCCURENCES__
 
-#include "garbageable.hh"
-#include "tlib.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/tlib.hh"
 
 class Occurences : public virtual Garbageable {
     const int fXVariability;   ///< Extended Variability of the expression

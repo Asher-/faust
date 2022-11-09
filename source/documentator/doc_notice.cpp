@@ -27,8 +27,8 @@
 #include <set>
 
 #include "compatibility.hh"
-#include "doc_lang.hh"
-#include "doc_notice.hh"
+#include "documentator/doc_lang.hh"
+#include "documentator/doc_notice.hh"
 #include "compiler/file_handling/string_substitution.hh"
 #include "global.hh"
 

@@ -21,9 +21,9 @@
 
 #include <algorithm>
 
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
-#include "fir/visitor/function_call_inliner.hh"
+#include "target/fir/visitor/function_call_inliner.hh"
 #include "sort_declarations.hh"
 
 using namespace std;

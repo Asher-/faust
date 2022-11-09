@@ -22,7 +22,7 @@
 #ifndef __NORMALIZE__
 #define __NORMALIZE__
 
-#include "tree.hh"
+#include "tlib/tree.hh"
 
 Tree normalizeAddTerm(Tree t);
 

@@ -21,11 +21,11 @@
 
 #include "faust/export.h"
 
-#include "errormsg.hh"
-#include "boxes.hh"
-#include "exception.hh"
+#include "compiler/errors/errormsg.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "ppbox.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 
 #include <iostream>
 using namespace std;

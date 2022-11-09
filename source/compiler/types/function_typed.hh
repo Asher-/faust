@@ -22,11 +22,11 @@
 #ifndef _FUNCTION_TYPED_
 #define _FUNCTION_TYPED_
 
-#include "types/basic_typed.hh"
-#include "types/named_typed.hh"
+#include "compiler/types/basic_typed.hh"
+#include "compiler/types/named_typed.hh"
 #include "compiler/types/is_type.hh"
-#include "Text.hh"
-#include "types/typed.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/types/typed.hh"
 
 struct FunTyped : public Typed {
     enum FunAttribute { kDefault = 0x1, kLocal = 0x2, kVirtual = 0x4, kStatic = 0x8, kStaticConstExpr = 0x10, kInline = 0x20 };

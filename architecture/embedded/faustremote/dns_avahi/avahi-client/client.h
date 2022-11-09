@@ -23,7 +23,7 @@
 #include <inttypes.h>
 
 #include "cdecl.h"
-#include "address.h"
+#include "compiler/type_manager/address/address.h"
 #include "strlst.h"
 #include "defs.h"
 #include "watch.h"

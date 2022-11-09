@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 
-#include "prim2.hh"
+#include "compiler/signals/prim2.hh"
 #include "global.hh"
 
 Tree ffunction(Tree signature, Tree incfile, Tree libfile)

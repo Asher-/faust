@@ -24,7 +24,7 @@
 
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/statement/block_instruction.hh"
-#include "types/function_typed.hh"
+#include "compiler/types/function_typed.hh"
 
 struct DeclareFunInst : public StatementInst {
     const std::string fName;

@@ -24,7 +24,7 @@
 
 #include <set>
 
-#include "loop.hh"
+#include "compiler/block_diagram/parallelize/loop.hh"
 
 typedef set<Loop*>    lset;
 typedef vector<Loop*> lvec;

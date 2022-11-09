@@ -27,10 +27,10 @@
 #include <set>
 #include <string>
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "compatibility.hh"
-#include "xml_description.hh"
-#include "exception.hh"
+#include "compiler/compile/xml_description.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 
 using namespace std;

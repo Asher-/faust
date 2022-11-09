@@ -22,8 +22,8 @@
 #ifndef __SOUL_TABLE_SIZE_VISITOR_HH__
 #define __SOUL_TABLE_SIZE_VISITOR_HH__
 
-#include "visitor/basic_clone_visitor.hh"
-#include "visitor/dispatch_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
 
 // Look for the "fillXXX" function call and keep the size of the third 'table' argument
 struct TableSizeVisitor : public DispatchVisitor {

@@ -29,14 +29,14 @@
 #include <vector>
 #include <utility>
 
-#include "Text.hh"
-#include "code_container.hh"
-#include "garbageable.hh"
+#include "compiler/type_manager/Text.hh"
+#include "target/code_container.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "global.hh"
 #include "compiler/instruction/instructions.hh"
 #include "dcond.hh"
 #include "old_occurences.hh"
-#include "property.hh"
+#include "tlib/property.hh"
 #include "fir/fir_index.hh"
 
 #define _DNF_ 1

@@ -21,7 +21,7 @@
 
 #include "compiler/instruction/statement/block_instruction.hh"
 #include "compiler/instruction/control_flow/return_instruction.hh"
-#include "instruction_builder.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 
 bool BlockInst::hasReturn() const
 {

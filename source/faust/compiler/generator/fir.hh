@@ -19,40 +19,36 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_RUST_HH__
-#define __FAUST_COMPILE_RUST_HH__
+#ifndef __FAUST_COMPILE_FIR_HH__
+#define __FAUST_COMPILE_FIR_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
-#include "rust_code_container.hh"
+#include "target/fir/fir_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct Rust : public Common
+    struct FIR : public Common
     {
-      static constexpr const char* TargetString = "Rust";
-      static constexpr const char* LanguageString = "rust";
+      static constexpr const char* TargetString = "FIR";
+      static constexpr const char* LanguageString = "fir";
 
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
-          #ifndef RUST_BUILD
-              throw faustexception("ERROR : -lang rust not supported since Rust backend is not built\n");
+          #ifndef FIR_BUILD
+              throw faustexception("ERROR : -lang fir not supported since FIR backend is not built\n");
           #endif
-
-          // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
-          this->_codeContainer     = RustCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+          this->_codeContainer = FIRCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out, true);
 
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              this->_instructionCompiler = new InstructionsCompiler1(this->_codeContainer);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };

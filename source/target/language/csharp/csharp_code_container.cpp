@@ -21,9 +21,9 @@
  ************************************************************************/
 
 #include "csharp_code_container.hh"
-#include "Text.hh"
-#include "exception.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 
 using namespace std;

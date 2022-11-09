@@ -24,7 +24,7 @@
 #endif
 
 #include "wasm_dynamic_dsp_aux.hh"
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "compatibility.hh"
 
 #ifdef WIN32

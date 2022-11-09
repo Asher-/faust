@@ -19,60 +19,46 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_LLVM_HH__
-#define __FAUST_COMPILE_LLVM_HH__
+#ifndef __FAUST_COMPILE_JAX_HH__
+#define __FAUST_COMPILE_JAX_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
+#include "target/language/jax/instruction_compiler_jax.hh"
 
-#include "clang_code_container.hh"
-#include "llvm_code_container.hh"
+#include "jax_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct LLVM : public Common
+    struct JAX : public Common
     {
-      static constexpr const char* TargetString = "LLVM IR";
-      static constexpr const char* LanguageString = "llvm";
+      static constexpr const char* TargetString = "JAX";
+      static constexpr const char* LanguageString = "jax";
 
-      void compile(Tree signals, int numInputs, int numOutputs, bool generate)
+      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
-          #ifndef LLVM_BUILD
-              throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
+          #ifndef JAX_BUILD
+              throw faustexception("ERROR : -lang jax not supported since JAX backend is not built\n");
           #endif
-          this->_codeContainer = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
-
-          // libc functions will be found by the LLVM linker, but not user defined ones...
-          gGlobal->gAllowForeignFunction = false;
-          // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
-          gGlobal->gUseDefaultSound     = false;
+          gGlobal->gAllowForeignFunction = true;  // foreign functions are supported (we use jax.random.PRNG for example)
+          gGlobal->gNeedManualPow        = false;
+          gGlobal->gFAUSTFLOAT2Internal  = true;
+          this->_codeContainer = JAXCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
 
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
+              this->_instructionCompiler = new InstructionsCompilerJAX(this->_codeContainer);
           }
 
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
-
-          if (generate) {
-              this->_instructionCompiler->compileMultiSignal(signals);
-          } else {
-              // To trigger 'sig.dot' generation
-              this->_instructionCompiler->prepare(signals);
-          }
+          this->_instructionCompiler->compileMultiSignal(signals);
       }
-      void compile(Tree signals, int numInputs, int numOutputs) override { throw "bool generate required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
       const char* const& targetString() override  { return TargetString; }
-
-      virtual void printVersionTargetDetail()
-      {
-          std::cout << "Build with LLVM version " << LLVM_VERSION << "\n";
-      }
 
     };
 

@@ -23,8 +23,8 @@
 
 #include <iostream>
 #include "compatibility.hh"
-#include "dsp_factory.hh"
 #include "global.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 
 #include "faust/cli.hh"
 

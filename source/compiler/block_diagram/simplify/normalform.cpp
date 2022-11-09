@@ -23,9 +23,9 @@
 #include <map>
 
 #include "global.hh"
-#include "tree.hh"
-#include "ppsig.hh"
-#include "ppbox.hh"
+#include "tlib/tree.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 #include "simplify.hh"
 #include "sigPromotion.hh"
 #include "sigtyperules.hh"

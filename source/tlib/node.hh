@@ -54,8 +54,8 @@
 #include <sys/types.h>
 #include <iostream>
 
-#include "garbageable.hh"
-#include "symbol.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/symbol.hh"
 
 using namespace std;
 

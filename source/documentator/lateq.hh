@@ -48,7 +48,7 @@ using namespace std;
 #include <map>
 #include <string>
 #include <vector>
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 class Lateq : public virtual Garbageable {
    public:

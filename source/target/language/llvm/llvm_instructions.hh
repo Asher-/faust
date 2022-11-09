@@ -31,13 +31,13 @@
 #include <string>
 #include <utility>
 
-#include "Text.hh"
-#include "binop.hh"
-#include "exception.hh"
-#include "fir_to_fir.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/signals/binop.hh"
+#include "compiler/errors/exception.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "compiler/instruction/instructions.hh"
-#include "visitor/struct_instruction_visitor.hh"
+#include "compiler/visitor/struct_instruction_visitor.hh"
 
 #include <llvm/IR/DataLayout.h>
 #include <llvm/IR/DerivedTypes.h>

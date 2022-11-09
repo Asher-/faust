@@ -33,8 +33,8 @@
 
 #include <iostream>
 #include <sstream>
-#include "garbageable.hh"
-#include "signals.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "compiler/signals/signals.hh"
 
 using namespace std;
 

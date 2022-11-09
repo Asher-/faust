@@ -22,15 +22,15 @@
 #ifndef _DECLARE_VAR_INSTRUCTION_
 #define _DECLARE_VAR_INSTRUCTION_
 
-#include "address.hh"
+#include "compiler/type_manager/address/address.hh"
 
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/memory/store_var_instruction.hh"
 #include "compiler/instruction/memory/load_var_instruction.hh"
-#include "types/typed.hh"
-#include "types/named_typed.hh"
-#include "types/array_typed.hh"
+#include "compiler/types/typed.hh"
+#include "compiler/types/named_typed.hh"
+#include "compiler/types/array_typed.hh"
 
 struct DeclareVarInst : public StatementInst {
     Address*   fAddress;

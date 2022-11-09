@@ -22,7 +22,7 @@
 #ifndef __SIGVISITOR__
 #define __SIGVISITOR__
 
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 struct sigvisitor {
     // predefined visit scheme

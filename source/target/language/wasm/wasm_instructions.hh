@@ -26,7 +26,7 @@
 #include <cmath>
 #include <vector>
 
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "was_instructions.hh"
 #include "wasm_binary.hh"
 

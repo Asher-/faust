@@ -22,7 +22,7 @@
 #ifndef DCOND_HH
 #define DCOND_HH
 
-#include "list.hh"
+#include "tlib/list.hh"
 
 /*
  * Dcond are conditions in disjunctive normal form implemented

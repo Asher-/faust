@@ -23,7 +23,7 @@
 #define __FAUST_COMPILE_WASM_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
 #include "wasm_code_container.hh"
 

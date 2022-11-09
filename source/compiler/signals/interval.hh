@@ -24,7 +24,7 @@
 
 #include <cmath>
 #include <iostream>
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 #ifdef _WIN32
 inline double log2(double e)

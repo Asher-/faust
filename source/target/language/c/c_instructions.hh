@@ -24,8 +24,8 @@
 
 #include <string>
 
-#include "visitor/text_instruction_visitor.hh"
-#include "visitor/struct_instruction_visitor_1.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
+#include "compiler/visitor/struct_instruction_visitor_1.hh"
 
 using namespace std;
 

@@ -22,7 +22,7 @@
 #ifndef _STRING_TYPE_MANAGER_JULIA_
 #define _STRING_TYPE_MANAGER_JULIA_
 
- #include "type_manager/string.hh"
+ #include "compiler/type_manager/string.hh"
 
 // StringTypeManager for Julia backend
 

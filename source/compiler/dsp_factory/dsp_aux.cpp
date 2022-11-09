@@ -26,11 +26,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "sha_key.hh"
 #include "compatibility.hh"
 #include "dsp_aux.hh"
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "lock_api.hh"
 #include "libfaust.h"
 

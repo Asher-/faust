@@ -36,14 +36,14 @@
  *  parallel (,), split (<:), merge (:>), and recursive (~).
  */
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 #include <stdio.h>
 #include <string.h>
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "ppbox.hh"
-#include "prim2.hh"
-#include "xtended.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
+#include "compiler/signals/prim2.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 /*****************************************************************************
                                     Identifiers

@@ -23,8 +23,8 @@
 #define _OPENBOX_INSTRUCTION_
 
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 struct OpenboxInst : public StatementInst {
     enum BoxType { kVerticalBox, kHorizontalBox, kTabBox };

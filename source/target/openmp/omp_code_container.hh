@@ -22,7 +22,7 @@
 #ifndef _OMP_CODE_CONTAINER_H
 #define _OMP_CODE_CONTAINER_H
 
-#include "code_container.hh"
+#include "target/code_container.hh"
 
 class OpenMPCodeContainer : public virtual CodeContainer {
    private:

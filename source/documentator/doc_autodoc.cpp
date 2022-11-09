@@ -25,11 +25,11 @@
 #include <set>
 #include <string>
 
-#include "boxes.hh"
-#include "doc.hh"
-#include "doc_autodoc.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "documentator/doc.hh"
+#include "documentator/doc_autodoc.hh"
 #include "global.hh"
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 /*****************************************************************************
                         Public functions

@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
 #include "global.hh"
 
 // Used when inlining functions

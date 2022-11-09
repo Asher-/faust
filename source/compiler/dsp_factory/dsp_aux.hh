@@ -32,10 +32,10 @@
 #include "faust/export.h"
 #include "faust/dsp/dsp.h"
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
-#include "smartable.hh"
-#include "smartpointer.hh"
+#include "tlib/smartable.hh"
+#include "tlib/smartpointer.hh"
 
 //----------------------------------------------------------------
 // Smart DSP factory table

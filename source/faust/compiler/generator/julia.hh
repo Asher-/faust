@@ -23,7 +23,7 @@
 #define __FAUST_COMPILE_JULIA_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 #include "instruction_compiler1.hh"
 
 #include "julia_code_container.hh"

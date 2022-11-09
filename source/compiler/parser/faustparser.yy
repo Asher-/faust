@@ -1,48 +1,81 @@
-/* -*- Mode: C++; tab-width: 4; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 2; c-basic-offset: 4 -*- */
 
 /* Parser for the Faust language */
+%require "3.2"
+%language "c++"
+%define api.value.type variant
 
-%{
+%define api.token.raw
+%define api.token.constructor
+%define api.token.prefix {FAUST_}
+
+%define api.namespace {::Faust::Compiler::Parser}
+%define api.parser.class {Implementation}
+//%define api.location.type { Type::Location }
+
+%define parse.assert /* runtime assertions to catch invalid uses */
+%define parse.trace /* set yydebug = 1 to print trace to stderr */
+%define parse.error detailed /* simple, detailed, verbose */
+%define parse.lac full /* look-ahead correction (5.8.3 LAC) */
+
+%param { Type::Driver& driver }
+
+%header "faustparser.hh"   /* Generate faustparser.hh */
+
+%locations /* Generate location.hh */
+%verbose   /* Generate faustparser.output */
+
+%initial-action
+{
+  @$.begin.filename = @$.end.filename = &driver._streamName;
+};
+
+%code requires { /* Faust requires */
+  #include <string>
+  #include "compiler/parser/type/tokens.hh"
+  #include "compiler/parser/location.hh"
+  namespace Faust { namespace Compiler { namespace Parser {
+    namespace Type { struct Driver; }
+    namespace Lexer {
+      struct Implementation;
+  } } } }
+}
+
+%code { /* Faust code */
+  #include "compiler/parser/type/driver.hh"
+}
+
+%{ /* Faust */
+
+#include <list>
+#include <iostream>
 
 #include "global.hh"
 
-#include "tree.hh"
-#include "xtended.hh"
-#include "boxes.hh"
-#include "prim2.hh"
-#include "signals.hh"
-#include "errormsg.hh"
-#include "sourcereader.hh"
-#include "doc.hh"
-#include "ppbox.hh"
-
-#include <string>
-#include <list>
+#include "tlib/tree.hh"
+#include "compiler/math_primitives/xtended.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/signals/prim2.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/errors/errormsg.hh"
+#include "compiler/file_handling/sourcereader.hh"
+#include "documentator/doc.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 
 #include "string_substitution.hh"
 
-#define YYDEBUG 1
-#define YYERROR_VERBOSE 1
 #define YYMAXDEPTH	100000
-
-using namespace std;
 
 extern char* 		yytext;
 extern const char* 	yyfilename;
 extern int 			yylineno;
 extern int 			yyerr;
 
-int yylex();
+#include "compiler/parser/lexer/implementation.hh"
+#undef yylex
+#define yylex driver._lexer->lex
 
 %}
-
-%union {
-	CTree* 	exp;
-	char* str;
-	string* cppstr;
-	bool b;
-	int numvariant;
-}
 
 %start program
 
@@ -70,283 +103,286 @@ int yylex();
 /*%left APPL*/
 %left DOT
 
-%token MEM
-%token PREFIX
+%token <std::string> MEM
+%token <std::string> PREFIX
 
-%token INTCAST
-%token FLOATCAST
-%token ANYCAST
-%token FFUNCTION
-%token FCONSTANT
-%token FVARIABLE
+%token <std::string> INTCAST
+%token <std::string> FLOATCAST
+%token <std::string> ANYCAST
+%token <std::string> FFUNCTION
+%token <std::string> FCONSTANT
+%token <std::string> FVARIABLE
 
-%token BUTTON
-%token CHECKBOX
-%token VSLIDER
-%token HSLIDER
-%token NENTRY
-%token VGROUP
-%token HGROUP
-%token TGROUP
+%token <std::string> BUTTON
+%token <std::string> CHECKBOX
+%token <std::string> VSLIDER
+%token <std::string> HSLIDER
+%token <std::string> NENTRY
+%token <std::string> VGROUP
+%token <std::string> HGROUP
+%token <std::string> TGROUP
 
-%token HBARGRAPH
-%token VBARGRAPH
-%token SOUNDFILE
+%token <std::string> HBARGRAPH
+%token <std::string> VBARGRAPH
+%token <std::string> SOUNDFILE
 
-%token ATTACH
+%token <std::string> ATTACH
 
-%token ACOS
-%token ASIN
-%token ATAN
-%token ATAN2
-%token COS
-%token SIN
-%token TAN
+%token <std::string> ACOS
+%token <std::string> ASIN
+%token <std::string> ATAN
+%token <std::string> ATAN2
+%token <std::string> COS
+%token <std::string> SIN
+%token <std::string> TAN
 
-%token EXP
-%token LOG
-%token LOG10
-%token POWFUN
-%token SQRT
+%token <std::string> EXP
+%token <std::string> LOG
+%token <std::string> LOG10
+%token <std::string> POWFUN
+%token <std::string> SQRT
 
-%token ABS
-%token MIN
-%token MAX
+%token <std::string> ABS
+%token <std::string> MIN
+%token <std::string> MAX
 
-%token FMOD
-%token REMAINDER
+%token <std::string> FMOD
+%token <std::string> REMAINDER
 
-%token FLOOR
-%token CEIL
-%token RINT
+%token <std::string> FLOOR
+%token <std::string> CEIL
+%token <std::string> RINT
 
-%token RDTBL
-%token RWTBL
+%token <std::string> RDTBL
+%token <std::string> RWTBL
 
-%token SELECT2
-%token SELECT3
+%token <std::string> SELECT2
+%token <std::string> SELECT3
 
-%token INT
-%token FLOAT
+%token <int> INT
+%token <float> FLOAT
 
-%token LAMBDA
-%token DOT
+%token <std::string> LAMBDA
+%token <std::string> DOT
 
-%token WIRE
-%token CUT
-%token ENDDEF
-%token VIRG
-%left LPAR
-%token RPAR
-%token LBRAQ
-%token RBRAQ
-%left LCROC
-%token RCROC
-%token WITH
-%token LETREC
-%token WHERE
-%token DEF
+%token <std::string> WIRE
+%token <std::string> CUT
+%token <std::string> ENDDEF
+%token <std::string> VIRG
+%left <std::string> LPAR
+%token <std::string> RPAR
+%token <std::string> LBRAQ
+%token <std::string> RBRAQ
+%left <std::string> LCROC
+%token <std::string> RCROC
+%token <std::string> WITH
+%token <std::string> LETREC
+%token <std::string> WHERE
+%token <std::string> DEF
 
-%token IMPORT
-%token COMPONENT
-%token LIBRARY
-%token ENVIRONMENT
-%token WAVEFORM
-%token ROUTE
-%token ENABLE
-%token CONTROL
+%token <std::string> IMPORT
+%token <std::string> COMPONENT
+%token <std::string> LIBRARY
+%token <std::string> ENVIRONMENT
+%token <std::string> WAVEFORM
+%token <std::string> ROUTE
+%token <std::string> ENABLE
+%token <std::string> CONTROL
 
-%token ITERATE_PARALLEL
-%token ISEQ
-%token ISUM
-%token IPROD
+%token <std::string> ITERATE_PARALLEL
+%token <std::string> ISEQ
+%token <std::string> ISUM
+%token <std::string> IPROD
 
-%token INPUTS
-%token OUTPUTS
+%token <std::string> INPUTS
+%token <std::string> OUTPUTS
 
-%token STRING
-%token TAGSTRING
-%token IDENT
-%token EXTRA
+%token <std::string> STRING
+%token <std::string> TAGSTRING
+%token <std::string> IDENT
+%token <std::string> EXTRA
 
-%token DECLARE
+%token <std::string> DECLARE
 
-%token CASE
-%token ARROW
+%token <std::string> CASE
+%token <std::string> ARROW
 
-%token ASSERTBOUNDS
-%token LOWEST
-%token HIGHEST
+%token <std::string> ASSERTBOUNDS
+%token <std::string> LOWEST
+%token <std::string> HIGHEST
 
-%token FLOATMODE
-%token DOUBLEMODE
-%token QUADMODE
-%token FIXEDPOINTMODE
+%token <int> FLOATMODE
+%token <int> DOUBLEMODE
+%token <int> QUADMODE
+%token <int> FIXEDPOINTMODE
 
- /* Begin and End tags for documentations, equations and diagrams */
-%token BDOC
-%token EDOC
-%token BEQN
-%token EEQN
-%token BDGM
-%token EDGM
-%token BLST
-%token ELST
-%token BMETADATA
-%token EMETADATA
-%token <cppstr> DOCCHAR
-%token NOTICE
-%token LISTING
+ /* Beg<std::string> in and End tags for documentations, equations and diagrams */
+%token <std::string> BDOC
+%token <std::string> EDOC
+%token <std::string> BEQN
+%token <std::string> EEQN
+%token <std::string> BDGM
+%token <std::string> EDGM
+%token <std::string> BLST
+%token <std::string> ELST
+%token <std::string> BMETADATA
+%token <std::string> EMETADATA
+%token <std::string> DOCCHAR
+%token <std::string> NOTICE
+%token <std::string> LISTING
 
-%token LSTTRUE
-%token LSTFALSE
-%token LSTDEPENDENCIES
-%token LSTMDOCTAGS
-%token LSTDISTRIBUTED
-%token LSTEQ
-%token LSTQ
+%token <std::string> LSTTRUE
+%token <std::string> LSTFALSE
+%token <std::string> LSTDEPENDENCIES
+%token <std::string> LSTMDOCTAGS
+%token <std::string> LSTDISTRIBUTED
+%token <std::string> LSTEQ
+%token <std::string> LSTQ
+%token <std::string> ENDL
 
-%type <exp> doc
-%type <exp> doc.attribute.list
-%type <exp> doc.attribute.definition
-%type <b> doc.attribute.value
-%type <cppstr> doc.text
-%type <exp> doc.equation
-%type <exp> doc.diagram
-%type <exp> doc.notice
-%type <exp> doc.list
-%type <exp> doc.metadata
+%type <Type::exp> doc
+%type <Type::exp> doc.attribute.list
+%type <Type::exp> doc.attribute.definition
+%type <bool> doc.attribute.value
+%type <std::string> doc.text
+%type <Type::exp> doc.equation
+%type <Type::exp> doc.diagram
+%type <Type::exp> doc.notice
+%type <Type::exp> doc.list
+%type <Type::exp> doc.metadata
 
-%type <exp> expression
-%type <exp> expression.component
-%type <exp> expression.composition
-%type <exp> expression.composition.mix
-%type <exp> expression.composition.record
-%type <exp> expression.composition.sequence
-%type <exp> expression.composition.split
-%type <exp> expression.composition.list
-%type <exp> expression.environment
-%type <exp> expression.infix
-%type <exp> expression.infix.definitions.local
-%type <exp> expression.infix.environment.access
-%type <exp> expression.infix.math
-%type <exp> expression.infix.math.algebra
-%type <exp> expression.infix.math.comparison
-%type <exp> expression.infix.math.logic
-%type <exp> expression.infix.math.shift
-%type <exp> expression.infix.prefix
-%type <exp> expression.infix.signal.delay
-%type <exp> expression.iterate.parallel
-%type <exp> expression.iterate.sequence
-%type <exp> expression.iterate.sum
-%type <exp> expression.iterate.product
-%type <exp> expression.lambda
-%type <exp> expression.lambda.params
-%type <exp> expression.lambda.params.start
-%type <exp> expression.lambda.params.append
-%type <exp> expression.letrec
-%type <exp> expression.letrec.list
-%type <exp> expression.letrec.list.start
-%type <exp> expression.letrec.list.append
-%type <exp> expression.letrec.equation
-%type <exp> expression.letrec.equation.name
-%type <exp> expression.library
-%type <exp> expression.math
-%type <exp> expression.math.comparison
-%type <exp> expression.math.rounding
-%type <exp> expression.math.scalar
-%type <exp> expression.math.signal
-%type <exp> expression.math.signal.algebra
-%type <exp> expression.math.signal.shift
-%type <exp> expression.math.signal.power
-%type <exp> expression.math.trigonometry
-%type <exp> expression.parallel
-%type <exp> expression.parenthesis
-%type <exp> expression.signal
-%type <exp> expression.signal.control
-%type <exp> expression.signal.delay
-%type <exp> expression.signal.logic
+%type <Type::exp> expression
+%type <Type::exp> expression.component
+%type <Type::exp> expression.composition
+%type <Type::exp> expression.composition.mix
+%type <Type::exp> expression.composition.record
+%type <Type::exp> expression.composition.sequence
+%type <Type::exp> expression.composition.split
+%type <Type::exp> expression.composition.list
+%type <Type::exp> expression.environment
+%type <Type::exp> expression.infix
+%type <Type::exp> expression.infix.definitions.local
+%type <Type::exp> expression.infix.environment.access
+%type <Type::exp> expression.infix.math
+%type <Type::exp> expression.infix.math.algebra
+%type <Type::exp> expression.infix.math.comparison
+%type <Type::exp> expression.infix.math.logic
+%type <Type::exp> expression.infix.math.shift
+%type <Type::exp> expression.infix.prefix
+%type <Type::exp> expression.infix.signal.delay
+%type <Type::exp> expression.iterate.parallel
+%type <Type::exp> expression.iterate.sequence
+%type <Type::exp> expression.iterate.sum
+%type <Type::exp> expression.iterate.product
+%type <Type::exp> expression.lambda
+%type <Type::exp> expression.lambda.params
+%type <Type::exp> expression.lambda.params.start
+%type <Type::exp> expression.lambda.params.append
+%type <Type::exp> expression.letrec
+%type <Type::exp> expression.letrec.list
+%type <Type::exp> expression.letrec.list.start
+%type <Type::exp> expression.letrec.list.append
+%type <Type::exp> expression.letrec.equation
+%type <Type::exp> expression.letrec.equation.name
+%type <Type::exp> expression.library
+%type <Type::exp> expression.math
+%type <Type::exp> expression.math.comparison
+%type <Type::exp> expression.math.rounding
+%type <Type::exp> expression.math.scalar
+%type <Type::exp> expression.math.signal
+%type <Type::exp> expression.math.signal.algebra
+%type <Type::exp> expression.math.signal.shift
+%type <Type::exp> expression.math.signal.power
+%type <Type::exp> expression.math.trigonometry
+%type <Type::exp> expression.parallel
+%type <Type::exp> expression.parenthesis
+%type <Type::exp> expression.signal
+%type <Type::exp> expression.signal.control
+%type <Type::exp> expression.signal.delay
+%type <Type::exp> expression.signal.logic
 
-%type <exp> primitive
-%type <exp> primitive.foreign
-%type <exp> primitive.foreign.constant
-%type <exp> primitive.foreign.function
-%type <exp> primitive.foreign.function.signature
-%type <exp> primitive.foreign.variable
-%type <exp> primitive.signal.input.implicit
-%type <exp> primitive.signal.input.terminate
-%type <exp> primitive.signal.inputs
-%type <exp> primitive.number
-%type <exp> primitive.type.number.list
-%type <exp> primitive.type.number.list.start
-%type <exp> primitive.type.number.list.append
-%type <exp> primitive.type.number.list.member
-%type <exp> primitive.signal.outputs
-%type <exp> primitive.signal
-%type <exp> primitive.signal.route
-%type <exp> primitive.signal.source
-%type <exp> primitive.signal.source.soundfile
-%type <exp> primitive.signal.source.table
-%type <exp> primitive.signal.source.waveform
-%type <exp> primitive.string.quoted
-%type <exp> primitive.string.tag
-%type <exp> primitive.string.unquoted
-%type <exp> primitive.type
-%type <exp> primitive.type.list
-%type <exp> primitive.type.list.start
-%type <exp> primitive.type.list.append
-%type <exp> primitive.type.number
-%type <exp> primitive.type.number.int
-%type <exp> primitive.type.number.float
-%type <exp> primitive.type.any
+%type <Type::exp> primitive
+%type <Type::exp> primitive.foreign
+%type <Type::exp> primitive.foreign.constant
+%type <Type::exp> primitive.foreign.function
+%type <Type::exp> primitive.foreign.function.signature
+%type <Type::exp> primitive.foreign.variable
+%type <Type::exp> primitive.signal.input.implicit
+%type <Type::exp> primitive.signal.input.terminate
+%type <Type::exp> primitive.signal.inputs
+%type <Type::exp> primitive.number
+%type <Type::exp> primitive.type.number.list
+%type <Type::exp> primitive.type.number.list.start
+%type <Type::exp> primitive.type.number.list.append
+%type <Type::exp> primitive.type.number.list.member
+%type <Type::exp> primitive.signal.outputs
+%type <Type::exp> primitive.signal
+%type <Type::exp> primitive.signal.route
+%type <Type::exp> primitive.signal.source
+%type <Type::exp> primitive.signal.source.soundfile
+%type <Type::exp> primitive.signal.source.table
+%type <Type::exp> primitive.signal.source.waveform
+%type <Type::exp> primitive.string.quoted
+%type <Type::exp> primitive.string.tag
+%type <Type::exp> primitive.string.unquoted
+%type <Type::exp> primitive.type
+%type <Type::exp> primitive.type.list
+%type <Type::exp> primitive.type.list.start
+%type <Type::exp> primitive.type.list.append
+%type <Type::exp> primitive.type.number
+%type <Type::exp> primitive.type.number.int
+%type <Type::exp> primitive.type.number.float
+%type <Type::exp> primitive.type.any
 
-%type <exp> primitive.ui
-%type <exp> primitive.ui.button
-%type <exp> primitive.ui.checkbox
-%type <exp> primitive.ui.vslider
-%type <exp> primitive.ui.hslider
-%type <exp> primitive.ui.nentry
-%type <exp> primitive.ui.vgroup
-%type <exp> primitive.ui.hgroup
-%type <exp> primitive.ui.tgroup
-%type <exp> primitive.ui.vbargraph
-%type <exp> primitive.ui.hbargraph
+%type <Type::exp> primitive.ui
+%type <Type::exp> primitive.ui.button
+%type <Type::exp> primitive.ui.checkbox
+%type <Type::exp> primitive.ui.vslider
+%type <Type::exp> primitive.ui.hslider
+%type <Type::exp> primitive.ui.nentry
+%type <Type::exp> primitive.ui.vgroup
+%type <Type::exp> primitive.ui.hgroup
+%type <Type::exp> primitive.ui.tgroup
+%type <Type::exp> primitive.ui.vbargraph
+%type <Type::exp> primitive.ui.hbargraph
 
-%type <exp> program
+%type <Type::exp> program
 
-%type <exp> statement
-%type <exp> statement.definition
-%type <exp> statement.definition.substitution
-%type <exp> statement.definition.error
-%type <exp> statement.definition.function
-%type <exp> statement.definition.list
-%type <exp> statement.definition.list.start
-%type <exp> statement.definition.list.start.qualified
-%type <exp> statement.definition.list.append
-%type <exp> statement.definition.list.append.qualified
-%type <exp> statement.definition.with
-%type <exp> statement.declare.doc
-%type <exp> statement.declare.metadata
-%type <exp> statement.declare.feature.metadata
-%type <exp> statement.identifier
-%type <exp> statement.identifier.box
-%type <exp> statement.identifier.waveform
-%type <exp> statement.import
-%type <exp> statement.list
-%type <exp> statement.list.start
-%type <exp> statement.list.start.qualified
-%type <exp> statement.list.append
-%type <exp> statement.list.append.qualified
-%type <numvariant> statement.math.precision
-%type <numvariant> statement.math.precision.list
-%type <numvariant> statement.math.precision.list.start
-%type <numvariant> statement.math.precision.list.append
-%type <exp> statement.signal.pattern.rule
-%type <exp> statement.signal.pattern.rule.list
-%type <exp> statement.signal.pattern.rule.list.start
-%type <exp> statement.signal.pattern.rule.list.append
+%type <Type::exp> statement
+%type <Type::exp> statement.definition
+%type <Type::exp> statement.definition.substitution
+%type <Type::exp> statement.definition.error
+%type <Type::exp> statement.definition.function
+%type <Type::exp> statement.definition.function.incomplete
+%type <Type::exp> statement.definition.list
+%type <Type::exp> statement.definition.list.start
+%type <Type::exp> statement.definition.list.start.qualified
+%type <Type::exp> statement.definition.list.append
+%type <Type::exp> statement.definition.list.append.qualified
+%type <Type::exp> statement.definition.with
+%type <Type::exp> statement.declare.doc
+%type <Type::exp> statement.declare.metadata
+%type <Type::exp> statement.declare.feature.metadata
+%type <Type::exp> statement.identifier
+%type <Type::exp> statement.identifier.box
+%type <Type::exp> statement.identifier.waveform
+%type <Type::exp> statement.import
+%type <Type::exp> statement.list
+%type <Type::exp> statement.list.start
+%type <Type::exp> statement.list.start.qualified
+%type <Type::exp> statement.list.append
+%type <Type::exp> statement.list.append.qualified
+%type <int> statement.math.precision
+%type <int> statement.math.precision.list
+%type <int> statement.math.precision.list.start
+%type <int> statement.math.precision.list.append
+%type <Type::exp> statement.signal.pattern.rule
+%type <Type::exp> statement.signal.pattern.rule.list
+%type <Type::exp> statement.signal.pattern.rule.list.start
+%type <Type::exp> statement.signal.pattern.rule.list.append
 
 %% /* grammar rules and actions follow; tokens in caps, rules lowercase */
+
 
 /***********************************************/
 /******************** Start ********************/
@@ -369,8 +405,8 @@ program:
 
 doc:
 		doc.text {
-			$$ = docTxt($[doc.text]->c_str());
-			delete $[doc.text];
+			$$ = docTxt($[doc.text].c_str());
+//			delete $[doc.text];
 		}
   | doc.equation { $$ = docEqn($[doc.equation]); }
   | doc.diagram { $$ = docDgm($[doc.diagram]); }
@@ -380,8 +416,8 @@ doc:
 	| /* empty */ { $$ = gGlobal->nil; }
 
   doc.text:
-      DOCCHAR { $$ = new string(yytext); }
-    | doc.text[prior] DOCCHAR { $$ = &($prior->append(yytext)); }
+      DOCCHAR { $$ = $DOCCHAR; }
+    | doc.text[prior] DOCCHAR { $$ = $prior.append(yytext); }
 
   doc.equation:
       BEQN expression EEQN { $$ = $expression; }
@@ -676,9 +712,9 @@ expression:
 
       expression.math.scalar:
           ADD INT { $$ = boxInt(str2int(yytext)); }
-        | ADD FLOAT { $$ = boxReal(atof(yytext)); }
-        | SUB INT { $$ = boxInt ( -str2int(yytext) ); }
-        | SUB FLOAT { $$ = boxReal( -atof(yytext) ); }
+        | ADD FLOAT { $$ = boxReal($FLOAT); }
+        | SUB INT { $$ = boxInt ( -$INT ); }
+        | SUB FLOAT { $$ = boxReal( -$FLOAT ); }
 
       expression.math.trigonometry:
           ACOS { $$ = gGlobal->gAcosPrim->box(); }
@@ -975,14 +1011,27 @@ statement:
     | statement.definition.substitution
     | statement.definition.error
 
+    statement.definition.function.incomplete:
+      statement.identifier.box LPAR expression.composition.list RPAR DEF expression {
+        $$ = cons(
+          $[statement.identifier.box],
+          cons( $[expression.composition.list], $expression )
+        );
+        setDefProp($[statement.identifier.box], yyfilename, yylineno);
+      }
+      
     statement.definition.function:
-        statement.identifier.box LPAR expression.composition.list RPAR DEF expression ENDDEF {
-          $$ = cons(
-            $[statement.identifier.box],
-            cons( $[expression.composition.list], $expression )
-          );
-          setDefProp($[statement.identifier.box], yyfilename, yylineno);
+        statement.definition.function.incomplete ENDDEF {
+          $$ = $[statement.definition.function.incomplete];
         }
+      | statement.definition.function.incomplete error ENDL {
+          yyerr++;
+//          error(*yylocationp, std::string("Missing semicolon.");
+//          delete (yysemantic_stack_[(1) - (1)].stringVal);
+          $$ = $[statement.definition.function.incomplete];
+          yyerrok;
+        }
+
       
     statement.definition.substitution:
         statement.identifier.box[substitution_name] DEF expression[body] ENDDEF {
@@ -1143,6 +1192,5 @@ statement:
 
   statement.signal.pattern.rule:
       LPAR expression.composition.list RPAR ARROW expression ENDDEF { $$ = cons($[expression.composition.list],$expression); }
-
 
 %%

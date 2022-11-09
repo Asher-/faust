@@ -24,12 +24,12 @@
 
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/value/value_instruction.hh"
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
-#include "address/named_address.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 struct StoreVarInst : public StatementInst {
     Address*   fAddress;

@@ -22,9 +22,9 @@
 #ifndef __FAUST_ARRAY_TO_POINTER_HH__
 #define __FAUST_ARRAY_TO_POINTER_HH__
 
-#include "instruction_builder.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
 
 // Rewrite DSP array fields as pointers

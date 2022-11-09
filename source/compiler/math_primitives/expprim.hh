@@ -21,9 +21,9 @@
 
 #include <math.h>
 
-#include "Text.hh"
-#include "floats.hh"
-#include "xtended.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 class ExpPrim : public xtended {
    public:

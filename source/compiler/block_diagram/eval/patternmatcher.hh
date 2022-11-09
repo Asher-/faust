@@ -23,7 +23,7 @@
 #define __PATTERNMATCHER__
 
 #include <vector>
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 #include "patternmatcher/path.hh"
 #include "patternmatcher/rule.hh"

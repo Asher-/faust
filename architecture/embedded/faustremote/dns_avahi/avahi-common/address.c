@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "address.h"
+#include "compiler/type_manager/address/address.h"
 #include "malloc.h"
 
 static size_t address_get_size(const AvahiAddress *a) {

@@ -23,7 +23,7 @@
 
 #include <stdlib.h>
 #include <cstdlib>
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 
 //-------------------------SignalVisitor-------------------------------
 // An identity transformation on signals. Can be used to test

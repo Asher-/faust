@@ -50,7 +50,7 @@ this header file.
 
 #include <math.h>
 
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 //-------------------------------------------------------------------------
 // Class num = (type x (int + double))

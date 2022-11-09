@@ -24,11 +24,11 @@
 
 #include <cstdlib>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "fbc/fbc_interpreter.hh"
 #include "compiler/instruction/instructions.hh"
 #include "memory_description.hh"
-#include "visitor/typing_instruction_visitor.hh"
+#include "compiler/visitor/typing_instruction_visitor.hh"
 
 template <class REAL>
 struct InterpreterInstVisitor : public DispatchVisitor {

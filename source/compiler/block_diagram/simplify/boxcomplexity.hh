@@ -22,7 +22,7 @@
 #ifndef __BOXECOMPLEXITY__
 #define __BOXECOMPLEXITY__
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 
 int boxComplexity(Tree box);
 

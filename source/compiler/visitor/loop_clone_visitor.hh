@@ -25,9 +25,9 @@
 #include <string>
 #include <list>
 
-#include "named_address.hh"
-#include "instruction_builder.hh"
-#include "visitor/basic_clone_visitor.hh"
+#include "compiler/type_manager/address/named_address.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
 
 // Change the status of all variables used in function parameter list
 struct LoopCloneVisitor : public BasicCloneVisitor {

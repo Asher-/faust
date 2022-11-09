@@ -31,11 +31,11 @@
 #include "faust/export.h"
 
 #include "dsp_aux.hh"
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "wasm_binary.hh"
 
-#include "smartpointer.hh"
-#include "smartable.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
 
 class wasm_dsp_factory;
 struct JSONUIDecoderBase;

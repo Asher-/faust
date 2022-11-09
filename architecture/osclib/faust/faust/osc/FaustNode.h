@@ -30,7 +30,7 @@
 #include "faust/osc/MessageDriven.h"
 #include "faust/osc/Message.h"
 #include "faust/gui/GUI.h"
-#include "smartpointer.hh"
+#include "tlib/smartpointer.hh"
 #include "faust/osc/RootNode.h"
 
 namespace oscfaust

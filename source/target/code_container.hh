@@ -24,17 +24,17 @@
 
 #include <string>
 
-#include "Text.hh"
-#include "code_loop.hh"
-#include "xml_description.hh"
-#include "dsp_factory.hh"
-#include "floats.hh"
-#include "garbageable.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/block_diagram/parallelize/code_loop.hh"
+#include "compiler/compile/xml_description.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "compiler/instruction/instructions.hh"
-#include "visitor/json_instruction_visitor.hh"
-#include "property.hh"
-#include "sigtype.hh"
-#include "tlib.hh"
+#include "compiler/visitor/json_instruction_visitor.hh"
+#include "tlib/property.hh"
+#include "compiler/signals/sigtype.hh"
+#include "tlib/tlib.hh"
 #include "global.hh"
 
 #ifdef WIN32
@@ -56,7 +56,8 @@ struct SearchSubcontainer : public DispatchVisitor {
     SearchSubcontainer(const std::string& class_name):fClassName(class_name)
     {}
 
-    virtual void visit(NamedTyped* typed)
+    void visit(NamedTyped* typed)
+    override
     {
         fFound |= (fClassName == typed->getName());
     }

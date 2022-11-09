@@ -19,8 +19,8 @@
  ************************************************************************
  ************************************************************************/
 
-#include "loop.hh"
-#include "Text.hh"
+#include "compiler/block_diagram/parallelize/loop.hh"
+#include "compiler/type_manager/Text.hh"
 #include "global.hh"
 
 using namespace std;

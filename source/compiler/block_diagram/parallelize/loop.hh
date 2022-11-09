@@ -37,8 +37,8 @@
 #include <stack>
 #include <string>
 
-#include "statement.hh"
-#include "tlib.hh"
+#include "compiler/block_diagram/eval/statement.hh"
+#include "tlib/tlib.hh"
 
 using namespace std;
 

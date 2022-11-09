@@ -24,7 +24,7 @@
 
 // Base type is defined in instructions_type.h
 
-#include "types/typed.hh"
+#include "compiler/types/typed.hh"
 
 struct BasicTyped : public Typed {
     const VarType fType;

@@ -50,7 +50,7 @@ unique to each sharing analysis must be generated.
 #include <stdlib.h>
 #include <string.h>
 
-#include "list.hh"
+#include "tlib/list.hh"
 
 typedef bool (*barrier)(const Tree& t);
 

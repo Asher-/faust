@@ -23,8 +23,8 @@
 #ifndef _CSHARP_CODE_CONTAINER_H
 #define _CSHARP_CODE_CONTAINER_H
 
-#include "code_container.hh"
-#include "dsp_factory.hh"
+#include "target/code_container.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "target/language/csharp/csharp_instructions.hh"
 
 using namespace std;

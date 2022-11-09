@@ -23,7 +23,7 @@
 #define __SCHEMA__
 
 #include "device.h"
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 #include <set>
 #include <string>

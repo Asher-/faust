@@ -22,7 +22,7 @@
 #ifndef __SOURCEREADER__
 #define __SOURCEREADER__
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 #include <string>
 #include <set>
 #include <vector>

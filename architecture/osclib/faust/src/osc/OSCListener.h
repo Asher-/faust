@@ -25,8 +25,8 @@
 #ifndef __OSCListener__
 #define __OSCListener__
 
-#include "smartpointer.hh"
-#include "smartable.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
 #include "faust/osc/MessageProcessor.h"
 
 // oscpack include files

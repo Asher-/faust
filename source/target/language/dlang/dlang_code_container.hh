@@ -22,9 +22,9 @@
 #ifndef _DLANG_CODE_CONTAINER_H
 #define _DLANG_CODE_CONTAINER_H
 
-#include "code_container.hh"
+#include "target/code_container.hh"
 #include "target/language/dlang/dlang_instructions.hh"
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "omp_code_container.hh"
 #include "vec_code_container.hh"
 #include "wss_code_container.hh"

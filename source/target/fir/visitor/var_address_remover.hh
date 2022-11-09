@@ -22,10 +22,10 @@
 #ifndef __FAUST_VAR_ADDRESS_REMOVER_HH__
 #define __FAUST_VAR_ADDRESS_REMOVER_HH__
 
-#include "visitor/basic_clone_visitor.hh"
-#include "instruction_builder.hh"
-#include "named_address.hh"
-#include "indexed_address.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
+#include "compiler/type_manager/address/named_address.hh"
+#include "compiler/type_manager/address/indexed_address.hh"
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/memory/load_var_address_instruction.hh"
 #include "compiler/instruction/value/value_instruction.hh"

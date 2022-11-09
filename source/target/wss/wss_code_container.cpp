@@ -20,10 +20,10 @@
  ************************************************************************/
 
 #include "wss_code_container.hh"
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "variable_mover.hh"
-#include "visitor/remover_clone_visitor.hh"
+#include "compiler/visitor/remover_clone_visitor.hh"
 
 using namespace std;
 

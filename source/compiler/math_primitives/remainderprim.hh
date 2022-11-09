@@ -21,10 +21,10 @@
 
 #include <math.h>
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "compatibility.hh"
-#include "floats.hh"
-#include "xtended.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 class RemainderPrim : public xtended {
    public:

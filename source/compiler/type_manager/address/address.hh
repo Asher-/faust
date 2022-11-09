@@ -22,7 +22,7 @@
 #ifndef _ADDRESS_
 #define _ADDRESS_
 
-#include "types/printable.hh"
+#include "compiler/types/printable.hh"
 
 struct InstVisitor;
 struct CloneVisitor;

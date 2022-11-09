@@ -19,32 +19,36 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_CSHARP_HH__
-#define __FAUST_COMPILE_CSHARP_HH__
+#ifndef __FAUST_COMPILE_LLVM_HH__
+#define __FAUST_COMPILE_LLVM_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
-#include "csharp_code_container.hh"
+#include "clang_code_container.hh"
+#include "llvm_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct CSharp : public Common
+    struct LLVM : public Common
     {
-      static constexpr const char* TargetString = "CSharp";
-      static constexpr const char* LanguageString = "csharp";
+      static constexpr const char* TargetString = "LLVM IR";
+      static constexpr const char* LanguageString = "llvm";
 
-      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      void compile(Tree signals, int numInputs, int numOutputs, bool generate)
       override
       {
-          #ifndef CSHARP_BUILD
-              throw faustexception("ERROR : -lang csharp not supported since CSharp backend is not built\n");
+          #ifndef LLVM_BUILD
+              throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
           #endif
+          this->_codeContainer = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
 
-          gGlobal->gAllowForeignFunction = false;  // No foreign functions
-          this->_codeContainer =
-              CSharpCodeContainer::createContainer(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs, out);
+          // libc functions will be found by the LLVM linker, but not user defined ones...
+          gGlobal->gAllowForeignFunction = false;
+          // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
+          gGlobal->gFAUSTFLOAT2Internal = true;
+          gGlobal->gUseDefaultSound     = false;
 
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
@@ -53,11 +57,22 @@ namespace Faust {
           }
 
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
-          this->_instructionCompiler->compileMultiSignal(signals);
+
+          if (generate) {
+              this->_instructionCompiler->compileMultiSignal(signals);
+          } else {
+              // To trigger 'sig.dot' generation
+              this->_instructionCompiler->prepare(signals);
+          }
       }
-      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "bool generate required."; };
 
       const char* const& targetString() override  { return TargetString; }
+
+      virtual void printVersionTargetDetail()
+      {
+          std::cout << "Build with LLVM version " << LLVM_VERSION << "\n";
+      }
 
     };
 

@@ -22,10 +22,10 @@
 #include "patternmatcher/automaton.hh"
 #include "patternmatcher/is_box_pattern_op.hh"
 
-#include "boxes.hh"
-#include "ppbox.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 #include "global.hh"
-#include "eval.hh"
+#include "compiler/block_diagram/eval/eval.hh"
 #include "environment.hh"
 
 namespace PM {

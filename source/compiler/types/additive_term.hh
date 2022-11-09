@@ -26,15 +26,15 @@
 #include <list>
 #include <map>
 
-#include "exception.hh"
-#include "garbageable.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "multiply_term.hh"
 #include "normalize.hh"
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 #include "sigorderrules.hh"
 #include "sigprint.hh"
 #include "simplify.hh"
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 using namespace std;
 

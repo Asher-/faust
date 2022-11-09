@@ -22,7 +22,7 @@
 #ifndef _STRING_TYPE_MANAGER_JAX_
 #define _STRING_TYPE_MANAGER_JAX_
 
- #include "type_manager/string.hh"
+ #include "compiler/type_manager/string.hh"
 
 // StringTypeManager for JAX backend
 

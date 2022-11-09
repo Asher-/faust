@@ -23,9 +23,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 #include "faust/export.h"
 
 // Declaration of implementation

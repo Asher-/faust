@@ -7,12 +7,12 @@ PREFIX := FAUST
 
 code : $(OUT)
 
-faustparser.hpp : faustparser.y
-faustparser.cpp : faustparser.y
-	$(YACC) -d -o faustparser.cpp $(OPTIONS) faustparser.y
+faustparser.hpp : faustparser.yy
+faustparser.cpp : faustparser.yy
+	$(YACC) -d --no-lines -o faustparser.cpp $(OPTIONS) faustparser.yy
 
-faustlexer.cpp : lexer/faustlexer.l
-	$(LEX) -I -olexer/faustlexer.cpp $(OPTIONS) lexer/faustlexer.l
+faustlexer.cpp : lexer/faustlexer.ll
+	$(LEX) -Cf -I -olexer/faustlexer.cpp $(OPTIONS) lexer/faustlexer.ll
 
 clean:
 	rm -f $(OUT)

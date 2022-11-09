@@ -23,9 +23,9 @@
 #pragma warning(disable : 4141 4146 4244 4267 4800 4291)
 #endif
 
-#include "binop.hh"
+#include "compiler/signals/binop.hh"
 #include "compatibility.hh"
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 bool falsePredicate(Node const& a)
 {

@@ -22,10 +22,10 @@
 #ifndef _LLVM_CODE_CONTAINER_H
 #define _LLVM_CODE_CONTAINER_H
 
-#include "code_container.hh"
+#include "target/code_container.hh"
 #include "target/language/llvm/llvm_instructions.hh"
 #include "omp_code_container.hh"
-#include "visitor/struct_instruction_visitor.hh"
+#include "compiler/visitor/struct_instruction_visitor.hh"
 #include "vec_code_container.hh"
 #include "wss_code_container.hh"
 

@@ -28,7 +28,7 @@
 #include "global.hh"
 #include "exepath.hh"
 
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
 // Timing can be used outside of the scope of 'gGlobal'
 extern bool gTimingSwitch;

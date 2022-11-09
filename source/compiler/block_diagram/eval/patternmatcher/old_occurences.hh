@@ -24,8 +24,8 @@
 
 #include <map>
 
-#include "garbageable.hh"
-#include "tlib.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/tlib.hh"
 
 class old_Occurences : public virtual Garbageable {
     const int fXVariability;   ///< Extended Variability of the expression

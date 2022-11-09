@@ -35,8 +35,8 @@
 #include <utility>
 #include <map>
 
-#include "boxes.hh"
-#include "garbageable.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 using namespace std;
 

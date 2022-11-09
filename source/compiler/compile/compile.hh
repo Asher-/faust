@@ -26,12 +26,12 @@
 #include <map>
 #include <stack>
 #include <string>
-#include "Text.hh"
-#include "klass.hh"
-#include "signals.hh"
-#include "uitree.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/dsp_factory/klass.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/dsp_factory/uitree.hh"
 
-#include "xml_description.hh"
+#include "compiler/compile/xml_description.hh"
 #include "faust/gui/JSONUI.h"
 
 ////////////////////////////////////////////////////////////////////////

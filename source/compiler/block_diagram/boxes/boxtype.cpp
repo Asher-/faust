@@ -37,13 +37,13 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "boxes.hh"
-#include "exception.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "names.hh"
-#include "ppbox.hh"
-#include "prim2.hh"
-#include "xtended.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
+#include "compiler/signals/prim2.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 static bool infereBoxType(Tree box, int* inum, int* onum);
 

@@ -22,7 +22,7 @@
 #ifndef _CPP_CODE_CONTAINER_H
 #define _CPP_CODE_CONTAINER_H
 
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 
 #include "target/language/cpp/visitor/instruction.hh"
 

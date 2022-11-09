@@ -25,10 +25,10 @@
 #include <stack>
 #include <string>
 
-#include "visitor/dispatch_visitor.hh"
-#include "named_address.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
+#include "compiler/type_manager/address/named_address.hh"
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
-#include "code_container.hh"
+#include "target/code_container.hh"
 
 // Analysis to promote stack variables to struct variables
 struct Stack2StructRewriter2 : public DispatchVisitor {

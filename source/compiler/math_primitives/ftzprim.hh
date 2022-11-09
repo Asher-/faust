@@ -21,11 +21,11 @@
 
 #include <math.h>
 
-#include "Text.hh"
-#include "floats.hh"
-#include "ppsig.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/signals/ppsig.hh"
 #include "sigtyperules.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 /********************************************************************************************
 

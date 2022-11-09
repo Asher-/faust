@@ -24,9 +24,9 @@
 
 #include <string>
 
-#include "types/printable.hh"
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/types/printable.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 struct Typed : public Printable {
     enum VarType {

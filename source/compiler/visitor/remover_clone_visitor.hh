@@ -22,11 +22,11 @@
 #ifndef __REMOVER_CLONE_VISITOR_HH__
 #define __REMOVER_CLONE_VISITOR_HH__
 
-#include "visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "instruction_builder.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
-#include "address.hh"
+#include "compiler/type_manager/address/address.hh"
 
 // Remove all variable declarations marked as "Address::kLink"
 struct RemoverCloneVisitor : public BasicCloneVisitor {

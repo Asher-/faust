@@ -22,7 +22,7 @@
 #ifndef _CMAJ_CODE_CONTAINER_H
 #define _CMAJ_CODE_CONTAINER_H
 
-#include "code_container.hh"
+#include "target/code_container.hh"
 #include "omp_code_container.hh"
 
 #include "vec_code_container.hh"

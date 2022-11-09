@@ -23,10 +23,10 @@
 #define _TEE_VAR_INSTRUCTION_
 
 #include "compiler/instruction/value/value_instruction.hh"
-#include "address/named_address.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 // Special for wast/wasm backend : combine a store and a load
 struct TeeVarInst : public ValueInst {

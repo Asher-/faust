@@ -22,9 +22,9 @@
 #ifndef __LABELS__
 #define __LABELS__
 
-#include "boxes.hh"
-#include "signals.hh"
-#include "tlib.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/signals/signals.hh"
+#include "tlib/tlib.hh"
 
 Tree normalizePath(Tree path);
 

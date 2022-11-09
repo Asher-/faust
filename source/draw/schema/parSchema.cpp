@@ -21,7 +21,7 @@
 
 #include <iostream>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "parSchema.h"
 
 using namespace std;

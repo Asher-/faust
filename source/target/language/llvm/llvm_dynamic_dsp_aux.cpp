@@ -28,7 +28,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "compatibility.hh"
 #include "global.hh"
 #include "libfaust.h"

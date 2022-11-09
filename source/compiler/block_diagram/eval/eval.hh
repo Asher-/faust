@@ -31,7 +31,7 @@
  *
  **/
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 
 /**
  * Eval the definition of 'process'.

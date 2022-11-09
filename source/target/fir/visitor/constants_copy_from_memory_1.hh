@@ -31,6 +31,7 @@ struct ConstantsCopyFromMemory1 : public ConstantsCopyMemory {
     {}
 
     StatementInst* visit(StoreVarInst* inst)
+    override
     {
         string name = inst->fAddress->getName();
         bool is_struct = inst->fAddress->getAccess() & Address::kStruct;

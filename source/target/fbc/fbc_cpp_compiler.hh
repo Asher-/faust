@@ -30,7 +30,7 @@
 
 #include "fbc/fbc_interpreter.hh"
 #include "interpreter_bytecode.hh"
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 
 using namespace std;
 

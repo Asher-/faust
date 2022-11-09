@@ -22,7 +22,7 @@
 #ifndef ENVIRONMENT_HH
 #define ENVIRONMENT_HH
 
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 /**
  * Push a new layer and add a single definition.

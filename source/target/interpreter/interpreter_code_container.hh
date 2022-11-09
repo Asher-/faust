@@ -22,11 +22,11 @@
 #ifndef _INTERPRETER_CODE_CONTAINER_H
 #define _INTERPRETER_CODE_CONTAINER_H
 
-#include "code_container.hh"
-#include "fir_to_fir.hh"
+#include "target/code_container.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "instruction_compiler.hh"
 #include "interpreter_dsp.hh"
-#include "visitor/interpreter_instruction_visitor.hh"
+#include "compiler/visitor/interpreter_instruction_visitor.hh"
 #include "vec_code_container.hh"
 
 using namespace std;

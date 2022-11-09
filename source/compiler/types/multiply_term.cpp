@@ -20,11 +20,11 @@
  ************************************************************************/
 
 #include "multiply_term.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "ppsig.hh"
-#include "signals.hh"
-#include "xtended.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 using namespace std;
 

@@ -39,12 +39,12 @@
 #include <set>
 #include <string>
 
-#include "property.hh"
-#include "sigtype.hh"
-#include "tlib.hh"
-#include "uitree.hh"
-#include "graphSorting.hh"
-#include "loop.hh"
+#include "tlib/property.hh"
+#include "compiler/signals/sigtype.hh"
+#include "tlib/tlib.hh"
+#include "compiler/dsp_factory/uitree.hh"
+#include "compiler/block_diagram/eval/graphSorting.hh"
+#include "compiler/block_diagram/parallelize/loop.hh"
 
 using namespace std;
 

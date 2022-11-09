@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 using namespace std;
 

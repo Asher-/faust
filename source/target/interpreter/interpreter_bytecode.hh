@@ -27,9 +27,9 @@
 #include <string>
 #include <vector>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "faust/gui/PathBuilder.h"
-#include "fbc/fbc_opcode.hh"
+#include "target/fbc/fbc_opcode.hh"
 
 static inline std::string quote1(std::string str)
 {

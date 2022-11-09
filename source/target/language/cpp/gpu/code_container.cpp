@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 
 #include "target/language/cpp/gpu/code_container.hh"
 

@@ -25,16 +25,16 @@
 #include <fstream>
 #include <iostream>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "ppsig.hh"
-#include "prim2.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/prim2.hh"
 #include "recursivness.hh"
 #include "sigprint.hh"
-#include "sigtype.hh"
+#include "compiler/signals/sigtype.hh"
 #include "sigtyperules.hh"
-#include "tlib.hh"
-#include "xtended.hh"
+#include "tlib/tlib.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 //--------------------------------------------------------------------------
 // prototypes

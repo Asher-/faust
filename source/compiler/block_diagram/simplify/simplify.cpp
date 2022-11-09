@@ -23,20 +23,20 @@
 #include <map>
 
 #include "compatibility.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "list.hh"
+#include "tlib/list.hh"
 #include "normalize.hh"
 #include "num.hh"
-#include "ppsig.hh"
+#include "compiler/signals/ppsig.hh"
 #include "recursivness.hh"
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 #include "sigorderrules.hh"
 #include "sigprint.hh"
-#include "sigtype.hh"
+#include "compiler/signals/sigtype.hh"
 #include "sigtyperules.hh"
 #include "simplify.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 #undef TRACE
 

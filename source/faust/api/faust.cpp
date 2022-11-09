@@ -23,12 +23,12 @@
 
 #include "tlib/tree.hh"
 
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/cli.hh"
 #include "faust/controller.hh"
 
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
 #include "faust/compiler/c.hh"
 #include "faust/compiler/clang.hh"

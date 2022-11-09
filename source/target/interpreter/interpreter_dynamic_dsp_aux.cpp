@@ -25,7 +25,7 @@
 #include <libgen.h>
 #endif // defined(_WIN32)
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "interpreter_dynamic_dsp_aux.hh"
 #include "libfaust.h"
 #include "lock_api.hh"

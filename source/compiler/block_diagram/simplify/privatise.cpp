@@ -21,9 +21,9 @@
 
 #include <stdio.h>
 #include "compatibility.hh"
-#include "sigtype.hh"
+#include "compiler/signals/sigtype.hh"
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "privatise.hh"
 #include "sigprint.hh"

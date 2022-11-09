@@ -22,15 +22,15 @@
 #include "signalVisitor.hh"
 
 #include <cstdlib>
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "global.hh"
-#include "ppsig.hh"
-#include "property.hh"
+#include "compiler/signals/ppsig.hh"
+#include "tlib/property.hh"
 #include "signalVisitor.hh"
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 #include "sigtyperules.hh"
-#include "tlib.hh"
-#include "tree.hh"
+#include "tlib/tlib.hh"
+#include "tlib/tree.hh"
 
 //-------------------------SignalVisitor-------------------------------
 // An identity transformation on signals. Can be used to test

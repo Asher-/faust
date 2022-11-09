@@ -25,7 +25,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 using namespace std;
 

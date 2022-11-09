@@ -38,13 +38,13 @@
 
 #include "sigorderrules.hh"
 #include <stdio.h>
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "prim2.hh"
+#include "compiler/signals/prim2.hh"
 #include "sigprint.hh"
-#include "sigtype.hh"
-#include "tlib.hh"
-#include "xtended.hh"
+#include "compiler/signals/sigtype.hh"
+#include "tlib/tlib.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 static int infereSigOrder(Tree sig);
 

@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "types/basic_typed.hh"
+#include "compiler/types/basic_typed.hh"
 #include "global.hh"
 
 void BasicTyped::cleanup()

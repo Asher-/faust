@@ -28,8 +28,8 @@
 #include <vector>
 #include <map>
 
-#include "smartpointer.hh"
-#include "smartable.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
 
 namespace httpdfaust
 {

@@ -22,17 +22,17 @@
 #ifndef _DISPATCH_VISITOR_
 #define _DISPATCH_VISITOR_
 
-#include "visitor/instruction_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
 
-#include "address/indexed_address.hh"
-#include "address/named_address.hh"
+#include "compiler/type_manager/address/indexed_address.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
-#include "types/array_typed.hh"
-#include "types/basic_typed.hh"
-#include "types/function_typed.hh"
-#include "types/named_typed.hh"
-#include "types/struct_typed.hh"
-#include "types/vector_typed.hh"
+#include "compiler/types/array_typed.hh"
+#include "compiler/types/basic_typed.hh"
+#include "compiler/types/function_typed.hh"
+#include "compiler/types/named_typed.hh"
+#include "compiler/types/struct_typed.hh"
+#include "compiler/types/vector_typed.hh"
 
 #include "compiler/instruction/cast/cast_instruction.hh"
 #include "compiler/instruction/cast/bit_cast_instruction.hh"

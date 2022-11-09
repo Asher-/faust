@@ -23,10 +23,10 @@
 #define _SHIFT_ARRAY_VAR_INSTRUCTION_
 
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "address/named_address.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 struct ShiftArrayVarInst : public StatementInst {
     Address*  fAddress;

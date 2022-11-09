@@ -159,11 +159,11 @@ five elements : symbols, nodes, smartpointers, trees and lists :
 #ifndef __TLIB__
 #define __TLIB__
 
-#include "list.hh"
-#include "node.hh"
+#include "tlib/list.hh"
+#include "tlib/node.hh"
 #include "num.hh"
 #include "shlysis.hh"
 #include "symbol.hh"
-#include "tree.hh"
+#include "tlib/tree.hh"
 
 #endif

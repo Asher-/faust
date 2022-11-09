@@ -23,7 +23,7 @@
 #define _COMPILE_VEC_
 
 #include "compile_scalar.hh"
-#include "loop.hh"
+#include "compiler/block_diagram/parallelize/loop.hh"
 
 ////////////////////////////////////////////////////////////////////////
 /**

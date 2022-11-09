@@ -27,10 +27,10 @@
 #include "patternmatcher/rule.hh"
 #include "patternmatcher/trans.hh"
 
-#include "tree.hh"
+#include "tlib/tree.hh"
 
-#include "list.hh"
-#include "garbageable.hh"
+#include "tlib/list.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 namespace PM {
 

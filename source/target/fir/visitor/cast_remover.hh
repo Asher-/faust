@@ -22,8 +22,8 @@
 #ifndef __FAUST_CAST_REMOVER_HH__
 #define __FAUST_CAST_REMOVER_HH__
 
-#include "visitor/basic_clone_visitor.hh"
-#include "visitor/typing_instruction_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/typing_instruction_visitor.hh"
 #include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/cast/cast_instruction.hh"
 

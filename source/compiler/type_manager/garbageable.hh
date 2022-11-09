@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <new>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "faust/export.h"
 
 // To be inherited by all garbageable classes

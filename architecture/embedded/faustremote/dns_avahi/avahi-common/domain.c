@@ -34,7 +34,7 @@
 #include "domain.h"
 #include "malloc.h"
 #include "error.h"
-#include "address.h"
+#include "compiler/type_manager/address/address.h"
 #include "utf8.h"
 
 /* Read the first label from string *name, unescape "\" and write it to dest */

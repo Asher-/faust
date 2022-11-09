@@ -20,17 +20,17 @@
  ************************************************************************/
 
 #include "propagate.hh"
-#include "Text.hh"
-#include "exception.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 #include "labels.hh"
 #include "names.hh"
-#include "ppbox.hh"
-#include "ppsig.hh"
-#include "prim2.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/prim2.hh"
 #include "simplify.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 ////////////////////////////////////////////////////////////////////////
 /**

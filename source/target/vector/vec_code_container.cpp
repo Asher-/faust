@@ -20,12 +20,12 @@
  ************************************************************************/
 
 #include "vec_code_container.hh"
-#include "exception.hh"
-#include "fir_code_checker.hh"
-#include "fir_to_fir.hh"
+#include "compiler/errors/exception.hh"
+#include "target/fir/fir_code_checker.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "variable_mover.hh"
-#include "visitor/remover_clone_visitor.hh"
+#include "compiler/visitor/remover_clone_visitor.hh"
 
 using namespace std;
 

@@ -24,8 +24,8 @@
 #include <sstream>
 
 #include "compile_vect.hh"
-#include "floats.hh"
-#include "ppsig.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/signals/ppsig.hh"
 #include "global.hh"
 
 void VectorCompiler::compileMultiSignal(Tree L)

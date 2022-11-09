@@ -25,7 +25,7 @@
 #include <sstream>
 
 #include "tlib/tree.hh"
-#include "xml_description.hh"
+#include "compiler/compile/xml_description.hh"
 
 LIBFAUST_API const char* xtendedName(Tree tree);
 LIBFAUST_API unsigned int xtendedArity(Tree tree);

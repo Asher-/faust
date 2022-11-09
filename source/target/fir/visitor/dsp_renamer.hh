@@ -22,10 +22,10 @@
 #ifndef __FAUST__DSP_RENAMER_HH__
 #define __FAUST__DSP_RENAMER_HH__
 
-#include "visitor/basic_clone_visitor.hh"
-#include "named_address.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
+#include "compiler/type_manager/address/named_address.hh"
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
-#include "instruction_builder.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 
 // ========================================
 // Used in WebAssembly and Interp backends

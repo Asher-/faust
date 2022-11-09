@@ -41,7 +41,7 @@
 #include <map>
 #include <string>
 
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 //--------------------------------SYMBOL-------------------------------------
 

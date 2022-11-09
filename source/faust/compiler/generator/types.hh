@@ -22,22 +22,22 @@
 #ifndef __FAUST_COMPILERS_HH__
 #define __FAUST_COMPILERS_HH__
 
-#include "faust/compiler/c.hh"
-#include "faust/compiler/clang.hh"
-#include "faust/compiler/cpp.hh"
-#include "faust/compiler/csharp.hh"
-#include "faust/compiler/dlang.hh"
-#include "faust/compiler/fir.hh"
-#include "faust/compiler/interpreter.hh"
-#include "faust/compiler/java.hh"
-#include "faust/compiler/jax.hh"
-#include "faust/compiler/julia.hh"
-#include "faust/compiler/llvm.hh"
-#include "faust/compiler/ocpp.hh"
-#include "faust/compiler/rust.hh"
-#include "faust/compiler/soul.hh"
-#include "faust/compiler/wasm.hh"
-#include "faust/compiler/wast.hh"
+#include "faust/compiler/generator/c.hh"
+#include "faust/compiler/generator/clang.hh"
+#include "faust/compiler/generator/cpp.hh"
+#include "faust/compiler/generator/csharp.hh"
+#include "faust/compiler/generator/dlang.hh"
+#include "faust/compiler/generator/fir.hh"
+#include "faust/compiler/generator/interpreter.hh"
+#include "faust/compiler/generator/java.hh"
+#include "faust/compiler/generator/jax.hh"
+#include "faust/compiler/generator/julia.hh"
+#include "faust/compiler/generator/llvm.hh"
+#include "faust/compiler/generator/ocpp.hh"
+#include "faust/compiler/generator/rust.hh"
+#include "faust/compiler/generator/soul.hh"
+#include "faust/compiler/generator/wasm.hh"
+#include "faust/compiler/generator/wast.hh"
 
 namespace Faust {
 

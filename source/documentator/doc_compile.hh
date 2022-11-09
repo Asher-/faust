@@ -26,14 +26,14 @@
 #include <map>
 #include <string>
 
-#include "Text.hh"
-#include "xml_description.hh"
-#include "doc_Text.hh"
-#include "garbageable.hh"
-#include "lateq.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/compile/xml_description.hh"
+#include "documentator/doc_Text.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "documentator/lateq.hh"
 #include "occurences.hh"
-#include "property.hh"
-#include "signals.hh"
+#include "tlib/property.hh"
+#include "compiler/signals/signals.hh"
 #include "sigtyperules.hh"
 
 ///////////////////////////////////////////////////////////////////////

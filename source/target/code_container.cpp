@@ -22,17 +22,17 @@
 #include <fstream>
 #include <string>
 
-#include "code_container.hh"
-#include "fir_to_fir.hh"
-#include "floats.hh"
+#include "target/code_container.hh"
+#include "target/fir/fir_to_fir.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 #include "recursivness.hh"
-#include "visitor/text_instruction_visitor.hh"
-#include "type_manager/string.hh"
-#include "visitor/struct_instruction_visitor.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
+#include "compiler/type_manager/string.hh"
+#include "compiler/visitor/struct_instruction_visitor.hh"
 #include "sort_declarations.hh"
-#include "fir/visitor/function_call_inliner.hh"
-#include "fir/visitor/loop_variable_renamer.hh"
+#include "target/fir/visitor/function_call_inliner.hh"
+#include "target/fir/visitor/loop_variable_renamer.hh"
 
 using namespace std;
 

@@ -23,7 +23,7 @@
 #include <iostream>
 #include <algorithm>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "occurences.hh"
 #include "recursivness.hh"

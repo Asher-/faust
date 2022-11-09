@@ -34,14 +34,14 @@
 #include <unistd.h>
 #endif
 
-#include "exception.hh"
-#include "types/typed.hh"
-#include "loopDetector.hh"
-#include "stackOverflowDetector.hh"
-#include "occurrences.hh"
-#include "property.hh"
-#include "sigtype.hh"
-#include "sourcereader.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/types/typed.hh"
+#include "compiler/block_diagram/parallelize/loopDetector.hh"
+#include "compiler/block_diagram/eval/stackOverflowDetector.hh"
+#include "tlib/occurrences.hh"
+#include "tlib/property.hh"
+#include "compiler/signals/sigtype.hh"
+#include "compiler/file_handling/sourcereader.hh"
 
 namespace Faust {
   namespace Compiler {

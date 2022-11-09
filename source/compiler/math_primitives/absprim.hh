@@ -21,11 +21,11 @@
 
 #include <math.h>
 
-#include "Text.hh"
-#include "code_container.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "target/code_container.hh"
+#include "compiler/types/floats.hh"
 #include "sigtyperules.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 class AbsPrim : public xtended {
    public:

@@ -21,9 +21,9 @@
 
 #include <cmath>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "loopDetector.hh"
-#include "ppbox.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 
 bool loopDetector::detect(Tree t)
 {

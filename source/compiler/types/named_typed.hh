@@ -22,8 +22,8 @@
 #ifndef _NAMED_TYPED_
 #define _NAMED_TYPED_
 
-#include "types/basic_typed.hh"
-#include "types/typed.hh"
+#include "compiler/types/basic_typed.hh"
+#include "compiler/types/typed.hh"
 
 #include <string>
 #include <vector>

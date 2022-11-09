@@ -32,7 +32,7 @@ using namespace std;
 #include <string>
 #include <vector>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "compiler/instruction/instructions.hh"
 
 class InstComplexityVisitor : public DispatchVisitor {

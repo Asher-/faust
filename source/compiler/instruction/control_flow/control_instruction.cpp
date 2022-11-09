@@ -21,7 +21,7 @@
 
 #include "compiler/instruction/control_flow/control_instruction.hh"
 #include <sstream>
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 
 bool ControlInst::hasCondition(ValueInst* cond)
 {

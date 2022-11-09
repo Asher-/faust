@@ -22,8 +22,8 @@
 #include "treeTransform.hh"
 #include <stdlib.h>
 #include <cstdlib>
-#include "Text.hh"
-#include "ppsig.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/signals/ppsig.hh"
 
 //------------------------------------------------------------------------------
 // TreeTransform: Recursive transformation of a Tree with memoization

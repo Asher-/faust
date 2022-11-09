@@ -38,13 +38,13 @@
 #include <sstream>
 #include <string>
 
-#include "Text.hh"
-#include "floats.hh"
-#include "klass.hh"
-#include "ppsig.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/dsp_factory/klass.hh"
+#include "compiler/signals/ppsig.hh"
 #include "recursivness.hh"
-#include "signals.hh"
-#include "uitree.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/dsp_factory/uitree.hh"
 #include "global.hh"
 
 static int gTaskCount = 0;

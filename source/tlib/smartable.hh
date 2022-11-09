@@ -22,7 +22,7 @@
 #ifndef __FAUST_SMARTABLE_HH__
 #define __FAUST_SMARTABLE_HH__
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 /*!
     \brief the base class for smart pointers implementation

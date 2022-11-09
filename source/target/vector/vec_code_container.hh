@@ -22,7 +22,7 @@
 #ifndef _VEC_CODE_CONTAINER_H
 #define _VEC_CODE_CONTAINER_H
 
-#include "code_container.hh"
+#include "target/code_container.hh"
 
 class VectorCodeContainer : public virtual CodeContainer {
    private:

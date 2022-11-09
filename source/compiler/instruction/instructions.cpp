@@ -22,10 +22,10 @@
 #include <fstream>
 
 #include "compiler/instruction/instructions.hh"
-#include "floats.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
-#include "sigtype.hh"
-#include "fir_to_fir.hh"
+#include "compiler/signals/sigtype.hh"
+#include "target/fir/fir_to_fir.hh"
 
 DeclareStructTypeInst* isStructType(const std::string& name)
 {

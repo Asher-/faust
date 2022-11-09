@@ -22,8 +22,8 @@
 #ifndef _SIGTYPERULES_
 #define _SIGTYPERULES_
 
-#include "signals.hh"
-#include "sigtype.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/signals/sigtype.hh"
 
 /** \file sigtyperules.hh
  * API to the typing system of signals

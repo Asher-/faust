@@ -20,8 +20,8 @@
  ************************************************************************/
 
 #include "additive_term.hh"
-#include "ppsig.hh"
-#include "sigtype.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/sigtype.hh"
 
 using namespace std;
 

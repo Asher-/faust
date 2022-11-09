@@ -23,7 +23,7 @@
 #define _ADD_META_DECLARE_INSTRUCTION_
 
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "visitor/instruction_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
 
 struct AddMetaDeclareInst : public StatementInst {
     const std::string fZone;

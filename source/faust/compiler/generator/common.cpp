@@ -21,9 +21,9 @@
 
 #include <string.h>
 
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
-#include "faust/compiler/types.hh"
+#include "faust/compiler/generator/types.hh"
 
 #ifdef FAUST_LIB
 // 'libfaust' compiler uses an empty 'alarm' function

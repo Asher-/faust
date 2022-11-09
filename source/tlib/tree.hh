@@ -72,10 +72,10 @@
 #include <map>
 #include <vector>
 
-#include "exception.hh"
-#include "garbageable.hh"
-#include "node.hh"
-#include "symbol.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/node.hh"
+#include "tlib/symbol.hh"
 
 //---------------------------------API---------------------------------------
 

@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include "signalVisitor.hh"
 #include "global.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 #include "old_occurences.hh"
 
 //-------------------------Signal2VHDLVisitor-------------------------------

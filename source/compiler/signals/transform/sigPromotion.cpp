@@ -23,10 +23,10 @@
 #include <stdlib.h>
 #include <cstdlib>
 
-#include "signals.hh"
-#include "prim2.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/signals/prim2.hh"
 #include "global.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 #include "sigtyperules.hh"
 
 void SignalTreeChecker::visit(Tree sig)

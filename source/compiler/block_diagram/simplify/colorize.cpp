@@ -26,7 +26,7 @@
 
 #include "colorize.h"
 #include "global.hh"
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 using namespace std;
 

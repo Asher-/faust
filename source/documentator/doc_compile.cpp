@@ -33,23 +33,23 @@
 #include <vector>
 
 #include "compatibility.hh"
-#include "doc.hh"
-#include "doc_compile.hh"
-#include "doc_notice.hh"
-#include "exception.hh"
-#include "floats.hh"
+#include "documentator/doc.hh"
+#include "documentator/doc_compile.hh"
+#include "documentator/doc_notice.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 #include "names.hh"
-#include "ppsig.hh"
-#include "prim2.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/prim2.hh"
 #include "privatise.hh"
 #include "recursivness.hh"
 #include "sigprint.hh"
-#include "sigtype.hh"
+#include "compiler/signals/sigtype.hh"
 #include "sigtyperules.hh"
 #include "simplify.hh"
-#include "tlib.hh"
-#include "xtended.hh"
+#include "tlib/tlib.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 extern bool getSigListNickName(Tree t, Tree& id);
 

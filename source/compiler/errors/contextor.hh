@@ -32,7 +32,7 @@
 #include <sstream>
 #include <vector>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 /**
  *	An automatic stack of contexts

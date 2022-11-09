@@ -23,7 +23,7 @@
 #define __FAUST_COMPILE_CPP_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
 #include "target/language/cpp/code_container.hh"
 #include "target/language/cpp/gpu/code_container.hh"

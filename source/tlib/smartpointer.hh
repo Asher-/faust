@@ -24,7 +24,7 @@
 #ifndef __FAUST__SMART_POINTER__HH__
 #define __FAUST__SMART_POINTER__HH__
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 /*!
 \brief the smart pointer implementation

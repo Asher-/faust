@@ -24,8 +24,8 @@
 
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/declarations.hh"
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 // Contains a condition (derived from 'enable/contol') and a statement to be computed if the cond is true
 struct ControlInst : public StatementInst {

@@ -19,15 +19,15 @@
  ************************************************************************
  ************************************************************************/
 
-#include "ppbox.hh"
-#include "Text.hh"
-#include "boxes.hh"
-#include "exception.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "list.hh"
-#include "prim2.hh"
-#include "signals.hh"
-#include "xtended.hh"
+#include "tlib/list.hh"
+#include "compiler/signals/prim2.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 using namespace std;
 

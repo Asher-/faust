@@ -23,7 +23,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "floats.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 
 using namespace std;

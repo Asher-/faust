@@ -26,7 +26,7 @@
 #include <iterator>
 #include <set>
 
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 void splitDependance(const set<Tree>& exps, set<Tree>& post, set<Tree>& pre);
 

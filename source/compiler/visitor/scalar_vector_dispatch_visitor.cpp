@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "visitor/scalar_vector_dispatch_visitor.hh"
+#include "compiler/visitor/scalar_vector_dispatch_visitor.hh"
 
 void ScalVecDispatcherVisitor::Dispatch2Visitor(ValueInst* inst)
 {

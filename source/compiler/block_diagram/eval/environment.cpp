@@ -20,12 +20,12 @@
  ************************************************************************/
 
 #include "environment.hh"
-#include "boxes.hh"
-#include "errormsg.hh"
-#include "exception.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
+#include "compiler/errors/errormsg.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "names.hh"
-#include "ppbox.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 
 //----------------------- New environment management --------------------------
 //

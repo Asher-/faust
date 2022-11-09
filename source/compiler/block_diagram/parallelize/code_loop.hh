@@ -28,10 +28,10 @@
 #include <string>
 #include <vector>
 
-#include "fir_function_builder.hh"
-#include "garbageable.hh"
-#include "list.hh"
-#include "tree.hh"
+#include "target/fir/fir_function_builder.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/list.hh"
+#include "tlib/tree.hh"
 #include "global.hh"
 
 // Loop internal code

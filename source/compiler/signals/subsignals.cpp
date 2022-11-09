@@ -22,7 +22,7 @@
 #include <property.hh>
 #include <signals.hh>
 #include <sstream>
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 /**
  * Extract the sub signals of a signal expression, that is not

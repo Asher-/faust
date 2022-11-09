@@ -25,8 +25,8 @@
 
 using namespace std;
 
-#include "visitor/text_instruction_visitor.hh"
-#include "visitor/typing_instruction_visitor.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
+#include "compiler/visitor/typing_instruction_visitor.hh"
 
 class CSharpInstVisitor : public TextInstVisitor {
    private:

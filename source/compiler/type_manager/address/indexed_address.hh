@@ -22,13 +22,13 @@
 #ifndef _INDEXED_ADDRESS_
 #define _INDEXED_ADDRESS_
 
-#include "address.hh"
+#include "compiler/type_manager/address/address.hh"
 #include "compiler/instruction/value/value_instruction.hh"
 #include <vector>
 #include <string>
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 struct IndexedAddress : public Address {
     Address*   fAddress;

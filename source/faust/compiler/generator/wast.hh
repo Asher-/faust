@@ -19,28 +19,32 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_SOUL_HH__
-#define __FAUST_COMPILE_SOUL_HH__
+#ifndef __FAUST_COMPILE_WAST_HH__
+#define __FAUST_COMPILE_WAST_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
+#include <cassert>
 
-#include "target/language/soul/code_container.hh"
+#include "wast_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct Soul : public Common
+    struct WAST : public Common
     {
-      static constexpr const char* TargetString = "SOUL";
-      static constexpr const char* LanguageString = "soul";
+      static constexpr const char* TargetString = "WebAssembly (wast)";
+      static constexpr const char* LanguageString = "wast";
 
-      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      void compile(Tree signals, int numInputs, int numOutputs, ostream* out, const string& outpath)
       override
       {
-          #ifndef SOUL_BUILD
-              throw faustexception("ERROR : -lang soul not supported since SOUL backend is not built\n");
-          #endif
+        #ifndef WASM_BUILD
+          throw faustexception("ERROR : -lang wast not supported since WAST backend is not built\n");
+        #endif
+
+          assert(out!=nullptr);
+          assert(outpath!="");
 
           gGlobal->gAllowForeignFunction = false;  // No foreign functions
           gGlobal->gAllowForeignConstant = false;  // No foreign constant
@@ -48,12 +52,23 @@ namespace Faust {
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
           gGlobal->gFAUSTFLOAT2Internal = true;
-
-          // "one sample control" model by default;
-          gGlobal->gOneSampleControl = true;
+          // the 'i' variable used in the scalar loop moves by bytes instead of frames
+          gGlobal->gLoopVarInBytes   = true;
+          gGlobal->gWaveformInDSP    = true;   // waveform are allocated in the DSP and not as global data
+          gGlobal->gMachinePtrSize   = 4;      // WASM is currently 32 bits
           gGlobal->gNeedManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
+          gGlobal->gRemoveVarAddress = true;   // To be used in -vec mode
+                                               // gGlobal->gHasTeeLocal = true;     // combined store/load
 
-          this->_codeContainer = SOULCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+          gGlobal->gUseDefaultSound = false;
+
+          // This speedup (freeverb for instance) ==> to be done at signal level
+          // gGlobal->gComputeIOTA = true;     // Ensure IOTA base fixed delays are computed once
+
+          this->_codeContainer =
+              WASTCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out,
+                                                 ((gGlobal->gOutputLang == "wast") || (gGlobal->gOutputLang == "wast-i")));
+          this->createHelperFile(outpath);
 
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
@@ -64,7 +79,7 @@ namespace Faust {
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
-      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream and std::string required."; };
 
       const char* const& targetString() override  { return TargetString; }
 

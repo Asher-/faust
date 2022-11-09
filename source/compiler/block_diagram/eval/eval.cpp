@@ -34,17 +34,17 @@
 
 #include "compatibility.hh"
 #include "environment.hh"
-#include "errormsg.hh"
-#include "eval.hh"
-#include "exception.hh"
+#include "compiler/errors/errormsg.hh"
+#include "compiler/block_diagram/eval/eval.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "names.hh"
 #include "patternmatcher.hh"
-#include "ppbox.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 #include "propagate.hh"
-#include "property.hh"
+#include "tlib/property.hh"
 #include "simplify.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 #include "patternmatcher/automaton.hh"
 
 // History

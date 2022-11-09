@@ -23,7 +23,7 @@
 #define _STATEMENT_INSTRUCTION_
 
 #include <string>
-#include "types/printable.hh"
+#include "compiler/types/printable.hh"
 
 struct InstVisitor; // Cyclic reference
 struct CloneVisitor; // Cyclic reference

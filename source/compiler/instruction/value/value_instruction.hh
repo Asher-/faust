@@ -22,7 +22,7 @@
 #ifndef _VALUE_INSTRUCTION_
 #define _VALUE_INSTRUCTION_
 
-#include "types/printable.hh"
+#include "compiler/types/printable.hh"
 
 struct InstVisitor;
 struct CloneVisitor;

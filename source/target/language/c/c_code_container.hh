@@ -23,8 +23,8 @@
 #define _C_CODE_CONTAINER_H
 
 #include "target/language/c/c_instructions.hh"
-#include "code_container.hh"
-#include "dsp_factory.hh"
+#include "target/code_container.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "omp_code_container.hh"
 #include "vec_code_container.hh"
 #include "wss_code_container.hh"

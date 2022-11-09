@@ -19,9 +19,9 @@
  ************************************************************************
  ************************************************************************/
 
-#include "uitree.hh"
+#include "compiler/dsp_factory/uitree.hh"
 #include <sstream>
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 
 static Tree makeSubFolderChain(Tree path, Tree elem);

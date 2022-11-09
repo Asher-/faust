@@ -23,11 +23,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "property.hh"
-#include "sigtype.hh"
-#include "tree.hh"
+#include "tlib/property.hh"
+#include "compiler/signals/sigtype.hh"
+#include "tlib/tree.hh"
 
 using namespace std;
 

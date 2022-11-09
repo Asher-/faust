@@ -25,8 +25,8 @@
 #include <set>
 #include <string>
 
-#include "doc.hh"
-#include "doc_metadatas.hh"
+#include "documentator/doc.hh"
+#include "documentator/doc_metadatas.hh"
 #include "global.hh"
 
 /*****************************************************************************

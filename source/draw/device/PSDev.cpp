@@ -23,7 +23,7 @@
 
 #include "PSDev.h"
 #include "compatibility.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 
 #include <math.h>

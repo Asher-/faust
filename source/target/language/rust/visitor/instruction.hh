@@ -24,8 +24,8 @@
 
 #include <regex>
 
-#include "visitor/text_instruction_visitor.hh"
-#include "Text.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
+#include "compiler/type_manager/Text.hh"
 #include "target/language/rust/type_manager/string.hh"
 
 using namespace std;

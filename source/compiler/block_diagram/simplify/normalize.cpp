@@ -24,15 +24,15 @@
 #include <map>
 
 #include "additive_term.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "multiply_term.hh"
 #include "normalize.hh"
-#include "ppsig.hh"
-#include "signals.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/signals.hh"
 #include "sigorderrules.hh"
 #include "sigprint.hh"
 #include "simplify.hh"
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 /**
  * Compute the Add-Normal form of a term t.

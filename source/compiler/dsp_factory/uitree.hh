@@ -25,7 +25,7 @@
 #include <string>
 
 #include "global.hh"
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 Tree uiFolder(Tree label, Tree elements = gGlobal->nil);
 Tree uiWidget(Tree label, Tree varname, Tree sig);

@@ -28,9 +28,9 @@
 #include <vector>
 
 #include "global.hh"
-#include "ppsig.hh"
-#include "signals.hh"
-#include "xtended.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 LIBFAUST_API Tree sigWriteReadTable(Tree n, Tree init, Tree widx, Tree wsig, Tree ridx)
 {

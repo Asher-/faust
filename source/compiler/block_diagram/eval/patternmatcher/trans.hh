@@ -26,7 +26,7 @@
 
 #include "tlib/tree.hh"
 #include "tlib/node.hh"
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 namespace PM {
 

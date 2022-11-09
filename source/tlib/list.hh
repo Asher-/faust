@@ -105,7 +105,7 @@ This file contains several extensions to the tree library :
 
 #include <stdio.h>
 #include "symbol.hh"
-#include "tree.hh"
+#include "tlib/tree.hh"
 
 // Basic List Operations implemented on trees
 

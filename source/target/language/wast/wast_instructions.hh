@@ -25,7 +25,7 @@
 #include <ostream>
 
 #include "was_instructions.hh"
-#include "fir/visitor/move_variables_in_front_3.hh"
+#include "target/fir/visitor/move_variables_in_front_3.hh"
 
 #define realStr ((gGlobal->gFloatSize == 1) ? "f32" : ((gGlobal->gFloatSize == 2) ? "f64" : ""))
 #define offStr ((gGlobal->gFloatSize == 1) ? "2" : ((gGlobal->gFloatSize == 2) ? "3" : ""))

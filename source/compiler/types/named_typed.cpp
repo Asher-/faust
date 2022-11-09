@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "types/named_typed.hh"
+#include "compiler/types/named_typed.hh"
 #include <string>
 #include <vector>
 

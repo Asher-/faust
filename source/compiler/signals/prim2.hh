@@ -22,8 +22,8 @@
 #ifndef _Prim2_
 #define _Prim2_
 
-#include "sigtype.hh"
-#include "tlib.hh"
+#include "compiler/signals/sigtype.hh"
+#include "tlib/tlib.hh"
 
 // Foreign functions management functions (ffun) (external C functions)
 

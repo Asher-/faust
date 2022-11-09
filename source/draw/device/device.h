@@ -23,7 +23,7 @@
 #define DEVICE_H
 
 #include <stdio.h>
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 class device : public virtual Garbageable {
    public:

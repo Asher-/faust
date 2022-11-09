@@ -25,10 +25,10 @@
 #include <string>
 #include <vector>
 
-#include "code_loop.hh"
-#include "floats.hh"
+#include "compiler/block_diagram/parallelize/code_loop.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 
 using namespace std;
 

@@ -22,8 +22,8 @@
 #ifndef __OCCURRENCES__
 #define __OCCURRENCES__
 
-#include "garbageable.hh"
-#include "tlib.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/tlib.hh"
 
 /**
  * Count subtree occurences

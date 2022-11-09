@@ -21,7 +21,7 @@
 
 #include "compiler/instruction/memory/load_var_instruction.hh"
 #include "compiler/instruction/value/numbers/int32_number_instruction.hh"
-#include "address/indexed_address.hh"
+#include "compiler/type_manager/address/indexed_address.hh"
 
 bool LoadVarInst::isSimpleValue() const
 {

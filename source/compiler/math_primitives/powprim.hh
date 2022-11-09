@@ -21,12 +21,12 @@
 
 #include <math.h>
 
-#include "Text.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 
 /*
  When argument is kInt and exponent is kInt (or kReal without decimal part),

@@ -25,8 +25,8 @@
 #include <string>
 #include <stack>
 
-#include "visitor/dispatch_visitor.hh"
-#include "named_address.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
 // Analysis to change stack access to struct access
 struct Stack2StructRewriter1 : public DispatchVisitor {

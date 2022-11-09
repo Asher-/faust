@@ -24,7 +24,7 @@
 
 #include "dcond.hh"
 #include "global.hh"
-#include "ppsig.hh"
+#include "compiler/signals/ppsig.hh"
 
 /*
  * Dcond are conditions, boolean expressions in disjunctive normal form implemented

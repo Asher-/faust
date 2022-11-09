@@ -39,7 +39,7 @@ box ::= i | f | p0 | p1 | p3
 
 #include "faust/export.h"
 
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 namespace PM {
 struct Automaton;

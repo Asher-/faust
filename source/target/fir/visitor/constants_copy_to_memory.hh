@@ -23,7 +23,7 @@
 #define __FAUST_CONSTANTS_COPY_TO_MEMORY_HH__
 
 #include "constants_copy_memory.hh"
-#include "fir_index.hh"
+#include "target/fir/fir_index.hh"
 
 // Analysis to copy constants to an external memory zone (FunArgs version) used in -os2 and -os3 modes
 struct ConstantsCopyToMemory : public ConstantsCopyMemory {
@@ -32,6 +32,7 @@ struct ConstantsCopyToMemory : public ConstantsCopyMemory {
     {}
 
     StatementInst* visit(StoreVarInst* inst)
+    override
     {
         string name = inst->fAddress->getName();
         bool is_struct = inst->fAddress->getAccess() & Address::kStruct;

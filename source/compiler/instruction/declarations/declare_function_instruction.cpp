@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #include "compiler/instruction/declarations/declare_function_instruction.hh"
-#include "types/function_typed.hh"
+#include "compiler/types/function_typed.hh"
 #include "global.hh"
 
 // Function types (return type) are kept in the global name <===> type table

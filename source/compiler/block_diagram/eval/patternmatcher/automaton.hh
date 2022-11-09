@@ -22,7 +22,7 @@
 #ifndef __PATTERNMATCHER__AUTOMATON__
 #define __PATTERNMATCHER__AUTOMATON__
 
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "patternmatcher/state.hh"
 #include "patternmatcher/subst.hh"
 

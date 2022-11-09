@@ -19,9 +19,9 @@
  ************************************************************************
  ************************************************************************/
 
-#include "types/named_typed.hh"
-#include "floats.hh"
-#include "sigtype.hh"
+#include "compiler/types/named_typed.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/signals/sigtype.hh"
 
 // Tools for types
 Typed::VarType convert2FIRType(int type) { return (type == kInt) ? Typed::kInt32 : itfloat(); }

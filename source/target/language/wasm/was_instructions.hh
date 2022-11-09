@@ -24,10 +24,10 @@
 
 #include <iomanip>
 
-#include "binop.hh"
+#include "compiler/signals/binop.hh"
 #include "memory_description.hh"
-#include "visitor/text_instruction_visitor.hh"
-#include "visitor/typing_instruction_visitor.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
+#include "compiler/visitor/typing_instruction_visitor.hh"
 
 #define offStrNum ((gGlobal->gFloatSize == 1) ? 2 : ((gGlobal->gFloatSize == 2) ? 3 : 0))
 #define audioPtrSize gGlobal->audioSampleSize()

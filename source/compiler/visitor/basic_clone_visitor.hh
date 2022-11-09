@@ -25,11 +25,11 @@
 #include <vector>
 #include <stack>
 
-#include "address/indexed_address.hh"
-#include "address/named_address.hh"
+#include "compiler/type_manager/address/indexed_address.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
-#include "visitor/clone_visitor.hh"
-#include "visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
 
 #include "compiler/instruction/cast/cast_instruction.hh"
 #include "compiler/instruction/cast/bit_cast_instruction.hh"
@@ -88,12 +88,12 @@
 #include "compiler/instruction/value/null_value_instruction.hh"
 #include "compiler/instruction/statement/null_statement_instruction.hh"
 
-#include "types/array_typed.hh"
-#include "types/basic_typed.hh"
-#include "types/function_typed.hh"
-#include "types/named_typed.hh"
-#include "types/struct_typed.hh"
-#include "types/vector_typed.hh"
+#include "compiler/types/array_typed.hh"
+#include "compiler/types/basic_typed.hh"
+#include "compiler/types/function_typed.hh"
+#include "compiler/types/named_typed.hh"
+#include "compiler/types/struct_typed.hh"
+#include "compiler/types/vector_typed.hh"
 
 class BasicCloneVisitor : public CloneVisitor {
    protected:

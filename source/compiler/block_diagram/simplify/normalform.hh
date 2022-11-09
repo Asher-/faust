@@ -22,7 +22,7 @@
 #ifndef _SIMPLIFY_TO_NF_
 #define _SIMPLIFY_TO_NF_
 
-#include "tree.hh"
+#include "tlib/tree.hh"
 
 LIBFAUST_API Tree simplifyToNormalForm(Tree sig);
 

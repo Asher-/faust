@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "inverterSchema.h"
 
 using namespace std;

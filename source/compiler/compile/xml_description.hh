@@ -31,10 +31,10 @@
 #include <set>
 #include <string>
 
-#include "garbageable.hh"
-#include "signals.hh"
-#include "tlib.hh"
-#include "uitree.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "compiler/signals/signals.hh"
+#include "tlib/tlib.hh"
+#include "compiler/dsp_factory/uitree.hh"
 
 using namespace std;
 

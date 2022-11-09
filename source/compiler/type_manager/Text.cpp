@@ -30,9 +30,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "compatibility.hh"
-#include "floats.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 
 static std::string substitution(const std::string& model, const vector<std::string>& args)

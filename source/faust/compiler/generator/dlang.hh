@@ -19,38 +19,36 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_JAX_HH__
-#define __FAUST_COMPILE_JAX_HH__
+#ifndef __FAUST_COMPILE_Dlang_HH__
+#define __FAUST_COMPILE_Dlang_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
-#include "target/language/jax/instruction_compiler_jax.hh"
+#include "faust/compiler/generator/common.hh"
 
-#include "jax_code_container.hh"
+#include "dlang_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct JAX : public Common
+    struct Dlang : public Common
     {
-      static constexpr const char* TargetString = "JAX";
-      static constexpr const char* LanguageString = "jax";
+      static constexpr const char* TargetString = "DLang";
+      static constexpr const char* LanguageString = "dlang";
 
       void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
-          #ifndef JAX_BUILD
-              throw faustexception("ERROR : -lang jax not supported since JAX backend is not built\n");
+          #ifndef DLANG_BUILD
+              throw faustexception("ERROR : -lang dlang not supported since D backend is not built\n");
           #endif
-          gGlobal->gAllowForeignFunction = true;  // foreign functions are supported (we use jax.random.PRNG for example)
-          gGlobal->gNeedManualPow        = false;
-          gGlobal->gFAUSTFLOAT2Internal  = true;
-          this->_codeContainer = JAXCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+
+          this->_codeContainer =
+              DLangCodeContainer::createContainer(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs, out);
 
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              this->_instructionCompiler = new InstructionsCompilerJAX(this->_codeContainer);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());

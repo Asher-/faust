@@ -102,6 +102,9 @@ macro (llvm_config)
 
     string ( APPEND LLVM_LIBS " ${LLVM_SYS_LIBS}")
     string ( REPLACE " " ";" LLVM_LIBS ${LLVM_LIBS} )
+    
+    set ( CMAKE_CXX_COMPILER 	"/usr/bin/clang++")
+
 endmacro()
 
 ####################################

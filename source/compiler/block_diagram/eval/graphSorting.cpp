@@ -21,7 +21,7 @@
 
 #include <set>
 
-#include "graphSorting.hh"
+#include "compiler/block_diagram/eval/graphSorting.hh"
 
 /**
  * Set the order of a loop and place it to appropriate set.

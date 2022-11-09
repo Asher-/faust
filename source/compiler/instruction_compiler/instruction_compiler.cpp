@@ -21,15 +21,15 @@
 
 #include <string>
 
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "ensure.hh"
-#include "fir_to_fir.hh"
-#include "floats.hh"
+#include "target/fir/fir_to_fir.hh"
+#include "compiler/types/floats.hh"
 #include "compiler/instruction/instructions.hh"
 #include "instruction_compiler.hh"
 #include "instruction_compiler1.hh"
 #include "target/language/jax/instruction_compiler_jax.hh"
-#include "prim2.hh"
+#include "compiler/signals/prim2.hh"
 #include "privatise.hh"
 #include "recursivness.hh"
 #include "sigToGraph.hh"

@@ -34,7 +34,7 @@ using namespace std;
 #include <string>
 #include <vector>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "compiler/instruction/instructions.hh"
 

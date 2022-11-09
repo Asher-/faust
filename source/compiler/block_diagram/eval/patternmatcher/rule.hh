@@ -25,7 +25,7 @@
 #include <list>
 
 #include "patternmatcher/path.hh"
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "tlib/tree.hh"
 
 namespace PM {

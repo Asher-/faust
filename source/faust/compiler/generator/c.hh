@@ -23,7 +23,7 @@
 #define __FAUST_COMPILE_C_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
 #include "dag_instruction_compiler.hh"
 #include "instruction_compiler.hh"

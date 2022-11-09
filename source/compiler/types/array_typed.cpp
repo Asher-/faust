@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "types/array_typed.hh"
+#include "compiler/types/array_typed.hh"
 #include "global.hh"
 
 int ArrayTyped::getSizeBytes() const

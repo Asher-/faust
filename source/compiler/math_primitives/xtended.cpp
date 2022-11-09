@@ -19,9 +19,9 @@
  ************************************************************************
  ************************************************************************/
 
-#include "xtended.hh"
-#include "floats.hh"
-#include "code_container.hh"
+#include "compiler/math_primitives/xtended.hh"
+#include "compiler/types/floats.hh"
+#include "target/code_container.hh"
 
 ValueInst* xtended::generateFun(CodeContainer* container,
                                 const string& fun_name,

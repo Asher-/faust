@@ -32,7 +32,7 @@
 #include "faust/gui/meta.h"
 #include "faust/dsp/dsp.h"
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 #define COMPILATION_OPTIONS_KEY "compile_options"
 #define COMPILATION_OPTIONS "declare compile_options "

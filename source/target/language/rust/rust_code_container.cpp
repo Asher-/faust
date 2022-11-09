@@ -20,10 +20,10 @@
  ************************************************************************/
 
 #include "rust_code_container.hh"
-#include "Text.hh"
-#include "exception.hh"
-#include "fir_function_builder.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/errors/exception.hh"
+#include "target/fir/fir_function_builder.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 
 using namespace std;

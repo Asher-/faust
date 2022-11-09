@@ -20,8 +20,8 @@
  ************************************************************************/
 
 #include "compile_sched.hh"
-#include "floats.hh"
-#include "ppsig.hh"
+#include "compiler/types/floats.hh"
+#include "compiler/signals/ppsig.hh"
 #include "global.hh"
 
 void SchedulerCompiler::compileMultiSignal(Tree L)

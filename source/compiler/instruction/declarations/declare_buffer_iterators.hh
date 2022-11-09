@@ -23,7 +23,7 @@
 #define _DECLARE_BUFFER_ITERATORS_INSTRUCTION_
 
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "types/typed.hh"
+#include "compiler/types/typed.hh"
 
 struct DeclareBufferIterators : public StatementInst {
     std::string fBufferName1;

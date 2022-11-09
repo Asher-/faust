@@ -22,7 +22,7 @@
 #ifndef __SIGORDER__
 #define __SIGORDER__
 
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 /**
  * Retrieve the order annotation (between 0 and 3) of a signal.

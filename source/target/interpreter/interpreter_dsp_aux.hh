@@ -33,7 +33,7 @@
 #include "faust/export.h"
 
 #include "dsp_aux.hh"
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "interpreter_bytecode.hh"
 #include "fbc/fbc_interpreter.hh"
 

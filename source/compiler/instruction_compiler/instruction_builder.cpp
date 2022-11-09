@@ -19,8 +19,8 @@
  ************************************************************************
  ************************************************************************/
 
-#include "instruction_builder.hh"
-#include "floats.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 
 BasicTyped* InstBuilder::genItFloatTyped() { return genBasicTyped(itfloat()); }

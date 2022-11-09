@@ -21,8 +21,8 @@
 
 #include <cstdlib>
 
-#include "Text.hh"
-#include "ppsig.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/signals/ppsig.hh"
 #include "treeTraversal.hh"
 
 //------------------------------------------------------------------------------

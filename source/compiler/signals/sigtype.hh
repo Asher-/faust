@@ -25,11 +25,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "garbageable.hh"
-#include "interval.hh"
-#include "smartpointer.hh"
-#include "smartable.hh"
-#include "tree.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "compiler/signals/interval.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
+#include "tlib/tree.hh"
 
 /*********************************************************************
  *

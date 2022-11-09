@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "routeSchema.h"
 

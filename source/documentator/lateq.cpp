@@ -42,10 +42,10 @@
 #include <set>
 #include <sstream>
 
-#include "Text.hh"
-#include "exception.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "lateq.hh"
+#include "documentator/lateq.hh"
 
 static int  getLateqIndex(const string& s);
 static bool compLateqIndexes(const string& s1, const string& s2);

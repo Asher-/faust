@@ -23,8 +23,8 @@
 
 #include <cstdlib>
 #include <string>
-#include "property.hh"
-#include "tree.hh"
+#include "tlib/property.hh"
+#include "tlib/tree.hh"
 
 //------------------------------------------------------------------------------
 // TreeTraversal: Recursive transformation of a Tree with memoization

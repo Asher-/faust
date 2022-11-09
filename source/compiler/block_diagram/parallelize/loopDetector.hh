@@ -30,7 +30,7 @@
  *
  **/
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 
 class loopDetector : public virtual Garbageable {
    private:

@@ -22,8 +22,8 @@
 #ifndef _VECTOR_TYPED_
 #define _VECTOR_TYPED_
 
-#include "types/basic_typed.hh"
-#include "types/typed.hh"
+#include "compiler/types/basic_typed.hh"
+#include "compiler/types/typed.hh"
 
 struct VectorTyped : public Typed {
     BasicTyped* fType;

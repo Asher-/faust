@@ -26,12 +26,12 @@
  **/
 
 #include "names.hh"
-#include "Text.hh"
-#include "doc_Text.hh"
-#include "exception.hh"
+#include "compiler/type_manager/Text.hh"
+#include "documentator/doc_Text.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "ppsig.hh"
-#include "property.hh"
+#include "compiler/signals/ppsig.hh"
+#include "tlib/property.hh"
 
 // History
 // 2009/09/08 : get/setDefNameProperty

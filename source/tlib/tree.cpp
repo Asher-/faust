@@ -80,8 +80,8 @@ storage of trees.
 #include <cstdlib>
 #include <fstream>
 
-#include "exception.hh"
-#include "tree.hh"
+#include "compiler/errors/exception.hh"
+#include "tlib/tree.hh"
 
 #ifdef WIN32
 #pragma warning(disable : 4800)

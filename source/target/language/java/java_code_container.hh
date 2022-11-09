@@ -22,8 +22,8 @@
 #ifndef _JAVA_CODE_CONTAINER_H
 #define _JAVA_CODE_CONTAINER_H
 
-#include "code_container.hh"
-#include "dsp_factory.hh"
+#include "target/code_container.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "target/language/java/java_instructions.hh"
 
 using namespace std;

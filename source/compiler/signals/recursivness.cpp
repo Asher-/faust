@@ -24,12 +24,12 @@
 #include <stdlib.h>
 #include <set>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "ppsig.hh"
-#include "property.hh"
+#include "compiler/signals/ppsig.hh"
+#include "tlib/property.hh"
 #include "recursivness.hh"
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 using namespace std;
 

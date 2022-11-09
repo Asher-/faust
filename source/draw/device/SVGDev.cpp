@@ -22,7 +22,7 @@
 // SVGDev.cpp
 
 #include "SVGDev.h"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 
 #include <stdio.h>

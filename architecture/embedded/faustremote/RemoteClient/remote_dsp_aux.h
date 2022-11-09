@@ -38,8 +38,8 @@
 #include "faust/dsp/dsp.h"
 #include "faust/dsp/proxy-dsp.h"
 #include "faust/midi/jack-midi.h"
-#include "smartable.hh"
-#include "smartpointer.hh"
+#include "tlib/smartable.hh"
+#include "tlib/smartpointer.hh"
 #include "lo/lo.h"
 #include "TMutex.h"
 

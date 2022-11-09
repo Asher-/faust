@@ -21,7 +21,7 @@
 
 #include "compiler/instruction/declarations/declare_var_instruction.hh"
 #include "global.hh"
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 
 void DeclareVarInst::cleanup()
 {

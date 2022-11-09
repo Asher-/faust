@@ -21,13 +21,13 @@
 
 #include <cstdlib>
 
-#include "Text.hh"
-#include "exception.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/types/floats.hh"
 #include "global.hh"
 #include "interpreter_code_container.hh"
-#include "visitor/interpreter_instruction_visitor.hh"
-#include "fir/visitor/loop_variable_renamer.hh"
+#include "compiler/visitor/interpreter_instruction_visitor.hh"
+#include "target/fir/visitor/loop_variable_renamer.hh"
 
 using namespace std;
 

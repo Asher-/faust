@@ -38,10 +38,10 @@ Compile a list of FAUST signals into a C++ class.
 #include "compile_scalar.hh"
 #include "compile_vect.hh"
 #include "dcond.hh"
-#include "ppsig.hh"
-#include "property.hh"
+#include "compiler/signals/ppsig.hh"
+#include "tlib/property.hh"
 #include "sigprint.hh"
-#include "sigtype.hh"
+#include "compiler/signals/sigtype.hh"
 #include "sigtyperules.hh"
 #include "global.hh"
 

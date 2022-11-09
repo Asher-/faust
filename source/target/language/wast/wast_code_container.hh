@@ -22,12 +22,12 @@
 #ifndef _WAST_CODE_CONTAINER_H
 #define _WAST_CODE_CONTAINER_H
 
-#include "code_container.hh"
-#include "dsp_factory.hh"
-#include "fir_to_fir.hh"
+#include "target/code_container.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "vec_code_container.hh"
 #include "wast_instructions.hh"
-#include "visitor/json_instruction_visitor.hh"
+#include "compiler/visitor/json_instruction_visitor.hh"
 
 using namespace std;
 

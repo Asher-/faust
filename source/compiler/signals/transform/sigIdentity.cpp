@@ -24,10 +24,10 @@
 #include <stdlib.h>
 #include <cstdlib>
 
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 #include "global.hh"
-#include "ppsig.hh"
-#include "Text.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/type_manager/Text.hh"
 
 //-------------------------SignalIdentity-------------------------------
 // An identity transformation on signals. Can be used to test

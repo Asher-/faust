@@ -21,10 +21,10 @@
 
 #include <math.h>
 
-#include "Text.hh"
-#include "floats.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/types/floats.hh"
 #include "sigtyperules.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 class MinPrim : public xtended {
    public:

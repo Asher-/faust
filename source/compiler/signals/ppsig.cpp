@@ -20,14 +20,14 @@
  ************************************************************************/
 
 #include <vector>
-#include "ppsig.hh"
-#include "Text.hh"
-#include "binop.hh"
-#include "exception.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/signals/binop.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "prim2.hh"
+#include "compiler/signals/prim2.hh"
 #include "recursivness.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 ppsig::ppsig(Tree s) : fSig(s), fEnv(gGlobal->nil), fPriority(0), fHideRecursion(false)
 {

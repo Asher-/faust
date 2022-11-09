@@ -100,13 +100,13 @@ This file contains several extensions to the tree library :
 ******************************************************************************
 *****************************************************************************/
 
-#include "list.hh"
+#include "tlib/list.hh"
 #include <stdlib.h>
 #include <cstdlib>
 #include <map>
 #include "compatibility.hh"
 #include "global.hh"
-#include "property.hh"
+#include "tlib/property.hh"
 
 Tree cons(Tree a, Tree b)
 {

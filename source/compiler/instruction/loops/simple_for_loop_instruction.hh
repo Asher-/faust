@@ -26,8 +26,8 @@
 #include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/statement/block_instruction.hh"
 
-#include "visitor/instruction_visitor.hh"
-#include "visitor/clone_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
 
 struct InstructionBuilder;
 

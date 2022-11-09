@@ -29,8 +29,8 @@
 #include <vector>
 
 #include "MessageProcessor.h"
-#include "smartpointer.hh"
-#include "smartable.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
 
 namespace httpdfaust
 {

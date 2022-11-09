@@ -22,7 +22,7 @@
 #ifndef _TYPED_PRINTABLE_
 #define _TYPED_PRINTABLE_
 
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 
 // ============================
 // Base class for instructions

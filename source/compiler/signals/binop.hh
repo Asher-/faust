@@ -22,8 +22,8 @@
 #ifndef _BINOP_
 #define _BINOP_
 
-#include "fbc/fbc_opcode.hh"
-#include "node.hh"
+#include "target/fbc/fbc_opcode.hh"
+#include "tlib/node.hh"
 
 typedef const Node (*comp)(const Node& a, const Node& b);
 typedef bool (*pred)(const Node& a);

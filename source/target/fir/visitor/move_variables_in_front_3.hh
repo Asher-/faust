@@ -22,9 +22,9 @@
 #ifndef __FAUST__MOVE_VARIABLES_IN_FRONT_3_HH__
 #define __FAUST__MOVE_VARIABLES_IN_FRONT_3_HH__
 
-#include "visitor/basic_clone_visitor.hh"
-#include "types/array_typed.hh"
-#include "instruction_builder.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
+#include "compiler/types/array_typed.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 
 #include "compiler/instruction/value/numbers/array_double_number_instruction.hh"
 #include "compiler/instruction/value/numbers/array_fixed_point_number_instruction.hh"

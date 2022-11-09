@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "types/function_typed.hh"
+#include "compiler/types/function_typed.hh"
 
 #include "global.hh"
 

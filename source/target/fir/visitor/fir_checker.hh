@@ -22,9 +22,9 @@
 #ifndef __FAUST_FIR_CHECKER_HH__
 #define __FAUST_FIR_CHECKER_HH__
 
-#include "visitor/dispatch_visitor.hh"
-#include "binop.hh"
-#include "dump_to_fir.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
+#include "compiler/signals/binop.hh"
+#include "target/fir/dump_to_fir.hh"
 
 // FIR checker
 struct FIRChecker : public DispatchVisitor {

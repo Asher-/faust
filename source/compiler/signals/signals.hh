@@ -26,9 +26,9 @@
 
 #include "faust/export.h"
 
-#include "binop.hh"
-#include "exception.hh"
-#include "tlib.hh"
+#include "compiler/signals/binop.hh"
+#include "compiler/errors/exception.hh"
+#include "tlib/tlib.hh"
 
 using namespace std;
 

@@ -27,12 +27,12 @@
 #include <string>
 #include <vector>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "sigToGraph.hh"
-#include "signals.hh"
-#include "sigtype.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/signals/sigtype.hh"
 #include "sigtyperules.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 using namespace std;
 

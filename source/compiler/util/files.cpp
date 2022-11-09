@@ -21,7 +21,7 @@
 
 #include "files.hh"
 #include "compatibility.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 
 #include <stdio.h>

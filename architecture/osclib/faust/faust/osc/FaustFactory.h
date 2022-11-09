@@ -29,7 +29,7 @@
 #include <sstream>
 
 #include "faust/osc/FaustNode.h"
-#include "smartpointer.hh"
+#include "tlib/smartpointer.hh"
 #include "faust/gui/JSONUI.h"
 
 class GUI;

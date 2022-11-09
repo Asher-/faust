@@ -26,10 +26,10 @@
 #include "compiler/instruction/statement/statement_instruction.hh"
 #include "compiler/instruction/value/value_instruction.hh"
 #include "compiler/instruction/memory/store_var_instruction.hh"
-#include "address.hh"
-#include "instruction_builder.hh"
-#include "visitor/basic_clone_visitor.hh"
-#include "fir_index.hh"
+#include "compiler/type_manager/address/address.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
+#include "target/fir/fir_index.hh"
 
 // Analysis to copy constants from an external memory zone (FunArgs version) used in -os2 and -os3 modes
 struct ConstantsCopyFromMemory : public ConstantsCopyMemory {
@@ -38,6 +38,7 @@ struct ConstantsCopyFromMemory : public ConstantsCopyMemory {
     {}
 
     StatementInst* visit(StoreVarInst* inst)
+    override
     {
         string name = inst->fAddress->getName();
         bool is_struct = inst->fAddress->getAccess() & Address::kStruct;

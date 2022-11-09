@@ -19,20 +19,20 @@
  ************************************************************************
  ************************************************************************/
 
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "global.hh"
 #include "faust.hh"
 #include "libfaust.h"
 #include "normalform.hh"
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 
 #include "tlib/compatibility.hh"
 
 #include "compiler/file_handling/string_substitution.hh"
 #include "faust/cli.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
-#include "visitor/max_inputs_visitor.hh"
+#include "compiler/visitor/max_inputs_visitor.hh"
 
 // ============
 // Backend API

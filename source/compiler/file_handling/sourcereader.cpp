@@ -40,12 +40,12 @@
 #endif
 
 #include "compatibility.hh"
-#include "sourcereader.hh"
+#include "compiler/file_handling/sourcereader.hh"
 #include "sourcefetcher.hh"
-#include "ppbox.hh"
-#include "exception.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 
 #include "compiler/file_handling/string_substitution.hh"
 

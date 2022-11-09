@@ -19,11 +19,11 @@
  ************************************************************************
  ************************************************************************/
 
-#include "fir_code_container.hh"
-#include "fir_to_fir.hh"
+#include "target/fir/fir_code_container.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "compiler/visitor/instructions_complexity.hh"
-#include "visitor/struct_instruction_visitor.hh"
+#include "compiler/visitor/struct_instruction_visitor.hh"
 
 using namespace std;
 

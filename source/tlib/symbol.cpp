@@ -26,7 +26,7 @@
 #include <iostream>
 
 #include "compatibility.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "symbol.hh"
 
 using namespace std;

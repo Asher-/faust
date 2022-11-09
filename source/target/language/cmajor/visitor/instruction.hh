@@ -28,7 +28,7 @@
 #include <utility>
 #include <cctype>
 
-#include "visitor/text_instruction_visitor.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
 #include "faust/gui/PathBuilder.h"
 #include "target/language/soul/type_manager/string.hh"
 

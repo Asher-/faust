@@ -21,8 +21,8 @@
 
 #include <stdio.h>
 
-#include "signals.hh"
-#include "sigtype.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/signals/sigtype.hh"
 #include "sigtyperules.hh"
 
 // Print the signal type

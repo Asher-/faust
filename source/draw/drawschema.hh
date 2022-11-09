@@ -22,7 +22,7 @@
 #ifndef __DRAWSCHEMA__
 #define __DRAWSCHEMA__
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 
 /**
  *The entry point to generate from a block diagram as a set of

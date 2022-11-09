@@ -29,9 +29,9 @@
 #include <vector>
 
 #include "compatibility.hh"
-#include "doc_Text.hh"
-#include "exception.hh"
-#include "floats.hh"
+#include "documentator/doc_Text.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/types/floats.hh"
 
 const string symbolicNumber(double n);
 

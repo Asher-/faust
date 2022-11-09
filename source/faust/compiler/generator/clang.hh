@@ -1,4 +1,4 @@
-/************************************************************************
+ /************************************************************************
  ************************************************************************
     FAUST compiler
     Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
@@ -19,42 +19,41 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_Dlang_HH__
-#define __FAUST_COMPILE_Dlang_HH__
+#ifndef __FAUST_COMPILE_CLANG_HH__
+#define __FAUST_COMPILE_CLANG_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
-
-#include "dlang_code_container.hh"
+#include "faust/compiler/generator/common.hh"
+#include "clang_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-    struct Dlang : public Common
+    struct Clang : public Common
     {
-      static constexpr const char* TargetString = "DLang";
-      static constexpr const char* LanguageString = "dlang";
+      static constexpr const char* TargetString = "Clang-LLVM";
+      static constexpr const char* LanguageString = "cllvm";
 
-      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
+      void compile(Tree signals, int numInputs, int numOutputs)
       override
       {
-          #ifndef DLANG_BUILD
-              throw faustexception("ERROR : -lang dlang not supported since D backend is not built\n");
+          #ifndef CLANG_BUILD
+              throw faustexception("ERROR : -lang cllcm not supported since LLVM backend is not built\n");
           #endif
 
-          this->_codeContainer =
-              DLangCodeContainer::createContainer(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs, out);
+          // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
+          gGlobal->gFAUSTFLOAT2Internal = true;
 
+          this->_codeContainer = ClangCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+
+          // To trigger 'sig.dot' generation
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
-
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
-          this->_instructionCompiler->compileMultiSignal(signals);
+          this->_instructionCompiler->prepare(signals);
       }
-      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
       const char* const& targetString() override  { return TargetString; }
 

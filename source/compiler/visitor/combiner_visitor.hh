@@ -22,7 +22,7 @@
 #ifndef _COMBINER_VISITOR_
 #define _COMBINER_VISITOR_
 
-#include "visitor/dispatch_visitor.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
 
 // ===================
 // Combining visitors

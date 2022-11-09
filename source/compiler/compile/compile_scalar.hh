@@ -30,7 +30,7 @@
 #include "compile.hh"
 #include "dcond.hh"
 #include "old_occurences.hh"
-#include "property.hh"
+#include "tlib/property.hh"
 #include "sigtyperules.hh"
 
 ////////////////////////////////////////////////////////////////////////

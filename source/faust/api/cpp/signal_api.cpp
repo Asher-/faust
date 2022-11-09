@@ -24,7 +24,7 @@
 // ===============
 
 #include "faust/api/cpp/signal_api.hh"
-#include "dsp_factory.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "global.hh"
 #include "faust.hh"
 #include "libfaust.h"

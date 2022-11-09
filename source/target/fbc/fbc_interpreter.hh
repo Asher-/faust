@@ -30,7 +30,7 @@
 #include <string>
 #include <functional>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "fbc/fbc_executor.hh"
 #include "interpreter_bytecode.hh"
 #include "dsp_aux.hh"

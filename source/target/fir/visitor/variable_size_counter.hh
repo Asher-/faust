@@ -22,8 +22,8 @@
 #ifndef __FAUST_VARIABLE_SIZE_COUNTER_HH__
 #define __FAUST_VARIABLE_SIZE_COUNTER_HH__
 
-#include "visitor/dispatch_visitor.hh"
-#include "named_address.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
+#include "compiler/type_manager/address/named_address.hh"
 
 // Compute the size in bytes of variables of a given type
 struct VariableSizeCounter : public DispatchVisitor {

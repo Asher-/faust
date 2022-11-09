@@ -28,8 +28,8 @@
 
 #include "compiler/file_handling/string_substitution.hh"
 #include "compatibility.hh"
-#include "exception.hh"
-#include "garbageable.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "global.hh"
 #include "sourcefetcher.hh"
 

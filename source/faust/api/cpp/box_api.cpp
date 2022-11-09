@@ -25,7 +25,7 @@
 #include "boxes/ppbox.hh"
 #include "propagate.hh"
 #include "normalform.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/api/c/signal_api.hh"
 

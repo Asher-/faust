@@ -34,11 +34,11 @@ using namespace std;
 #include <string>
 #include <vector>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "compiler/instruction/instructions.hh"
-#include "visitor/dispatch_visitor.hh"
-#include "visitor/loop_clone_visitor.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
+#include "compiler/visitor/loop_clone_visitor.hh"
 
 /*
     void compute(int count, float** inputs, float** ouputs)

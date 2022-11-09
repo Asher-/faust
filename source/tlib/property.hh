@@ -22,8 +22,8 @@
 #ifndef __PROPERTY__
 #define __PROPERTY__
 
-#include "garbageable.hh"
-#include "tree.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "tlib/tree.hh"
 
 template <class P>
 class property : public virtual Garbageable {

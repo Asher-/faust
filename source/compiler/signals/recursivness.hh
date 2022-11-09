@@ -22,7 +22,7 @@
 #ifndef _RECURSIVNESS_
 #define _RECURSIVNESS_
 
-#include "signals.hh"
+#include "compiler/signals/signals.hh"
 
 void recursivnessAnnotation(Tree sig);
 int  getRecursivness(Tree t);

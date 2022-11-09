@@ -29,19 +29,19 @@
 #include "faust/controller.hh"
 
 #include "compiler/file_handling/string_substitution.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "propagate.hh"
 
 #include "sigprint.hh"
-#include "ppsig.hh"
-#include "eval.hh"
-#include "ppbox.hh"
+#include "compiler/signals/ppsig.hh"
+#include "compiler/block_diagram/eval/eval.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 #include "drawschema.hh"
 
 #include "timing.hh"
 
 #include "instruction_compiler.hh"
-#include "doc.hh"
+#include "documentator/doc.hh"
 
 
 #ifdef DLANG_BUILD

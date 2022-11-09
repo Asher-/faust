@@ -34,12 +34,12 @@
 #include <vector>
 
 
-#include "Text.hh"
-#include "binop.hh"
-#include "exception.hh"
-#include "garbageable.hh"
-#include "types/typed.hh"
-#include "property.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/signals/binop.hh"
+#include "compiler/errors/exception.hh"
+#include "compiler/type_manager/garbageable.hh"
+#include "compiler/types/typed.hh"
+#include "tlib/property.hh"
 
 #include "compiler/instruction/declarations.hh"
 
@@ -48,12 +48,12 @@
 // Visitors
 // =========
 
-#include "visitor/clone_visitor.hh"
-#include "visitor/combiner_visitor.hh"
-#include "visitor/dispatch_visitor.hh"
-#include "visitor/instruction_visitor.hh"
-#include "visitor/scalar_vector_dispatch_visitor.hh"
-#include "visitor/variable_scope_visitor.hh"
+#include "compiler/visitor/clone_visitor.hh"
+#include "compiler/visitor/combiner_visitor.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
+#include "compiler/visitor/instruction_visitor.hh"
+#include "compiler/visitor/scalar_vector_dispatch_visitor.hh"
+#include "compiler/visitor/variable_scope_visitor.hh"
 
 struct Printable;
 
@@ -441,20 +441,20 @@ struct CloneVisitor : public virtual Garbageable {
 //  Types
 // =======
 
-#include "types/array_typed.hh"
-#include "types/basic_typed.hh"
-#include "types/function_typed.hh"
-#include "types/named_typed.hh"
-#include "types/struct_typed.hh"
-#include "types/vector_typed.hh"
+#include "compiler/types/array_typed.hh"
+#include "compiler/types/basic_typed.hh"
+#include "compiler/types/function_typed.hh"
+#include "compiler/types/named_typed.hh"
+#include "compiler/types/struct_typed.hh"
+#include "compiler/types/vector_typed.hh"
 
 // ===========
 //  Addresses
 // ===========
 
-#include "address.hh"
-#include "address/named_address.hh"
-#include "address/indexed_address.hh"
+#include "compiler/type_manager/address/address.hh"
+#include "compiler/type_manager/address/named_address.hh"
+#include "compiler/type_manager/address/indexed_address.hh"
 
 // ===============
 // User interface
@@ -548,13 +548,13 @@ struct CloneVisitor : public virtual Garbageable {
 // Basic clone visitor
 // ====================
 
-#include "visitor/basic_clone_visitor.hh"
+#include "compiler/visitor/basic_clone_visitor.hh"
 
 // ======================
 // Instruction generator
 // ======================
 
-#include "instruction_builder.hh"
+#include "compiler/instruction_compiler/instruction_builder.hh"
 
 
 #endif

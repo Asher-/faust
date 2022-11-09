@@ -23,7 +23,7 @@
 #define __INSTRUCTION_
 
 #include "compiler/instruction/statement/statement_instruction.hh"
-#include "types/struct_typed.hh"
+#include "compiler/types/struct_typed.hh"
 
 struct InstVisitor; // Cyclical
 struct CloneVisitor; // Cyclical

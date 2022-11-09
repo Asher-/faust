@@ -35,9 +35,9 @@
 #include "faust/export.h"
 
 #include "dsp_aux.hh"
-#include "dsp_factory.hh"
-#include "smartpointer.hh"
-#include "smartable.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
 #include "timing.hh"
 
 #include <llvm/ExecutionEngine/ObjectCache.h>

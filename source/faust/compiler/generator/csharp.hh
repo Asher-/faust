@@ -19,56 +19,43 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_COMPILE_INTERPRETER_HH__
-#define __FAUST_COMPILE_INTERPRETER_HH__
+#ifndef __FAUST_COMPILE_CSHARP_HH__
+#define __FAUST_COMPILE_CSHARP_HH__
 
 #include "faust.hh"
-#include "faust/compiler/common.hh"
+#include "faust/compiler/generator/common.hh"
 
-#include "interpreter_code_container.cpp"
+#include "csharp_code_container.hh"
 
 namespace Faust {
   namespace Compiler {
 
-
-    struct Interpreter : public Common
+    struct CSharp : public Common
     {
-      static constexpr const char* TargetString = "Interpreter";
-      static constexpr const char* LanguageString = "interp";
+      static constexpr const char* TargetString = "CSharp";
+      static constexpr const char* LanguageString = "csharp";
 
-      void compile(Tree signals, int numInputs, int numOutputs)
+      void compile(Tree signals, int numInputs, int numOutputs, ostream* out)
       override
       {
-          #ifndef INTERP_BUILD
-              throw faustexception("ERROR : -lang interp not supported since Interpreter backend is not built\n");
+          #ifndef CSHARP_BUILD
+              throw faustexception("ERROR : -lang csharp not supported since CSharp backend is not built\n");
           #endif
 
-          if (gGlobal->gFloatSize == 1) {
-            this->_codeContainer = InterpreterCodeContainer<float>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
-          } else if (gGlobal->gFloatSize == 2) {
-            this->_codeContainer = InterpreterCodeContainer<double>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
-          } else {
-              throw faustexception("ERROR : quad format not supported in Interp\n");
-          }
           gGlobal->gAllowForeignFunction = false;  // No foreign functions
-          gGlobal->gAllowForeignConstant = false;  // No foreign constant
-          gGlobal->gAllowForeignVar      = false;  // No foreign variable
-          // gGlobal->gComputeIOTA       = true;   // Ensure IOTA base fixed delays are computed once
-
-          // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
-          gGlobal->gNeedManualPow       = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
-          gGlobal->gRemoveVarAddress    = true;   // To be used in -vec mode
+          this->_codeContainer =
+              CSharpCodeContainer::createContainer(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs, out);
 
           if (gGlobal->gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
-              this->_instructionCompiler = new InterpreterInstructionsCompiler(this->_codeContainer);
+              this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
           if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
+      void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };
 
       const char* const& targetString() override  { return TargetString; }
 

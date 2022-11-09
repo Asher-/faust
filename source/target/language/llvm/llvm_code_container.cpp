@@ -25,8 +25,8 @@
 
 #include "llvm_code_container.hh"
 #include "compatibility.hh"
-#include "exception.hh"
-#include "fir_to_fir.hh"
+#include "compiler/errors/exception.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "llvm_dynamic_dsp_aux.hh"
 #include "target/language/llvm/llvm_instructions.hh"

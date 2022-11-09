@@ -57,7 +57,7 @@ extern "C" LIBFAUST_API const char* getCLibFaustVersion()
  */
 
 #ifdef EMCC
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 const char* faustexception::gJSExceptionMsg = nullptr;
 

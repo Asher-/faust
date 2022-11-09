@@ -24,8 +24,8 @@
 
 #include <stdlib.h>
 #include <cstdlib>
-#include "property.hh"
-#include "tree.hh"
+#include "tlib/property.hh"
+#include "tlib/tree.hh"
 
 //------------------------------------------------------------------------------
 // TreeTransform: Recursive transformation of a Tree with memoization

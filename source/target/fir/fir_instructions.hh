@@ -29,12 +29,12 @@
 #include <sstream>
 #include <string>
 
-#include "Text.hh"
-#include "binop.hh"
-#include "dsp_factory.hh"
+#include "compiler/type_manager/Text.hh"
+#include "compiler/signals/binop.hh"
+#include "compiler/dsp_factory/dsp_factory.hh"
 #include "compiler/instruction/instructions.hh"
 #include "target/language/c/type_manager/string.hh"
-#include "floats.hh"
+#include "compiler/types/floats.hh"
 
 using namespace std;
 

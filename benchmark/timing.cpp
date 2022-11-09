@@ -26,7 +26,7 @@
 #ifndef _WIN32
 #include <sys/time.h>
 #endif
-#include "Text.hh"
+#include "compiler/type_manager/Text.hh"
 #include "compatibility.hh"
 #include "global.hh"
 #include "timing.hh"

@@ -30,8 +30,8 @@
 #include <vector>
 #include <sstream>
 
-#include "smartpointer.hh"
-#include "smartable.hh"
+#include "tlib/smartpointer.hh"
+#include "tlib/smartable.hh"
 
 #include "jsonnode.h"
 

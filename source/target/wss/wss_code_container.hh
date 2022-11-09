@@ -22,7 +22,7 @@
 #ifndef _WSS_CODE_CONTAINER_H
 #define _WSS_CODE_CONTAINER_H
 
-#include "code_container.hh"
+#include "target/code_container.hh"
 
 // The name of the struct variable used to share the 'count' parameter between 'compute' and 'computeThread'
 #define fFFullCount "fCount"

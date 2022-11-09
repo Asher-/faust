@@ -22,7 +22,7 @@
 #ifndef _INSTRUCTION_VISITOR_
 #define _INSTRUCTION_VISITOR_
 
-#include "garbageable.hh"
+#include "compiler/type_manager/garbageable.hh"
 #include "compiler/instruction/declarations.hh"
 
 struct AddMetaDeclareInst; // Cyclic reference

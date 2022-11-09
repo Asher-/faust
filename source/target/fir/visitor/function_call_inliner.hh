@@ -26,7 +26,7 @@
 // Inlining tools
 // ===============
 
-#include "fir/visitor/function_inliner.hh"
+#include "target/fir/visitor/function_inliner.hh"
 
 // Replace a function call with the actual inlined function code
 struct FunctionCallInliner : public BasicCloneVisitor {

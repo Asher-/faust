@@ -22,7 +22,7 @@
 #include <algorithm>
 
 #include "blockSchema.h"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 
 using namespace std;
 

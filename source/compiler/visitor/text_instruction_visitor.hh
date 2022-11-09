@@ -29,10 +29,10 @@
 #include <sstream>
 #include <string>
 
-#include "Text.hh"
-#include "fir_to_fir.hh"
+#include "compiler/type_manager/Text.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "compiler/instruction/instructions.hh"
-#include "type_manager/string.hh"
+#include "compiler/type_manager/string.hh"
 #include "global.hh"
 
 // To check all control fields in the DSP structure

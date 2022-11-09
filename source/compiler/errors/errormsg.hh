@@ -22,7 +22,7 @@
 #ifndef _ERRORMSG_
 #define _ERRORMSG_
 
-#include "tlib.hh"
+#include "tlib/tlib.hh"
 
 extern int         yylineno;
 extern const char* yyfilename;

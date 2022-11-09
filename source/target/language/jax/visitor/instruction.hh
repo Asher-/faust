@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include "visitor/text_instruction_visitor.hh"
+#include "compiler/visitor/text_instruction_visitor.hh"
 #include "memory_description.hh"
 #include "target/language/jax/type_manager/string.hh"
 

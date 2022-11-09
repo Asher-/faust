@@ -21,7 +21,7 @@
 
 #include "target/language/jax/instruction_compiler_jax.hh"
 #include "ensure.hh"
-#include "ppsig.hh"
+#include "compiler/signals/ppsig.hh"
 #include "sigtyperules.hh"
 #include "global.hh"
 

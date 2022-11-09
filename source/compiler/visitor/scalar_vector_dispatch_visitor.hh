@@ -22,7 +22,7 @@
 #ifndef _SCALE_VECTOR_DISPATCH_VISITOR_
 #define _SCALE_VECTOR_DISPATCH_VISITOR_
 
-#include "visitor/dispatch_visitor.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
 
 class ScalVecDispatcherVisitor : public DispatchVisitor {
    protected:

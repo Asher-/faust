@@ -23,8 +23,8 @@
 #include <stdlib.h>
 #include <cstdlib>
 
-#include "signals.hh"
-#include "xtended.hh"
+#include "compiler/signals/signals.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 /********************************************************************
 SignalConstantPropagation::transformation(Tree sig) :

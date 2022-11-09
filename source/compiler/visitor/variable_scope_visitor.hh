@@ -22,7 +22,7 @@
 #ifndef _VARIABLE_SCOPE_VISITOR_
 #define _VARIABLE_SCOPE_VISITOR_
 
-#include "visitor/dispatch_visitor.hh"
+#include "compiler/visitor/dispatch_visitor.hh"
 
 struct VariableScopeVisitor : public DispatchVisitor {
     stack<std::list<DeclareVarInst*> > fBlockVarTable;

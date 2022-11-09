@@ -27,9 +27,9 @@
 
 #include "boxcomplexity.hh"
 #include <ostream>
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "xtended.hh"
+#include "compiler/math_primitives/xtended.hh"
 
 using namespace std;
 

@@ -28,14 +28,14 @@
 #include <string>
 
 #include "compatibility.hh"
-#include "doc_autodoc.hh"
-#include "doc_lang.hh"
-#include "doc_metadatas.hh"
-#include "doc_notice.hh"
+#include "documentator/doc_autodoc.hh"
+#include "documentator/doc_lang.hh"
+#include "documentator/doc_metadatas.hh"
+#include "documentator/doc_notice.hh"
 #include "compiler/file_handling/string_substitution.hh"
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "lateq.hh"
+#include "documentator/lateq.hh"
 #include "files.hh"
 
 static void     importDocStrings(const string& filename);

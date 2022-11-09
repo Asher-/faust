@@ -24,7 +24,7 @@
 #ifndef _IS_BOX_PATTERN_OP_
 #define _IS_BOX_PATTERN_OP_
 
-#include "boxes.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 
 inline bool isBoxPatternOp(Tree box, Node& n, Tree& t1, Tree& t2)
 {

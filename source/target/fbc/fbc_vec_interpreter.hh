@@ -29,7 +29,7 @@
 #include <sstream>
 #include <string>
 
-#include "exception.hh"
+#include "compiler/errors/exception.hh"
 #include "faust/gui/CGlue.h"
 #include "fbc/fbc_executor.hh"
 #include "interpreter_bytecode.hh"

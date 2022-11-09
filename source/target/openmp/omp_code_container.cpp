@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #include "omp_code_container.hh"
-#include "fir_to_fir.hh"
+#include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 
 using namespace std;
