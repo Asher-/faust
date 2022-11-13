@@ -87,8 +87,8 @@ benchmark : developer
 	$(MAKE) -C tools/benchmark all
 
 remote : developer
-	$(MAKE) -C embedded/faustremote/RemoteServer all
-	$(MAKE) -C embedded/faustremote all
+	$(MAKE) -C architecture/embedded/faustremote/RemoteServer all
+	$(MAKE) -C architecture/embedded/faustremote all
 
 debug :
 	$(MAKE) -C $(BUILDLOCATION) FAUSTDIR=faustdebug CMAKEOPT=-DCMAKE_BUILD_TYPE=Debug
@@ -168,8 +168,8 @@ parser :
 
 clean :
 	$(MAKE) -C build clean
-	$(MAKE) -C embedded/faustremote/RemoteServer clean
-	$(MAKE) -C embedded/faustremote clean
+	$(MAKE) -C architecture/embedded/faustremote/RemoteServer clean
+	$(MAKE) -C architecture/embedded/faustremote clean
 	$(MAKE) -C tools/sound2faust clean
 	$(MAKE) -C tools/benchmark clean
 

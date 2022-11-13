@@ -43,6 +43,8 @@
 #include "compiler/signals/sigtype.hh"
 #include "compiler/file_handling/sourcereader.hh"
 
+#include "compiler/parser/implementation.hh"
+
 namespace Faust {
   namespace Compiler {
     struct Common;
@@ -89,8 +91,12 @@ extern bool           gAllWarning;
 // Global singleton like compiler state
 struct global {
 
+    static std::list<Garbageable*>& getObjectTable();
+    static global& config();
+
     ::Faust::Compiler::Common* compiler = nullptr;
 
+    ::Faust::Compiler::Parser::Implementation gParser;
 
     Tree gResult;
     Tree gResult2;
@@ -189,6 +195,54 @@ struct global {
     // Debug option
     bool gCheckTable;            // -ct to check rtable/rwtable index range and generate safe access codes (0/1: 1 by default)
 
+    //-- command line arguments
+    bool   gDetailsSwitch;
+    bool   gDrawSignals;
+    bool   gDrawRouteFrame;
+    bool   gShadowBlur;      // note: svg2pdf doesn't like the blur filter
+    bool   gScaledSVG;       // to draw scaled SVG files
+    bool   gStripDocSwitch;  // Strip <mdoc> content from doc listings.
+    int    gFoldThreshold;   // global complexity threshold before activating folding
+    int    gFoldComplexity;  // individual complexity threshold before folding
+    int    gMaxNameSize;
+    bool   gSimpleNames;
+    bool   gSimplifyDiagrams;
+    int    gMaxCopyDelay;
+    string gOutputFile;
+
+    bool gVectorSwitch;
+    bool gDeepFirstSwitch;
+    int  gVecSize;
+    int  gVectorLoopVariant;
+
+    bool gOpenMPSwitch;
+    bool gOpenMPLoop;
+    bool gSchedulerSwitch;
+    bool gOpenCLSwitch;
+    bool gCUDASwitch;
+    bool gGroupTaskSwitch;
+    bool gFunTaskSwitch;
+
+    bool gUIMacroSwitch;
+    int  gDumpNorm;
+    bool gRangeUI;  // whether to generate code to limit vslider/hslider/nentry values in [min..max] range
+
+
+    bool gPrintFileListSwitch;
+    bool gInlineArchSwitch;
+
+    bool gDSPStruct;
+    bool gLightMode;    // do not generate the entire DSP API (to be used with Emscripten to generate a light DSP module
+                        // for JavaScript)
+    bool   gClang;      // when compiled with clang/clang++, adds specific #pragma for auto-vectorization
+    bool   gNoVirtual;  // when compiled with the C++ backend, does not add the 'virtual' keyword
+    string gCheckTable;  // whether to check RDTable and RWTable index range
+
+
+    string gClassName;       // name of the generated dsp class, by default 'mydsp'
+    string gSuperClassName;  // name of the root class the generated dsp class inherits from, by default 'dsp'
+    string gProcessName;     // name of the entry point of the Faust program, by default 'process'
+
     // Backend configuration
     string gOutputLang;            // Chosen backend
     bool   gAllowForeignFunction;  // Can use foreign functions
@@ -197,6 +251,7 @@ struct global {
     bool   gComputeIOTA;           // Cache some computation done with IOTA variable
     bool   gFAUSTFLOAT2Internal;   // FAUSTFLOAT type (= kFloatMacro) forced to internal real
     bool   gHasExp10;              // -exp10, if the 'exp10' math function is available
+    bool   gInPlace;               // Add cache to input for correct in-place computations
     bool   gLoopVarInBytes;        // If the 'i' variable used in the scalar loop moves by bytes instead of frames
     bool   gWaveformInDSP;         // If waveform are allocated in the DSP and not as global data
     bool   gUseDefaultSound;       // If default global variable is used in 'soundfile' primitive generation
@@ -220,13 +275,10 @@ struct global {
 
     dsp_factory_base* gDSPFactory;  // compiled factory
 
-    bool gLstDependenciesSwitch;  // mdoc listing management
-    bool gLstMdocTagsSwitch;      // mdoc listing management
-    bool gLstDistributedSwitch;   // mdoc listing management
-
     // Automatic documentation
     string              gDocLang;
     string              gDocName;
+
     map<string, string> gDocMetadatasStringMap;
     set<string>         gDocMetadatasKeySet;
     map<string, string> gDocAutodocStringMap;
@@ -578,6 +630,15 @@ struct global {
 
     // Garbage collection
     static list<Garbageable*> gObjectTable;
+    // Globals to transfer results in thread based evaluation
+    Tree   gProcessTree;
+    Tree   gLsignalsTree;
+    int    gNumInputs;
+    int    gNumOutputs;
+    string gErrorMessage;
+
+    // GC
+    static list<Garbageable*>& gObjectTable;
     static bool               gHeapCleanup;
 
     global();

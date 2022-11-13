@@ -27,7 +27,7 @@
 #include <sys/time.h>
 #endif
 #include "compiler/type_manager/Text.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "global.hh"
 #include "timing.hh"
 

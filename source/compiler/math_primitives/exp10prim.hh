@@ -19,69 +19,83 @@
  ************************************************************************
  ************************************************************************/
 
+#ifndef __FAUST__PRIMITIVE__MATH__EXT10__HH__
+#define __FAUST__PRIMITIVE__MATH__EXT10__HH__
+
 #include <math.h>
 
 #include "compiler/type_manager/Text.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/math_primitives/xtended.hh"
 
-class Exp10Prim : public xtended {
-   public:
-    Exp10Prim() : xtended("exp10") {}
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
 
-    virtual unsigned int arity() { return 1; }
+      class Exp10 : public ::Faust::Primitive::Math::xtended {
+          public:
+          static Exp10* self;
+          Exp10() : ::Faust::Primitive::Math::xtended("exp10") {}
 
-    virtual bool needCache() { return true; }
+          virtual unsigned int arity() { return 1; }
 
-    virtual ::Type infereSigType(ConstTypes args)
-    {
-        faustassert(args.size() == arity());
-        return floatCast(args[0]);
+          virtual bool needCache() { return true; }
+
+          virtual ::Type infereSigType(ConstTypes args)
+          {
+              faustassert(args.size() == arity());
+              return floatCast(args[0]);
+          }
+
+          virtual int infereSigOrder(const vector<int>& args)
+          {
+              faustassert(args.size() == arity());
+              return args[0];
+          }
+
+          virtual Tree computeSigOutput(const vector<Tree>& args)
+          {
+              num n;
+              faustassert(args.size() == arity());
+          
+              // exp10(log10(sig)) ==> sig
+              ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(args[0]);
+              if (xt == (::Faust::Primitive::Math::xtended*)&self) {
+                  return args[0]->branch(0);
+              } else if (isNum(args[0], n)) {
+                  return tree(pow(10, double(n)));
+              } else {
+                  return tree(symbol(), args[0]);
+              }
+          }
+
+          virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return generateFun(container, subst("exp10$0", isuffix()), args, result, types);
+          }
+
+          virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("exp10$1($0)", args[0], isuffix());
+          }
+
+          virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("e10^{$0}", args[0]);
+          }
+      };
+
     }
+  }
+}
 
-    virtual int infereSigOrder(const vector<int>& args)
-    {
-        faustassert(args.size() == arity());
-        return args[0];
-    }
-
-    virtual Tree computeSigOutput(const vector<Tree>& args)
-    {
-        num n;
-        faustassert(args.size() == arity());
-    
-        // exp10(log10(sig)) ==> sig
-        xtended* xt = (xtended*)getUserData(args[0]);
-        if (xt == gGlobal->gLog10Prim) {
-            return args[0]->branch(0);
-        } else if (isNum(args[0], n)) {
-            return tree(pow(10, double(n)));
-        } else {
-            return tree(symbol(), args[0]);
-        }
-    }
-
-    virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return generateFun(container, subst("exp10$0", isuffix()), args, result, types);
-    }
-
-    virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("exp10$1($0)", args[0], isuffix());
-    }
-
-    virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("e10^{$0}", args[0]);
-    }
-};
+#endif

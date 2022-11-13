@@ -24,7 +24,7 @@
 #include <typeinfo>
 
 #include "signal2vhdlVisitor.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 
 //-------------------------Signal2VHDLVisitor-------------------------------
 // An identity transformation on signals. Can be used to test
@@ -97,7 +97,7 @@ void Signal2VHDLVisitor::visit(Tree sig)
     vector<Tree> subsig;
     Tree   c, sel, x, y, z, u, v, var, le, label, id, ff, largs, type, name, file, sf;
 
-    xtended* p = (xtended*) getUserData(sig);
+    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*) getUserData(sig);
     int nature = getCertifiedSigType(sig)->nature();
     string suffixe = getObjectSuffix(nature);
 

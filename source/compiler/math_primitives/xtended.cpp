@@ -23,16 +23,24 @@
 #include "compiler/types/floats.hh"
 #include "target/code_container.hh"
 
-ValueInst* xtended::generateFun(CodeContainer* container,
-                                const string& fun_name,
-                                const Values& args,
-                                ::Type result,
-                                ConstTypes types)
-{
-    Typed::VarType rtype = convert2FIRType(result->nature());
-    vector<Typed::VarType> atypes;
-    for (size_t i = 0; i < types.size(); i++) {
-        atypes.push_back(convert2FIRType(types[i]->nature()));
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
+
+      ValueInst* xtended::generateFun(CodeContainer* container,
+                                      const string& fun_name,
+                                      const Values& args,
+                                      ::Type result,
+                                      ConstTypes types)
+      {
+          Typed::VarType rtype = convert2FIRType(result->nature());
+          vector<Typed::VarType> atypes;
+          for (size_t i = 0; i < types.size(); i++) {
+              atypes.push_back(convert2FIRType(types[i]->nature()));
+          }
+          return container->pushFunction(fun_name, rtype, atypes, args);
+      }
+
     }
-    return container->pushFunction(fun_name, rtype, atypes, args);
+  }
 }

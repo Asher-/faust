@@ -91,7 +91,7 @@ int computeBoxComplexity(Tree box)
 
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, chan;
 
-    xtended* xt = (xtended*)getUserData(box);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
 
     // simple elements
     if (xt)

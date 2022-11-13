@@ -761,14 +761,14 @@ LIBFAUST_API const char* xtendedName(Tree tree)
 {
     void* userData = getUserData(tree);
     faustassert(userData != nullptr);
-    return ((xtended*)userData)->name();
+    return ((::Faust::Primitive::Math::xtended*)userData)->name();
 }
 
 LIBFAUST_API unsigned int xtendedArity(Tree tree)
 {
     void* userData = getUserData(tree);
     faustassert(userData != nullptr);
-    return ((xtended*)userData)->arity();
+    return ((::Faust::Primitive::Math::xtended*)userData)->arity();
 }
 
 LIBFAUST_API Tree DSPToBoxes(

@@ -12,7 +12,6 @@ set (SOVERS 0)
 option ( ITPDYNAMIC         "Include Faust Interpreter dynamic library" off )
 option ( USE_LLVM_CONFIG    "Force use off llvm-config" on )
 
-
 #######################################
 # check for variables that are normally set at upper level
 if (NOT DEFINED LIBDIR)
@@ -53,10 +52,9 @@ else()
 	set( MACHINE_DYN_LIBS ${MACHINE_DYN_LIBS} -lpthread)
 endif()
 
-
 ####################################
 # LLVM
-include (../misc/llvm.cmake)
+include (../llvm/llvm.cmake)
 # if LLVM_PACKAGE_VERSION is defined, LLVM has already been set at upper level
 if (INCLUDE_LLVM AND NOT DEFINED LLVM_PACKAGE_VERSION)
 	if(USE_LLVM_CONFIG)

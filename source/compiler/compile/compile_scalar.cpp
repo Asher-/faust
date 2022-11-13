@@ -32,7 +32,7 @@
 #include <vector>
 #include <climits>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compile.hh"
 #include "compile_scalar.hh"
 #include "compiler/types/floats.hh"
@@ -1225,7 +1225,7 @@ string ScalarCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tree s2)
 
 string ScalarCompiler::generateXtended(Tree sig)
 {
-    xtended*       p = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended*       p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     vector<std::string> args;
     vector<Type>   types;
 

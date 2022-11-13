@@ -29,6 +29,8 @@
 
 #include "faust/api/c/signal_api.hh"
 
+#include "faust/primitive/math.hh"
+
 // ============
 // Box C++ API
 // ============
@@ -212,87 +214,87 @@ LIBFAUST_API Tree boxXOR()
 
 LIBFAUST_API Tree boxAbs()
 {
-    return gGlobal->gAbsPrim->box();
+    return ::Faust::Primitive::Math::abs.box();
 }
 LIBFAUST_API Tree boxAcos()
 {
-    return gGlobal->gAcosPrim->box();
+    return ::Faust::Primitive::Math::acos.box();
 }
 LIBFAUST_API Tree boxTan()
 {
-    return gGlobal->gTanPrim->box();
+    return ::Faust::Primitive::Math::tan.box();
 }
 LIBFAUST_API Tree boxSqrt()
 {
-    return gGlobal->gSqrtPrim->box();
+    return ::Faust::Primitive::Math::sqrt.box();
 }
 LIBFAUST_API Tree boxSin()
 {
-    return gGlobal->gSinPrim->box();
+    return ::Faust::Primitive::Math::sin.box();
 }
 LIBFAUST_API Tree boxRint()
 {
-    return gGlobal->gRintPrim->box();
+    return ::Faust::Primitive::Math::rint.box();
 }
 LIBFAUST_API Tree boxRemainder()
 {
-    return gGlobal->gRemainderPrim->box();
+    return ::Faust::Primitive::Math::remainder.box();
 }
 LIBFAUST_API Tree boxPow()
 {
-    return gGlobal->gPowPrim->box();
+    return ::Faust::Primitive::Math::pow.box();
 }
 LIBFAUST_API Tree boxMin()
 {
-    return gGlobal->gMinPrim->box();
+    return ::Faust::Primitive::Math::min.box();
 }
 LIBFAUST_API Tree boxMax()
 {
-    return gGlobal->gMaxPrim->box();
+    return ::Faust::Primitive::Math::max.box();
 }
 LIBFAUST_API Tree boxLog()
 {
-    return gGlobal->gLogPrim->box();
+    return ::Faust::Primitive::Math::log.box();
 }
 LIBFAUST_API Tree boxLog10()
 {
-    return gGlobal->gLog10Prim->box();
+    return ::Faust::Primitive::Math::log10.box();
 }
 LIBFAUST_API Tree boxFmod()
 {
-    return gGlobal->gAbsPrim->box();
+    return ::Faust::Primitive::Math::abs.box();
 }
 LIBFAUST_API Tree boxFloor()
 {
-    return gGlobal->gFloorPrim->box();
+    return ::Faust::Primitive::Math::floor.box();
 }
 LIBFAUST_API Tree boxExp()
 {
-    return gGlobal->gExpPrim->box();
+    return ::Faust::Primitive::Math::exp.box();
 }
 LIBFAUST_API Tree boxExp10()
 {
-    return gGlobal->gExp10Prim->box();
+    return ::Faust::Primitive::Math::exp10.box();
 }
 LIBFAUST_API Tree boxCos()
 {
-    return gGlobal->gAbsPrim->box();
+    return ::Faust::Primitive::Math::abs.box();
 }
 LIBFAUST_API Tree boxCeil()
 {
-    return gGlobal->gCeilPrim->box();
+    return ::Faust::Primitive::Math::ceil.box();
 }
 LIBFAUST_API Tree boxAtan()
 {
-    return gGlobal->gAtanPrim->box();
+    return ::Faust::Primitive::Math::atan.box();
 }
 LIBFAUST_API Tree boxAtan2()
 {
-    return gGlobal->gAtan2Prim->box();
+    return ::Faust::Primitive::Math::atan2.box();
 }
 LIBFAUST_API Tree boxAsin()
 {
-    return gGlobal->gAsinPrim->box();
+    return ::Faust::Primitive::Math::asin.box();
 }
 
 // User Interface

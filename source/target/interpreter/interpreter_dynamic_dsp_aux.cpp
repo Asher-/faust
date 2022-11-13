@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #if defined(_WIN32)
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #else // !defined(_WIN32)
 #include <libgen.h>
 #endif // defined(_WIN32)

@@ -22,8 +22,8 @@
 #ifndef __FAUST__VARIABLE_MOVER_HH__
 #define __FAUST__VARIABLE_MOVER_HH__
 
-#include "compiler/visitor/stack_2_struct_rewriter_1.hh"
-#include "compiler/visitor/stack_2_struct_rewriter_2.hh"
+#include "target/fir/visitor/stack_2_struct_rewriter_1.hh"
+#include "target/fir/visitor/stack_2_struct_rewriter_2.hh"
 
 struct VariableMover {
     static void Move(CodeContainer* container, const std::string& name)

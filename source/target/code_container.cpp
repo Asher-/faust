@@ -34,7 +34,17 @@
 #include "target/fir/visitor/function_call_inliner.hh"
 #include "target/fir/visitor/loop_variable_renamer.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
+
+namespace Faust {
+  namespace Primitive {
+    namespace Math {    
+      extern int  floatSize; // 0 for 'float', 1 for 'double', 2 for 'quad', 3 for 'fixed-point'
+    };
+  };
+};
 
 void CodeContainer::initialize(int numInputs, int numOutputs)
 {
@@ -1025,7 +1035,7 @@ void CodeContainer::generateJSONFile()
 {
     // Generate JSON (which checks for non duplicated path)
     if (gGlobal->gPrintJSONSwitch) {
-        if (gGlobal->gFloatSize == 1) {
+        if (::Faust::Primitive::Math::floatSize == 1) {
             generateJSONFile<float>();
         } else {
             generateJSONFile<double>();

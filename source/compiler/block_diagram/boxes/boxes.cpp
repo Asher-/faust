@@ -60,7 +60,7 @@ LIBFAUST_API bool isBoxIdent(Tree t)
 LIBFAUST_API bool isBoxIdent(Tree t0, const char** str)
 {
     Tree t1;
-    Sym  s;
+    Sym  s = nullptr;
     if (isTree(t0, gGlobal->BOXIDENT, t1) && isSym(t1->node(), &s)) {
         *str = name(s);
         return true;
@@ -931,7 +931,7 @@ static Tree preparePattern(Tree box)
 
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, arg, body, fun, args, ldef, slot, ident, rules;
 
-    xtended* xt = (xtended*)getUserData(box);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
 
     // Primitive elements
     if (xt)

@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "math.h"
 
 #if defined(__MINGW32__) || defined(_WIN32)

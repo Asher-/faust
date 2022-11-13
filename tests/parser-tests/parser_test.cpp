@@ -21,14 +21,10 @@
 
 #include <gtest/gtest.h>
 
+#include "compiler/parser/implementation.hh"
 #include "global.hh"
-#include "compiler/file_handling/sourcereader.hh"
-#include "compiler/block_diagram/boxes/boxes.hh"
 
-#include "compiler/parser/driver.hh"
-
-extern global* gGlobal;
-extern int yydebug;
+using Parser = ::Faust::Compiler::Parser::Implementation;
 
 struct ParserTest
 :
@@ -39,8 +35,9 @@ struct ParserTest
     ()
     {
       global::allocate();
-      /* Uncomment for Bison trace output */
-//       yydebug = 1;
+      /* Uncomment for Bison/Flex trace output */
+      parser._traceParsing = true;
+      parser._traceScanning = true;
     }
 
     virtual
@@ -50,30 +47,29 @@ struct ParserTest
     {
 
     }
+    
 
-    SourceReader  sourceReader;
-    Driver driver;
+    Parser parser;
 
 };
 
-TEST_F( ParserTest, empty ) {
-//  gGlobal->gInputString = R""""()"""";
-//  Tree ast = sourceReader.parseString( "Empty.dsp" );
+//TEST_F( ParserTest, empty ) {
+//  std::string source = R""""()"""";
+//  Tree ast = parser.parseString( source, "Empty.dsp" );
 //  ASSERT_EQ( ast, nullptr );
-}
-
-
+//}
+//
 //TEST_F( ParserTest, variants ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    singleprecision one = 3.402823466e+38;
 //    doubleprecision two = 1.7976931348623158e+308;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "variants.dsp" );
+//  Tree ast = parser.parseString( source, "variants.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, simpleProgram ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    declare name "Noise";
 //    declare copyright "(c)GRAME 2018";
 //
@@ -82,12 +78,12 @@ TEST_F( ParserTest, empty ) {
 //    // noise level controlled by a slider
 //    process = no.noise * hslider("gain",0,0,1,0.1);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "simpleProgram.dsp" );
+//  Tree ast = parser.parseString( source, "simpleProgram.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, globalMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    declare name "Noise";
 //    declare name "MyProgram";
 //    declare author "MySelf";
@@ -95,44 +91,44 @@ TEST_F( ParserTest, empty ) {
 //    declare version "1.00";
 //    declare license "BSD";
 //  )"""";
-//  Tree ast = sourceReader.parseString( "globalMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "globalMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, functionMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    declare add author "John Doe";
 //  )"""";
-//  Tree ast = sourceReader.parseString( "functionMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "functionMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, options ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    declare options "[key0:value] [key1:value]";
 //  )"""";
-//  Tree ast = sourceReader.parseString( "options.dsp" );
+//  Tree ast = parser.parseString( source, "options.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, importStatement ) {
-//  gGlobal->gInputString = R""""(import("somefile.dsp");)"""";
-//  Tree ast = sourceReader.parseString( "importStatement.dsp" );
+//  std::string source = R""""(import("somefile.dsp");)"""";
+//  Tree ast = parser.parseString( source, "importStatement.dsp" );
 //  Tree importStatement = ast->branch(0);
 //  Tree fileString = importStatement->branch(0);
 //  ASSERT_TRUE( isImportFile(importStatement, fileString) );
 //}
 //
 //TEST_F( ParserTest, mdocEmpty ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    <mdoc></mdoc>
 //  )"""";
-//  Tree ast = sourceReader.parseString( "mdocEmpty.dsp" );
+//  Tree ast = parser.parseString( source, "mdocEmpty.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, mdoc ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    declare name "Noise";
 //    random  = +(12345)~*(1103515245);
 //    noise   = random/2147483647.0;
@@ -144,157 +140,157 @@ TEST_F( ParserTest, empty ) {
 //      </listing>
 //    </mdoc>
 //  )"""";
-//  Tree ast = sourceReader.parseString( "mdoc.dsp" );
+//  Tree ast = parser.parseString( source, "mdoc.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, simpleDefinition ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    random = +(12345) ~ *(1103515245);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "simpleDefinition.dsp" );
+//  Tree ast = parser.parseString( source, "simpleDefinition.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, function ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    linear2db(x) = 20*log10(x);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "function.dsp" );
+//  Tree ast = parser.parseString( source, "function.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, lambda ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    linear2db = \(x).(20*log10(x));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "lambda.dsp" );
+//  Tree ast = parser.parseString( source, "lambda.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, patternMatching ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    duplicate(1,x) = x;
 //    duplicate(n,x) = x, duplicate(n-1,x);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "patternMatching.dsp" );
+//  Tree ast = parser.parseString( source, "patternMatching.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, patternMatchingCase ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    duplicate = case {
 //      (1,x) => x;
 //      (n,x) => x, duplicate(n-1,x);
 //    };
 //  )"""";
-//  Tree ast = sourceReader.parseString( "patternMatching.dsp" );
+//  Tree ast = parser.parseString( source, "patternMatching.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, duplicate5Generators ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    duplicate(1,x) = x;
 //    duplicate(n,x) = x, duplicate(n-1,x);
 //    process = duplicate(5,no.noise);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "duplicate5Generators.dsp" );
+//  Tree ast = parser.parseString( source, "duplicate5Generators.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, countListElements ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    count((x,xs)) = 1+count(xs);
 //    count(x) = 1;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "countListElements.dsp" );
+//  Tree ast = parser.parseString( source, "countListElements.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, oscillatorsInParallel ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = os.osc(440),os.sawtooth(550),os.triangle(660);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "oscillatorsInParallel.dsp" );
+//  Tree ast = parser.parseString( source, "oscillatorsInParallel.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, stereoEffect ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    level = 1;
 //    process = ve.autowah(level),ve.autowah(level);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "stereoEffect.dsp" );
+//  Tree ast = parser.parseString( source, "stereoEffect.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, stereoEffectParIteration ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    level = 1;
 //    process = par(i,2,ve.autowah(level));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "stereoEffectParIteration.dsp" );
+//  Tree ast = parser.parseString( source, "stereoEffectParIteration.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, sequentialCompositionSineOscillator ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = 440 : os.osc;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "sequentialCompositionSineOscillator.dsp" );
+//  Tree ast = parser.parseString( source, "sequentialCompositionSineOscillator.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, sequentialCompositionEffectChain ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    drive = 0.6;
 //    offset = 0;
 //    autoWahLevel = 1;
 //    process = ef.cubicnl(drive,offset) : ve.autowah(autoWahLevel);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "sequentialCompositionEffectChain.dsp" );
+//  Tree ast = parser.parseString( source, "sequentialCompositionEffectChain.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, splitCompositionDuplicatingOscillatorOutput ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = os.sawtooth(440) <: _,_,_;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "splitCompositionDuplicatingOscillatorOutput.dsp" );
+//  Tree ast = parser.parseString( source, "splitCompositionDuplicatingOscillatorOutput.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, splitCompositionConnectingMonoToStereo ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    drive = 0.6;
 //    offset = 0;
 //    process = ef.cubicnl(drive,offset) <: dm.zita_light;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "splitCompositionConnectingMonoToStereo.dsp" );
+//  Tree ast = parser.parseString( source, "splitCompositionConnectingMonoToStereo.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, splitCompositionArbitrarySignals ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    drive = 0.6;
 //    offset = 0;
 //    process = par(i,2,ef.cubicnl(drive,offset)) <: par(i,2,dm.zita_light);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "splitCompositionArbitrarySignals.dsp" );
+//  Tree ast = parser.parseString( source, "splitCompositionArbitrarySignals.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, mergeCompositionSummingSignalsAdditiveSynthesis ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,3000,0.01);
 //    gain = hslider("gain",1,0,1,0.01);
@@ -302,12 +298,12 @@ TEST_F( ParserTest, empty ) {
 //    envelope = gain*gate : si.smoo;
 //    process = os.osc(freq),os.osc(freq*2),os.osc(freq*3) :> /(3)*envelope;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "mergeCompositionSummingSignalsAdditiveSynthesis.dsp" );
+//  Tree ast = parser.parseString( source, "mergeCompositionSummingSignalsAdditiveSynthesis.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, mergeCompositionSummingSignalsAdditiveSynthesisAlternative ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,3000,0.01);
 //    gain = hslider("gain",1,0,1,0.01);
@@ -315,82 +311,83 @@ TEST_F( ParserTest, empty ) {
 //    envelope = gain*gate : si.smoo;
 //    process = (os.osc(freq) + os.osc(freq*2) + os.osc(freq*3))/(3)*envelope;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "mergeCompositionSummingSignalsAdditiveSynthesis.dsp" );
+//  Tree ast = parser.parseString( source, "mergeCompositionSummingSignalsAdditiveSynthesis.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, mergeCompositionConnectingStereoToMono ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    drive = 0.6;
 //    offset = 0;
 //    process = dm.zita_light :> ef.cubicnl(drive,offset);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "mergeCompositionConnectingStereoToMono.dsp" );
+//  Tree ast = parser.parseString( source, "mergeCompositionConnectingStereoToMono.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, mergeCompositionConnectingStereoToMonoArbitrarySplit ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    drive = 0.6;
 //    offset = 0;
 //    process = par(i,2,dm.zita_light) :> par(i,2,ef.cubicnl(drive,offset));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "mergeCompositionConnectingStereoToMonoArbitrarySplit.dsp" );
+//  Tree ast = parser.parseString( source, "mergeCompositionConnectingStereoToMonoArbitrarySplit.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, recursiveCompositionTimer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _~+(1);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "recursiveCompositionTimer.dsp" );
+//  Tree ast = parser.parseString( source, "recursiveCompositionTimer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, recursiveCompositionOnePoleFilter ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    a1 = 0.999; // the pole
 //    process = +~*(a1);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "recursiveCompositionOnePoleFilter.dsp" );
+//  Tree ast = parser.parseString( source, "recursiveCompositionOnePoleFilter.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, numberOfOutputs ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = outputs(os.osc(440));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "numberOfOutputs.dsp" );
+//  Tree ast = parser.parseString( source, "numberOfOutputs.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
-//
-//TEST_F( ParserTest, reverseOrderOfOutputs ) {
-//  gGlobal->gInputString = R""""(
-//    Xo(expr) = expr <: par(i,n,ba.selector(n-i-1,n))
-//    with {
-//      n = outputs(expr);
-//    };
-//  )"""";
-//  Tree ast = sourceReader.parseString( "reverseOrderOfOutputs.dsp" );
-//  ASSERT_NE( ast, nullptr );
-//}
-//
+
+// FIX
+TEST_F( ParserTest, reverseOrderOfOutputs ) {
+  std::string source = R""""(
+    Xo(expr) = expr <: par(i,n,ba.selector(n-i-1,n))
+    with {
+      n = outputs(expr);
+    };
+  )"""";
+  Tree ast = parser.parseString( source, "reverseOrderOfOutputs.dsp" );
+  ASSERT_NE( ast, nullptr );
+}
+
 //TEST_F( ParserTest, reverseOrderOfInputs ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    Xi(expr) = si.bus(n) <: par(i,n,ba.selector(n-i-1,n)) : expr
 //    with {
 //      n = inputs(expr);
 //    };
 //  )"""";
-//  Tree ast = sourceReader.parseString( "reverseOrderOfInputs.dsp" );
+//  Tree ast = parser.parseString( source, "reverseOrderOfInputs.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, reverseTwoInputs ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    Xi(expr) = si.bus(n) <: par(i,n,ba.selector(n-i-1,n)) : expr
 //    with {
@@ -399,12 +396,12 @@ TEST_F( ParserTest, empty ) {
 //    process = Xi(-);
 //
 //  )"""";
-//  Tree ast = sourceReader.parseString( "reverseTwoInputs.dsp" );
+//  Tree ast = parser.parseString( source, "reverseTwoInputs.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, parallelIterationSimpleAdditiveSynthesizer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,3000,0.01);
 //    gain = hslider("gain",1,0,1,0.01);
@@ -413,12 +410,12 @@ TEST_F( ParserTest, empty ) {
 //    nHarmonics = 4;
 //    process = par(i,nHarmonics,os.osc(freq*(i+1))) :> /(nHarmonics)*envelope;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "parallelIterationSimpleAdditiveSynthesizer.dsp" );
+//  Tree ast = parser.parseString( source, "parallelIterationSimpleAdditiveSynthesizer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, sequenceIterationPeakEqualizer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    nBands = 8;
 //    filterBank(N) = hgroup("Filter Bank",seq(i,N,oneBand(i)))
@@ -433,12 +430,12 @@ TEST_F( ParserTest, empty ) {
 //    };
 //    process = filterBank(nBands);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "sequenceIterationPeakEqualizer.dsp" );
+//  Tree ast = parser.parseString( source, "sequenceIterationPeakEqualizer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, sumIterationSimpleAdditiveSynthesizer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,3000,0.01);
 //    gain = hslider("gain",1,0,1,0.01);
@@ -447,12 +444,12 @@ TEST_F( ParserTest, empty ) {
 //    nHarmonics = 4;
 //    process = sum(i,nHarmonics,os.osc(freq*(i+1)))/(nHarmonics)*envelope;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "sumIterationSimpleAdditiveSynthesizer.dsp" );
+//  Tree ast = parser.parseString( source, "sumIterationSimpleAdditiveSynthesizer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, productIterationAmplitudeModulationSynthesizer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("[0]freq",440,50,3000,0.01);
 //    gain = hslider("[1]gain",1,0,1,0.01);
@@ -462,53 +459,53 @@ TEST_F( ParserTest, empty ) {
 //    nOscs = 4;
 //    process = prod(i,nOscs,os.osc(freq*(i+1+shift)))*envelope;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "productIterationAmplitudeModulationSynthesizer.dsp" );
+//  Tree ast = parser.parseString( source, "productIterationAmplitudeModulationSynthesizer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, partialApplicationGainController ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    gain = hslider("gain",0.5,0,1,0.01);
 //    process = *(gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "partialApplicationGainController.dsp" );
+//  Tree ast = parser.parseString( source, "partialApplicationGainController.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, timeExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _';
 //  )"""";
-//  Tree ast = sourceReader.parseString( "timeExpression.dsp" );
+//  Tree ast = parser.parseString( source, "timeExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, timeExpressionChain ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1'';
 //  )"""";
-//  Tree ast = sourceReader.parseString( "timeExpressionChain.dsp" );
+//  Tree ast = parser.parseString( source, "timeExpressionChain.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, atTimeExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = @(10);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "atTimeExpression.dsp" );
+//  Tree ast = parser.parseString( source, "atTimeExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, delaySlider ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = @(hslider("delay",0,0,100,1));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "delaySlider.dsp" );
+//  Tree ast = parser.parseString( source, "delaySlider.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, withExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    pink = f : + ~ g
 //    with {
 //      f(x) = 0.04957526213389*x - 0.06305581334498*x' + 0.01483220320740*x'';
@@ -516,12 +513,12 @@ TEST_F( ParserTest, empty ) {
 //    };
 //    process = pink;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "withExpression.dsp" );
+//  Tree ast = parser.parseString( source, "withExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, letrecExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    ar(a,r,g) = v
 //    letrec {
@@ -531,12 +528,12 @@ TEST_F( ParserTest, empty ) {
 //    gate = button("gate");
 //    process = os.osc(440)*ar(1000,1000,gate);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "letrecExpression.dsp" );
+//  Tree ast = parser.parseString( source, "letrecExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, letrecExpressionFactorized ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    ar(a,r,g) = v letrec {
 //    'n = (n+1) * c;
 //    'v = max(0, v + (n<a)/a - (n>=a)/r) * c;
@@ -544,138 +541,138 @@ TEST_F( ParserTest, empty ) {
 //        c = g<=g';
 //    };
 //  )"""";
-//  Tree ast = sourceReader.parseString( "letrecExpressionFactorized.dsp" );
+//  Tree ast = parser.parseString( source, "letrecExpressionFactorized.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, environmentExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    constant = environment {
 //      pi = 3.14159;
 //      e = 2,718;
 //    };
 //  )"""";
-//  Tree ast = sourceReader.parseString( "environmentExpression.dsp" );
+//  Tree ast = parser.parseString( source, "environmentExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, accessExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    access = environment{pi = 3.14159; e = 2,718;}.pi;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "accessExpression.dsp" );
+//  Tree ast = parser.parseString( source, "accessExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, libraryExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("filters.lib");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "libraryExpression.dsp" );
+//  Tree ast = parser.parseString( source, "libraryExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, componentExpression ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    freeverb = component("../examples/reverb/freeverb.dsp");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "componentExpression.dsp" );
+//  Tree ast = parser.parseString( source, "componentExpression.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, explicitSubstitution ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    freeverb = component("../examples/reverb/freeverb.dsp")[foo(x) = 2;];
 //  )"""";
-//  Tree ast = sourceReader.parseString( "explicitSubstitution.dsp" );
+//  Tree ast = parser.parseString( source, "explicitSubstitution.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, ffunction ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    asinh = ffunction(float asinh (float), <math.h>, "");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "explicitSubstitution.dsp" );
+//  Tree ast = parser.parseString( source, "explicitSubstitution.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, polymorphicffunction ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    sizeof = ffunction(int sizeof(any), "","");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "polymorphicffunction.dsp" );
+//  Tree ast = parser.parseString( source, "polymorphicffunction.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, foreignVariablesAndConstants ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    SR = min(192000.0,max(1.0,fconstant(int fSamplingFreq, <math.h>)));
 //    BS = fvariable(int count, <math.h>);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "polymorphicffunction.dsp" );
+//  Tree ast = parser.parseString( source, "polymorphicffunction.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, monoReverb ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    reverb = _ <: dm.zita_light :> _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "monoReverb.dsp" );
+//  Tree ast = parser.parseString( source, "monoReverb.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, monoReverbAbstraction ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    abstraction = \(zita_light).(_ <: zita_light :> _);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "monoReverbAbstraction.dsp" );
+//  Tree ast = parser.parseString( source, "monoReverbAbstraction.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, monoReverbAbstractionApplied ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    mono = \(fx).(_ <: fx :> _);
 //    process = mono(dm.zita_light);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "monoReverbAbstractionApplied.dsp" );
+//  Tree ast = parser.parseString( source, "monoReverbAbstractionApplied.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, monoReverbAbstractionAppliedTraditionalNotation ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    mono(fx) = _ <: fx :> _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "monoReverbAbstractionApplied.dsp" );
+//  Tree ast = parser.parseString( source, "monoReverbAbstractionApplied.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, patternMatchingReverb ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    match = case{(x:y) => y:x; (x) => x;}(reverb : harmonizer);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "patternMatchingReverb.dsp" );
+//  Tree ast = parser.parseString( source, "patternMatchingReverb.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, routePrimitiveCrossTwoSignals ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = route(2,2,1,2,2,1);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "routePrimitiveCrossTwoSignals.dsp" );
+//  Tree ast = parser.parseString( source, "routePrimitiveCrossTwoSignals.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, routePrimitiveCrossTwoSignals2 ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = route(2,2,(1,2),(2,1));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "routePrimitiveCrossTwoSignals2.dsp" );
+//  Tree ast = parser.parseString( source, "routePrimitiveCrossTwoSignals2.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, routePrimitiveCrossNSignals ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    // cross 10 signals:
 //    // input 0 -> output 10,
 //    // input 1 -> output 9,
@@ -687,438 +684,438 @@ TEST_F( ParserTest, empty ) {
 //
 //    process = r;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "routePrimitiveCrossNSignals.dsp" );
+//  Tree ast = parser.parseString( source, "routePrimitiveCrossNSignals.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, waveformPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    triangleWave = waveform{0,0.5,1,0.5,0,-0.5,-1,-.5};
 //    triangleOsc(f) = triangleWave,int(os.phasor(8,f)) : rdtable;
 //    f = hslider("freq",440,50,2000,0.01);
 //    process = triangleOsc(f);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "waveformPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "waveformPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, soundfilePrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0,_~+(1):soundfile("son[url:{'../tests/architecture-tests/s1.wav'}]",2):!,!,_,_;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "soundfilePrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "soundfilePrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, addProcess ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = +;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "addProcess.dsp" );
+//  Tree ast = parser.parseString( source, "addProcess.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, signalToTupleTransformer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _+_;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "signalToTupleTransformer.dsp" );
+//  Tree ast = parser.parseString( source, "signalToTupleTransformer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, integerNumber ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "integerNumber.dsp" );
+//  Tree ast = parser.parseString( source, "integerNumber.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, floatNumber ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.5;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "floatNumber.dsp" );
+//  Tree ast = parser.parseString( source, "floatNumber.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, identity ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "identity.dsp" );
+//  Tree ast = parser.parseString( source, "identity.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, cutPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1,2 : !,_;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "cutPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "cutPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, intPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1.5 : int;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "intPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "intPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, floatPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1.5 : float;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "floatPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "floatPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, addPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = +;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "addPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "addPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, subtractPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = -;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "subtractPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "subtractPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, multiplyPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = *(0.5);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "multiplyPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "multiplyPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, dividePrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = /(2);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "dividePrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "dividePrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, powerPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = ^(2);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "powerPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "powerPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, moduloPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _~+(1) : -(1) : %(10);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "moduloPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "moduloPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, andPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ <: <(0.5) & >(0.7);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "andPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "andPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, orPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ <: <(0.5) | >(0.7);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "orPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "orPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, xorPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ <: <(0.5) xor >(0.7);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "xorPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "xorPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, leftShift ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1 << 2;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "leftShift.dsp" );
+//  Tree ast = parser.parseString( source, "leftShift.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, rightShift ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 1 >> 2;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "rightShift.dsp" );
+//  Tree ast = parser.parseString( source, "rightShift.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, smallerThanPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = <(0.5);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "smallerThanPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "smallerThanPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, smallerThanOrEqualToPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = <=(0.5);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "smallerThanOrEqualToPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "smallerThanOrEqualToPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, greaterThanPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = >(0.5);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "greaterThanPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "greaterThanPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, greaterThanOrEqualToPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = >=(0.5);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "greaterThanOrEqualToPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "greaterThanOrEqualToPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, equalToPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0 == 1;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "equalToPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "equalToPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, notEqualToPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0 != 1;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "notEqualToPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "notEqualToPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, acosPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : acos;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "acosPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "acosPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, atanPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : atan;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "atanPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "atanPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, atan2Primitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1,-0.1 : atan2;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "atan2Primitive.dsp" );
+//  Tree ast = parser.parseString( source, "atan2Primitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, cosPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : cos;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "cosPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "cosPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, sinPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : sin;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "sinPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "sinPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, expPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : exp;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "expPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "expPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, logPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : log;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "logPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "logPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, log10Primitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 0.1 : log10;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "log10Primitive.dsp" );
+//  Tree ast = parser.parseString( source, "log10Primitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, powPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 2,4 : pow;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "powPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "powPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, sqrtPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 4 : sqrt;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "sqrtPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "sqrtPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, absPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = -0.5 : abs;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "absPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "absPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, minPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = -0.5,0.2 : min;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "minPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "minPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, maxPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = -0.5,0.2 : max;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "maxPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "maxPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, fmodPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 5.3,2 : fmod;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "fmodPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "fmodPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, remainderPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 5.3,2 : remainder;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "remainderPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "remainderPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, floorPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 3.6 : floor;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "floorPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "floorPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, ceilPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 3.6 : ceil;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "ceilPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "ceilPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, rintPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = 3.6 : rint;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "rintPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "rintPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, memPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = mem;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "memPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "memPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, delayTickPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _';
 //  )"""";
-//  Tree ast = sourceReader.parseString( "delayTick.dsp" );
+//  Tree ast = parser.parseString( source, "delayTick.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, atPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ : @(N) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "atPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "atPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, staticNSampleDelay ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    N = 10;
 //    process = @(N);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "staticNSampleDelay.dsp" );
+//  Tree ast = parser.parseString( source, "staticNSampleDelay.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, dynamicNSampleDelay ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    N = hslider("N",10,1,10,1);
 //    process = @(N);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "dynamicNSampleDelay.dsp" );
+//  Tree ast = parser.parseString( source, "dynamicNSampleDelay.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, rdtablePrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = rdtable(n,s,r) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "rdtablePrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "rdtablePrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, basicTriangleWaveOscillatorUsingWaveformPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    triangleWave = waveform{0,0.5,1,0.5,0,-0.5,-1,-.5};
 //    triangleOsc(f) = triangleWave,int(os.phasor(8,f)) : rdtable;
 //    f = hslider("freq",440,50,2000,0.01);
 //    process = triangleOsc(f);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "basicTriangleWaveOscillatorUsingWaveformPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "basicTriangleWaveOscillatorUsingWaveformPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, basicTriangleWaveOscillatorUsingSinPrimitiveAndTimer ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    tableSize = 1 << 16;
 //    sineWave(tablesize) = float(ba.time)*(2.0*ma.PI)/float(tablesize) : sin;
@@ -1126,20 +1123,20 @@ TEST_F( ParserTest, empty ) {
 //    f = hslider("freq",440,50,2000,0.01);
 //    process = triangleOsc(f);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "basicTriangleWaveOscillatorUsingSinPrimitiveAndTimer.dsp" );
+//  Tree ast = parser.parseString( source, "basicTriangleWaveOscillatorUsingSinPrimitiveAndTimer.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, rwtablePrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ : rwtable(n,s,w,_,r) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "rwtablePrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "rwtablePrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, simpleLooper ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    tableSize = 48000;
 //    recIndex = (+(1) : %(tableSize)) ~ *(record);
@@ -1149,338 +1146,338 @@ TEST_F( ParserTest, empty ) {
 //    looper = rwtable(tableSize,0.0,recIndex,_,readIndex);
 //    process = looper;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "simpleLooper.dsp" );
+//  Tree ast = parser.parseString( source, "simpleLooper.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, select2 ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _,_ : select2(s) : _;
 //
 //  )"""";
-//  Tree ast = sourceReader.parseString( "select2.dsp" );
+//  Tree ast = parser.parseString( source, "select2.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, signalSelector2 ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    s = nentry("Selector",0,0,1,1) : int;
 //    sig = os.osc(440),os.sawtooth(440) : select2(s);
 //    process = sig;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "signalSelector2.dsp" );
+//  Tree ast = parser.parseString( source, "signalSelector2.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, select2inFaust ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    s = nentry("Selector",0,0,1,1);
 //    mySelect2(s) = *(s==0),*(s==1) :> _;
 //    sig = os.osc(440),os.sawtooth(440) : mySelect2(s);
 //    process = sig;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "select2inFaust.dsp" );
+//  Tree ast = parser.parseString( source, "select2inFaust.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, select3 ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _,_,_ : select3(s) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "select3.dsp" );
+//  Tree ast = parser.parseString( source, "select3.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, signalSelector3 ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    s = nentry("Selector",0,0,1,1);
 //    sig = os.osc(440),os.sawtooth(440),os.triangle(440) : select3(s);
 //    process = sig;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "signalSelector3.dsp" );
+//  Tree ast = parser.parseString( source, "signalSelector3.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, select3inFaust ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    s = nentry("Selector",0,0,2,1) : int;
 //    mySelect3(s) = *(s==0),*(s==1),*(s==2) :> _;
 //    sig = os.osc(440),os.sawtooth(440),os.triangle(440) : mySelect3(s);
 //    process = sig;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "select3inFaust.dsp" );
+//  Tree ast = parser.parseString( source, "select3inFaust.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, button ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = button("DC");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "button.dsp" );
+//  Tree ast = parser.parseString( source, "button.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hslider ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = @(hslider("N",1,1,20,1));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hslider.dsp" );
+//  Tree ast = parser.parseString( source, "hslider.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, buttonPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = button("label") : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "buttonPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "buttonPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, buttonTrigger ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = no.noise*button("gate");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "trigger.dsp" );
+//  Tree ast = parser.parseString( source, "trigger.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, checkboxPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = checkbox("label") : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "checkboxPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "checkboxPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, checkboxTrigger ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = no.noise*checkbox("gate");
 //  )"""";
-//  Tree ast = sourceReader.parseString( "checkboxTrigger.dsp" );
+//  Tree ast = parser.parseString( source, "checkboxTrigger.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hsliderPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = hslider("label",init,min,max,step) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hsliderPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "hsliderPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hsliderGainController ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    gain = hslider("gain",0,0,1,0.01);
 //    process = *(gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hsliderGainController.dsp" );
+//  Tree ast = parser.parseString( source, "hsliderGainController.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hsliderAdditiveOscillator ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = par(i,3,os.osc(hslider("Freq%i", 200+i*400, 200, 2000, 1)));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hsliderGainController.dsp" );
+//  Tree ast = parser.parseString( source, "hsliderGainController.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, vsliderPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    gain = vslider("gain",0,0,1,0.01);
 //    process = *(gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "vsliderPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "vsliderPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, nentryPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = nentry("label",init,min,max,step) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "nentryPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "nentryPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, nentryGainController ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    gain = nentry("gain",0,0,1,0.01);
 //    process = *(gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "nentryGainController.dsp" );
+//  Tree ast = parser.parseString( source, "nentryGainController.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hgroupPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = vslider("freq",440,50,1000,0.1);
 //    gain = vslider("gain",0,0,1,0.01);
 //    process = hgroup("Oscillator",os.sawtooth(freq)*gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hgroupPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "hgroupPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hgroupFunction ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    oscGroup(x) = hgroup("Oscillator",x);
 //    freq = oscGroup(vslider("freq",440,50,1000,0.1));
 //    gain = oscGroup(vslider("gain",0,0,1,0.01));
 //    process = os.sawtooth(freq)*gain;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hgroupFunction.dsp" );
+//  Tree ast = parser.parseString( source, "hgroupFunction.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, vgroupPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,1000,0.1);
 //    gain = hslider("gain",0,0,1,0.01);
 //    process = vgroup("Oscillator",os.sawtooth(freq)*gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "vgroupPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "vgroupPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, vgroupFunction ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    oscGroup(x) = vgroup("Oscillator",x);
 //    freq = oscGroup(hslider("freq",440,50,1000,0.1));
 //    gain = oscGroup(hslider("gain",0,0,1,0.01));
 //    process = os.sawtooth(freq)*gain;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "vgroupFunction.dsp" );
+//  Tree ast = parser.parseString( source, "vgroupFunction.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, tgroupPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,1000,0.1);
 //    gain = hslider("gain",0,0,1,0.01);
 //    process = tgroup("Oscillator",os.sawtooth(freq)*gain);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "tgroupPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "tgroupPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, tgroupFunction ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    oscGroup(x) = tgroup("Oscillator",x);
 //    freq = oscGroup(hslider("freq",440,50,1000,0.1));
 //    gain = oscGroup(hslider("gain",0,0,1,0.01));
 //    process = os.sawtooth(freq)*gain;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "tgroupFunction.dsp" );
+//  Tree ast = parser.parseString( source, "tgroupFunction.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, vbargraphPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ : vbargraph("label",min,max) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "vbargraphPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "vbargraphPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, simpleVbargraphVUMeter ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = _ <: attach(_,abs : ba.linear2db : vbargraph("Level",-60,0));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "simpleVbargraphVUMeter.dsp" );
+//  Tree ast = parser.parseString( source, "simpleVbargraphVUMeter.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, hbargraphPrimitive ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = _ : hbargraph("label",min,max) : _;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "hbargraphPrimitive.dsp" );
+//  Tree ast = parser.parseString( source, "hbargraphPrimitive.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, simpleHbargraphVUMeter ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = _ <: attach(_,abs : ba.linear2db : hbargraph("Level",-60,0));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "simpleHbargraphVUMeter.dsp" );
+//  Tree ast = parser.parseString( source, "simpleHbargraphVUMeter.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, variableLabelParts ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = par(i,8,hslider("Voice %i",0.9,0,1,0.01));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "variableLabelParts.dsp" );
+//  Tree ast = parser.parseString( source, "variableLabelParts.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, labelsAsPathnames ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = vslider("h:Oscillator/freq",440,50,1000,0.1);
 //    gain = vslider("h:Oscillator/gain",0,0,1,0.01);
 //    process = os.sawtooth(freq)*gain;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "variableLabelParts.dsp" );
+//  Tree ast = parser.parseString( source, "variableLabelParts.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, smoothing ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,1000,0.1);
 //    gain = hslider("gain",0,0,1,0.01);
 //    process = os.osc(freq)*gain;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "smoothing.dsp" );
+//  Tree ast = parser.parseString( source, "smoothing.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, exponentialSmoothing ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = hslider("freq",440,50,1000,0.1) : si.smoo;
 //    gain = hslider("gain",0,0,1,0.01) : si.smoo;
 //    process = os.osc(freq)*gain;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "exponentialSmoothing.dsp" );
+//  Tree ast = parser.parseString( source, "exponentialSmoothing.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, uiLabelMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    process = *(hslider("foo[key1: val 1][key2: val 2]",0,0,1,0.1));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "uiLabelMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "uiLabelMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, orderingUIElements ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    gain = vslider("h:Oscillator/[1]gain",0,0,1,0.01);
 //    freq = vslider("h:Oscillator/[0]freq",440,50,1000,0.1);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "orderingUIElements.dsp" );
+//  Tree ast = parser.parseString( source, "orderingUIElements.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, orderingUIElementsOnMultipleLevels ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freqS = vslider("h:Oscillators/h:[0]Sawtooth/[0]freq",440,50,1000,0.1);
 //    gainS = vslider("h:Oscillators/h:[0]Sawtooth/[1]gain",0,0,1,0.01);
@@ -1488,12 +1485,12 @@ TEST_F( ParserTest, empty ) {
 //    gainT = vslider("h:Oscillators/h:[1]Triangle/[1]gain",0,0,1,0.01);
 //    process = os.sawtooth(freqS)*gainS + os.triangle(freqT)*gainT;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "orderingUIElementsOnMultipleLevels.dsp" );
+//  Tree ast = parser.parseString( source, "orderingUIElementsOnMultipleLevels.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, orderingUIElementsOnMultipleLevelsRewritten ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freqS = vslider("[0]freq",440,50,1000,0.1);
 //    gainS = vslider("[1]gain",0,0,1,0.01);
@@ -1504,110 +1501,110 @@ TEST_F( ParserTest, empty ) {
 //      hgroup("[1]Triangle",os.triangle(freqT)*gainT)
 //    );
 //  )"""";
-//  Tree ast = sourceReader.parseString( "orderingUIElementsOnMultipleLevelsRewritten.dsp" );
+//  Tree ast = parser.parseString( source, "orderingUIElementsOnMultipleLevelsRewritten.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, globalUIMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = vslider("freq[style:knob]",440,50,1000,0.1);
 //    process = os.sawtooth(freq);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "globalUIMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "globalUIMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, styleMenuMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    s = vslider("Signal[style:menu{'Noise':0;'Sawtooth':1}]",0,0,1,1);
 //    process = select2(s,no.noise,os.sawtooth(440));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "styleMenuMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "styleMenuMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, styleRadioMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    s = vslider("Signal[style:radio{'Noise':0;'Sawtooth':1}]",0,0,1,1);
 //    process = select2(s,no.noise,os.sawtooth(440));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "styleRadioMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "styleRadioMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, styleLedMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = _ <: attach(_,abs : ba.linear2db : vbargraph("Level[style:led]",-60,0));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "styleLedMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "styleLedMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, styleNumbericalMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = _ <: attach(_,abs : ba.linear2db : vbargraph("Level[style:numerical]",-60,0));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "styleNumbericalMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "styleNumbericalMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, unitDbMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    process = _ <: attach(_,abs : ba.linear2db : vbargraph("Level[unit:dB]",-60,0));
 //  )"""";
-//  Tree ast = sourceReader.parseString( "unitDbMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "unitDbMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, unitXxMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = vslider("freq[unit:Hz]",440,50,1000,0.1);
 //    process = os.sawtooth(freq);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "unitXxMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "unitXxMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, scaleXxMetadata ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    import("stdfaust.lib");
 //    freq = vslider("freq[tooltip:The frequency of the oscillator]",440,50,1000,0.1);
 //    process = os.sawtooth(freq);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "scaleXxMetadata.dsp" );
+//  Tree ast = parser.parseString( source, "scaleXxMetadata.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, accelerometerScreenUp ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    g = nentry("gain[acc: 0 0 -10 0 10]",0.5,0,1,0.01);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "accelerometerScreenUp.dsp" );
+//  Tree ast = parser.parseString( source, "accelerometerScreenUp.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 //
 //TEST_F( ParserTest, accelerometerLeftSide ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    g = nentry("gain[acc: 0 0 0 0 10]",0,0,1,0.01);
 //  )"""";
-//  Tree ast = sourceReader.parseString( "accelerometerLeftSide.dsp" );
+//  Tree ast = parser.parseString( source, "accelerometerLeftSide.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
 
   /******************** Error Handling ********************/
 
 //TEST_F( ParserTest, missingSemicolon ) {
-//  gGlobal->gInputString = R""""(
+//  std::string source = R""""(
 //    g = nentry("gain[acc: 0 0 0 0 10]",0,0,1,0.01)
 //    process = g;
 //  )"""";
-//  Tree ast = sourceReader.parseString( "missingSemicolon.dsp" );
+//  Tree ast = parser.parseString( source, "missingSemicolon.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}

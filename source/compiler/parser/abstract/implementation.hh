@@ -32,7 +32,7 @@
 
 
 /**
- ** \file faustparser.hh
+ ** \file abstract/implementation.hh
  ** Define the ::Faust::Compiler::Parser::parser class.
  */
 
@@ -42,18 +42,17 @@
 // especially those whose name start with YY_ or yy_.  They are
 // private implementation details that can be changed or removed.
 
-#ifndef YY_YY_FAUSTPARSER_HH_INCLUDED
-# define YY_YY_FAUSTPARSER_HH_INCLUDED
+#ifndef YY_YY_ABSTRACT_IMPLEMENTATION_HH_INCLUDED
+# define YY_YY_ABSTRACT_IMPLEMENTATION_HH_INCLUDED
 // "%code requires" blocks.
  /* Faust requires */
   #include <string>
   #include "compiler/parser/type/tokens.hh"
-  #include "compiler/parser/location.hh"
+  #include "compiler/parser/abstract/location.hh"
   namespace Faust { namespace Compiler { namespace Parser {
-    namespace Type { struct Driver; }
-    namespace Lexer {
-      struct Implementation;
-  } } } }
+    struct Implementation;
+    namespace Lexer { struct Implementation; }
+  } } }
 
 
 # include <cassert>
@@ -199,7 +198,7 @@ namespace Faust { namespace Compiler { namespace Parser {
 
 
   /// A Bison parser.
-  class Implementation
+  class AbstractImplementation
   {
   public:
 #ifdef YYSTYPE
@@ -417,21 +416,22 @@ namespace Faust { namespace Compiler { namespace Parser {
       // doc.equation
       // doc.diagram
       // doc.notice
+      // doc.metadata
       // doc.list
       // doc.attribute.list
       // doc.attribute.definition
-      // doc.metadata
       // expression
       // expression.component
       // expression.composition
-      // expression.composition.list
+      // expression.composition.parallel
+      // expression.composition.serial
       // expression.composition.mix
-      // expression.composition.record
+      // expression.composition.recursive
       // expression.composition.sequence
       // expression.composition.split
       // expression.environment
       // expression.infix
-      // expression.infix.definitions.local
+      // expression.infix.definitions.substitution
       // expression.infix.environment.access
       // expression.infix.math
       // expression.infix.math.algebra
@@ -465,7 +465,6 @@ namespace Faust { namespace Compiler { namespace Parser {
       // expression.math.scalar
       // expression.math.trigonometry
       // expression.parenthesis
-      // expression.parallel
       // expression.signal
       // expression.signal.control
       // expression.signal.delay
@@ -480,15 +479,18 @@ namespace Faust { namespace Compiler { namespace Parser {
       // primitive.signal.input.implicit
       // primitive.signal.input.terminate
       // primitive.type
-      // primitive.type.number.list
-      // primitive.type.number.list.member
-      // primitive.type.number.list.start
-      // primitive.type.number.list.append
       // primitive.type.number
       // primitive.type.number.int
       // primitive.type.number.float
       // primitive.type.any
+      // primitive.type.number.list
+      // primitive.type.number.list.member
+      // primitive.type.number.list.start
+      // primitive.type.number.list.append
       // primitive.signal.route
+      // primitive.signal.route.implied.outputs
+      // primitive.signal.route.implied.connections
+      // primitive.signal.route.explicit
       // primitive.signal.source
       // primitive.signal.source.table
       // primitive.signal.source.soundfile
@@ -517,7 +519,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       // statement.definition
       // statement.definition.function.incomplete
       // statement.definition.function
-      // statement.definition.substitution
+      // statement.definition.assignment
       // statement.definition.with
       // statement.definition.error
       // statement.definition.list
@@ -537,11 +539,11 @@ namespace Faust { namespace Compiler { namespace Parser {
       // statement.list.start.qualified
       // statement.list.append
       // statement.list.append.qualified
+      // statement.signal.pattern.rule
       // statement.signal.pattern.rule.list
       // statement.signal.pattern.rule.list.start
       // statement.signal.pattern.rule.list.append
-      // statement.signal.pattern.rule
-      char dummy1[sizeof (Type::exp)];
+      char dummy1[sizeof (Tree)];
 
       // doc.attribute.value
       char dummy2[sizeof (bool)];
@@ -560,6 +562,33 @@ namespace Faust { namespace Compiler { namespace Parser {
       // statement.math.precision.list.append
       char dummy4[sizeof (int)];
 
+      // WITH
+      // LETREC
+      // SPLIT
+      // MIX
+      // SEQ
+      // COMMA
+      // REC
+      // LT
+      // LE
+      // EQ
+      // GT
+      // GE
+      // NE
+      // ADD
+      // SUB
+      // OR
+      // MUL
+      // DIV
+      // MOD
+      // AND
+      // XOR
+      // LSH
+      // RSH
+      // POWOP
+      // FDELAY
+      // DELAY1
+      // DOT
       // MEM
       // PREFIX
       // INTCAST
@@ -605,7 +634,6 @@ namespace Faust { namespace Compiler { namespace Parser {
       // SELECT2
       // SELECT3
       // LAMBDA
-      // DOT
       // WIRE
       // CUT
       // ENDDEF
@@ -616,8 +644,6 @@ namespace Faust { namespace Compiler { namespace Parser {
       // RBRAQ
       // LCROC
       // RCROC
-      // WITH
-      // LETREC
       // WHERE
       // DEF
       // IMPORT
@@ -716,93 +742,93 @@ namespace Faust { namespace Compiler { namespace Parser {
       enum token_kind_type
       {
         FAUST_YYEMPTY = -2,
-    FAUST_YYEOF = 0,               // "end of file"
+    FAUST_ENDOFINPUT = 0,          // ENDOFINPUT
     FAUST_YYerror = 1,             // error
     FAUST_YYUNDEF = 2,             // "invalid token"
-    FAUST_SPLIT = 3,               // SPLIT
-    FAUST_MIX = 4,                 // MIX
-    FAUST_SEQ = 5,                 // SEQ
-    FAUST_COMMA = 6,               // COMMA
-    FAUST_REC = 7,                 // REC
-    FAUST_LT = 8,                  // LT
-    FAUST_LE = 9,                  // LE
-    FAUST_EQ = 10,                 // EQ
-    FAUST_GT = 11,                 // GT
-    FAUST_GE = 12,                 // GE
-    FAUST_NE = 13,                 // NE
-    FAUST_ADD = 14,                // ADD
-    FAUST_SUB = 15,                // SUB
-    FAUST_OR = 16,                 // OR
-    FAUST_MUL = 17,                // MUL
-    FAUST_DIV = 18,                // DIV
-    FAUST_MOD = 19,                // MOD
-    FAUST_AND = 20,                // AND
-    FAUST_XOR = 21,                // XOR
-    FAUST_LSH = 22,                // LSH
-    FAUST_RSH = 23,                // RSH
-    FAUST_POWOP = 24,              // POWOP
-    FAUST_FDELAY = 25,             // FDELAY
-    FAUST_DELAY1 = 26,             // DELAY1
-    FAUST_MEM = 27,                // MEM
-    FAUST_PREFIX = 28,             // PREFIX
-    FAUST_INTCAST = 29,            // INTCAST
-    FAUST_FLOATCAST = 30,          // FLOATCAST
-    FAUST_ANYCAST = 31,            // ANYCAST
-    FAUST_FFUNCTION = 32,          // FFUNCTION
-    FAUST_FCONSTANT = 33,          // FCONSTANT
-    FAUST_FVARIABLE = 34,          // FVARIABLE
-    FAUST_BUTTON = 35,             // BUTTON
-    FAUST_CHECKBOX = 36,           // CHECKBOX
-    FAUST_VSLIDER = 37,            // VSLIDER
-    FAUST_HSLIDER = 38,            // HSLIDER
-    FAUST_NENTRY = 39,             // NENTRY
-    FAUST_VGROUP = 40,             // VGROUP
-    FAUST_HGROUP = 41,             // HGROUP
-    FAUST_TGROUP = 42,             // TGROUP
-    FAUST_HBARGRAPH = 43,          // HBARGRAPH
-    FAUST_VBARGRAPH = 44,          // VBARGRAPH
-    FAUST_SOUNDFILE = 45,          // SOUNDFILE
-    FAUST_ATTACH = 46,             // ATTACH
-    FAUST_ACOS = 47,               // ACOS
-    FAUST_ASIN = 48,               // ASIN
-    FAUST_ATAN = 49,               // ATAN
-    FAUST_ATAN2 = 50,              // ATAN2
-    FAUST_COS = 51,                // COS
-    FAUST_SIN = 52,                // SIN
-    FAUST_TAN = 53,                // TAN
-    FAUST_EXP = 54,                // EXP
-    FAUST_LOG = 55,                // LOG
-    FAUST_LOG10 = 56,              // LOG10
-    FAUST_POWFUN = 57,             // POWFUN
-    FAUST_SQRT = 58,               // SQRT
-    FAUST_ABS = 59,                // ABS
-    FAUST_MIN = 60,                // MIN
-    FAUST_MAX = 61,                // MAX
-    FAUST_FMOD = 62,               // FMOD
-    FAUST_REMAINDER = 63,          // REMAINDER
-    FAUST_FLOOR = 64,              // FLOOR
-    FAUST_CEIL = 65,               // CEIL
-    FAUST_RINT = 66,               // RINT
-    FAUST_RDTBL = 67,              // RDTBL
-    FAUST_RWTBL = 68,              // RWTBL
-    FAUST_SELECT2 = 69,            // SELECT2
-    FAUST_SELECT3 = 70,            // SELECT3
-    FAUST_INT = 71,                // INT
-    FAUST_FLOAT = 72,              // FLOAT
-    FAUST_LAMBDA = 73,             // LAMBDA
-    FAUST_DOT = 74,                // DOT
-    FAUST_WIRE = 75,               // WIRE
-    FAUST_CUT = 76,                // CUT
-    FAUST_ENDDEF = 77,             // ENDDEF
-    FAUST_VIRG = 78,               // VIRG
-    FAUST_LPAR = 79,               // LPAR
-    FAUST_RPAR = 80,               // RPAR
-    FAUST_LBRAQ = 81,              // LBRAQ
-    FAUST_RBRAQ = 82,              // RBRAQ
-    FAUST_LCROC = 83,              // LCROC
-    FAUST_RCROC = 84,              // RCROC
-    FAUST_WITH = 85,               // WITH
-    FAUST_LETREC = 86,             // LETREC
+    FAUST_WITH = 3,                // WITH
+    FAUST_LETREC = 4,              // LETREC
+    FAUST_SPLIT = 5,               // SPLIT
+    FAUST_MIX = 6,                 // MIX
+    FAUST_SEQ = 7,                 // SEQ
+    FAUST_COMMA = 8,               // COMMA
+    FAUST_REC = 9,                 // REC
+    FAUST_LT = 10,                 // LT
+    FAUST_LE = 11,                 // LE
+    FAUST_EQ = 12,                 // EQ
+    FAUST_GT = 13,                 // GT
+    FAUST_GE = 14,                 // GE
+    FAUST_NE = 15,                 // NE
+    FAUST_ADD = 16,                // ADD
+    FAUST_SUB = 17,                // SUB
+    FAUST_OR = 18,                 // OR
+    FAUST_MUL = 19,                // MUL
+    FAUST_DIV = 20,                // DIV
+    FAUST_MOD = 21,                // MOD
+    FAUST_AND = 22,                // AND
+    FAUST_XOR = 23,                // XOR
+    FAUST_LSH = 24,                // LSH
+    FAUST_RSH = 25,                // RSH
+    FAUST_POWOP = 26,              // POWOP
+    FAUST_FDELAY = 27,             // FDELAY
+    FAUST_DELAY1 = 28,             // DELAY1
+    FAUST_DOT = 29,                // DOT
+    FAUST_MEM = 30,                // MEM
+    FAUST_PREFIX = 31,             // PREFIX
+    FAUST_INTCAST = 32,            // INTCAST
+    FAUST_FLOATCAST = 33,          // FLOATCAST
+    FAUST_ANYCAST = 34,            // ANYCAST
+    FAUST_FFUNCTION = 35,          // FFUNCTION
+    FAUST_FCONSTANT = 36,          // FCONSTANT
+    FAUST_FVARIABLE = 37,          // FVARIABLE
+    FAUST_BUTTON = 38,             // BUTTON
+    FAUST_CHECKBOX = 39,           // CHECKBOX
+    FAUST_VSLIDER = 40,            // VSLIDER
+    FAUST_HSLIDER = 41,            // HSLIDER
+    FAUST_NENTRY = 42,             // NENTRY
+    FAUST_VGROUP = 43,             // VGROUP
+    FAUST_HGROUP = 44,             // HGROUP
+    FAUST_TGROUP = 45,             // TGROUP
+    FAUST_HBARGRAPH = 46,          // HBARGRAPH
+    FAUST_VBARGRAPH = 47,          // VBARGRAPH
+    FAUST_SOUNDFILE = 48,          // SOUNDFILE
+    FAUST_ATTACH = 49,             // ATTACH
+    FAUST_ACOS = 50,               // ACOS
+    FAUST_ASIN = 51,               // ASIN
+    FAUST_ATAN = 52,               // ATAN
+    FAUST_ATAN2 = 53,              // ATAN2
+    FAUST_COS = 54,                // COS
+    FAUST_SIN = 55,                // SIN
+    FAUST_TAN = 56,                // TAN
+    FAUST_EXP = 57,                // EXP
+    FAUST_LOG = 58,                // LOG
+    FAUST_LOG10 = 59,              // LOG10
+    FAUST_POWFUN = 60,             // POWFUN
+    FAUST_SQRT = 61,               // SQRT
+    FAUST_ABS = 62,                // ABS
+    FAUST_MIN = 63,                // MIN
+    FAUST_MAX = 64,                // MAX
+    FAUST_FMOD = 65,               // FMOD
+    FAUST_REMAINDER = 66,          // REMAINDER
+    FAUST_FLOOR = 67,              // FLOOR
+    FAUST_CEIL = 68,               // CEIL
+    FAUST_RINT = 69,               // RINT
+    FAUST_RDTBL = 70,              // RDTBL
+    FAUST_RWTBL = 71,              // RWTBL
+    FAUST_SELECT2 = 72,            // SELECT2
+    FAUST_SELECT3 = 73,            // SELECT3
+    FAUST_INT = 74,                // INT
+    FAUST_FLOAT = 75,              // FLOAT
+    FAUST_LAMBDA = 76,             // LAMBDA
+    FAUST_WIRE = 77,               // WIRE
+    FAUST_CUT = 78,                // CUT
+    FAUST_ENDDEF = 79,             // ENDDEF
+    FAUST_VIRG = 80,               // VIRG
+    FAUST_LPAR = 81,               // LPAR
+    FAUST_RPAR = 82,               // RPAR
+    FAUST_LBRAQ = 83,              // LBRAQ
+    FAUST_RBRAQ = 84,              // RBRAQ
+    FAUST_LCROC = 85,              // LCROC
+    FAUST_RCROC = 86,              // RCROC
     FAUST_WHERE = 87,              // WHERE
     FAUST_DEF = 88,                // DEF
     FAUST_IMPORT = 89,             // IMPORT
@@ -872,93 +898,93 @@ namespace Faust { namespace Compiler { namespace Parser {
       {
         YYNTOKENS = 138, ///< Number of tokens.
         S_YYEMPTY = -2,
-        S_YYEOF = 0,                             // "end of file"
+        S_YYEOF = 0,                             // ENDOFINPUT
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
-        S_SPLIT = 3,                             // SPLIT
-        S_MIX = 4,                               // MIX
-        S_SEQ = 5,                               // SEQ
-        S_COMMA = 6,                             // COMMA
-        S_REC = 7,                               // REC
-        S_LT = 8,                                // LT
-        S_LE = 9,                                // LE
-        S_EQ = 10,                               // EQ
-        S_GT = 11,                               // GT
-        S_GE = 12,                               // GE
-        S_NE = 13,                               // NE
-        S_ADD = 14,                              // ADD
-        S_SUB = 15,                              // SUB
-        S_OR = 16,                               // OR
-        S_MUL = 17,                              // MUL
-        S_DIV = 18,                              // DIV
-        S_MOD = 19,                              // MOD
-        S_AND = 20,                              // AND
-        S_XOR = 21,                              // XOR
-        S_LSH = 22,                              // LSH
-        S_RSH = 23,                              // RSH
-        S_POWOP = 24,                            // POWOP
-        S_FDELAY = 25,                           // FDELAY
-        S_DELAY1 = 26,                           // DELAY1
-        S_MEM = 27,                              // MEM
-        S_PREFIX = 28,                           // PREFIX
-        S_INTCAST = 29,                          // INTCAST
-        S_FLOATCAST = 30,                        // FLOATCAST
-        S_ANYCAST = 31,                          // ANYCAST
-        S_FFUNCTION = 32,                        // FFUNCTION
-        S_FCONSTANT = 33,                        // FCONSTANT
-        S_FVARIABLE = 34,                        // FVARIABLE
-        S_BUTTON = 35,                           // BUTTON
-        S_CHECKBOX = 36,                         // CHECKBOX
-        S_VSLIDER = 37,                          // VSLIDER
-        S_HSLIDER = 38,                          // HSLIDER
-        S_NENTRY = 39,                           // NENTRY
-        S_VGROUP = 40,                           // VGROUP
-        S_HGROUP = 41,                           // HGROUP
-        S_TGROUP = 42,                           // TGROUP
-        S_HBARGRAPH = 43,                        // HBARGRAPH
-        S_VBARGRAPH = 44,                        // VBARGRAPH
-        S_SOUNDFILE = 45,                        // SOUNDFILE
-        S_ATTACH = 46,                           // ATTACH
-        S_ACOS = 47,                             // ACOS
-        S_ASIN = 48,                             // ASIN
-        S_ATAN = 49,                             // ATAN
-        S_ATAN2 = 50,                            // ATAN2
-        S_COS = 51,                              // COS
-        S_SIN = 52,                              // SIN
-        S_TAN = 53,                              // TAN
-        S_EXP = 54,                              // EXP
-        S_LOG = 55,                              // LOG
-        S_LOG10 = 56,                            // LOG10
-        S_POWFUN = 57,                           // POWFUN
-        S_SQRT = 58,                             // SQRT
-        S_ABS = 59,                              // ABS
-        S_MIN = 60,                              // MIN
-        S_MAX = 61,                              // MAX
-        S_FMOD = 62,                             // FMOD
-        S_REMAINDER = 63,                        // REMAINDER
-        S_FLOOR = 64,                            // FLOOR
-        S_CEIL = 65,                             // CEIL
-        S_RINT = 66,                             // RINT
-        S_RDTBL = 67,                            // RDTBL
-        S_RWTBL = 68,                            // RWTBL
-        S_SELECT2 = 69,                          // SELECT2
-        S_SELECT3 = 70,                          // SELECT3
-        S_INT = 71,                              // INT
-        S_FLOAT = 72,                            // FLOAT
-        S_LAMBDA = 73,                           // LAMBDA
-        S_DOT = 74,                              // DOT
-        S_WIRE = 75,                             // WIRE
-        S_CUT = 76,                              // CUT
-        S_ENDDEF = 77,                           // ENDDEF
-        S_VIRG = 78,                             // VIRG
-        S_LPAR = 79,                             // LPAR
-        S_RPAR = 80,                             // RPAR
-        S_LBRAQ = 81,                            // LBRAQ
-        S_RBRAQ = 82,                            // RBRAQ
-        S_LCROC = 83,                            // LCROC
-        S_RCROC = 84,                            // RCROC
-        S_WITH = 85,                             // WITH
-        S_LETREC = 86,                           // LETREC
+        S_WITH = 3,                              // WITH
+        S_LETREC = 4,                            // LETREC
+        S_SPLIT = 5,                             // SPLIT
+        S_MIX = 6,                               // MIX
+        S_SEQ = 7,                               // SEQ
+        S_COMMA = 8,                             // COMMA
+        S_REC = 9,                               // REC
+        S_LT = 10,                               // LT
+        S_LE = 11,                               // LE
+        S_EQ = 12,                               // EQ
+        S_GT = 13,                               // GT
+        S_GE = 14,                               // GE
+        S_NE = 15,                               // NE
+        S_ADD = 16,                              // ADD
+        S_SUB = 17,                              // SUB
+        S_OR = 18,                               // OR
+        S_MUL = 19,                              // MUL
+        S_DIV = 20,                              // DIV
+        S_MOD = 21,                              // MOD
+        S_AND = 22,                              // AND
+        S_XOR = 23,                              // XOR
+        S_LSH = 24,                              // LSH
+        S_RSH = 25,                              // RSH
+        S_POWOP = 26,                            // POWOP
+        S_FDELAY = 27,                           // FDELAY
+        S_DELAY1 = 28,                           // DELAY1
+        S_DOT = 29,                              // DOT
+        S_MEM = 30,                              // MEM
+        S_PREFIX = 31,                           // PREFIX
+        S_INTCAST = 32,                          // INTCAST
+        S_FLOATCAST = 33,                        // FLOATCAST
+        S_ANYCAST = 34,                          // ANYCAST
+        S_FFUNCTION = 35,                        // FFUNCTION
+        S_FCONSTANT = 36,                        // FCONSTANT
+        S_FVARIABLE = 37,                        // FVARIABLE
+        S_BUTTON = 38,                           // BUTTON
+        S_CHECKBOX = 39,                         // CHECKBOX
+        S_VSLIDER = 40,                          // VSLIDER
+        S_HSLIDER = 41,                          // HSLIDER
+        S_NENTRY = 42,                           // NENTRY
+        S_VGROUP = 43,                           // VGROUP
+        S_HGROUP = 44,                           // HGROUP
+        S_TGROUP = 45,                           // TGROUP
+        S_HBARGRAPH = 46,                        // HBARGRAPH
+        S_VBARGRAPH = 47,                        // VBARGRAPH
+        S_SOUNDFILE = 48,                        // SOUNDFILE
+        S_ATTACH = 49,                           // ATTACH
+        S_ACOS = 50,                             // ACOS
+        S_ASIN = 51,                             // ASIN
+        S_ATAN = 52,                             // ATAN
+        S_ATAN2 = 53,                            // ATAN2
+        S_COS = 54,                              // COS
+        S_SIN = 55,                              // SIN
+        S_TAN = 56,                              // TAN
+        S_EXP = 57,                              // EXP
+        S_LOG = 58,                              // LOG
+        S_LOG10 = 59,                            // LOG10
+        S_POWFUN = 60,                           // POWFUN
+        S_SQRT = 61,                             // SQRT
+        S_ABS = 62,                              // ABS
+        S_MIN = 63,                              // MIN
+        S_MAX = 64,                              // MAX
+        S_FMOD = 65,                             // FMOD
+        S_REMAINDER = 66,                        // REMAINDER
+        S_FLOOR = 67,                            // FLOOR
+        S_CEIL = 68,                             // CEIL
+        S_RINT = 69,                             // RINT
+        S_RDTBL = 70,                            // RDTBL
+        S_RWTBL = 71,                            // RWTBL
+        S_SELECT2 = 72,                          // SELECT2
+        S_SELECT3 = 73,                          // SELECT3
+        S_INT = 74,                              // INT
+        S_FLOAT = 75,                            // FLOAT
+        S_LAMBDA = 76,                           // LAMBDA
+        S_WIRE = 77,                             // WIRE
+        S_CUT = 78,                              // CUT
+        S_ENDDEF = 79,                           // ENDDEF
+        S_VIRG = 80,                             // VIRG
+        S_LPAR = 81,                             // LPAR
+        S_RPAR = 82,                             // RPAR
+        S_LBRAQ = 83,                            // LBRAQ
+        S_RBRAQ = 84,                            // RBRAQ
+        S_LCROC = 85,                            // LCROC
+        S_RCROC = 86,                            // RCROC
         S_WHERE = 87,                            // WHERE
         S_DEF = 88,                              // DEF
         S_IMPORT = 89,                           // IMPORT
@@ -1017,56 +1043,56 @@ namespace Faust { namespace Compiler { namespace Parser {
         S_142_doc_equation = 142,                // doc.equation
         S_143_doc_diagram = 143,                 // doc.diagram
         S_144_doc_notice = 144,                  // doc.notice
-        S_145_doc_list = 145,                    // doc.list
-        S_146_doc_attribute_list = 146,          // doc.attribute.list
-        S_147_doc_attribute_definition = 147,    // doc.attribute.definition
-        S_148_doc_attribute_value = 148,         // doc.attribute.value
-        S_149_doc_metadata = 149,                // doc.metadata
+        S_145_doc_metadata = 145,                // doc.metadata
+        S_146_doc_list = 146,                    // doc.list
+        S_147_doc_attribute_list = 147,          // doc.attribute.list
+        S_148_doc_attribute_definition = 148,    // doc.attribute.definition
+        S_149_doc_attribute_value = 149,         // doc.attribute.value
         S_expression = 150,                      // expression
         S_151_expression_component = 151,        // expression.component
         S_152_expression_composition = 152,      // expression.composition
-        S_153_expression_composition_list = 153, // expression.composition.list
-        S_154_expression_composition_mix = 154,  // expression.composition.mix
-        S_155_expression_composition_record = 155, // expression.composition.record
-        S_156_expression_composition_sequence = 156, // expression.composition.sequence
-        S_157_expression_composition_split = 157, // expression.composition.split
-        S_158_expression_environment = 158,      // expression.environment
-        S_159_expression_infix = 159,            // expression.infix
-        S_160_expression_infix_definitions_local = 160, // expression.infix.definitions.local
-        S_161_expression_infix_environment_access = 161, // expression.infix.environment.access
-        S_162_expression_infix_math = 162,       // expression.infix.math
-        S_163_expression_infix_math_algebra = 163, // expression.infix.math.algebra
-        S_164_expression_infix_math_comparison = 164, // expression.infix.math.comparison
-        S_165_expression_infix_math_logic = 165, // expression.infix.math.logic
-        S_166_expression_infix_math_shift = 166, // expression.infix.math.shift
-        S_167_expression_infix_prefix = 167,     // expression.infix.prefix
-        S_168_expression_infix_signal_delay = 168, // expression.infix.signal.delay
-        S_169_expression_iterate_parallel = 169, // expression.iterate.parallel
-        S_170_expression_iterate_sequence = 170, // expression.iterate.sequence
-        S_171_expression_iterate_sum = 171,      // expression.iterate.sum
-        S_172_expression_iterate_product = 172,  // expression.iterate.product
-        S_173_expression_lambda = 173,           // expression.lambda
-        S_174_expression_lambda_params = 174,    // expression.lambda.params
-        S_175_expression_lambda_params_start = 175, // expression.lambda.params.start
-        S_176_expression_lambda_params_append = 176, // expression.lambda.params.append
-        S_177_expression_letrec = 177,           // expression.letrec
-        S_178_expression_letrec_list = 178,      // expression.letrec.list
-        S_179_expression_letrec_list_start = 179, // expression.letrec.list.start
-        S_180_expression_letrec_list_append = 180, // expression.letrec.list.append
-        S_181_expression_letrec_equation = 181,  // expression.letrec.equation
-        S_182_expression_letrec_equation_name = 182, // expression.letrec.equation.name
-        S_183_expression_library = 183,          // expression.library
-        S_184_expression_math = 184,             // expression.math
-        S_185_expression_math_comparison = 185,  // expression.math.comparison
-        S_186_expression_math_rounding = 186,    // expression.math.rounding
-        S_187_expression_math_signal = 187,      // expression.math.signal
-        S_188_expression_math_signal_algebra = 188, // expression.math.signal.algebra
-        S_189_expression_math_signal_shift = 189, // expression.math.signal.shift
-        S_190_expression_math_signal_power = 190, // expression.math.signal.power
-        S_191_expression_math_scalar = 191,      // expression.math.scalar
-        S_192_expression_math_trigonometry = 192, // expression.math.trigonometry
-        S_193_expression_parenthesis = 193,      // expression.parenthesis
-        S_194_expression_parallel = 194,         // expression.parallel
+        S_153_expression_composition_parallel = 153, // expression.composition.parallel
+        S_154_expression_composition_serial = 154, // expression.composition.serial
+        S_155_expression_composition_mix = 155,  // expression.composition.mix
+        S_156_expression_composition_recursive = 156, // expression.composition.recursive
+        S_157_expression_composition_sequence = 157, // expression.composition.sequence
+        S_158_expression_composition_split = 158, // expression.composition.split
+        S_159_expression_environment = 159,      // expression.environment
+        S_160_expression_infix = 160,            // expression.infix
+        S_161_expression_infix_definitions_substitution = 161, // expression.infix.definitions.substitution
+        S_162_expression_infix_environment_access = 162, // expression.infix.environment.access
+        S_163_expression_infix_math = 163,       // expression.infix.math
+        S_164_expression_infix_math_algebra = 164, // expression.infix.math.algebra
+        S_165_expression_infix_math_comparison = 165, // expression.infix.math.comparison
+        S_166_expression_infix_math_logic = 166, // expression.infix.math.logic
+        S_167_expression_infix_math_shift = 167, // expression.infix.math.shift
+        S_168_expression_infix_prefix = 168,     // expression.infix.prefix
+        S_169_expression_infix_signal_delay = 169, // expression.infix.signal.delay
+        S_170_expression_iterate_parallel = 170, // expression.iterate.parallel
+        S_171_expression_iterate_sequence = 171, // expression.iterate.sequence
+        S_172_expression_iterate_sum = 172,      // expression.iterate.sum
+        S_173_expression_iterate_product = 173,  // expression.iterate.product
+        S_174_expression_lambda = 174,           // expression.lambda
+        S_175_expression_lambda_params = 175,    // expression.lambda.params
+        S_176_expression_lambda_params_start = 176, // expression.lambda.params.start
+        S_177_expression_lambda_params_append = 177, // expression.lambda.params.append
+        S_178_expression_letrec = 178,           // expression.letrec
+        S_179_expression_letrec_list = 179,      // expression.letrec.list
+        S_180_expression_letrec_list_start = 180, // expression.letrec.list.start
+        S_181_expression_letrec_list_append = 181, // expression.letrec.list.append
+        S_182_expression_letrec_equation = 182,  // expression.letrec.equation
+        S_183_expression_letrec_equation_name = 183, // expression.letrec.equation.name
+        S_184_expression_library = 184,          // expression.library
+        S_185_expression_math = 185,             // expression.math
+        S_186_expression_math_comparison = 186,  // expression.math.comparison
+        S_187_expression_math_rounding = 187,    // expression.math.rounding
+        S_188_expression_math_signal = 188,      // expression.math.signal
+        S_189_expression_math_signal_algebra = 189, // expression.math.signal.algebra
+        S_190_expression_math_signal_shift = 190, // expression.math.signal.shift
+        S_191_expression_math_signal_power = 191, // expression.math.signal.power
+        S_192_expression_math_scalar = 192,      // expression.math.scalar
+        S_193_expression_math_trigonometry = 193, // expression.math.trigonometry
+        S_194_expression_parenthesis = 194,      // expression.parenthesis
         S_195_expression_signal = 195,           // expression.signal
         S_196_expression_signal_control = 196,   // expression.signal.control
         S_197_expression_signal_delay = 197,     // expression.signal.delay
@@ -1081,71 +1107,74 @@ namespace Faust { namespace Compiler { namespace Parser {
         S_206_primitive_signal_input_implicit = 206, // primitive.signal.input.implicit
         S_207_primitive_signal_input_terminate = 207, // primitive.signal.input.terminate
         S_208_primitive_type = 208,              // primitive.type
-        S_209_primitive_type_number_list = 209,  // primitive.type.number.list
-        S_210_primitive_type_number_list_member = 210, // primitive.type.number.list.member
-        S_211_primitive_type_number_list_start = 211, // primitive.type.number.list.start
-        S_212_primitive_type_number_list_append = 212, // primitive.type.number.list.append
-        S_213_primitive_type_number = 213,       // primitive.type.number
-        S_214_primitive_type_number_int = 214,   // primitive.type.number.int
-        S_215_primitive_type_number_float = 215, // primitive.type.number.float
-        S_216_primitive_type_any = 216,          // primitive.type.any
+        S_209_primitive_type_number = 209,       // primitive.type.number
+        S_210_primitive_type_number_int = 210,   // primitive.type.number.int
+        S_211_primitive_type_number_float = 211, // primitive.type.number.float
+        S_212_primitive_type_any = 212,          // primitive.type.any
+        S_213_primitive_type_number_list = 213,  // primitive.type.number.list
+        S_214_primitive_type_number_list_member = 214, // primitive.type.number.list.member
+        S_215_primitive_type_number_list_start = 215, // primitive.type.number.list.start
+        S_216_primitive_type_number_list_append = 216, // primitive.type.number.list.append
         S_217_primitive_signal_route = 217,      // primitive.signal.route
-        S_218_primitive_signal_source = 218,     // primitive.signal.source
-        S_219_primitive_signal_source_table = 219, // primitive.signal.source.table
-        S_220_primitive_signal_source_soundfile = 220, // primitive.signal.source.soundfile
-        S_221_primitive_signal_source_waveform = 221, // primitive.signal.source.waveform
-        S_222_primitive_type_list = 222,         // primitive.type.list
-        S_223_primitive_type_list_start = 223,   // primitive.type.list.start
-        S_224_primitive_type_list_append = 224,  // primitive.type.list.append
-        S_225_primitive_ui = 225,                // primitive.ui
-        S_226_primitive_ui_button = 226,         // primitive.ui.button
-        S_227_primitive_ui_checkbox = 227,       // primitive.ui.checkbox
-        S_228_primitive_ui_vslider = 228,        // primitive.ui.vslider
-        S_229_primitive_ui_hslider = 229,        // primitive.ui.hslider
-        S_230_primitive_ui_nentry = 230,         // primitive.ui.nentry
-        S_231_primitive_ui_vgroup = 231,         // primitive.ui.vgroup
-        S_232_primitive_ui_hgroup = 232,         // primitive.ui.hgroup
-        S_233_primitive_ui_tgroup = 233,         // primitive.ui.tgroup
-        S_234_primitive_ui_vbargraph = 234,      // primitive.ui.vbargraph
-        S_235_primitive_ui_hbargraph = 235,      // primitive.ui.hbargraph
-        S_236_primitive_foreign_function = 236,  // primitive.foreign.function
-        S_237_primitive_foreign_function_signature = 237, // primitive.foreign.function.signature
-        S_238_primitive_foreign_constant = 238,  // primitive.foreign.constant
-        S_239_primitive_foreign_variable = 239,  // primitive.foreign.variable
-        S_240_primitive_signal_inputs = 240,     // primitive.signal.inputs
-        S_241_primitive_signal_outputs = 241,    // primitive.signal.outputs
-        S_statement = 242,                       // statement
-        S_243_statement_definition = 243,        // statement.definition
-        S_244_statement_definition_function_incomplete = 244, // statement.definition.function.incomplete
-        S_245_statement_definition_function = 245, // statement.definition.function
-        S_246_statement_definition_substitution = 246, // statement.definition.substitution
-        S_247_statement_definition_with = 247,   // statement.definition.with
-        S_248_statement_definition_error = 248,  // statement.definition.error
-        S_249_statement_definition_list = 249,   // statement.definition.list
-        S_250_statement_definition_list_start = 250, // statement.definition.list.start
-        S_251_statement_definition_list_start_qualified = 251, // statement.definition.list.start.qualified
-        S_252_statement_definition_list_append = 252, // statement.definition.list.append
-        S_253_statement_definition_list_append_qualified = 253, // statement.definition.list.append.qualified
-        S_254_statement_declare_metadata = 254,  // statement.declare.metadata
-        S_255_statement_declare_feature_metadata = 255, // statement.declare.feature.metadata
-        S_256_statement_declare_doc = 256,       // statement.declare.doc
-        S_257_statement_identifier = 257,        // statement.identifier
-        S_258_statement_identifier_box = 258,    // statement.identifier.box
-        S_259_statement_identifier_waveform = 259, // statement.identifier.waveform
-        S_260_statement_import = 260,            // statement.import
-        S_261_statement_list = 261,              // statement.list
-        S_262_statement_list_start = 262,        // statement.list.start
-        S_263_statement_list_start_qualified = 263, // statement.list.start.qualified
-        S_264_statement_list_append = 264,       // statement.list.append
-        S_265_statement_list_append_qualified = 265, // statement.list.append.qualified
-        S_266_statement_math_precision = 266,    // statement.math.precision
-        S_267_statement_math_precision_list = 267, // statement.math.precision.list
-        S_268_statement_math_precision_list_start = 268, // statement.math.precision.list.start
-        S_269_statement_math_precision_list_append = 269, // statement.math.precision.list.append
-        S_270_statement_signal_pattern_rule_list = 270, // statement.signal.pattern.rule.list
-        S_271_statement_signal_pattern_rule_list_start = 271, // statement.signal.pattern.rule.list.start
-        S_272_statement_signal_pattern_rule_list_append = 272, // statement.signal.pattern.rule.list.append
-        S_273_statement_signal_pattern_rule = 273 // statement.signal.pattern.rule
+        S_218_primitive_signal_route_implied_outputs = 218, // primitive.signal.route.implied.outputs
+        S_219_primitive_signal_route_implied_connections = 219, // primitive.signal.route.implied.connections
+        S_220_primitive_signal_route_explicit = 220, // primitive.signal.route.explicit
+        S_221_primitive_signal_source = 221,     // primitive.signal.source
+        S_222_primitive_signal_source_table = 222, // primitive.signal.source.table
+        S_223_primitive_signal_source_soundfile = 223, // primitive.signal.source.soundfile
+        S_224_primitive_signal_source_waveform = 224, // primitive.signal.source.waveform
+        S_225_primitive_type_list = 225,         // primitive.type.list
+        S_226_primitive_type_list_start = 226,   // primitive.type.list.start
+        S_227_primitive_type_list_append = 227,  // primitive.type.list.append
+        S_228_primitive_ui = 228,                // primitive.ui
+        S_229_primitive_ui_button = 229,         // primitive.ui.button
+        S_230_primitive_ui_checkbox = 230,       // primitive.ui.checkbox
+        S_231_primitive_ui_vslider = 231,        // primitive.ui.vslider
+        S_232_primitive_ui_hslider = 232,        // primitive.ui.hslider
+        S_233_primitive_ui_nentry = 233,         // primitive.ui.nentry
+        S_234_primitive_ui_vgroup = 234,         // primitive.ui.vgroup
+        S_235_primitive_ui_hgroup = 235,         // primitive.ui.hgroup
+        S_236_primitive_ui_tgroup = 236,         // primitive.ui.tgroup
+        S_237_primitive_ui_vbargraph = 237,      // primitive.ui.vbargraph
+        S_238_primitive_ui_hbargraph = 238,      // primitive.ui.hbargraph
+        S_239_primitive_foreign_function = 239,  // primitive.foreign.function
+        S_240_primitive_foreign_function_signature = 240, // primitive.foreign.function.signature
+        S_241_primitive_foreign_constant = 241,  // primitive.foreign.constant
+        S_242_primitive_foreign_variable = 242,  // primitive.foreign.variable
+        S_243_primitive_signal_inputs = 243,     // primitive.signal.inputs
+        S_244_primitive_signal_outputs = 244,    // primitive.signal.outputs
+        S_statement = 245,                       // statement
+        S_246_statement_definition = 246,        // statement.definition
+        S_247_statement_definition_function_incomplete = 247, // statement.definition.function.incomplete
+        S_248_statement_definition_function = 248, // statement.definition.function
+        S_249_statement_definition_assignment = 249, // statement.definition.assignment
+        S_250_statement_definition_with = 250,   // statement.definition.with
+        S_251_statement_definition_error = 251,  // statement.definition.error
+        S_252_statement_definition_list = 252,   // statement.definition.list
+        S_253_statement_definition_list_start = 253, // statement.definition.list.start
+        S_254_statement_definition_list_start_qualified = 254, // statement.definition.list.start.qualified
+        S_255_statement_definition_list_append = 255, // statement.definition.list.append
+        S_256_statement_definition_list_append_qualified = 256, // statement.definition.list.append.qualified
+        S_257_statement_declare_metadata = 257,  // statement.declare.metadata
+        S_258_statement_declare_feature_metadata = 258, // statement.declare.feature.metadata
+        S_259_statement_declare_doc = 259,       // statement.declare.doc
+        S_260_statement_identifier = 260,        // statement.identifier
+        S_261_statement_identifier_box = 261,    // statement.identifier.box
+        S_262_statement_identifier_waveform = 262, // statement.identifier.waveform
+        S_263_statement_import = 263,            // statement.import
+        S_264_statement_list = 264,              // statement.list
+        S_265_statement_list_start = 265,        // statement.list.start
+        S_266_statement_list_start_qualified = 266, // statement.list.start.qualified
+        S_267_statement_list_append = 267,       // statement.list.append
+        S_268_statement_list_append_qualified = 268, // statement.list.append.qualified
+        S_269_statement_math_precision = 269,    // statement.math.precision
+        S_270_statement_math_precision_list = 270, // statement.math.precision.list
+        S_271_statement_math_precision_list_start = 271, // statement.math.precision.list.start
+        S_272_statement_math_precision_list_append = 272, // statement.math.precision.list.append
+        S_273_statement_signal_pattern_rule = 273, // statement.signal.pattern.rule
+        S_274_statement_signal_pattern_rule_list = 274, // statement.signal.pattern.rule.list
+        S_275_statement_signal_pattern_rule_list_start = 275, // statement.signal.pattern.rule.list.start
+        S_276_statement_signal_pattern_rule_list_append = 276 // statement.signal.pattern.rule.list.append
       };
     };
 
@@ -1187,55 +1216,55 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_145_doc_list: // doc.list
-      case symbol_kind::S_146_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_147_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_metadata: // doc.metadata
+      case symbol_kind::S_145_doc_metadata: // doc.metadata
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_list: // expression.composition.list
-      case symbol_kind::S_154_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_155_expression_composition_record: // expression.composition.record
-      case symbol_kind::S_156_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_157_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_158_expression_environment: // expression.environment
-      case symbol_kind::S_159_expression_infix: // expression.infix
-      case symbol_kind::S_160_expression_infix_definitions_local: // expression.infix.definitions.local
-      case symbol_kind::S_161_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_162_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_163_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_164_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_165_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_166_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_167_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_168_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_169_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_170_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_171_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_172_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_173_expression_lambda: // expression.lambda
-      case symbol_kind::S_174_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_175_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_176_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_177_expression_letrec: // expression.letrec
-      case symbol_kind::S_178_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_179_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_180_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_181_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_182_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_183_expression_library: // expression.library
-      case symbol_kind::S_184_expression_math: // expression.math
-      case symbol_kind::S_185_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_186_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_187_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_188_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_189_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_190_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_191_expression_math_scalar: // expression.math.scalar
-      case symbol_kind::S_192_expression_math_trigonometry: // expression.math.trigonometry
-      case symbol_kind::S_193_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_194_expression_parallel: // expression.parallel
+      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_159_expression_environment: // expression.environment
+      case symbol_kind::S_160_expression_infix: // expression.infix
+      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_174_expression_lambda: // expression.lambda
+      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_178_expression_letrec: // expression.letrec
+      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_184_expression_library: // expression.library
+      case symbol_kind::S_185_expression_math: // expression.math
+      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_192_expression_math_scalar: // expression.math.scalar
+      case symbol_kind::S_193_expression_math_trigonometry: // expression.math.trigonometry
+      case symbol_kind::S_194_expression_parenthesis: // expression.parenthesis
       case symbol_kind::S_195_expression_signal: // expression.signal
       case symbol_kind::S_196_expression_signal_control: // expression.signal.control
       case symbol_kind::S_197_expression_signal_delay: // expression.signal.delay
@@ -1250,71 +1279,74 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
-      case symbol_kind::S_209_primitive_type_number_list: // primitive.type.number.list
-      case symbol_kind::S_210_primitive_type_number_list_member: // primitive.type.number.list.member
-      case symbol_kind::S_211_primitive_type_number_list_start: // primitive.type.number.list.start
-      case symbol_kind::S_212_primitive_type_number_list_append: // primitive.type.number.list.append
-      case symbol_kind::S_213_primitive_type_number: // primitive.type.number
-      case symbol_kind::S_214_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_215_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_216_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_209_primitive_type_number: // primitive.type.number
+      case symbol_kind::S_210_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_211_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_212_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_213_primitive_type_number_list: // primitive.type.number.list
+      case symbol_kind::S_214_primitive_type_number_list_member: // primitive.type.number.list.member
+      case symbol_kind::S_215_primitive_type_number_list_start: // primitive.type.number.list.start
+      case symbol_kind::S_216_primitive_type_number_list_append: // primitive.type.number.list.append
       case symbol_kind::S_217_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_218_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_219_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_220_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_221_primitive_signal_source_waveform: // primitive.signal.source.waveform
-      case symbol_kind::S_222_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_223_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_224_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_225_primitive_ui: // primitive.ui
-      case symbol_kind::S_226_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_227_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_228_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_229_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_230_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_231_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_232_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_233_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_234_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_235_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_236_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_237_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_238_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_239_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_240_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_241_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_218_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_219_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_220_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_221_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_222_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_223_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_224_primitive_signal_source_waveform: // primitive.signal.source.waveform
+      case symbol_kind::S_225_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_226_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_227_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_228_primitive_ui: // primitive.ui
+      case symbol_kind::S_229_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_230_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_231_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_232_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_233_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_234_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_235_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_236_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_237_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_238_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_239_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_240_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_241_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_242_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_243_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_244_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_243_statement_definition: // statement.definition
-      case symbol_kind::S_244_statement_definition_function_incomplete: // statement.definition.function.incomplete
-      case symbol_kind::S_245_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_246_statement_definition_substitution: // statement.definition.substitution
-      case symbol_kind::S_247_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_248_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_249_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_250_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_251_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_252_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_253_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_254_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_255_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_256_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_257_statement_identifier: // statement.identifier
-      case symbol_kind::S_258_statement_identifier_box: // statement.identifier.box
-      case symbol_kind::S_259_statement_identifier_waveform: // statement.identifier.waveform
-      case symbol_kind::S_260_statement_import: // statement.import
-      case symbol_kind::S_261_statement_list: // statement.list
-      case symbol_kind::S_262_statement_list_start: // statement.list.start
-      case symbol_kind::S_263_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_264_statement_list_append: // statement.list.append
-      case symbol_kind::S_265_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_270_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_271_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_272_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_246_statement_definition: // statement.definition
+      case symbol_kind::S_247_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_248_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_249_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_250_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_251_statement_definition_error: // statement.definition.error
+      case symbol_kind::S_252_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_253_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_254_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_255_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_256_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_257_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_258_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_259_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_260_statement_identifier: // statement.identifier
+      case symbol_kind::S_261_statement_identifier_box: // statement.identifier.box
+      case symbol_kind::S_262_statement_identifier_waveform: // statement.identifier.waveform
+      case symbol_kind::S_263_statement_import: // statement.import
+      case symbol_kind::S_264_statement_list: // statement.list
+      case symbol_kind::S_265_statement_list_start: // statement.list.start
+      case symbol_kind::S_266_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_267_statement_list_append: // statement.list.append
+      case symbol_kind::S_268_statement_list_append_qualified: // statement.list.append.qualified
       case symbol_kind::S_273_statement_signal_pattern_rule: // statement.signal.pattern.rule
-        value.move< Type::exp > (std::move (that.value));
+      case symbol_kind::S_274_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_275_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_276_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+        value.move< Tree > (std::move (that.value));
         break;
 
-      case symbol_kind::S_148_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.move< bool > (std::move (that.value));
         break;
 
@@ -1327,13 +1359,40 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
       case symbol_kind::S_QUADMODE: // QUADMODE
       case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
-      case symbol_kind::S_266_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_267_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_268_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_269_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_269_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_270_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_271_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_272_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< int > (std::move (that.value));
         break;
 
+      case symbol_kind::S_WITH: // WITH
+      case symbol_kind::S_LETREC: // LETREC
+      case symbol_kind::S_SPLIT: // SPLIT
+      case symbol_kind::S_MIX: // MIX
+      case symbol_kind::S_SEQ: // SEQ
+      case symbol_kind::S_COMMA: // COMMA
+      case symbol_kind::S_REC: // REC
+      case symbol_kind::S_LT: // LT
+      case symbol_kind::S_LE: // LE
+      case symbol_kind::S_EQ: // EQ
+      case symbol_kind::S_GT: // GT
+      case symbol_kind::S_GE: // GE
+      case symbol_kind::S_NE: // NE
+      case symbol_kind::S_ADD: // ADD
+      case symbol_kind::S_SUB: // SUB
+      case symbol_kind::S_OR: // OR
+      case symbol_kind::S_MUL: // MUL
+      case symbol_kind::S_DIV: // DIV
+      case symbol_kind::S_MOD: // MOD
+      case symbol_kind::S_AND: // AND
+      case symbol_kind::S_XOR: // XOR
+      case symbol_kind::S_LSH: // LSH
+      case symbol_kind::S_RSH: // RSH
+      case symbol_kind::S_POWOP: // POWOP
+      case symbol_kind::S_FDELAY: // FDELAY
+      case symbol_kind::S_DELAY1: // DELAY1
+      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_MEM: // MEM
       case symbol_kind::S_PREFIX: // PREFIX
       case symbol_kind::S_INTCAST: // INTCAST
@@ -1379,7 +1438,6 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_SELECT2: // SELECT2
       case symbol_kind::S_SELECT3: // SELECT3
       case symbol_kind::S_LAMBDA: // LAMBDA
-      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_WIRE: // WIRE
       case symbol_kind::S_CUT: // CUT
       case symbol_kind::S_ENDDEF: // ENDDEF
@@ -1390,8 +1448,6 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_RBRAQ: // RBRAQ
       case symbol_kind::S_LCROC: // LCROC
       case symbol_kind::S_RCROC: // RCROC
-      case symbol_kind::S_WITH: // WITH
-      case symbol_kind::S_LETREC: // LETREC
       case symbol_kind::S_WHERE: // WHERE
       case symbol_kind::S_DEF: // DEF
       case symbol_kind::S_IMPORT: // IMPORT
@@ -1467,13 +1523,13 @@ namespace Faust { namespace Compiler { namespace Parser {
 #endif
 
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, Type::exp&& v, location_type&& l)
+      basic_symbol (typename Base::kind_type t, Tree&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
         , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const Type::exp& v, const location_type& l)
+      basic_symbol (typename Base::kind_type t, const Tree& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -1565,55 +1621,55 @@ switch (yykind)
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_145_doc_list: // doc.list
-      case symbol_kind::S_146_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_147_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_metadata: // doc.metadata
+      case symbol_kind::S_145_doc_metadata: // doc.metadata
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_list: // expression.composition.list
-      case symbol_kind::S_154_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_155_expression_composition_record: // expression.composition.record
-      case symbol_kind::S_156_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_157_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_158_expression_environment: // expression.environment
-      case symbol_kind::S_159_expression_infix: // expression.infix
-      case symbol_kind::S_160_expression_infix_definitions_local: // expression.infix.definitions.local
-      case symbol_kind::S_161_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_162_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_163_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_164_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_165_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_166_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_167_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_168_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_169_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_170_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_171_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_172_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_173_expression_lambda: // expression.lambda
-      case symbol_kind::S_174_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_175_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_176_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_177_expression_letrec: // expression.letrec
-      case symbol_kind::S_178_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_179_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_180_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_181_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_182_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_183_expression_library: // expression.library
-      case symbol_kind::S_184_expression_math: // expression.math
-      case symbol_kind::S_185_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_186_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_187_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_188_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_189_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_190_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_191_expression_math_scalar: // expression.math.scalar
-      case symbol_kind::S_192_expression_math_trigonometry: // expression.math.trigonometry
-      case symbol_kind::S_193_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_194_expression_parallel: // expression.parallel
+      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_159_expression_environment: // expression.environment
+      case symbol_kind::S_160_expression_infix: // expression.infix
+      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_174_expression_lambda: // expression.lambda
+      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_178_expression_letrec: // expression.letrec
+      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_184_expression_library: // expression.library
+      case symbol_kind::S_185_expression_math: // expression.math
+      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_192_expression_math_scalar: // expression.math.scalar
+      case symbol_kind::S_193_expression_math_trigonometry: // expression.math.trigonometry
+      case symbol_kind::S_194_expression_parenthesis: // expression.parenthesis
       case symbol_kind::S_195_expression_signal: // expression.signal
       case symbol_kind::S_196_expression_signal_control: // expression.signal.control
       case symbol_kind::S_197_expression_signal_delay: // expression.signal.delay
@@ -1628,71 +1684,74 @@ switch (yykind)
       case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
-      case symbol_kind::S_209_primitive_type_number_list: // primitive.type.number.list
-      case symbol_kind::S_210_primitive_type_number_list_member: // primitive.type.number.list.member
-      case symbol_kind::S_211_primitive_type_number_list_start: // primitive.type.number.list.start
-      case symbol_kind::S_212_primitive_type_number_list_append: // primitive.type.number.list.append
-      case symbol_kind::S_213_primitive_type_number: // primitive.type.number
-      case symbol_kind::S_214_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_215_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_216_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_209_primitive_type_number: // primitive.type.number
+      case symbol_kind::S_210_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_211_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_212_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_213_primitive_type_number_list: // primitive.type.number.list
+      case symbol_kind::S_214_primitive_type_number_list_member: // primitive.type.number.list.member
+      case symbol_kind::S_215_primitive_type_number_list_start: // primitive.type.number.list.start
+      case symbol_kind::S_216_primitive_type_number_list_append: // primitive.type.number.list.append
       case symbol_kind::S_217_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_218_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_219_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_220_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_221_primitive_signal_source_waveform: // primitive.signal.source.waveform
-      case symbol_kind::S_222_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_223_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_224_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_225_primitive_ui: // primitive.ui
-      case symbol_kind::S_226_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_227_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_228_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_229_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_230_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_231_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_232_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_233_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_234_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_235_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_236_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_237_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_238_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_239_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_240_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_241_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_218_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_219_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_220_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_221_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_222_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_223_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_224_primitive_signal_source_waveform: // primitive.signal.source.waveform
+      case symbol_kind::S_225_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_226_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_227_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_228_primitive_ui: // primitive.ui
+      case symbol_kind::S_229_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_230_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_231_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_232_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_233_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_234_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_235_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_236_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_237_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_238_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_239_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_240_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_241_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_242_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_243_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_244_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_243_statement_definition: // statement.definition
-      case symbol_kind::S_244_statement_definition_function_incomplete: // statement.definition.function.incomplete
-      case symbol_kind::S_245_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_246_statement_definition_substitution: // statement.definition.substitution
-      case symbol_kind::S_247_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_248_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_249_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_250_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_251_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_252_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_253_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_254_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_255_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_256_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_257_statement_identifier: // statement.identifier
-      case symbol_kind::S_258_statement_identifier_box: // statement.identifier.box
-      case symbol_kind::S_259_statement_identifier_waveform: // statement.identifier.waveform
-      case symbol_kind::S_260_statement_import: // statement.import
-      case symbol_kind::S_261_statement_list: // statement.list
-      case symbol_kind::S_262_statement_list_start: // statement.list.start
-      case symbol_kind::S_263_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_264_statement_list_append: // statement.list.append
-      case symbol_kind::S_265_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_270_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_271_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_272_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_246_statement_definition: // statement.definition
+      case symbol_kind::S_247_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_248_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_249_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_250_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_251_statement_definition_error: // statement.definition.error
+      case symbol_kind::S_252_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_253_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_254_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_255_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_256_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_257_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_258_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_259_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_260_statement_identifier: // statement.identifier
+      case symbol_kind::S_261_statement_identifier_box: // statement.identifier.box
+      case symbol_kind::S_262_statement_identifier_waveform: // statement.identifier.waveform
+      case symbol_kind::S_263_statement_import: // statement.import
+      case symbol_kind::S_264_statement_list: // statement.list
+      case symbol_kind::S_265_statement_list_start: // statement.list.start
+      case symbol_kind::S_266_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_267_statement_list_append: // statement.list.append
+      case symbol_kind::S_268_statement_list_append_qualified: // statement.list.append.qualified
       case symbol_kind::S_273_statement_signal_pattern_rule: // statement.signal.pattern.rule
-        value.template destroy< Type::exp > ();
+      case symbol_kind::S_274_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_275_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_276_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+        value.template destroy< Tree > ();
         break;
 
-      case symbol_kind::S_148_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.template destroy< bool > ();
         break;
 
@@ -1705,13 +1764,40 @@ switch (yykind)
       case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
       case symbol_kind::S_QUADMODE: // QUADMODE
       case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
-      case symbol_kind::S_266_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_267_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_268_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_269_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_269_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_270_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_271_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_272_statement_math_precision_list_append: // statement.math.precision.list.append
         value.template destroy< int > ();
         break;
 
+      case symbol_kind::S_WITH: // WITH
+      case symbol_kind::S_LETREC: // LETREC
+      case symbol_kind::S_SPLIT: // SPLIT
+      case symbol_kind::S_MIX: // MIX
+      case symbol_kind::S_SEQ: // SEQ
+      case symbol_kind::S_COMMA: // COMMA
+      case symbol_kind::S_REC: // REC
+      case symbol_kind::S_LT: // LT
+      case symbol_kind::S_LE: // LE
+      case symbol_kind::S_EQ: // EQ
+      case symbol_kind::S_GT: // GT
+      case symbol_kind::S_GE: // GE
+      case symbol_kind::S_NE: // NE
+      case symbol_kind::S_ADD: // ADD
+      case symbol_kind::S_SUB: // SUB
+      case symbol_kind::S_OR: // OR
+      case symbol_kind::S_MUL: // MUL
+      case symbol_kind::S_DIV: // DIV
+      case symbol_kind::S_MOD: // MOD
+      case symbol_kind::S_AND: // AND
+      case symbol_kind::S_XOR: // XOR
+      case symbol_kind::S_LSH: // LSH
+      case symbol_kind::S_RSH: // RSH
+      case symbol_kind::S_POWOP: // POWOP
+      case symbol_kind::S_FDELAY: // FDELAY
+      case symbol_kind::S_DELAY1: // DELAY1
+      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_MEM: // MEM
       case symbol_kind::S_PREFIX: // PREFIX
       case symbol_kind::S_INTCAST: // INTCAST
@@ -1757,7 +1843,6 @@ switch (yykind)
       case symbol_kind::S_SELECT2: // SELECT2
       case symbol_kind::S_SELECT3: // SELECT3
       case symbol_kind::S_LAMBDA: // LAMBDA
-      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_WIRE: // WIRE
       case symbol_kind::S_CUT: // CUT
       case symbol_kind::S_ENDDEF: // ENDDEF
@@ -1768,8 +1853,6 @@ switch (yykind)
       case symbol_kind::S_RBRAQ: // RBRAQ
       case symbol_kind::S_LCROC: // LCROC
       case symbol_kind::S_RCROC: // RCROC
-      case symbol_kind::S_WITH: // WITH
-      case symbol_kind::S_LETREC: // LETREC
       case symbol_kind::S_WHERE: // WHERE
       case symbol_kind::S_DEF: // DEF
       case symbol_kind::S_IMPORT: // IMPORT
@@ -1829,9 +1912,9 @@ switch (yykind)
       }
 
       /// The user-facing name of this symbol.
-      const char *name () const YY_NOEXCEPT
+      std::string name () const YY_NOEXCEPT
       {
-        return Implementation::symbol_name (this->kind ());
+        return AbstractImplementation::symbol_name (this->kind ());
       }
 
       /// Backward compatibility (Bison 3.6).
@@ -1918,8 +2001,8 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::FAUST_YYEOF
-                   || (token::FAUST_YYerror <= tok && tok <= token::FAUST_DELAY1));
+        YY_ASSERT (tok == token::FAUST_ENDOFINPUT
+                   || (token::FAUST_YYerror <= tok && tok <= token::FAUST_YYUNDEF));
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -1956,7 +2039,7 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT ((token::FAUST_MEM <= tok && tok <= token::FAUST_SELECT3)
+        YY_ASSERT ((token::FAUST_WITH <= tok && tok <= token::FAUST_SELECT3)
                    || (token::FAUST_LAMBDA <= tok && tok <= token::FAUST_HIGHEST)
                    || (token::FAUST_BDOC <= tok && tok <= token::FAUST_ENDL));
 #endif
@@ -1964,14 +2047,14 @@ switch (yykind)
     };
 
     /// Build a parser object.
-    Implementation (Type::Driver& driver_yyarg);
-    virtual ~Implementation ();
+    AbstractImplementation (Implementation& self_yyarg);
+    virtual ~AbstractImplementation ();
 
 #if 201103L <= YY_CPLUSPLUS
     /// Non copyable.
-    Implementation (const Implementation&) = delete;
+    AbstractImplementation (const AbstractImplementation&) = delete;
     /// Non copyable.
-    Implementation& operator= (const Implementation&) = delete;
+    AbstractImplementation& operator= (const AbstractImplementation&) = delete;
 #endif
 
     /// Parse.  An alias for parse ().
@@ -2006,22 +2089,22 @@ switch (yykind)
 
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
-    static const char *symbol_name (symbol_kind_type yysymbol);
+    static std::string symbol_name (symbol_kind_type yysymbol);
 
     // Implementation of make_symbol for each token kind.
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_YYEOF (location_type l)
+      make_ENDOFINPUT (location_type l)
       {
-        return symbol_type (token::FAUST_YYEOF, std::move (l));
+        return symbol_type (token::FAUST_ENDOFINPUT, std::move (l));
       }
 #else
       static
       symbol_type
-      make_YYEOF (const location_type& l)
+      make_ENDOFINPUT (const location_type& l)
       {
-        return symbol_type (token::FAUST_YYEOF, l);
+        return symbol_type (token::FAUST_ENDOFINPUT, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -2057,361 +2140,406 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_SPLIT (location_type l)
+      make_WITH (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_SPLIT, std::move (l));
+        return symbol_type (token::FAUST_WITH, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_SPLIT (const location_type& l)
+      make_WITH (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_SPLIT, l);
+        return symbol_type (token::FAUST_WITH, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_MIX (location_type l)
+      make_LETREC (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_MIX, std::move (l));
+        return symbol_type (token::FAUST_LETREC, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_MIX (const location_type& l)
+      make_LETREC (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_MIX, l);
+        return symbol_type (token::FAUST_LETREC, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_SEQ (location_type l)
+      make_SPLIT (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_SEQ, std::move (l));
+        return symbol_type (token::FAUST_SPLIT, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_SEQ (const location_type& l)
+      make_SPLIT (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_SEQ, l);
+        return symbol_type (token::FAUST_SPLIT, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_COMMA (location_type l)
+      make_MIX (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_COMMA, std::move (l));
+        return symbol_type (token::FAUST_MIX, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_COMMA (const location_type& l)
+      make_MIX (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_COMMA, l);
+        return symbol_type (token::FAUST_MIX, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_REC (location_type l)
+      make_SEQ (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_REC, std::move (l));
+        return symbol_type (token::FAUST_SEQ, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_REC (const location_type& l)
+      make_SEQ (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_REC, l);
+        return symbol_type (token::FAUST_SEQ, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_LT (location_type l)
+      make_COMMA (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_LT, std::move (l));
+        return symbol_type (token::FAUST_COMMA, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_LT (const location_type& l)
+      make_COMMA (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_LT, l);
+        return symbol_type (token::FAUST_COMMA, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_LE (location_type l)
+      make_REC (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_LE, std::move (l));
+        return symbol_type (token::FAUST_REC, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_LE (const location_type& l)
+      make_REC (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_LE, l);
+        return symbol_type (token::FAUST_REC, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_EQ (location_type l)
+      make_LT (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_EQ, std::move (l));
+        return symbol_type (token::FAUST_LT, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_EQ (const location_type& l)
+      make_LT (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_EQ, l);
+        return symbol_type (token::FAUST_LT, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_GT (location_type l)
+      make_LE (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_GT, std::move (l));
+        return symbol_type (token::FAUST_LE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_GT (const location_type& l)
+      make_LE (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_GT, l);
+        return symbol_type (token::FAUST_LE, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_GE (location_type l)
+      make_EQ (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_GE, std::move (l));
+        return symbol_type (token::FAUST_EQ, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_GE (const location_type& l)
+      make_EQ (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_GE, l);
+        return symbol_type (token::FAUST_EQ, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NE (location_type l)
+      make_GT (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_NE, std::move (l));
+        return symbol_type (token::FAUST_GT, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NE (const location_type& l)
+      make_GT (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_NE, l);
+        return symbol_type (token::FAUST_GT, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_ADD (location_type l)
+      make_GE (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_ADD, std::move (l));
+        return symbol_type (token::FAUST_GE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_ADD (const location_type& l)
+      make_GE (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_ADD, l);
+        return symbol_type (token::FAUST_GE, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_SUB (location_type l)
+      make_NE (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_SUB, std::move (l));
+        return symbol_type (token::FAUST_NE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_SUB (const location_type& l)
+      make_NE (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_SUB, l);
+        return symbol_type (token::FAUST_NE, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_OR (location_type l)
+      make_ADD (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_OR, std::move (l));
+        return symbol_type (token::FAUST_ADD, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_OR (const location_type& l)
+      make_ADD (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_OR, l);
+        return symbol_type (token::FAUST_ADD, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_MUL (location_type l)
+      make_SUB (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_MUL, std::move (l));
+        return symbol_type (token::FAUST_SUB, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_MUL (const location_type& l)
+      make_SUB (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_MUL, l);
+        return symbol_type (token::FAUST_SUB, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_DIV (location_type l)
+      make_OR (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_DIV, std::move (l));
+        return symbol_type (token::FAUST_OR, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_DIV (const location_type& l)
+      make_OR (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_DIV, l);
+        return symbol_type (token::FAUST_OR, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_MOD (location_type l)
+      make_MUL (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_MOD, std::move (l));
+        return symbol_type (token::FAUST_MUL, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_MOD (const location_type& l)
+      make_MUL (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_MOD, l);
+        return symbol_type (token::FAUST_MUL, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_AND (location_type l)
+      make_DIV (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_AND, std::move (l));
+        return symbol_type (token::FAUST_DIV, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_AND (const location_type& l)
+      make_DIV (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_AND, l);
+        return symbol_type (token::FAUST_DIV, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_XOR (location_type l)
+      make_MOD (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_XOR, std::move (l));
+        return symbol_type (token::FAUST_MOD, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_XOR (const location_type& l)
+      make_MOD (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_XOR, l);
+        return symbol_type (token::FAUST_MOD, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_LSH (location_type l)
+      make_AND (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_LSH, std::move (l));
+        return symbol_type (token::FAUST_AND, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_LSH (const location_type& l)
+      make_AND (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_LSH, l);
+        return symbol_type (token::FAUST_AND, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_RSH (location_type l)
+      make_XOR (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_RSH, std::move (l));
+        return symbol_type (token::FAUST_XOR, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_RSH (const location_type& l)
+      make_XOR (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_RSH, l);
+        return symbol_type (token::FAUST_XOR, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_POWOP (location_type l)
+      make_LSH (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_POWOP, std::move (l));
+        return symbol_type (token::FAUST_LSH, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_POWOP (const location_type& l)
+      make_LSH (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_POWOP, l);
+        return symbol_type (token::FAUST_LSH, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_FDELAY (location_type l)
+      make_RSH (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_FDELAY, std::move (l));
+        return symbol_type (token::FAUST_RSH, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_FDELAY (const location_type& l)
+      make_RSH (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_FDELAY, l);
+        return symbol_type (token::FAUST_RSH, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_DELAY1 (location_type l)
+      make_POWOP (std::string v, location_type l)
       {
-        return symbol_type (token::FAUST_DELAY1, std::move (l));
+        return symbol_type (token::FAUST_POWOP, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_DELAY1 (const location_type& l)
+      make_POWOP (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::FAUST_DELAY1, l);
+        return symbol_type (token::FAUST_POWOP, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_FDELAY (std::string v, location_type l)
+      {
+        return symbol_type (token::FAUST_FDELAY, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_FDELAY (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::FAUST_FDELAY, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_DELAY1 (std::string v, location_type l)
+      {
+        return symbol_type (token::FAUST_DELAY1, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_DELAY1 (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::FAUST_DELAY1, v, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_DOT (std::string v, location_type l)
+      {
+        return symbol_type (token::FAUST_DOT, std::move (v), std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_DOT (const std::string& v, const location_type& l)
+      {
+        return symbol_type (token::FAUST_DOT, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -3122,21 +3250,6 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_DOT (std::string v, location_type l)
-      {
-        return symbol_type (token::FAUST_DOT, std::move (v), std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_DOT (const std::string& v, const location_type& l)
-      {
-        return symbol_type (token::FAUST_DOT, v, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
       make_WIRE (std::string v, location_type l)
       {
         return symbol_type (token::FAUST_WIRE, std::move (v), std::move (l));
@@ -3282,36 +3395,6 @@ switch (yykind)
       make_RCROC (const std::string& v, const location_type& l)
       {
         return symbol_type (token::FAUST_RCROC, v, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_WITH (std::string v, location_type l)
-      {
-        return symbol_type (token::FAUST_WITH, std::move (v), std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_WITH (const std::string& v, const location_type& l)
-      {
-        return symbol_type (token::FAUST_WITH, v, l);
-      }
-#endif
-#if 201103L <= YY_CPLUSPLUS
-      static
-      symbol_type
-      make_LETREC (std::string v, location_type l)
-      {
-        return symbol_type (token::FAUST_LETREC, std::move (v), std::move (l));
-      }
-#else
-      static
-      symbol_type
-      make_LETREC (const std::string& v, const location_type& l)
-      {
-        return symbol_type (token::FAUST_LETREC, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -4084,7 +4167,7 @@ switch (yykind)
     class context
     {
     public:
-      context (const Implementation& yyparser, const symbol_type& yyla);
+      context (const AbstractImplementation& yyparser, const symbol_type& yyla);
       const symbol_type& lookahead () const YY_NOEXCEPT { return yyla_; }
       symbol_kind_type token () const YY_NOEXCEPT { return yyla_.kind (); }
       const location_type& location () const YY_NOEXCEPT { return yyla_.location; }
@@ -4095,16 +4178,16 @@ switch (yykind)
       int expected_tokens (symbol_kind_type yyarg[], int yyargn) const;
 
     private:
-      const Implementation& yyparser_;
+      const AbstractImplementation& yyparser_;
       const symbol_type& yyla_;
     };
 
   private:
 #if YY_CPLUSPLUS < 201103L
     /// Non copyable.
-    Implementation (const Implementation&);
+    AbstractImplementation (const AbstractImplementation&);
     /// Non copyable.
-    Implementation& operator= (const Implementation&);
+    AbstractImplementation& operator= (const AbstractImplementation&);
 #endif
 
     /// Check the lookahead yytoken.
@@ -4149,6 +4232,11 @@ switch (yykind)
     /// are valid, yet not members of the token_kind_type enum.
     static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
+    /// Convert the symbol name \a n to a form suitable for a diagnostic.
+    static std::string yytnamerr_ (const char *yystr);
+
+    /// For a symbol, its name in clear.
+    static const char* const yytname_[];
 
 
     // Tables.
@@ -4423,27 +4511,27 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 745,     ///< Last index in yytable_.
-      yynnts_ = 136,  ///< Number of nonterminal symbols.
+      yylast_ = 948,     ///< Last index in yytable_.
+      yynnts_ = 139,  ///< Number of nonterminal symbols.
       yyfinal_ = 48 ///< Termination state number.
     };
 
 
     // User arguments.
-    Type::Driver& driver;
+    Implementation& self;
 
   };
 
   inline
-  Implementation::symbol_kind_type
-  Implementation::yytranslate_ (int t) YY_NOEXCEPT
+  AbstractImplementation::symbol_kind_type
+  AbstractImplementation::yytranslate_ (int t) YY_NOEXCEPT
   {
     return static_cast<symbol_kind_type> (t);
   }
 
   // basic_symbol.
   template <typename Base>
-  Implementation::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
+  AbstractImplementation::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
     : Base (that)
     , value ()
     , location (that.location)
@@ -4455,55 +4543,55 @@ switch (yykind)
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_145_doc_list: // doc.list
-      case symbol_kind::S_146_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_147_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_metadata: // doc.metadata
+      case symbol_kind::S_145_doc_metadata: // doc.metadata
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_list: // expression.composition.list
-      case symbol_kind::S_154_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_155_expression_composition_record: // expression.composition.record
-      case symbol_kind::S_156_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_157_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_158_expression_environment: // expression.environment
-      case symbol_kind::S_159_expression_infix: // expression.infix
-      case symbol_kind::S_160_expression_infix_definitions_local: // expression.infix.definitions.local
-      case symbol_kind::S_161_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_162_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_163_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_164_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_165_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_166_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_167_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_168_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_169_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_170_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_171_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_172_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_173_expression_lambda: // expression.lambda
-      case symbol_kind::S_174_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_175_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_176_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_177_expression_letrec: // expression.letrec
-      case symbol_kind::S_178_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_179_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_180_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_181_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_182_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_183_expression_library: // expression.library
-      case symbol_kind::S_184_expression_math: // expression.math
-      case symbol_kind::S_185_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_186_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_187_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_188_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_189_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_190_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_191_expression_math_scalar: // expression.math.scalar
-      case symbol_kind::S_192_expression_math_trigonometry: // expression.math.trigonometry
-      case symbol_kind::S_193_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_194_expression_parallel: // expression.parallel
+      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_159_expression_environment: // expression.environment
+      case symbol_kind::S_160_expression_infix: // expression.infix
+      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_174_expression_lambda: // expression.lambda
+      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_178_expression_letrec: // expression.letrec
+      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_184_expression_library: // expression.library
+      case symbol_kind::S_185_expression_math: // expression.math
+      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_192_expression_math_scalar: // expression.math.scalar
+      case symbol_kind::S_193_expression_math_trigonometry: // expression.math.trigonometry
+      case symbol_kind::S_194_expression_parenthesis: // expression.parenthesis
       case symbol_kind::S_195_expression_signal: // expression.signal
       case symbol_kind::S_196_expression_signal_control: // expression.signal.control
       case symbol_kind::S_197_expression_signal_delay: // expression.signal.delay
@@ -4518,71 +4606,74 @@ switch (yykind)
       case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
-      case symbol_kind::S_209_primitive_type_number_list: // primitive.type.number.list
-      case symbol_kind::S_210_primitive_type_number_list_member: // primitive.type.number.list.member
-      case symbol_kind::S_211_primitive_type_number_list_start: // primitive.type.number.list.start
-      case symbol_kind::S_212_primitive_type_number_list_append: // primitive.type.number.list.append
-      case symbol_kind::S_213_primitive_type_number: // primitive.type.number
-      case symbol_kind::S_214_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_215_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_216_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_209_primitive_type_number: // primitive.type.number
+      case symbol_kind::S_210_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_211_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_212_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_213_primitive_type_number_list: // primitive.type.number.list
+      case symbol_kind::S_214_primitive_type_number_list_member: // primitive.type.number.list.member
+      case symbol_kind::S_215_primitive_type_number_list_start: // primitive.type.number.list.start
+      case symbol_kind::S_216_primitive_type_number_list_append: // primitive.type.number.list.append
       case symbol_kind::S_217_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_218_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_219_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_220_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_221_primitive_signal_source_waveform: // primitive.signal.source.waveform
-      case symbol_kind::S_222_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_223_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_224_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_225_primitive_ui: // primitive.ui
-      case symbol_kind::S_226_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_227_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_228_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_229_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_230_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_231_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_232_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_233_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_234_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_235_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_236_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_237_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_238_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_239_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_240_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_241_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_218_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_219_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_220_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_221_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_222_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_223_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_224_primitive_signal_source_waveform: // primitive.signal.source.waveform
+      case symbol_kind::S_225_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_226_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_227_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_228_primitive_ui: // primitive.ui
+      case symbol_kind::S_229_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_230_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_231_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_232_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_233_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_234_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_235_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_236_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_237_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_238_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_239_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_240_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_241_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_242_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_243_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_244_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_243_statement_definition: // statement.definition
-      case symbol_kind::S_244_statement_definition_function_incomplete: // statement.definition.function.incomplete
-      case symbol_kind::S_245_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_246_statement_definition_substitution: // statement.definition.substitution
-      case symbol_kind::S_247_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_248_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_249_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_250_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_251_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_252_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_253_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_254_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_255_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_256_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_257_statement_identifier: // statement.identifier
-      case symbol_kind::S_258_statement_identifier_box: // statement.identifier.box
-      case symbol_kind::S_259_statement_identifier_waveform: // statement.identifier.waveform
-      case symbol_kind::S_260_statement_import: // statement.import
-      case symbol_kind::S_261_statement_list: // statement.list
-      case symbol_kind::S_262_statement_list_start: // statement.list.start
-      case symbol_kind::S_263_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_264_statement_list_append: // statement.list.append
-      case symbol_kind::S_265_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_270_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_271_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_272_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_246_statement_definition: // statement.definition
+      case symbol_kind::S_247_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_248_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_249_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_250_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_251_statement_definition_error: // statement.definition.error
+      case symbol_kind::S_252_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_253_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_254_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_255_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_256_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_257_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_258_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_259_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_260_statement_identifier: // statement.identifier
+      case symbol_kind::S_261_statement_identifier_box: // statement.identifier.box
+      case symbol_kind::S_262_statement_identifier_waveform: // statement.identifier.waveform
+      case symbol_kind::S_263_statement_import: // statement.import
+      case symbol_kind::S_264_statement_list: // statement.list
+      case symbol_kind::S_265_statement_list_start: // statement.list.start
+      case symbol_kind::S_266_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_267_statement_list_append: // statement.list.append
+      case symbol_kind::S_268_statement_list_append_qualified: // statement.list.append.qualified
       case symbol_kind::S_273_statement_signal_pattern_rule: // statement.signal.pattern.rule
-        value.copy< Type::exp > (YY_MOVE (that.value));
+      case symbol_kind::S_274_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_275_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_276_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+        value.copy< Tree > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_148_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.copy< bool > (YY_MOVE (that.value));
         break;
 
@@ -4595,13 +4686,40 @@ switch (yykind)
       case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
       case symbol_kind::S_QUADMODE: // QUADMODE
       case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
-      case symbol_kind::S_266_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_267_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_268_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_269_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_269_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_270_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_271_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_272_statement_math_precision_list_append: // statement.math.precision.list.append
         value.copy< int > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_WITH: // WITH
+      case symbol_kind::S_LETREC: // LETREC
+      case symbol_kind::S_SPLIT: // SPLIT
+      case symbol_kind::S_MIX: // MIX
+      case symbol_kind::S_SEQ: // SEQ
+      case symbol_kind::S_COMMA: // COMMA
+      case symbol_kind::S_REC: // REC
+      case symbol_kind::S_LT: // LT
+      case symbol_kind::S_LE: // LE
+      case symbol_kind::S_EQ: // EQ
+      case symbol_kind::S_GT: // GT
+      case symbol_kind::S_GE: // GE
+      case symbol_kind::S_NE: // NE
+      case symbol_kind::S_ADD: // ADD
+      case symbol_kind::S_SUB: // SUB
+      case symbol_kind::S_OR: // OR
+      case symbol_kind::S_MUL: // MUL
+      case symbol_kind::S_DIV: // DIV
+      case symbol_kind::S_MOD: // MOD
+      case symbol_kind::S_AND: // AND
+      case symbol_kind::S_XOR: // XOR
+      case symbol_kind::S_LSH: // LSH
+      case symbol_kind::S_RSH: // RSH
+      case symbol_kind::S_POWOP: // POWOP
+      case symbol_kind::S_FDELAY: // FDELAY
+      case symbol_kind::S_DELAY1: // DELAY1
+      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_MEM: // MEM
       case symbol_kind::S_PREFIX: // PREFIX
       case symbol_kind::S_INTCAST: // INTCAST
@@ -4647,7 +4765,6 @@ switch (yykind)
       case symbol_kind::S_SELECT2: // SELECT2
       case symbol_kind::S_SELECT3: // SELECT3
       case symbol_kind::S_LAMBDA: // LAMBDA
-      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_WIRE: // WIRE
       case symbol_kind::S_CUT: // CUT
       case symbol_kind::S_ENDDEF: // ENDDEF
@@ -4658,8 +4775,6 @@ switch (yykind)
       case symbol_kind::S_RBRAQ: // RBRAQ
       case symbol_kind::S_LCROC: // LCROC
       case symbol_kind::S_RCROC: // RCROC
-      case symbol_kind::S_WITH: // WITH
-      case symbol_kind::S_LETREC: // LETREC
       case symbol_kind::S_WHERE: // WHERE
       case symbol_kind::S_DEF: // DEF
       case symbol_kind::S_IMPORT: // IMPORT
@@ -4721,8 +4836,8 @@ switch (yykind)
 
 
   template <typename Base>
-  Implementation::symbol_kind_type
-  Implementation::basic_symbol<Base>::type_get () const YY_NOEXCEPT
+  AbstractImplementation::symbol_kind_type
+  AbstractImplementation::basic_symbol<Base>::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
@@ -4730,14 +4845,14 @@ switch (yykind)
 
   template <typename Base>
   bool
-  Implementation::basic_symbol<Base>::empty () const YY_NOEXCEPT
+  AbstractImplementation::basic_symbol<Base>::empty () const YY_NOEXCEPT
   {
     return this->kind () == symbol_kind::S_YYEMPTY;
   }
 
   template <typename Base>
   void
-  Implementation::basic_symbol<Base>::move (basic_symbol& s)
+  AbstractImplementation::basic_symbol<Base>::move (basic_symbol& s)
   {
     super_type::move (s);
     switch (this->kind ())
@@ -4747,55 +4862,55 @@ switch (yykind)
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_145_doc_list: // doc.list
-      case symbol_kind::S_146_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_147_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_metadata: // doc.metadata
+      case symbol_kind::S_145_doc_metadata: // doc.metadata
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_list: // expression.composition.list
-      case symbol_kind::S_154_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_155_expression_composition_record: // expression.composition.record
-      case symbol_kind::S_156_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_157_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_158_expression_environment: // expression.environment
-      case symbol_kind::S_159_expression_infix: // expression.infix
-      case symbol_kind::S_160_expression_infix_definitions_local: // expression.infix.definitions.local
-      case symbol_kind::S_161_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_162_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_163_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_164_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_165_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_166_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_167_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_168_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_169_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_170_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_171_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_172_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_173_expression_lambda: // expression.lambda
-      case symbol_kind::S_174_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_175_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_176_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_177_expression_letrec: // expression.letrec
-      case symbol_kind::S_178_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_179_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_180_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_181_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_182_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_183_expression_library: // expression.library
-      case symbol_kind::S_184_expression_math: // expression.math
-      case symbol_kind::S_185_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_186_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_187_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_188_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_189_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_190_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_191_expression_math_scalar: // expression.math.scalar
-      case symbol_kind::S_192_expression_math_trigonometry: // expression.math.trigonometry
-      case symbol_kind::S_193_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_194_expression_parallel: // expression.parallel
+      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_159_expression_environment: // expression.environment
+      case symbol_kind::S_160_expression_infix: // expression.infix
+      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_174_expression_lambda: // expression.lambda
+      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_178_expression_letrec: // expression.letrec
+      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_184_expression_library: // expression.library
+      case symbol_kind::S_185_expression_math: // expression.math
+      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_192_expression_math_scalar: // expression.math.scalar
+      case symbol_kind::S_193_expression_math_trigonometry: // expression.math.trigonometry
+      case symbol_kind::S_194_expression_parenthesis: // expression.parenthesis
       case symbol_kind::S_195_expression_signal: // expression.signal
       case symbol_kind::S_196_expression_signal_control: // expression.signal.control
       case symbol_kind::S_197_expression_signal_delay: // expression.signal.delay
@@ -4810,71 +4925,74 @@ switch (yykind)
       case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
-      case symbol_kind::S_209_primitive_type_number_list: // primitive.type.number.list
-      case symbol_kind::S_210_primitive_type_number_list_member: // primitive.type.number.list.member
-      case symbol_kind::S_211_primitive_type_number_list_start: // primitive.type.number.list.start
-      case symbol_kind::S_212_primitive_type_number_list_append: // primitive.type.number.list.append
-      case symbol_kind::S_213_primitive_type_number: // primitive.type.number
-      case symbol_kind::S_214_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_215_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_216_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_209_primitive_type_number: // primitive.type.number
+      case symbol_kind::S_210_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_211_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_212_primitive_type_any: // primitive.type.any
+      case symbol_kind::S_213_primitive_type_number_list: // primitive.type.number.list
+      case symbol_kind::S_214_primitive_type_number_list_member: // primitive.type.number.list.member
+      case symbol_kind::S_215_primitive_type_number_list_start: // primitive.type.number.list.start
+      case symbol_kind::S_216_primitive_type_number_list_append: // primitive.type.number.list.append
       case symbol_kind::S_217_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_218_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_219_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_220_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_221_primitive_signal_source_waveform: // primitive.signal.source.waveform
-      case symbol_kind::S_222_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_223_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_224_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_225_primitive_ui: // primitive.ui
-      case symbol_kind::S_226_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_227_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_228_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_229_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_230_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_231_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_232_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_233_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_234_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_235_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_236_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_237_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_238_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_239_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_240_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_241_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_218_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_219_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_220_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_221_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_222_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_223_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_224_primitive_signal_source_waveform: // primitive.signal.source.waveform
+      case symbol_kind::S_225_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_226_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_227_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_228_primitive_ui: // primitive.ui
+      case symbol_kind::S_229_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_230_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_231_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_232_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_233_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_234_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_235_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_236_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_237_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_238_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_239_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_240_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_241_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_242_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_243_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_244_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_243_statement_definition: // statement.definition
-      case symbol_kind::S_244_statement_definition_function_incomplete: // statement.definition.function.incomplete
-      case symbol_kind::S_245_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_246_statement_definition_substitution: // statement.definition.substitution
-      case symbol_kind::S_247_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_248_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_249_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_250_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_251_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_252_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_253_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_254_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_255_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_256_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_257_statement_identifier: // statement.identifier
-      case symbol_kind::S_258_statement_identifier_box: // statement.identifier.box
-      case symbol_kind::S_259_statement_identifier_waveform: // statement.identifier.waveform
-      case symbol_kind::S_260_statement_import: // statement.import
-      case symbol_kind::S_261_statement_list: // statement.list
-      case symbol_kind::S_262_statement_list_start: // statement.list.start
-      case symbol_kind::S_263_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_264_statement_list_append: // statement.list.append
-      case symbol_kind::S_265_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_270_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_271_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_272_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_246_statement_definition: // statement.definition
+      case symbol_kind::S_247_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_248_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_249_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_250_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_251_statement_definition_error: // statement.definition.error
+      case symbol_kind::S_252_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_253_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_254_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_255_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_256_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_257_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_258_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_259_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_260_statement_identifier: // statement.identifier
+      case symbol_kind::S_261_statement_identifier_box: // statement.identifier.box
+      case symbol_kind::S_262_statement_identifier_waveform: // statement.identifier.waveform
+      case symbol_kind::S_263_statement_import: // statement.import
+      case symbol_kind::S_264_statement_list: // statement.list
+      case symbol_kind::S_265_statement_list_start: // statement.list.start
+      case symbol_kind::S_266_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_267_statement_list_append: // statement.list.append
+      case symbol_kind::S_268_statement_list_append_qualified: // statement.list.append.qualified
       case symbol_kind::S_273_statement_signal_pattern_rule: // statement.signal.pattern.rule
-        value.move< Type::exp > (YY_MOVE (s.value));
+      case symbol_kind::S_274_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_275_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_276_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+        value.move< Tree > (YY_MOVE (s.value));
         break;
 
-      case symbol_kind::S_148_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.move< bool > (YY_MOVE (s.value));
         break;
 
@@ -4887,13 +5005,40 @@ switch (yykind)
       case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
       case symbol_kind::S_QUADMODE: // QUADMODE
       case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
-      case symbol_kind::S_266_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_267_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_268_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_269_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_269_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_270_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_271_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_272_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< int > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_WITH: // WITH
+      case symbol_kind::S_LETREC: // LETREC
+      case symbol_kind::S_SPLIT: // SPLIT
+      case symbol_kind::S_MIX: // MIX
+      case symbol_kind::S_SEQ: // SEQ
+      case symbol_kind::S_COMMA: // COMMA
+      case symbol_kind::S_REC: // REC
+      case symbol_kind::S_LT: // LT
+      case symbol_kind::S_LE: // LE
+      case symbol_kind::S_EQ: // EQ
+      case symbol_kind::S_GT: // GT
+      case symbol_kind::S_GE: // GE
+      case symbol_kind::S_NE: // NE
+      case symbol_kind::S_ADD: // ADD
+      case symbol_kind::S_SUB: // SUB
+      case symbol_kind::S_OR: // OR
+      case symbol_kind::S_MUL: // MUL
+      case symbol_kind::S_DIV: // DIV
+      case symbol_kind::S_MOD: // MOD
+      case symbol_kind::S_AND: // AND
+      case symbol_kind::S_XOR: // XOR
+      case symbol_kind::S_LSH: // LSH
+      case symbol_kind::S_RSH: // RSH
+      case symbol_kind::S_POWOP: // POWOP
+      case symbol_kind::S_FDELAY: // FDELAY
+      case symbol_kind::S_DELAY1: // DELAY1
+      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_MEM: // MEM
       case symbol_kind::S_PREFIX: // PREFIX
       case symbol_kind::S_INTCAST: // INTCAST
@@ -4939,7 +5084,6 @@ switch (yykind)
       case symbol_kind::S_SELECT2: // SELECT2
       case symbol_kind::S_SELECT3: // SELECT3
       case symbol_kind::S_LAMBDA: // LAMBDA
-      case symbol_kind::S_DOT: // DOT
       case symbol_kind::S_WIRE: // WIRE
       case symbol_kind::S_CUT: // CUT
       case symbol_kind::S_ENDDEF: // ENDDEF
@@ -4950,8 +5094,6 @@ switch (yykind)
       case symbol_kind::S_RBRAQ: // RBRAQ
       case symbol_kind::S_LCROC: // LCROC
       case symbol_kind::S_RCROC: // RCROC
-      case symbol_kind::S_WITH: // WITH
-      case symbol_kind::S_LETREC: // LETREC
       case symbol_kind::S_WHERE: // WHERE
       case symbol_kind::S_DEF: // DEF
       case symbol_kind::S_IMPORT: // IMPORT
@@ -5012,13 +5154,13 @@ switch (yykind)
 
   // by_kind.
   inline
-  Implementation::by_kind::by_kind () YY_NOEXCEPT
+  AbstractImplementation::by_kind::by_kind () YY_NOEXCEPT
     : kind_ (symbol_kind::S_YYEMPTY)
   {}
 
 #if 201103L <= YY_CPLUSPLUS
   inline
-  Implementation::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
+  AbstractImplementation::by_kind::by_kind (by_kind&& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {
     that.clear ();
@@ -5026,12 +5168,12 @@ switch (yykind)
 #endif
 
   inline
-  Implementation::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
+  AbstractImplementation::by_kind::by_kind (const by_kind& that) YY_NOEXCEPT
     : kind_ (that.kind_)
   {}
 
   inline
-  Implementation::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
+  AbstractImplementation::by_kind::by_kind (token_kind_type t) YY_NOEXCEPT
     : kind_ (yytranslate_ (t))
   {}
 
@@ -5039,30 +5181,30 @@ switch (yykind)
 
   inline
   void
-  Implementation::by_kind::clear () YY_NOEXCEPT
+  AbstractImplementation::by_kind::clear () YY_NOEXCEPT
   {
     kind_ = symbol_kind::S_YYEMPTY;
   }
 
   inline
   void
-  Implementation::by_kind::move (by_kind& that)
+  AbstractImplementation::by_kind::move (by_kind& that)
   {
     kind_ = that.kind_;
     that.clear ();
   }
 
   inline
-  Implementation::symbol_kind_type
-  Implementation::by_kind::kind () const YY_NOEXCEPT
+  AbstractImplementation::symbol_kind_type
+  AbstractImplementation::by_kind::kind () const YY_NOEXCEPT
   {
     return kind_;
   }
 
 
   inline
-  Implementation::symbol_kind_type
-  Implementation::by_kind::type_get () const YY_NOEXCEPT
+  AbstractImplementation::symbol_kind_type
+  AbstractImplementation::by_kind::type_get () const YY_NOEXCEPT
   {
     return this->kind ();
   }
@@ -5073,4 +5215,4 @@ switch (yykind)
 
 
 
-#endif // !YY_YY_FAUSTPARSER_HH_INCLUDED
+#endif // !YY_YY_ABSTRACT_IMPLEMENTATION_HH_INCLUDED

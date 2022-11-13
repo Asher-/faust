@@ -30,6 +30,8 @@
 #include "global.hh"
 #include "target/fir/fir_to_fir.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 ForLoopInst* CodeLoop::generateScalarLoop(const std::string& counter, bool loop_var_in_bytes)
@@ -41,9 +43,9 @@ ForLoopInst* CodeLoop::generateScalarLoop(const std::string& counter, bool loop_
 
     if (loop_var_in_bytes) {
         loop_end = InstBuilder::genLessThan(
-            loop_decl->load(), InstBuilder::genMul(InstBuilder::genInt32NumInst((int)pow(2, gGlobal->gFloatSize + 1)),
+            loop_decl->load(), InstBuilder::genMul(InstBuilder::genInt32NumInst((int)pow(2, ::Faust::Primitive::Math::floatSize + 1)),
                                                    InstBuilder::genLoadFunArgsVar(counter)));
-        loop_increment = loop_decl->store(InstBuilder::genAdd(loop_decl->load(), (int)pow(2, gGlobal->gFloatSize + 1)));
+        loop_increment = loop_decl->store(InstBuilder::genAdd(loop_decl->load(), (int)pow(2, ::Faust::Primitive::Math::floatSize + 1)));
     } else {
         loop_end       = InstBuilder::genLessThan(loop_decl->load(), InstBuilder::genLoadFunArgsVar(counter));
         loop_increment = loop_decl->store(InstBuilder::genAdd(loop_decl->load(), 1));

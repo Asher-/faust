@@ -23,7 +23,7 @@
 
 #include "dag_instruction_compiler.hh"
 #include "compiler/signals/ppsig.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "timing.hh"
 #include "target/fir/fir_to_fir.hh"
 #include "global.hh"

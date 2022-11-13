@@ -37,6 +37,15 @@
 #include "tlib/tlib.hh"
 #include "global.hh"
 
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
+      extern int  floatSize;
+    }
+  }
+}
+
+
 #ifdef WIN32
 #pragma warning(disable : 4250)
 #endif
@@ -369,7 +378,7 @@ class CodeContainer : public virtual Garbageable {
 
     string generateJSONAux()
     {
-        if (gGlobal->gFloatSize == 1) {
+        if (::Faust::Primitive::Math::floatSize == 1) {
             return generateJSON<float>();
         } else {
             return generateJSON<double>();

@@ -31,12 +31,12 @@
 // version 2.2 of Bison.
 
 /**
- ** \file location.hh
+ ** \file abstract/location.hh
  ** Define the ::Faust::Compiler::Parser::location class.
  */
 
-#ifndef YY_YY_LOCATION_HH_INCLUDED
-# define YY_YY_LOCATION_HH_INCLUDED
+#ifndef YY_YY_ABSTRACT_LOCATION_HH_INCLUDED
+# define YY_YY_ABSTRACT_LOCATION_HH_INCLUDED
 
 # include <iostream>
 # include <string>
@@ -299,4 +299,4 @@ namespace Faust { namespace Compiler { namespace Parser {
 
 } } } // ::Faust::Compiler::Parser
 
-#endif // !YY_YY_LOCATION_HH_INCLUDED
+#endif // !YY_YY_ABSTRACT_LOCATION_HH_INCLUDED

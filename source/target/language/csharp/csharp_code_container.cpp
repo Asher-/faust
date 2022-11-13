@@ -26,6 +26,8 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 map<string, bool>   CSharpInstVisitor::gFunctionSymbolTable;
@@ -48,7 +50,7 @@ CodeContainer* CSharpCodeContainer::createContainer(const string& name, const st
 {
     CodeContainer* container;
 
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for CSharp\n");
     }
     if (gGlobal->gOpenCLSwitch) {

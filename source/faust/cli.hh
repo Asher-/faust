@@ -30,6 +30,8 @@
 
 #include "faust/compiler/generator/common.hh"
 
+#include "faust/primitive/math.hh"
+
 // Timing can be used outside of the scope of 'gGlobal'
 extern bool gTimingSwitch;
 
@@ -568,39 +570,39 @@ namespace Faust {
 
                 // 'real' options
             } else if (isCmd(_argv[i], "-single", "--single-precision-floats")) {
-                if (float_size && gGlobal->gFloatSize != 1) {
+                if (float_size && ::Faust::Primitive::Math::floatSize != 1) {
                     throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
                 } else {
                     float_size = true;
                 }
-                gGlobal->gFloatSize = 1;
+                ::Faust::Primitive::Math::floatSize = 1;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-double", "--double-precision-floats")) {
-                if (float_size && gGlobal->gFloatSize != 2) {
+                if (float_size && ::Faust::Primitive::Math::floatSize != 2) {
                     throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
                 } else {
                     float_size = true;
                 }
-                gGlobal->gFloatSize = 2;
+                ::Faust::Primitive::Math::floatSize = 2;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-quad", "--quad-precision-floats")) {
-                if (float_size && gGlobal->gFloatSize != 3) {
+                if (float_size && ::Faust::Primitive::Math::floatSize != 3) {
                     throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
                 } else {
                     float_size = true;
                 }
-                gGlobal->gFloatSize = 3;
+                ::Faust::Primitive::Math::floatSize = 3;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-fx", "--fixed-point")) {
-                if (float_size && gGlobal->gFloatSize != 4) {
+                if (float_size && ::Faust::Primitive::Math::floatSize != 4) {
                     throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
                 } else {
                     float_size = true;
                 }
-                gGlobal->gFloatSize = 4;
+                ::Faust::Primitive::Math::floatSize = 4;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-mdoc", "--mathdoc")) {
@@ -649,7 +651,7 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-exp10", "--generate-exp10")) {
-                gGlobal->gHasExp10 = true;
+                ::Faust::Primitive::Math::hasExp10 = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-os", "--one-sample") || isCmd(_argv[i], "-os0", "--one-sample0")) {
@@ -673,10 +675,10 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-ftz", "--flush-to-zero")) {
-                gGlobal->gFTZMode = std::atoi(_argv[i + 1]);
-                if ((gGlobal->gFTZMode > 2) || (gGlobal->gFTZMode < 0)) {
+                ::Faust::Primitive::Math::FTZMode = std::atoi(_argv[i + 1]);
+                if ((::Faust::Primitive::Math::FTZMode > 2) || (::Faust::Primitive::Math::FTZMode < 0)) {
                     stringstream error;
-                    error << "ERROR : invalid -ftz option: " << gGlobal->gFTZMode << endl;
+                    error << "ERROR : invalid -ftz option: " << ::Faust::Primitive::Math::FTZMode << endl;
                     throw faustexception(error.str());
                 }
                 i += 2;
@@ -691,7 +693,7 @@ namespace Faust {
                 i += 2;
 
             } else if (isCmd(_argv[i], "-mapp", "--math-approximation")) {
-                gGlobal->gMathApprox = true;
+                ::Faust::Primitive::Math::approx = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-ns", "--namespace")) {
@@ -777,7 +779,7 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-me", "--math-exceptions")) {
-                gGlobal->gMathExceptions = true;
+                ::Faust::Primitive::Math::exceptions = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-lm", "--local-machine") || isCmd(_argv[i], "-rm", "--remote-machine") ||
@@ -826,7 +828,7 @@ namespace Faust {
             throw faustexception("ERROR : '-os' option cannot only be used in scalar mode\n");
         }
 
-        if (gGlobal->gFTZMode == 2 && gGlobal->gOutputLang == "soul") {
+        if (::Faust::Primitive::Math::FTZMode == 2 && gGlobal->gOutputLang == "soul") {
             throw faustexception("ERROR : '-ftz 2' option cannot be used in 'soul' backend\n");
         }
 
@@ -878,7 +880,7 @@ namespace Faust {
             throw faustexception("ERROR : -cm cannot be used with the 'soul' backend\n");
         }
 
-        if (gGlobal->gFloatSize == 4 && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
+        if (::Faust::Primitive::Math::floatSize == 4 && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
             gGlobal->gOutputLang != "c") {
             throw faustexception("ERROR : -fx can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }

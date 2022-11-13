@@ -57,7 +57,7 @@ unique to each sharing analysis must be generated.
 #include <stdlib.h>
 #include <string.h>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "shlysis.hh"
 
 /**

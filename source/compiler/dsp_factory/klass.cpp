@@ -47,6 +47,8 @@
 #include "compiler/dsp_factory/uitree.hh"
 #include "global.hh"
 
+#include "faust/primitive/math.hh"
+
 static int gTaskCount = 0;
 
 bool Klass::fNeedPowerDef = false;
@@ -225,7 +227,7 @@ void Klass::printAdditionalCode(ostream& fout)
         fout << "template <> 	 inline int faustpower<1>(int x)            { return x; }" << endl;
         fout << "template <> 	 inline int faustpower<2>(int x)            { return x*x; }" << endl;
 
-        if (gGlobal->gFloatSize == 1) {
+        if (::Faust::Primitive::Math::floatSize == 1) {
             fout << "template <int N> inline float faustpower(float x)            { return faustpower<N/2>(x) * "
                     "faustpower<N-N/2>(x); } "
                  << endl;
@@ -233,7 +235,7 @@ void Klass::printAdditionalCode(ostream& fout)
             fout << "template <> 	 inline float faustpower<1>(float x)          { return x; }" << endl;
             fout << "template <> 	 inline float faustpower<2>(float x)          { return x*x; }" << endl;
 
-        } else if (gGlobal->gFloatSize == 2) {
+        } else if (::Faust::Primitive::Math::floatSize == 2) {
             fout << "template <int N> inline double faustpower(double x)          { return faustpower<N/2>(x) * "
                     "faustpower<N-N/2>(x); } "
                  << endl;
@@ -241,7 +243,7 @@ void Klass::printAdditionalCode(ostream& fout)
             fout << "template <> 	 inline double faustpower<1>(double x)        { return x; }" << endl;
             fout << "template <> 	 inline double faustpower<2>(double x)        { return x*x; }" << endl;
 
-        } else if (gGlobal->gFloatSize == 3) {
+        } else if (::Faust::Primitive::Math::floatSize == 3) {
             fout << "template <int N> inline long double faustpower(long double x){ return powl(x,N); }" << endl;
         }
         fout << "#endif" << endl;

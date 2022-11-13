@@ -19,108 +19,127 @@
  ************************************************************************
  ************************************************************************/
 
+#ifndef __FAUST__PRIMITIVE__MATH__ABSOLUTE__HH__
+#define __FAUST__PRIMITIVE__MATH__ABSOLUTE__HH__
+
 #include <math.h>
+
+#include "compiler/math_primitives/xtended.hh"
 
 #include "compiler/type_manager/Text.hh"
 #include "target/code_container.hh"
 #include "compiler/types/floats.hh"
-#include "sigtyperules.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "compiler/signals/sigtyperules.hh"
 
-class AbsPrim : public xtended {
-   public:
-    AbsPrim() : xtended("abs") {}
+#include "compiler/signals/sigtype.hh"
 
-    virtual unsigned int arity() { return 1; }
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
 
-    virtual bool needCache() { return true; }
+      class Abs : public ::Faust::Primitive::Math::xtended {
+          public:
+          static Abs* self;
+                  
+          Abs() : ::Faust::Primitive::Math::xtended("abs") {}
 
-    virtual ::Type infereSigType(ConstTypes args)
-    {
-        faustassert(args.size() == arity());
-        Type t = args[0];
-        return castInterval(t, abs(t->getInterval()));
-        return t;
+          virtual unsigned int arity() { return 1; }
+
+          virtual bool needCache() { return true; }
+
+          virtual ::Type infereSigType(ConstTypes args)
+          {
+              faustassert(args.size() == arity());
+              ::Type t = args[0];
+              return castInterval(t, abs(t->getInterval()));
+              return t;
+          }
+
+          virtual int infereSigOrder(const vector<int>& args)
+          {
+              faustassert(args.size() == arity());
+              return args[0];
+          }
+
+          virtual Tree computeSigOutput(const vector<Tree>& args)
+          {
+              double f;
+              int    i;
+              faustassert(args.size() == arity());
+          
+              // abs(abs(sig)) ==> abs(sig)
+              ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(args[0]);
+              if (xt == (::Faust::Primitive::Math::xtended*)self) {
+                  return args[0];
+                  
+              } else if (isDouble(args[0]->node(), &f)) {
+                  return tree(fabs(f));
+
+              } else if (isInt(args[0]->node(), &i)) {
+                  return tree(abs(i));
+
+              } else {
+                  return tree(symbol(), args[0]);
+              }
+          }
+
+          virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+        
+              /*
+               04/25/22 : this optimisation cannot be done because interval computation is buggy: like no.noise interval [O..inf] !
+               */
+          
+              /*
+                  if (i.valid && i.lo >= 0) {
+                      return *args.begin();
+                  } else {
+                      // Only compute abs when arg is < 0
+                      if (t->nature() == kReal) {
+                          Values cargs;
+                          prepareTypeArgsResult(result, args, types, rtype, atypes, cargs);
+                          return container->pushFunction(subst("fabs$0", isuffix()), rtype, atypes, cargs);
+                      } else {
+                          // "Int" abs
+                          rtype = Typed::kInt32;
+                          atypes.push_back(Typed::kInt32);
+                          return container->pushFunction("abs", rtype, atypes, args);
+                      }
+                  }
+              */
+          
+              string fun_name = (result->nature() == kInt) ? "abs" : subst("fabs$0", isuffix());
+              return generateFun(container, fun_name, args, result, types);
+          }
+
+          virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              ::Type t = infereSigType(types);
+              if (t->nature() == kReal) {
+                  return subst("fabs$1($0)", args[0], isuffix());
+              } else {
+                  return subst("abs($0)", args[0]);
+              }
+          }
+
+          virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              ::Type t = infereSigType(types);
+              return subst("\\left\\lvert{$0}\\right\\rvert", args[0]);
+          }
+      };
+      
     }
+  }
+}
 
-    virtual int infereSigOrder(const vector<int>& args)
-    {
-        faustassert(args.size() == arity());
-        return args[0];
-    }
+#endif
 
-    virtual Tree computeSigOutput(const vector<Tree>& args)
-    {
-        double f;
-        int    i;
-        faustassert(args.size() == arity());
-    
-        // abs(abs(sig)) ==> abs(sig)
-        xtended* xt = (xtended*)getUserData(args[0]);
-        if (xt == gGlobal->gAbsPrim) {
-            return args[0];
-            
-        } else if (isDouble(args[0]->node(), &f)) {
-            return tree(fabs(f));
-
-        } else if (isInt(args[0]->node(), &i)) {
-            return tree(abs(i));
-
-        } else {
-            return tree(symbol(), args[0]);
-        }
-    }
-
-    virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-  
-        /*
-         04/25/22 : this optimisation cannot be done because interval computation is buggy: like no.noise interval [O..inf] !
-         */
-    
-        /*
-            if (i.valid && i.lo >= 0) {
-                return *args.begin();
-            } else {
-                // Only compute abs when arg is < 0
-                if (t->nature() == kReal) {
-                    Values cargs;
-                    prepareTypeArgsResult(result, args, types, rtype, atypes, cargs);
-                    return container->pushFunction(subst("fabs$0", isuffix()), rtype, atypes, cargs);
-                } else {
-                    // "Int" abs
-                    rtype = Typed::kInt32;
-                    atypes.push_back(Typed::kInt32);
-                    return container->pushFunction("abs", rtype, atypes, args);
-                }
-            }
-        */
-    
-        string fun_name = (result->nature() == kInt) ? "abs" : subst("fabs$0", isuffix());
-        return generateFun(container, fun_name, args, result, types);
-    }
-
-    virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        Type t = infereSigType(types);
-        if (t->nature() == kReal) {
-            return subst("fabs$1($0)", args[0], isuffix());
-        } else {
-            return subst("abs($0)", args[0]);
-        }
-    }
-
-    virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        ::Type t = infereSigType(types);
-        return subst("\\left\\lvert{$0}\\right\\rvert", args[0]);
-    }
-};

@@ -27,7 +27,7 @@
 #include <set>
 #include <string>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "documentator/doc_autodoc.hh"
 #include "documentator/doc_lang.hh"
 #include "documentator/doc_metadatas.hh"

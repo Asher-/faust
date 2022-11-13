@@ -28,7 +28,7 @@
 #include <string>
 
 #include "compiler/type_manager/Text.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/compile/xml_description.hh"
 #include "compiler/errors/exception.hh"
 #include "global.hh"

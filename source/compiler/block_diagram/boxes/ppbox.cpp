@@ -29,6 +29,8 @@
 #include "compiler/signals/signals.hh"
 #include "compiler/math_primitives/xtended.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 const char* prim0name(CTree *(*ptr)())
@@ -159,7 +161,7 @@ ostream& boxpp::print(ostream& fout) const
         ldef, slot, ident, rules, chan, ins, outs, lroutes;
 
     const char* str;
-    xtended* xt = (xtended*)getUserData(fBox);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(fBox);
 
     // Primitive elements
     if (xt)
@@ -200,7 +202,7 @@ ostream& boxpp::print(ostream& fout) const
         fout << "ffunction(" << type2str(ffrestype(ff));
         Tree namelist = nth(ffsignature(ff), 1);
         char sep      = ' ';
-        for (int i1 = 0; i1 < gGlobal->gFloatSize; i1++) {
+        for (int i1 = 0; i1 < ::Faust::Primitive::Math::floatSize; i1++) {
             fout << sep << tree2str(nth(namelist, i1));
             sep = '|';
         }
@@ -403,7 +405,7 @@ ostream& boxppShared::print(ostream& fout) const
         ldef, slot, ident, rules, chan, ins, outs, lroutes;
 
     const char* str;
-    xtended* xt = (xtended*)getUserData(fBox);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(fBox);
 
     // Primitive elements
     if (xt)
@@ -446,7 +448,7 @@ ostream& boxppShared::print(ostream& fout) const
             s << "ffunction(" << type2str(ffrestype(ff));
             Tree namelist = nth(ffsignature(ff), 1);
             char sep      = ' ';
-            for (int i1 = 0; i1 < gGlobal->gFloatSize; i1++) {
+            for (int i1 = 0; i1 < ::Faust::Primitive::Math::floatSize; i1++) {
                 s << sep << tree2str(nth(namelist, i1));
                 sep = '|';
             }

@@ -46,7 +46,7 @@
 #pragma warning(disable: 4996)
 
 #endif
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "sourcefetcher.hh"
 
 #define VERSION "0.2"

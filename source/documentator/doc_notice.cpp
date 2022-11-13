@@ -26,7 +26,7 @@
 #include <iostream>
 #include <set>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "documentator/doc_lang.hh"
 #include "documentator/doc_notice.hh"
 #include "compiler/file_handling/string_substitution.hh"

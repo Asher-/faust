@@ -28,6 +28,8 @@
 #include "target/fir/visitor/function_call_inliner.hh"
 #include "target/fir/visitor/loop_variable_renamer.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 /*
@@ -92,7 +94,7 @@ CodeContainer* WASMCodeContainer::createContainer(const string& name, int numInp
 {
     CodeContainer* container;
 
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for WebAssembly\n");
     }
     if (gGlobal->gOpenCLSwitch) {
@@ -327,7 +329,7 @@ void WASMCodeContainer::produceClass()
 
     // JSON generation
     string json;
-    if (gGlobal->gFloatSize == 1) {
+    if (::Faust::Primitive::Math::floatSize == 1) {
         json = generateJSON<float>();
     } else {
         json = generateJSON<double>();

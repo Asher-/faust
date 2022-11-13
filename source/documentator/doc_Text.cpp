@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "documentator/doc_Text.hh"
 #include "compiler/errors/exception.hh"
 #include "compiler/types/floats.hh"

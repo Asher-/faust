@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #include "interpreter_dsp.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "libfaust.h"
 #include "lock_api.hh"
 

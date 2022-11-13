@@ -29,7 +29,7 @@
 #pragma warning(disable : 4251 4275 4800)
 #endif
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "libfaust.h"
 #include "wasm_dsp_aux.hh"
 

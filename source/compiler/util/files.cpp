@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #include "files.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/errors/exception.hh"
 #include "global.hh"
 

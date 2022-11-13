@@ -53,7 +53,7 @@
 #include <string>
 #include <vector>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "documentator/doc.hh"
 #include "documentator/doc_Text.hh"
 #include "documentator/doc_autodoc.hh"
@@ -68,7 +68,7 @@
 #include "files.hh"
 #include "global.hh"
 #include "documentator/lateq.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
 #include "privatise.hh"
@@ -329,7 +329,7 @@ static void printDocMetadata(const Tree expr, ostream& docout)
  */
 static void printFaustListings(ostream& docout)
 {
-    if (gGlobal->gLstDependenciesSwitch) {
+    if (gGlobal->gParser._lstDependenciesSwitch) {
         vector<string> pathnames = gGlobal->gReader.listSrcFiles();
         for (unsigned int i = 0; i < pathnames.size(); i++) {
             printFaustListing(pathnames[i], docout);
@@ -448,7 +448,7 @@ static void printDocContent(const char* svgTopDir, const vector<Tree>& docVector
     code = docMasterCodeMap.begin();
 
     if (doesFileBeginWithCode(gGlobal->gMasterDocument) && (!docMasterCodeMap.empty()) &&
-        gGlobal->gLstDistributedSwitch) {
+        gGlobal->gParser._lstDistributedSwitch) {
         printdocCodeSlices(*code, docout);
         code++;
     }
@@ -480,7 +480,7 @@ static void printDocContent(const char* svgTopDir, const vector<Tree>& docVector
         }
         // cerr << " ...end of <mdoc> parsing." << endl;
 
-        if (code != docMasterCodeMap.end() && gGlobal->gLstDistributedSwitch) {
+        if (code != docMasterCodeMap.end() && gGlobal->gParser._lstDistributedSwitch) {
             printdocCodeSlices(*code, docout);
         }
     }

@@ -1,6 +1,6 @@
-#line 1 "lexer/faustlexer.cpp"
+#line 1 "lexer/abstract/implementation.cpp"
 
-#line 3 "lexer/faustlexer.cpp"
+#line 3 "lexer/abstract/implementation.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -11396,23 +11396,23 @@ static const yy_state_type yy_NUL_trans[625] =
 
 static const flex_int16_t yy_rule_linenum[157] =
     {   0,
-       93,   94,   95,   96,   97,   98,   99,  101,  102,  103,
-      104,  105,  106,  107,  108,  109,  110,  111,  112,  113,
-      115,  116,  117,  118,  119,  120,  121,  122,  125,  127,
-      128,  129,  130,  131,  132,  133,  134,  135,  136,  137,
-      139,  140,  141,  142,  143,  144,  146,  147,  148,  149,
-      150,  151,  152,  154,  155,  156,  158,  159,  161,  162,
-      163,  164,  165,  166,  168,  169,  171,  172,  173,  174,
-      175,  176,  177,  178,  180,  181,  182,  183,  184,  186,
-      187,  189,  190,  191,  193,  194,  196,  197,  199,  200,
-      201,  203,  204,  205,  206,  207,  208,  209,  210,  211,
+       87,   88,   89,   90,   91,   92,   93,   95,   96,   97,
+       98,   99,  100,  101,  102,  103,  104,  105,  106,  107,
+      109,  110,  111,  112,  113,  114,  115,  116,  119,  121,
+      122,  123,  124,  125,  126,  127,  128,  129,  130,  131,
+      133,  134,  135,  136,  137,  138,  140,  141,  142,  143,
+      144,  145,  146,  148,  149,  150,  152,  153,  155,  156,
+      157,  158,  159,  160,  162,  163,  165,  166,  167,  168,
+      169,  170,  171,  172,  174,  175,  176,  177,  178,  180,
+      181,  183,  184,  185,  187,  188,  190,  191,  193,  194,
+      195,  197,  198,  199,  200,  201,  202,  203,  204,  205,
 
-      212,  213,  215,  217,  218,  219,  220,  222,  223,  224,
-      226,  227,  228,  229,  230,  231,  233,  234,  235,  237,
-      238,  240,  241,  242,  244,  245,  246,  247,  249,  250,
-      252,  253,  254,  255,  257,  258,  259,  260,  262,  264,
-      265,  267,  268,  269,  271,  272,  273,  274,  277,  278,
-      280,  282,  283,  286,  288,  293
+      206,  207,  209,  211,  212,  213,  214,  216,  217,  218,
+      220,  221,  222,  223,  224,  225,  227,  228,  229,  231,
+      232,  234,  235,  236,  238,  239,  240,  241,  243,  244,
+      246,  247,  248,  249,  251,  252,  253,  254,  256,  258,
+      259,  261,  262,  263,  265,  266,  267,  268,  271,  272,
+      274,  276,  277,  280,  282,  287
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -11432,15 +11432,17 @@ static const flex_int16_t yy_rule_linenum[157] =
 /* not interactive — compiling with -Cf. */
 #line 23 "lexer/faustlexer.ll"
 
-#include "tlib/tree.hh"
-#include "faustparser.hh"
-#include "driver.hh"
+#include "compiler/parser/implementation.hh"
+#include "compiler/parser/lexer/implementation.hh"
 
-//using Lexer = ::Faust::Compiler::Parser::Lexer::Implementation;
-//using Driver = ::Faust::Compiler::Parser::Type::Driver;
-//using Parser = ::Faust::Compiler::Parser::Implementation;
-//using symbol_type = typename Parser::symbol_type;
-//symbol_type Lexer::lex( Driver& driver );
+using Parser = ::Faust::Compiler::Parser::AbstractImplementation;
+using Self = ::Faust::Compiler::Parser::Implementation;
+using symbol_type = typename Parser::symbol_type;
+
+#undef YY_DECL
+#define YY_DECL symbol_type Faust::Compiler::Parser::Lexer::Implementation::lex( Self& )
+
+#include "tlib/tree.hh"
 
 #if defined(WIN32)
   #if !defined(__MINGW32__) && !defined(__MSYS__)
@@ -11453,7 +11455,7 @@ static const flex_int16_t yy_rule_linenum[157] =
     #define YY_NO_UNISTD_H
   #endif
   #else
-    #include "compatibility.hh"
+    #include "tlib/compatibility.hh"
     #include "compiler/errors/errormsg.hh"
     #define YY_FATAL_ERROR lexerror
 #endif
@@ -11466,18 +11468,17 @@ static const flex_int16_t yy_rule_linenum[157] =
 
   /* The following suffices to track locations accurately. Each time
    * yylex is invoked, the begin position is moved onto the end position. */
-  #define YY_USER_ACTION  driver._location.columns(yyleng);
+  #define YY_USER_ACTION  this->self._location.columns(yyleng);
+  
 
   /* By default yylex returns int, we use token_type. Unfortunately yyterminate
    * by default returns 0, which is not of token_type. */
-  #define yyterminate() return token::END
+  #define yyterminate() return Parser::make_ENDOFINPUT( this->self._location );
 
-  using Parser = ::Faust::Compiler::Parser::Implementation;
-  using Driver = ::Faust::Compiler::Parser::Type::Driver;
 
-#line 11478 "lexer/faustlexer.cpp"
+#line 11479 "lexer/abstract/implementation.cpp"
 
-#line 11480 "lexer/faustlexer.cpp"
+#line 11481 "lexer/abstract/implementation.cpp"
 
 #define INITIAL 0
 #define comment 1
@@ -11496,7 +11497,7 @@ static const flex_int16_t yy_rule_linenum[157] =
 /* %endif */
 #endif
 
-#define YY_EXTRA_TYPE ::Faust::Compiler::Parser::Type::Driver*
+#define YY_EXTRA_TYPE ::Faust::Compiler::Parser::Type::Self*
 
 /* %if-c-only Reentrant structure and macros (non-C++). */
 /* %if-reentrant */
@@ -11670,17 +11671,10 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 84 "lexer/faustlexer.ll"
+#line 85 "lexer/faustlexer.ll"
 
 
-
-#line 88 "lexer/faustlexer.ll"
-  // Code run each time yylex is called.
-  driver._location.step();
-  auto& location = driver._location;
-
-
-#line 11683 "lexer/faustlexer.cpp"
+#line 11677 "lexer/abstract/implementation.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -11759,807 +11753,807 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 93 "lexer/faustlexer.ll"
+#line 87 "lexer/faustlexer.ll"
 BEGIN(comment);
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 94 "lexer/faustlexer.ll"
+#line 88 "lexer/faustlexer.ll"
 /* eat anything that's not a '*' 		*/
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 95 "lexer/faustlexer.ll"
+#line 89 "lexer/faustlexer.ll"
 /* eat up '*'s not followed by '/'s 	*/
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 96 "lexer/faustlexer.ll"
+#line 90 "lexer/faustlexer.ll"
 /* no need to increment yylineno here 	*/
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 97 "lexer/faustlexer.ll"
+#line 91 "lexer/faustlexer.ll"
 /* no need to increment yylineno here 	*/
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 98 "lexer/faustlexer.ll"
+#line 92 "lexer/faustlexer.ll"
 /* no need to increment yylineno here 	*/
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 99 "lexer/faustlexer.ll"
+#line 93 "lexer/faustlexer.ll"
 BEGIN(INITIAL);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 101 "lexer/faustlexer.ll"
-{ BEGIN(doc); return Parser::make_BDOC( yytext, location ); }
+#line 95 "lexer/faustlexer.ll"
+{ BEGIN(doc); return Parser::make_BDOC( yytext, this->self._location ); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 102 "lexer/faustlexer.ll"
-return Parser::make_DOCCHAR( yytext, location ); /* char by char, may be slow ?? */
+#line 96 "lexer/faustlexer.ll"
+return Parser::make_DOCCHAR( yytext, this->self._location ); /* char by char, may be slow ?? */
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 103 "lexer/faustlexer.ll"
-return Parser::make_DOCCHAR( yytext, location ); /* keep newline chars */
+#line 97 "lexer/faustlexer.ll"
+return Parser::make_DOCCHAR( yytext, this->self._location ); /* keep newline chars */
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 104 "lexer/faustlexer.ll"
-return Parser::make_NOTICE( yytext, location );  /* autoclosing tag */
+#line 98 "lexer/faustlexer.ll"
+return Parser::make_NOTICE( yytext, this->self._location );  /* autoclosing tag */
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 105 "lexer/faustlexer.ll"
-return Parser::make_NOTICE( yytext, location );  /* autoclosing tag */
+#line 99 "lexer/faustlexer.ll"
+return Parser::make_NOTICE( yytext, this->self._location );  /* autoclosing tag */
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 106 "lexer/faustlexer.ll"
-{ BEGIN(lst);		return Parser::make_BLST( yytext, location ); } /* autoclosing tag */
+#line 100 "lexer/faustlexer.ll"
+{ BEGIN(lst);		return Parser::make_BLST( yytext, this->self._location ); } /* autoclosing tag */
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 107 "lexer/faustlexer.ll"
-{ BEGIN(INITIAL); 	return Parser::make_BEQN( yytext, location ); }
+#line 101 "lexer/faustlexer.ll"
+{ BEGIN(INITIAL); 	return Parser::make_BEQN( yytext, this->self._location ); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 108 "lexer/faustlexer.ll"
-{ BEGIN(doc); 		return Parser::make_EEQN( yytext, location ); }
+#line 102 "lexer/faustlexer.ll"
+{ BEGIN(doc); 		return Parser::make_EEQN( yytext, this->self._location ); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 109 "lexer/faustlexer.ll"
-{ BEGIN(INITIAL); 	return Parser::make_BDGM( yytext, location ); }
+#line 103 "lexer/faustlexer.ll"
+{ BEGIN(INITIAL); 	return Parser::make_BDGM( yytext, this->self._location ); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 110 "lexer/faustlexer.ll"
-{ BEGIN(doc); 		return Parser::make_EDGM( yytext, location ); }
+#line 104 "lexer/faustlexer.ll"
+{ BEGIN(doc); 		return Parser::make_EDGM( yytext, this->self._location ); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 111 "lexer/faustlexer.ll"
-{ BEGIN(INITIAL); 	return Parser::make_BMETADATA( yytext, location ); }
+#line 105 "lexer/faustlexer.ll"
+{ BEGIN(INITIAL); 	return Parser::make_BMETADATA( yytext, this->self._location ); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 112 "lexer/faustlexer.ll"
-{ BEGIN(doc); 		return Parser::make_EMETADATA( yytext, location ); }
+#line 106 "lexer/faustlexer.ll"
+{ BEGIN(doc); 		return Parser::make_EMETADATA( yytext, this->self._location ); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 113 "lexer/faustlexer.ll"
-{ BEGIN(INITIAL); 	return Parser::make_EDOC( yytext, location ); }
+#line 107 "lexer/faustlexer.ll"
+{ BEGIN(INITIAL); 	return Parser::make_EDOC( yytext, this->self._location ); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 115 "lexer/faustlexer.ll"
-return Parser::make_LSTTRUE( yytext, location );
+#line 109 "lexer/faustlexer.ll"
+return Parser::make_LSTTRUE( yytext, this->self._location );
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 116 "lexer/faustlexer.ll"
-return Parser::make_LSTFALSE( yytext, location );
+#line 110 "lexer/faustlexer.ll"
+return Parser::make_LSTFALSE( yytext, this->self._location );
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 117 "lexer/faustlexer.ll"
-return Parser::make_LSTDEPENDENCIES( yytext, location );
+#line 111 "lexer/faustlexer.ll"
+return Parser::make_LSTDEPENDENCIES( yytext, this->self._location );
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 118 "lexer/faustlexer.ll"
-return Parser::make_LSTMDOCTAGS( yytext, location );
+#line 112 "lexer/faustlexer.ll"
+return Parser::make_LSTMDOCTAGS( yytext, this->self._location );
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 119 "lexer/faustlexer.ll"
-return Parser::make_LSTDISTRIBUTED( yytext, location );
+#line 113 "lexer/faustlexer.ll"
+return Parser::make_LSTDISTRIBUTED( yytext, this->self._location );
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 120 "lexer/faustlexer.ll"
-return Parser::make_LSTEQ( yytext, location );
+#line 114 "lexer/faustlexer.ll"
+return Parser::make_LSTEQ( yytext, this->self._location );
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 121 "lexer/faustlexer.ll"
-return Parser::make_LSTQ( yytext, location );
+#line 115 "lexer/faustlexer.ll"
+return Parser::make_LSTQ( yytext, this->self._location );
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 122 "lexer/faustlexer.ll"
-{ BEGIN(doc); 	return Parser::make_ELST( yytext, location ); }
+#line 116 "lexer/faustlexer.ll"
+{ BEGIN(doc); 	return Parser::make_ELST( yytext, this->self._location ); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 125 "lexer/faustlexer.ll"
-return Parser::make_INT( str2int(yytext), location );
+#line 119 "lexer/faustlexer.ll"
+return Parser::make_INT( std::stoi(yytext), this->self._location );
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 127 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 121 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 128 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 122 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 129 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 123 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 130 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 124 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 131 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 125 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 132 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 126 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 133 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 127 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 134 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 128 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 135 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 129 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 136 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 130 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 137 "lexer/faustlexer.ll"
-return Parser::make_FLOAT( atof(yytext), location );
+#line 131 "lexer/faustlexer.ll"
+return Parser::make_FLOAT( atof(yytext), this->self._location );
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 139 "lexer/faustlexer.ll"
-return Parser::make_SEQ( yytext, location );
+#line 133 "lexer/faustlexer.ll"
+return Parser::make_SEQ( yytext, this->self._location );
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 140 "lexer/faustlexer.ll"
-return Parser::make_COMMA( yytext, location );
+#line 134 "lexer/faustlexer.ll"
+return Parser::make_COMMA( yytext, this->self._location );
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 141 "lexer/faustlexer.ll"
-return Parser::make_SPLIT( yytext, location );
+#line 135 "lexer/faustlexer.ll"
+return Parser::make_SPLIT( yytext, this->self._location );
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 142 "lexer/faustlexer.ll"
-return Parser::make_MIX( yytext, location );
+#line 136 "lexer/faustlexer.ll"
+return Parser::make_MIX( yytext, this->self._location );
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 143 "lexer/faustlexer.ll"
-return Parser::make_MIX( yytext, location );
+#line 137 "lexer/faustlexer.ll"
+return Parser::make_MIX( yytext, this->self._location );
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 144 "lexer/faustlexer.ll"
-return Parser::make_REC( yytext, location );
+#line 138 "lexer/faustlexer.ll"
+return Parser::make_REC( yytext, this->self._location );
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 146 "lexer/faustlexer.ll"
-return Parser::make_ADD( yytext, location );
+#line 140 "lexer/faustlexer.ll"
+return Parser::make_ADD( yytext, this->self._location );
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 147 "lexer/faustlexer.ll"
-return Parser::make_SUB( yytext, location );
+#line 141 "lexer/faustlexer.ll"
+return Parser::make_SUB( yytext, this->self._location );
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 148 "lexer/faustlexer.ll"
-return Parser::make_MUL( yytext, location );
+#line 142 "lexer/faustlexer.ll"
+return Parser::make_MUL( yytext, this->self._location );
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 149 "lexer/faustlexer.ll"
-return Parser::make_DIV( yytext, location );
+#line 143 "lexer/faustlexer.ll"
+return Parser::make_DIV( yytext, this->self._location );
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 150 "lexer/faustlexer.ll"
-return Parser::make_MOD( yytext, location );
+#line 144 "lexer/faustlexer.ll"
+return Parser::make_MOD( yytext, this->self._location );
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 151 "lexer/faustlexer.ll"
-return Parser::make_FDELAY( yytext, location );
+#line 145 "lexer/faustlexer.ll"
+return Parser::make_FDELAY( yytext, this->self._location );
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 152 "lexer/faustlexer.ll"
-return Parser::make_DELAY1( location );
+#line 146 "lexer/faustlexer.ll"
+return Parser::make_DELAY1( yytext, this->self._location );
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 154 "lexer/faustlexer.ll"
-return Parser::make_AND( yytext, location );
+#line 148 "lexer/faustlexer.ll"
+return Parser::make_AND( yytext, this->self._location );
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 155 "lexer/faustlexer.ll"
-return Parser::make_OR( yytext, location );
+#line 149 "lexer/faustlexer.ll"
+return Parser::make_OR( yytext, this->self._location );
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 156 "lexer/faustlexer.ll"
-return Parser::make_XOR( yytext, location );
+#line 150 "lexer/faustlexer.ll"
+return Parser::make_XOR( yytext, this->self._location );
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 158 "lexer/faustlexer.ll"
-return Parser::make_LSH( yytext, location );
+#line 152 "lexer/faustlexer.ll"
+return Parser::make_LSH( yytext, this->self._location );
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 159 "lexer/faustlexer.ll"
-return Parser::make_RSH( yytext, location );
+#line 153 "lexer/faustlexer.ll"
+return Parser::make_RSH( yytext, this->self._location );
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 161 "lexer/faustlexer.ll"
-return Parser::make_LT( yytext, location );
+#line 155 "lexer/faustlexer.ll"
+return Parser::make_LT( yytext, this->self._location );
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 162 "lexer/faustlexer.ll"
-return Parser::make_LE( yytext, location );
+#line 156 "lexer/faustlexer.ll"
+return Parser::make_LE( yytext, this->self._location );
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 163 "lexer/faustlexer.ll"
-return Parser::make_GT( yytext, location );
+#line 157 "lexer/faustlexer.ll"
+return Parser::make_GT( yytext, this->self._location );
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 164 "lexer/faustlexer.ll"
-return Parser::make_GE( yytext, location );
+#line 158 "lexer/faustlexer.ll"
+return Parser::make_GE( yytext, this->self._location );
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 165 "lexer/faustlexer.ll"
-return Parser::make_EQ( yytext, location );
+#line 159 "lexer/faustlexer.ll"
+return Parser::make_EQ( yytext, this->self._location );
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 166 "lexer/faustlexer.ll"
-return Parser::make_NE( yytext, location );
+#line 160 "lexer/faustlexer.ll"
+return Parser::make_NE( yytext, this->self._location );
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 168 "lexer/faustlexer.ll"
-return Parser::make_WIRE( yytext, location );
+#line 162 "lexer/faustlexer.ll"
+return Parser::make_WIRE( yytext, this->self._location );
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 169 "lexer/faustlexer.ll"
-return Parser::make_CUT( yytext, location );
+#line 163 "lexer/faustlexer.ll"
+return Parser::make_CUT( yytext, this->self._location );
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 171 "lexer/faustlexer.ll"
-return Parser::make_ENDDEF( yytext, location );
+#line 165 "lexer/faustlexer.ll"
+return Parser::make_ENDDEF( yytext, this->self._location );
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 172 "lexer/faustlexer.ll"
-return Parser::make_DEF( yytext, location );
+#line 166 "lexer/faustlexer.ll"
+return Parser::make_DEF( yytext, this->self._location );
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 173 "lexer/faustlexer.ll"
-return Parser::make_LPAR( yytext, location );
+#line 167 "lexer/faustlexer.ll"
+return Parser::make_LPAR( yytext, this->self._location );
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 174 "lexer/faustlexer.ll"
-return Parser::make_RPAR( yytext, location );
+#line 168 "lexer/faustlexer.ll"
+return Parser::make_RPAR( yytext, this->self._location );
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 175 "lexer/faustlexer.ll"
-return Parser::make_LBRAQ( yytext, location );
+#line 169 "lexer/faustlexer.ll"
+return Parser::make_LBRAQ( yytext, this->self._location );
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 176 "lexer/faustlexer.ll"
-return Parser::make_RBRAQ( yytext, location );
+#line 170 "lexer/faustlexer.ll"
+return Parser::make_RBRAQ( yytext, this->self._location );
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 177 "lexer/faustlexer.ll"
-return Parser::make_LCROC( yytext, location );
+#line 171 "lexer/faustlexer.ll"
+return Parser::make_LCROC( yytext, this->self._location );
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 178 "lexer/faustlexer.ll"
-return Parser::make_RCROC( yytext, location );
+#line 172 "lexer/faustlexer.ll"
+return Parser::make_RCROC( yytext, this->self._location );
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 180 "lexer/faustlexer.ll"
-return Parser::make_LAMBDA( yytext, location );
+#line 174 "lexer/faustlexer.ll"
+return Parser::make_LAMBDA( yytext, this->self._location );
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 181 "lexer/faustlexer.ll"
-return Parser::make_DOT( yytext, location );
+#line 175 "lexer/faustlexer.ll"
+return Parser::make_DOT( yytext, this->self._location );
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 182 "lexer/faustlexer.ll"
-return Parser::make_WITH( yytext, location );
+#line 176 "lexer/faustlexer.ll"
+return Parser::make_WITH( yytext, this->self._location );
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 183 "lexer/faustlexer.ll"
-return Parser::make_LETREC( yytext, location );
+#line 177 "lexer/faustlexer.ll"
+return Parser::make_LETREC( yytext, this->self._location );
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 184 "lexer/faustlexer.ll"
-return Parser::make_WHERE( yytext, location );
+#line 178 "lexer/faustlexer.ll"
+return Parser::make_WHERE( yytext, this->self._location );
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 186 "lexer/faustlexer.ll"
-return Parser::make_MEM( yytext, location );
+#line 180 "lexer/faustlexer.ll"
+return Parser::make_MEM( yytext, this->self._location );
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 187 "lexer/faustlexer.ll"
-return Parser::make_PREFIX( yytext, location );
+#line 181 "lexer/faustlexer.ll"
+return Parser::make_PREFIX( yytext, this->self._location );
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 189 "lexer/faustlexer.ll"
-return Parser::make_INTCAST( yytext, location );
+#line 183 "lexer/faustlexer.ll"
+return Parser::make_INTCAST( yytext, this->self._location );
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 190 "lexer/faustlexer.ll"
-return Parser::make_FLOATCAST( yytext, location );
+#line 184 "lexer/faustlexer.ll"
+return Parser::make_FLOATCAST( yytext, this->self._location );
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 191 "lexer/faustlexer.ll"
-return Parser::make_ANYCAST( yytext, location );
+#line 185 "lexer/faustlexer.ll"
+return Parser::make_ANYCAST( yytext, this->self._location );
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 193 "lexer/faustlexer.ll"
-return Parser::make_RDTBL( yytext, location );
+#line 187 "lexer/faustlexer.ll"
+return Parser::make_RDTBL( yytext, this->self._location );
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 194 "lexer/faustlexer.ll"
-return Parser::make_RWTBL( yytext, location );
+#line 188 "lexer/faustlexer.ll"
+return Parser::make_RWTBL( yytext, this->self._location );
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 196 "lexer/faustlexer.ll"
-return Parser::make_SELECT2( location );
+#line 190 "lexer/faustlexer.ll"
+return Parser::make_SELECT2( yytext, this->self._location );
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 197 "lexer/faustlexer.ll"
-return Parser::make_SELECT3( location );
+#line 191 "lexer/faustlexer.ll"
+return Parser::make_SELECT3( yytext, this->self._location );
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 199 "lexer/faustlexer.ll"
-return Parser::make_FFUNCTION( yytext, location );
+#line 193 "lexer/faustlexer.ll"
+return Parser::make_FFUNCTION( yytext, this->self._location );
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 200 "lexer/faustlexer.ll"
-return Parser::make_FCONSTANT( yytext, location );
+#line 194 "lexer/faustlexer.ll"
+return Parser::make_FCONSTANT( yytext, this->self._location );
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 201 "lexer/faustlexer.ll"
-return Parser::make_FVARIABLE( yytext, location );
+#line 195 "lexer/faustlexer.ll"
+return Parser::make_FVARIABLE( yytext, this->self._location );
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 203 "lexer/faustlexer.ll"
-return Parser::make_BUTTON( yytext, location );
+#line 197 "lexer/faustlexer.ll"
+return Parser::make_BUTTON( yytext, this->self._location );
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 204 "lexer/faustlexer.ll"
-return Parser::make_CHECKBOX( yytext, location );
+#line 198 "lexer/faustlexer.ll"
+return Parser::make_CHECKBOX( yytext, this->self._location );
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 205 "lexer/faustlexer.ll"
-return Parser::make_VSLIDER( yytext, location );
+#line 199 "lexer/faustlexer.ll"
+return Parser::make_VSLIDER( yytext, this->self._location );
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 206 "lexer/faustlexer.ll"
-return Parser::make_HSLIDER( yytext, location );
+#line 200 "lexer/faustlexer.ll"
+return Parser::make_HSLIDER( yytext, this->self._location );
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 207 "lexer/faustlexer.ll"
-return Parser::make_NENTRY( yytext, location );
+#line 201 "lexer/faustlexer.ll"
+return Parser::make_NENTRY( yytext, this->self._location );
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 208 "lexer/faustlexer.ll"
-return Parser::make_VGROUP( yytext, location );
+#line 202 "lexer/faustlexer.ll"
+return Parser::make_VGROUP( yytext, this->self._location );
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 209 "lexer/faustlexer.ll"
-return Parser::make_HGROUP( yytext, location );
+#line 203 "lexer/faustlexer.ll"
+return Parser::make_HGROUP( yytext, this->self._location );
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 210 "lexer/faustlexer.ll"
-return Parser::make_TGROUP( yytext, location );
+#line 204 "lexer/faustlexer.ll"
+return Parser::make_TGROUP( yytext, this->self._location );
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 211 "lexer/faustlexer.ll"
-return Parser::make_VBARGRAPH( yytext, location );
+#line 205 "lexer/faustlexer.ll"
+return Parser::make_VBARGRAPH( yytext, this->self._location );
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 212 "lexer/faustlexer.ll"
-return Parser::make_HBARGRAPH( yytext, location );
+#line 206 "lexer/faustlexer.ll"
+return Parser::make_HBARGRAPH( yytext, this->self._location );
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 213 "lexer/faustlexer.ll"
-return Parser::make_SOUNDFILE( yytext, location );
+#line 207 "lexer/faustlexer.ll"
+return Parser::make_SOUNDFILE( yytext, this->self._location );
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 215 "lexer/faustlexer.ll"
-return Parser::make_ATTACH( yytext, location );
+#line 209 "lexer/faustlexer.ll"
+return Parser::make_ATTACH( yytext, this->self._location );
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 217 "lexer/faustlexer.ll"
-return Parser::make_ACOS( yytext, location );
+#line 211 "lexer/faustlexer.ll"
+return Parser::make_ACOS( yytext, this->self._location );
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 218 "lexer/faustlexer.ll"
-return Parser::make_ASIN( yytext, location );
+#line 212 "lexer/faustlexer.ll"
+return Parser::make_ASIN( yytext, this->self._location );
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 219 "lexer/faustlexer.ll"
-return Parser::make_ATAN( yytext, location );
+#line 213 "lexer/faustlexer.ll"
+return Parser::make_ATAN( yytext, this->self._location );
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 220 "lexer/faustlexer.ll"
-return Parser::make_ATAN2( location );
+#line 214 "lexer/faustlexer.ll"
+return Parser::make_ATAN2( yytext, this->self._location );
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 222 "lexer/faustlexer.ll"
-return Parser::make_COS( yytext, location );
+#line 216 "lexer/faustlexer.ll"
+return Parser::make_COS( yytext, this->self._location );
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 223 "lexer/faustlexer.ll"
-return Parser::make_SIN( yytext, location );
+#line 217 "lexer/faustlexer.ll"
+return Parser::make_SIN( yytext, this->self._location );
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 224 "lexer/faustlexer.ll"
-return Parser::make_TAN( yytext, location );
+#line 218 "lexer/faustlexer.ll"
+return Parser::make_TAN( yytext, this->self._location );
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 226 "lexer/faustlexer.ll"
-return Parser::make_EXP( yytext, location );
+#line 220 "lexer/faustlexer.ll"
+return Parser::make_EXP( yytext, this->self._location );
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 227 "lexer/faustlexer.ll"
-return Parser::make_LOG( yytext, location );
+#line 221 "lexer/faustlexer.ll"
+return Parser::make_LOG( yytext, this->self._location );
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 228 "lexer/faustlexer.ll"
-return Parser::make_LOG1( location )0;
+#line 222 "lexer/faustlexer.ll"
+return Parser::make_LOG10( yytext, this->self._location );
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 229 "lexer/faustlexer.ll"
-return Parser::make_POWOP( yytext, location );
+#line 223 "lexer/faustlexer.ll"
+return Parser::make_POWOP( yytext, this->self._location );
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 230 "lexer/faustlexer.ll"
-return Parser::make_POWFUN( yytext, location );
+#line 224 "lexer/faustlexer.ll"
+return Parser::make_POWFUN( yytext, this->self._location );
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 231 "lexer/faustlexer.ll"
-return Parser::make_SQRT( yytext, location );
+#line 225 "lexer/faustlexer.ll"
+return Parser::make_SQRT( yytext, this->self._location );
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 233 "lexer/faustlexer.ll"
-return Parser::make_ABS( yytext, location );
+#line 227 "lexer/faustlexer.ll"
+return Parser::make_ABS( yytext, this->self._location );
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 234 "lexer/faustlexer.ll"
-return Parser::make_MIN( yytext, location );
+#line 228 "lexer/faustlexer.ll"
+return Parser::make_MIN( yytext, this->self._location );
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 235 "lexer/faustlexer.ll"
-return Parser::make_MAX( yytext, location );
+#line 229 "lexer/faustlexer.ll"
+return Parser::make_MAX( yytext, this->self._location );
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 237 "lexer/faustlexer.ll"
-return Parser::make_FMOD( yytext, location );
+#line 231 "lexer/faustlexer.ll"
+return Parser::make_FMOD( yytext, this->self._location );
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 238 "lexer/faustlexer.ll"
-return Parser::make_REMAINDER( yytext, location );
+#line 232 "lexer/faustlexer.ll"
+return Parser::make_REMAINDER( yytext, this->self._location );
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 240 "lexer/faustlexer.ll"
-return Parser::make_FLOOR( yytext, location );
+#line 234 "lexer/faustlexer.ll"
+return Parser::make_FLOOR( yytext, this->self._location );
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 241 "lexer/faustlexer.ll"
-return Parser::make_CEIL( yytext, location );
+#line 235 "lexer/faustlexer.ll"
+return Parser::make_CEIL( yytext, this->self._location );
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 242 "lexer/faustlexer.ll"
-return Parser::make_RINT( yytext, location );
+#line 236 "lexer/faustlexer.ll"
+return Parser::make_RINT( yytext, this->self._location );
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 244 "lexer/faustlexer.ll"
-return Parser::make_ISEQ( yytext, location );
+#line 238 "lexer/faustlexer.ll"
+return Parser::make_ISEQ( yytext, this->self._location );
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 245 "lexer/faustlexer.ll"
-return Parser::make_ITERATE_( location )PARALLEL;
+#line 239 "lexer/faustlexer.ll"
+return Parser::make_ITERATE_PARALLEL( yytext, this->self._location );
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 246 "lexer/faustlexer.ll"
-return Parser::make_ISUM( yytext, location );
+#line 240 "lexer/faustlexer.ll"
+return Parser::make_ISUM( yytext, this->self._location );
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 247 "lexer/faustlexer.ll"
-return Parser::make_IPROD( yytext, location );
+#line 241 "lexer/faustlexer.ll"
+return Parser::make_IPROD( yytext, this->self._location );
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 249 "lexer/faustlexer.ll"
-return Parser::make_INPUTS( yytext, location );
+#line 243 "lexer/faustlexer.ll"
+return Parser::make_INPUTS( yytext, this->self._location );
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 250 "lexer/faustlexer.ll"
-return Parser::make_OUTPUTS( yytext, location );
+#line 244 "lexer/faustlexer.ll"
+return Parser::make_OUTPUTS( yytext, this->self._location );
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 252 "lexer/faustlexer.ll"
-return Parser::make_IMPORT( yytext, location );
+#line 246 "lexer/faustlexer.ll"
+return Parser::make_IMPORT( yytext, this->self._location );
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 253 "lexer/faustlexer.ll"
-return Parser::make_COMPONENT( yytext, location );
+#line 247 "lexer/faustlexer.ll"
+return Parser::make_COMPONENT( yytext, this->self._location );
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 254 "lexer/faustlexer.ll"
-return Parser::make_LIBRARY( yytext, location );
+#line 248 "lexer/faustlexer.ll"
+return Parser::make_LIBRARY( yytext, this->self._location );
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 255 "lexer/faustlexer.ll"
-return Parser::make_ENVIRONMENT( yytext, location );
+#line 249 "lexer/faustlexer.ll"
+return Parser::make_ENVIRONMENT( yytext, this->self._location );
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 257 "lexer/faustlexer.ll"
-return Parser::make_WAVEFORM( yytext, location );
+#line 251 "lexer/faustlexer.ll"
+return Parser::make_WAVEFORM( yytext, this->self._location );
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 258 "lexer/faustlexer.ll"
-return Parser::make_ROUTE( yytext, location );
+#line 252 "lexer/faustlexer.ll"
+return Parser::make_ROUTE( yytext, this->self._location );
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 259 "lexer/faustlexer.ll"
-return Parser::make_ENABLE( yytext, location );
+#line 253 "lexer/faustlexer.ll"
+return Parser::make_ENABLE( yytext, this->self._location );
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 260 "lexer/faustlexer.ll"
-return Parser::make_CONTROL( yytext, location );
+#line 254 "lexer/faustlexer.ll"
+return Parser::make_CONTROL( yytext, this->self._location );
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 262 "lexer/faustlexer.ll"
-return Parser::make_DECLARE( yytext, location );
+#line 256 "lexer/faustlexer.ll"
+return Parser::make_DECLARE( yytext, this->self._location );
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 264 "lexer/faustlexer.ll"
-return Parser::make_CASE( yytext, location );
+#line 258 "lexer/faustlexer.ll"
+return Parser::make_CASE( yytext, this->self._location );
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 265 "lexer/faustlexer.ll"
-return Parser::make_ARROW( yytext, location );
+#line 259 "lexer/faustlexer.ll"
+return Parser::make_ARROW( yytext, this->self._location );
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 267 "lexer/faustlexer.ll"
-return Parser::make_ASSERTBOUNDS( yytext, location );
+#line 261 "lexer/faustlexer.ll"
+return Parser::make_ASSERTBOUNDS( yytext, this->self._location );
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 268 "lexer/faustlexer.ll"
-return Parser::make_LOWEST( yytext, location );
+#line 262 "lexer/faustlexer.ll"
+return Parser::make_LOWEST( yytext, this->self._location );
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 269 "lexer/faustlexer.ll"
-return Parser::make_HIGHEST( yytext, location );
+#line 263 "lexer/faustlexer.ll"
+return Parser::make_HIGHEST( yytext, this->self._location );
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 271 "lexer/faustlexer.ll"
-return Parser::make_FLOATMODE( yytext, location );
+#line 265 "lexer/faustlexer.ll"
+return Parser::make_FLOATMODE( std::stoi(yytext), this->self._location );
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 272 "lexer/faustlexer.ll"
-return Parser::make_DOUBLEMODE( yytext, location );
+#line 266 "lexer/faustlexer.ll"
+return Parser::make_DOUBLEMODE( std::stoi(yytext), this->self._location );
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 273 "lexer/faustlexer.ll"
-return Parser::make_QUADMODE( yytext, location );
+#line 267 "lexer/faustlexer.ll"
+return Parser::make_QUADMODE( std::stoi(yytext), this->self._location );
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 274 "lexer/faustlexer.ll"
-return Parser::make_FIXEDPOINTMODE( yytext, location );
+#line 268 "lexer/faustlexer.ll"
+return Parser::make_FIXEDPOINTMODE( std::stoi(yytext), this->self._location );
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 277 "lexer/faustlexer.ll"
-return Parser::make_IDENT( yytext, location );
+#line 271 "lexer/faustlexer.ll"
+return Parser::make_IDENT( yytext, this->self._location );
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 278 "lexer/faustlexer.ll"
-return Parser::make_IDENT( yytext, location );
+#line 272 "lexer/faustlexer.ll"
+return Parser::make_IDENT( yytext, this->self._location );
 	YY_BREAK
 case 151:
 /* rule 151 can match eol */
 YY_RULE_SETUP
-#line 280 "lexer/faustlexer.ll"
-return Parser::make_STRING( yytext, location );
+#line 274 "lexer/faustlexer.ll"
+return Parser::make_STRING( yytext, this->self._location );
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 282 "lexer/faustlexer.ll"
-return Parser::make_TAGSTRING( yytext, location );
+#line 276 "lexer/faustlexer.ll"
+return Parser::make_TAGSTRING( yytext, this->self._location );
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 283 "lexer/faustlexer.ll"
-return Parser::make_TAGSTRING( yytext, location );
+#line 277 "lexer/faustlexer.ll"
+return Parser::make_TAGSTRING( yytext, this->self._location );
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 286 "lexer/faustlexer.ll"
+#line 280 "lexer/faustlexer.ll"
 /* eat up one-line comments */
 	YY_BREAK
 case 155:
 /* rule 155 can match eol */
 YY_RULE_SETUP
-#line 288 "lexer/faustlexer.ll"
+#line 282 "lexer/faustlexer.ll"
 /* eat up whitespace */
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(comment):
 case YY_STATE_EOF(doc):
 case YY_STATE_EOF(lst):
-#line 290 "lexer/faustlexer.ll"
+#line 284 "lexer/faustlexer.ll"
 yyterminate();
 	YY_BREAK
 /* Catch all the alien characters. */
 case 156:
 YY_RULE_SETUP
-#line 293 "lexer/faustlexer.ll"
+#line 287 "lexer/faustlexer.ll"
 {
-           yleval_error (yylloc, yycontrol, "invalid character: %s", yytext);
-           LOCATION_STEP (*yylloc);
-           return Parser::make_EXTRA( yytext, location );
-         }
+          std::string error_text( std::string("invalid character: %s") + yytext );
+          this->LexerError( error_text.c_str() );
+          return Parser::make_EXTRA( yytext, this->self._location );
+        }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 299 "lexer/faustlexer.ll"
+#line 293 "lexer/faustlexer.ll"
 ECHO;
 	YY_BREAK
-#line 12562 "lexer/faustlexer.cpp"
+#line 12556 "lexer/abstract/implementation.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -13678,9 +13672,8 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 299 "lexer/faustlexer.ll"
+#line 293 "lexer/faustlexer.ll"
 
 
-int yywrap() { return 1; }
 
 

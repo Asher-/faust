@@ -38,10 +38,9 @@
 #include "sigprint.hh"
 #include "normalform.hh"
 #include "timing.hh"
-#include "sigtyperules.hh"
 
-#include "signalVisitor.hh"
-#include "sigPromotion.hh"
+#include "compiler/signals/sigtyperules.hh"
+#include "global.hh"
 
 using namespace std;
 
@@ -1935,7 +1934,7 @@ ValueInst* InstructionsCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tr
 
 ValueInst* InstructionsCompiler::generateXtended(Tree sig)
 {
-    xtended* p = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     Values args;
     vector<::Type> types;
 

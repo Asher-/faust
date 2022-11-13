@@ -32,7 +32,7 @@
 #include "recursivness.hh"
 #include "sigprint.hh"
 #include "compiler/signals/sigtype.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "tlib/tlib.hh"
 #include "compiler/math_primitives/xtended.hh"
 
@@ -953,7 +953,7 @@ static Type infereXType(Tree sig, Tree env)
 {
     // cerr << "infereXType :" << endl;
     // cerr << "infereXType of " << *sig << endl;
-    xtended*     p = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended*     p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     vector<Type> vt;
 
     for (int i = 0; i < sig->arity(); i++) vt.push_back(T(sig->branch(i), env));

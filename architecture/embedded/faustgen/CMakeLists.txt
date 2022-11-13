@@ -59,7 +59,7 @@ file (GLOB DSPLIBS ${ROOT}/../../libraries/*.lib)
 
 ####################################
 # LLVM
-include (../../build/misc/llvm.cmake)
+include (../../build/llvm/llvm.cmake)
 if(USE_LLVM_CONFIG)
 	llvm_config()
 else()

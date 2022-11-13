@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #include "labels.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "global.hh"
 
 //=========================== PATHNAME ===============================

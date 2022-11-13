@@ -42,7 +42,7 @@ Compile a list of FAUST signals into a C++ class.
 #include "tlib/property.hh"
 #include "sigprint.hh"
 #include "compiler/signals/sigtype.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "global.hh"
 
 /*****************************************************************************

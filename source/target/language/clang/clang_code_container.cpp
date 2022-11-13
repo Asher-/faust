@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 
 #if CLANG_BUILD
 
@@ -60,6 +60,8 @@ using namespace llvm;
 using namespace clang;
 using namespace clang::driver;
 
+#include "faust/primitive/math.hh"
+
 #include "CInterface_exp.h"
 //#include "scheduler_exp.h"
 
@@ -74,7 +76,7 @@ ClangCodeContainer::ClangCodeContainer(const string& name, int numInputs, int nu
 {
     fOut = new ofstream(getTempName());
 
-    if (gGlobal->gFloatSize == 2) {
+    if (::Faust::Primitive::Math::floatSize == 2) {
         *fOut << "#define FAUSTFLOAT double"
               << "\n\n";
     }

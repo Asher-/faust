@@ -31,7 +31,7 @@
 #include "dcond.hh"
 #include "old_occurences.hh"
 #include "tlib/property.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 
 ////////////////////////////////////////////////////////////////////////
 /**

@@ -1,0 +1,31 @@
+
+# Variables intended for use across the build system should be documented /
+# declared here.
+
+# INCLUDE_LLVM
+#   USE_LLVM_CONFIG
+#   LLVM_PACKAGE_VERSION
+#   LLVM_MAJOR_VERSION
+#   LLVM_MINOR_VERSION
+#   LLVM_LD_FLAGS
+#   LLVM_LIBS
+
+# FAUST_LIBS
+# FAUST_DEFINITIONS
+
+# LIBSDIR
+# SRCDIR
+# BINDIR
+# LIBDIR
+
+# ARCHDIR
+# ARCHINC
+# ARCHDIRS
+
+# SRC
+# SRC_HH
+# SRC_TEST
+# HEADER_INCLUDE_DIRS
+
+
+set( LIBS "" )

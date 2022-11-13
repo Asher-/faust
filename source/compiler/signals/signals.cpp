@@ -32,6 +32,8 @@
 #include "compiler/signals/signals.hh"
 #include "compiler/math_primitives/xtended.hh"
 
+#include "faust/primitive/math.hh"
+
 LIBFAUST_API Tree sigWriteReadTable(Tree n, Tree init, Tree widx, Tree wsig, Tree ridx)
 {
     /*
@@ -617,7 +619,7 @@ static Tree sigExtended1(Tree sig, Tree x)
 {
     tvec args;
     args.push_back(x);
-    return ((xtended*)getUserData(sig))->computeSigOutput(args);
+    return ((::Faust::Primitive::Math::xtended*)getUserData(sig))->computeSigOutput(args);
 }
 
 static Tree sigExtended2(Tree sig, Tree x, Tree y)
@@ -625,112 +627,112 @@ static Tree sigExtended2(Tree sig, Tree x, Tree y)
     tvec args;
     args.push_back(x);
     args.push_back(y);
-    return ((xtended*)getUserData(sig))->computeSigOutput(args);
+    return ((::Faust::Primitive::Math::xtended*)getUserData(sig))->computeSigOutput(args);
 }
 
 LIBFAUST_API Tree sigAbs(Tree x)
 {
-    return sigExtended1(gGlobal->gAbsPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::abs.box(), x);
 }
 
 LIBFAUST_API Tree sigAcos(Tree x)
 {
-    return sigExtended1(gGlobal->gAcosPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::acos.box(), x);
 }
 
 LIBFAUST_API Tree sigTan(Tree x)
 {
-    return sigExtended1(gGlobal->gTanPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::tan.box(), x);
 }
 
 LIBFAUST_API Tree sigSqrt(Tree x)
 {
-    return sigExtended1(gGlobal->gSqrtPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::sqrt.box(), x);
 }
 
 LIBFAUST_API Tree sigSin(Tree x)
 {
-    return sigExtended1(gGlobal->gSinPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::sin.box(), x);
 }
 
 LIBFAUST_API Tree sigRint(Tree x)
 {
-    return sigExtended1(gGlobal->gRintPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::rint.box(), x);
 }
 
 LIBFAUST_API Tree sigRemainder(Tree x, Tree y)
 {
-    return sigExtended2(gGlobal->gRemainderPrim->box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::remainder.box(), x, y);
 }
 
 LIBFAUST_API Tree sigPow(Tree x, Tree y)
 {
-    return sigExtended2(gGlobal->gPowPrim->box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::pow.box(), x, y);
 }
 
 LIBFAUST_API Tree sigMin(Tree x, Tree y)
 {
-    return sigExtended2(gGlobal->gMinPrim->box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::min.box(), x, y);
 }
 
 LIBFAUST_API Tree sigMax(Tree x, Tree y)
 {
-    return sigExtended2(gGlobal->gMaxPrim->box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::max.box(), x, y);
 }
 
 LIBFAUST_API Tree sigLog(Tree x)
 {
-    return sigExtended1(gGlobal->gLogPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::log.box(), x);
 }
 
 LIBFAUST_API Tree sigLog10(Tree x)
 {
-    return sigExtended1(gGlobal->gLog10Prim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::log10.box(), x);
 }
 
 LIBFAUST_API Tree sigFmod(Tree x, Tree y)
 {
-    return sigExtended2(gGlobal->gFmodPrim->box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::fmod.box(), x, y);
 }
 
 LIBFAUST_API Tree sigFloor(Tree x)
 {
-    return sigExtended1(gGlobal->gFloorPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::floor.box(), x);
 }
 
 LIBFAUST_API Tree sigExp(Tree x)
 {
-    return sigExtended1(gGlobal->gExpPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::exp.box(), x);
 }
 
 LIBFAUST_API Tree sigExp10(Tree x)
 {
-    return sigExtended1(gGlobal->gExp10Prim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::exp10.box(), x);
 }
 
 LIBFAUST_API Tree sigCos(Tree x)
 {
-    return sigExtended1(gGlobal->gCosPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::cos.box(), x);
 }
 
 LIBFAUST_API Tree sigCeil(Tree x)
 {
-    return sigExtended1(gGlobal->gCeilPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::ceil.box(), x);
 }
 
 LIBFAUST_API Tree sigAtan(Tree x)
 {
-    return sigExtended1(gGlobal->gAtanPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::atan.box(), x);
 }
 
 LIBFAUST_API Tree sigAtan2(Tree x, Tree y)
 {
-    return sigExtended2(gGlobal->gAtan2Prim->box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::atan2.box(), x, y);
 }
 
 LIBFAUST_API Tree sigAsin(Tree x)
 {
-    return sigExtended1(gGlobal->gAsinPrim->box(), x);
+    return sigExtended1(::Faust::Primitive::Math::asin.box(), x);
 }
 
 bool sameMagnitude(Tree a, Tree b)
@@ -926,7 +928,7 @@ bool verySimple(Tree exp)
 
 Tree sigFTZ(Tree s)
 {
-    return tree(gGlobal->gFtzPrim->symbol(), s);
+    return tree(::Faust::Primitive::Math::ftz.symbol(), s);
 }
 
 /*****************************************************************************

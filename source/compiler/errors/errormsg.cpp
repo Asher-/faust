@@ -30,8 +30,6 @@
 #include <iostream>
 using namespace std;
 
-const char* yyfilename = "????";
-
 void faustassertaux(bool cond, const string& file, int line)
 {
     if (!cond) {
@@ -64,7 +62,7 @@ void lexerror(const char* msg)
 void yyerror(const char* msg)
 {
     stringstream error;
-    error << yyfilename << " : " << yylineno << " : ERROR : " << msg << endl;
+    error << gGlobal->gParser._streamName << " : " << gGlobal->gParser._lexer->lineno() << " : ERROR : " << msg << endl;
     gGlobal->gErrorCount++;
     throw faustexception(error.str());
 }

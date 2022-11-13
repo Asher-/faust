@@ -28,7 +28,7 @@
 
 #include "compiler/type_manager/Text.hh"
 #include "sha_key.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "dsp_aux.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
 #include "lock_api.hh"

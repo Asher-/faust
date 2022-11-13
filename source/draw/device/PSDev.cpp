@@ -22,7 +22,7 @@
 // PSDev.cpp
 
 #include "PSDev.h"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/errors/exception.hh"
 #include "global.hh"
 

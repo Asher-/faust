@@ -9,7 +9,7 @@ set (SOVERS 1)
 
 #######################################
 # options
-option ( OSCDYNAMIC 	"Include Faust OSC dynamic library"	off )
+option( OSCDYNAMIC 	"Include Faust OSC dynamic library"	off )
 
 #######################################
 # check for variables that are normally set at upper level
@@ -59,6 +59,8 @@ set( INCLUDE
 	../../source/tlib
 	../../source/compiler/type_manager
 	../../source/compiler/errors
+  ${ROOT}/source
+  ${ROOT}/source/compiler
 )
 
 if (WIN32 OR MSYS)

@@ -26,6 +26,8 @@
 #include "target/language/cmajor/scalar/code_container.hh"
 #include "target/language/cmajor/vector/code_container.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 /*
@@ -299,9 +301,9 @@ void CmajorCodeContainer::produceClass()
 
     // Missing math functions
     tab(n + 1, *fOut);
-    if (gGlobal->gFloatSize == 1) {
+    if (::Faust::Primitive::Math::floatSize == 1) {
         *fOut << "float32 copysign(float32 x, float32 y) { return abs(x) * ((y < 0.0f) ? -1.0f : 1.0f); }";
-    } else if (gGlobal->gFloatSize == 2) {
+    } else if (::Faust::Primitive::Math::floatSize == 2) {
         *fOut << "float64 copysign(float64 x, float64 y) { return abs(x) * ((y < 0.0) ? -1.0 : 1.0); }";
     }
     tab(n + 1, *fOut);

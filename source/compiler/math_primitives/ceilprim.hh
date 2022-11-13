@@ -19,70 +19,86 @@
  ************************************************************************
  ************************************************************************/
 
+#ifndef __FAUST__PRIMITIVE__MATH__CEIL__HH__
+#define __FAUST__PRIMITIVE__MATH__CEIL__HH__
+
 #include <math.h>
 
 #include "compiler/type_manager/Text.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/math_primitives/xtended.hh"
 
-class CeilPrim : public xtended {
-   public:
-    CeilPrim() : xtended("ceil") {}
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
 
-    virtual unsigned int arity() { return 1; }
+      extern bool approx;            // Simpler/faster versions of 'floor/fmod/remainder' functions
 
-    virtual bool needCache() { return true; }
+      class Ceil : public ::Faust::Primitive::Math::xtended {
+          public:
+          static Ceil* self;
+          Ceil() : ::Faust::Primitive::Math::xtended("ceil") {}
 
-    virtual ::Type infereSigType(ConstTypes args)
-    {
-        faustassert(args.size() == arity());
-        return floatCast(args[0]);
+          virtual unsigned int arity() { return 1; }
+
+          virtual bool needCache() { return true; }
+
+          virtual ::Type infereSigType(ConstTypes args)
+          {
+              faustassert(args.size() == arity());
+              return floatCast(args[0]);
+          }
+
+          virtual int infereSigOrder(const vector<int>& args)
+          {
+              faustassert(args.size() == arity());
+              return args[0];
+          }
+
+          virtual Tree computeSigOutput(const vector<Tree>& args)
+          {
+              num n;
+              faustassert(args.size() == arity());
+              if (isNum(args[0], n)) {
+                  return tree(ceil(double(n)));
+              } else {
+                  if (::Faust::Primitive::Math::approx) {
+                      // res = T(int(n)); return (r == n) ? n : (n >= 0 ? r + 1 : r);
+                      Tree r = sigFloatCast(sigIntCast(args[0]));
+                      return sigSelect2(sigEQ(args[0], r), sigSelect2(sigGE(args[0], sigInt(0)), r, sigAdd(r, sigInt(1))), args[0]);
+                  } else {
+                      return tree(symbol(), args[0]);
+                  }
+              }
+          }
+
+          virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, vector< ::Type> const& types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+          
+              return generateFun(container, subst("ceil$0", isuffix()), args, result, types);
+          }
+
+          virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("ceil$1($0)", args[0], isuffix());
+          }
+
+          virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("\\left\\lceil $0 \\right\\rceil", args[0]);
+          }
+      };
+
     }
+  }
+}
 
-    virtual int infereSigOrder(const vector<int>& args)
-    {
-        faustassert(args.size() == arity());
-        return args[0];
-    }
-
-    virtual Tree computeSigOutput(const vector<Tree>& args)
-    {
-        num n;
-        faustassert(args.size() == arity());
-        if (isNum(args[0], n)) {
-            return tree(ceil(double(n)));
-        } else {
-            if (gGlobal->gMathApprox) {
-                // res = T(int(n)); return (r == n) ? n : (n >= 0 ? r + 1 : r);
-                Tree r = sigFloatCast(sigIntCast(args[0]));
-                return sigSelect2(sigEQ(args[0], r), sigSelect2(sigGE(args[0], sigInt(0)), r, sigAdd(r, sigInt(1))), args[0]);
-            } else {
-                return tree(symbol(), args[0]);
-            }
-        }
-    }
-
-    virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, vector< ::Type> const& types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-    
-        return generateFun(container, subst("ceil$0", isuffix()), args, result, types);
-    }
-
-    virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("ceil$1($0)", args[0], isuffix());
-    }
-
-    virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("\\left\\lceil $0 \\right\\rceil", args[0]);
-    }
-};
+#endif

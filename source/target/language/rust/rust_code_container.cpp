@@ -26,6 +26,8 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 /*
@@ -60,7 +62,7 @@ CodeContainer* RustCodeContainer::createContainer(const string& name, int numInp
     gGlobal->gDSPStruct = true;
     CodeContainer* container;
 
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for Rust\n");
     }
     if (gGlobal->gOpenCLSwitch) {

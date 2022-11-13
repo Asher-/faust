@@ -39,7 +39,7 @@ Compile a list of FAUST signals into a LaTeX equation.
 #include "documentator/doc_compile.hh"
 #include "sigprint.hh"
 #include "compiler/signals/sigtype.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 
 /*****************************************************************************
 ******************************************************************************

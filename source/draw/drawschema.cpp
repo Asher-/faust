@@ -45,14 +45,14 @@
 #include "blockSchema.h"
 #include "boxcomplexity.hh"
 #include "compiler/block_diagram/boxes/boxes.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/compile/xml_description.hh"
 #include "devLib.h"
 #include "drawschema.hh"
 #include "compiler/errors/exception.hh"
 #include "files.hh"
 #include "global.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "occurrences.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
@@ -395,7 +395,7 @@ static schema* generateInsideSchema(Tree t)
     prim4  p4;
     prim5  p5;
 
-    xtended* xt = (xtended*)getUserData(t);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(t);
 
     if (xt) {
         return makeBlockSchema(xt->arity(), 1, xt->name(), normalcolor, "");

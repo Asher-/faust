@@ -22,7 +22,7 @@
 #include "target/language/jax/instruction_compiler_jax.hh"
 #include "ensure.hh"
 #include "compiler/signals/ppsig.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "global.hh"
 
 StatementInst* InstructionsCompilerJAX::generateShiftArray(const std::string& vname, int delay)

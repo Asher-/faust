@@ -31,9 +31,11 @@
 #include <algorithm>
 
 #include "compiler/type_manager/Text.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/types/floats.hh"
 #include "global.hh"
+
+#include "faust/primitive/math.hh"
 
 static std::string substitution(const std::string& model, const vector<std::string>& args)
 {
@@ -236,12 +238,12 @@ string TAux(double n)
     char* endp;
     int   p = 1;
     
-    if (gGlobal->gFloatSize == 1) {
+    if (::Faust::Primitive::Math::floatSize == 1) {
         float v = (float)n;
         do { snprintf(c, 512, "%.*g", p++, v); endp = nullptr; } while (strtof(c, &endp) != v);
-    } else if (gGlobal->gFloatSize == 2) {
+    } else if (::Faust::Primitive::Math::floatSize == 2) {
         do { snprintf(c, 512, "%.*g", p++, n); endp = nullptr; } while (strtod(c, &endp) != n);
-    } else if (gGlobal->gFloatSize == 3) {
+    } if (::Faust::Primitive::Math::floatSize == 3) {
         long double q = (long double)n;
         do { snprintf(c, 512, "%.*Lg", p++, q); endp = nullptr; } while (strtold(c, &endp) != q);
     } else if (gGlobal->gFloatSize == 4) {

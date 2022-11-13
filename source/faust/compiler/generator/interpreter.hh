@@ -27,6 +27,8 @@
 
 #include "interpreter_code_container.cpp"
 
+#include "faust/primitive/math.hh"
+
 namespace Faust {
   namespace Compiler {
 
@@ -43,9 +45,9 @@ namespace Faust {
               throw faustexception("ERROR : -lang interp not supported since Interpreter backend is not built\n");
           #endif
 
-          if (gGlobal->gFloatSize == 1) {
+          if (::Faust::Primitive::Math::floatSize == 1) {
             this->_codeContainer = InterpreterCodeContainer<float>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
-          } else if (gGlobal->gFloatSize == 2) {
+          } else if (::Faust::Primitive::Math::floatSize == 2) {
             this->_codeContainer = InterpreterCodeContainer<double>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
           } else {
               throw faustexception("ERROR : quad format not supported in Interp\n");
@@ -57,7 +59,7 @@ namespace Faust {
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
           gGlobal->gFAUSTFLOAT2Internal = true;
-          gGlobal->gNeedManualPow       = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
+          ::Faust::Primitive::Math::needManualPow = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
           gGlobal->gRemoveVarAddress    = true;   // To be used in -vec mode
 
           if (gGlobal->gVectorSwitch) {

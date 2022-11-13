@@ -28,7 +28,7 @@
 #include <sstream>
 #include "sigIdentity.hh"
 #include "signalVisitor.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 
 /*
  Check a signal:

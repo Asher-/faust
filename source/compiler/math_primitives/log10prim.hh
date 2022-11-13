@@ -19,84 +19,100 @@
  ************************************************************************
  ************************************************************************/
 
+#ifndef __FAUST__PRIMITIVE__MATH__LOG10__HH__
+#define __FAUST__PRIMITIVE__MATH__LOG10__HH__
+
 #include <math.h>
 
 #include "compiler/type_manager/Text.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/math_primitives/xtended.hh"
 
-class Log10Prim : public xtended {
-   public:
-    Log10Prim() : xtended("log10") {}
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
 
-    virtual unsigned int arity() { return 1; }
+      extern bool exceptions;  // whether to check math functions domains
 
-    virtual bool needCache() { return true; }
+      class Log10 : public ::Faust::Primitive::Math::xtended {
+          public:
+          static Log10* self;
+          Log10() : ::Faust::Primitive::Math::xtended("log10") {}
 
-    virtual ::Type infereSigType(ConstTypes args)
-    {
-        faustassert(args.size() == arity());
-        interval i = args[0]->getInterval();
-        if (i.valid) {
-            // log10(0) gives -INF but is still in the function domain
-            if (i.lo >= 0) {
-                return castInterval(floatCast(args[0]), interval(log10(i.lo), log10(i.hi)));
-            } else if (gGlobal->gMathExceptions) {
-                cerr << "WARNING : potential out of domain in log10(" << i << ")" << endl;
-            }
-        }
-        return floatCast(args[0]);
+          virtual unsigned int arity() { return 1; }
+
+          virtual bool needCache() { return true; }
+
+          virtual ::Type infereSigType(ConstTypes args)
+          {
+              faustassert(args.size() == arity());
+              interval i = args[0]->getInterval();
+              if (i.valid) {
+                  // log10(0) gives -INF but is still in the function domain
+                  if (i.lo >= 0) {
+                      return castInterval(floatCast(args[0]), interval(log10(i.lo), log10(i.hi)));
+                  } else if (::Faust::Primitive::Math::exceptions) {
+                      cerr << "WARNING : potential out of domain in log10(" << i << ")" << endl;
+                  }
+              }
+              return floatCast(args[0]);
+          }
+
+          virtual int infereSigOrder(const vector<int>& args)
+          {
+              faustassert(args.size() == arity());
+              return args[0];
+          }
+
+          virtual Tree computeSigOutput(const vector<Tree>& args)
+          {
+              num n;
+              faustassert(args.size() == arity());
+          
+              // log10(exp10(sig)) ==> sig
+              ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(args[0]);
+              if (xt == (::Faust::Primitive::Math::xtended*)&self) {
+                  return args[0]->branch(0);
+              } else if (isNum(args[0], n)) {
+                  if (double(n) < 0) {
+                      stringstream error;
+                      error << "ERROR : out of domain log10(" << ppsig(args[0]) << ")" << endl;
+                      throw faustexception(error.str());
+                  } else {
+                      return tree(log10(double(n)));
+                  }
+              } else {
+                  return tree(symbol(), args[0]);
+              }
+          }
+
+          virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return generateFun(container, subst("log10$0", isuffix()), args, result, types);
+          }
+
+          virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("log10$1($0)", args[0], isuffix());
+          }
+
+          virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("\\log_{10}\\left( $0 \\right)", args[0]);
+          }
+      };
+
     }
+  }
+}
 
-    virtual int infereSigOrder(const vector<int>& args)
-    {
-        faustassert(args.size() == arity());
-        return args[0];
-    }
-
-    virtual Tree computeSigOutput(const vector<Tree>& args)
-    {
-        num n;
-        faustassert(args.size() == arity());
-    
-        // log10(exp10(sig)) ==> sig
-        xtended* xt = (xtended*)getUserData(args[0]);
-        if (xt == gGlobal->gExp10Prim) {
-            return args[0]->branch(0);
-        } else if (isNum(args[0], n)) {
-            if (double(n) < 0) {
-                stringstream error;
-                error << "ERROR : out of domain log10(" << ppsig(args[0]) << ")" << endl;
-                throw faustexception(error.str());
-            } else {
-                return tree(log10(double(n)));
-            }
-        } else {
-            return tree(symbol(), args[0]);
-        }
-    }
-
-    virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return generateFun(container, subst("log10$0", isuffix()), args, result, types);
-    }
-
-    virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("log10$1($0)", args[0], isuffix());
-    }
-
-    virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("\\log_{10}\\left( $0 \\right)", args[0]);
-    }
-};
+#endif

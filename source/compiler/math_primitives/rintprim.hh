@@ -19,70 +19,84 @@
  ************************************************************************
  ************************************************************************/
 
+#ifndef __FAUST__PRIMITIVE__MATH__RINT__HH__
+#define __FAUST__PRIMITIVE__MATH__RINT__HH__
+
 #include <math.h>
 
 #include "compiler/type_manager/Text.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/math_primitives/xtended.hh"
 
-class RintPrim : public xtended {
-   public:
-    RintPrim() : xtended("rint") {}
+namespace Faust {
+  namespace Primitive {
+    namespace Math {
 
-    virtual unsigned int arity() { return 1; }
+      class Rint : public ::Faust::Primitive::Math::xtended {
+          public:
+          static Rint* self;
+          Rint() : ::Faust::Primitive::Math::xtended("rint") {}
 
-    virtual bool needCache() { return true; }
+          virtual unsigned int arity() { return 1; }
 
-    virtual ::Type infereSigType(ConstTypes args)
-    {
-        faustassert(args.size() == arity());
-        interval i = args[0]->getInterval();
-        if (i.valid) {
-            return castInterval(floatCast(args[0]), interval(rint(i.lo), rint(i.hi)));
-        } else {
-            return floatCast(args[0]);
-        }
+          virtual bool needCache() { return true; }
+
+          virtual ::Type infereSigType(ConstTypes args)
+          {
+              faustassert(args.size() == arity());
+              interval i = args[0]->getInterval();
+              if (i.valid) {
+                  return castInterval(floatCast(args[0]), interval(rint(i.lo), rint(i.hi)));
+              } else {
+                  return floatCast(args[0]);
+              }
+          }
+
+          virtual int infereSigOrder(const vector<int>& args)
+          {
+              faustassert(args.size() == arity());
+              return args[0];
+          }
+
+          virtual Tree computeSigOutput(const vector<Tree>& args)
+          {
+              num n;
+              faustassert(args.size() == arity());
+              if (isNum(args[0], n)) {
+                  return tree(rint(double(n)));
+              } else {
+                  return tree(symbol(), args[0]);
+              }
+          }
+
+          virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return generateFun(container, subst("rint$0", isuffix()), args, result, types);
+          }
+
+          virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("rint$1($0)", args[0], isuffix());
+          }
+
+          virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
+          {
+              faustassert(args.size() == arity());
+              faustassert(types.size() == arity());
+
+              return subst("\\left[ {$0} \\right]", args[0]);
+          }
+      };
+
     }
+  }
+}
 
-    virtual int infereSigOrder(const vector<int>& args)
-    {
-        faustassert(args.size() == arity());
-        return args[0];
-    }
-
-    virtual Tree computeSigOutput(const vector<Tree>& args)
-    {
-        num n;
-        faustassert(args.size() == arity());
-        if (isNum(args[0], n)) {
-            return tree(rint(double(n)));
-        } else {
-            return tree(symbol(), args[0]);
-        }
-    }
-
-    virtual ValueInst* generateCode(CodeContainer* container, Values& args, ::Type result, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return generateFun(container, subst("rint$0", isuffix()), args, result, types);
-    }
-
-    virtual string generateCode(Klass* klass, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("rint$1($0)", args[0], isuffix());
-    }
-
-    virtual string generateLateq(Lateq* lateq, const vector<string>& args, ConstTypes types)
-    {
-        faustassert(args.size() == arity());
-        faustassert(types.size() == arity());
-
-        return subst("\\left[ {$0} \\right]", args[0]);
-    }
-};
+#endif

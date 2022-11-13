@@ -32,21 +32,21 @@
 #include <sstream>
 #include <vector>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "documentator/doc.hh"
 #include "documentator/doc_compile.hh"
 #include "documentator/doc_notice.hh"
 #include "compiler/errors/exception.hh"
 #include "compiler/types/floats.hh"
 #include "global.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/prim2.hh"
 #include "privatise.hh"
 #include "recursivness.hh"
 #include "sigprint.hh"
 #include "compiler/signals/sigtype.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "simplify.hh"
 #include "tlib/tlib.hh"
 #include "compiler/math_primitives/xtended.hh"
@@ -1016,7 +1016,7 @@ string DocCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tree s2, int pr
  */
 string DocCompiler::generateXtended(Tree sig, int priority)
 {
-    xtended*       p = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended*       p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     vector<string> args;
     vector<Type>   types;
 

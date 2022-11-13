@@ -26,6 +26,8 @@
 #include "compiler/signals/signals.hh"
 #include "compiler/math_primitives/xtended.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 typedef map<Tree, int> MP;
@@ -112,8 +114,8 @@ int mterm::complexity() const
 static bool isSigPow(Tree sig, Tree& x, int& n)
 {
     // cerr << "isSigPow("<< *sig << ')' << endl;
-    xtended* p = (xtended*)getUserData(sig);
-    if (p == gGlobal->gPowPrim) {
+    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    if (p == (::Faust::Primitive::Math::xtended*)&::Faust::Primitive::Math::pow) {
         if (isSigInt(sig->branch(1), &n)) {
             x = sig->branch(0);
             // cerr << "factor of isSigPow " << *x << endl;
@@ -128,7 +130,7 @@ static bool isSigPow(Tree sig, Tree& x, int& n)
  */
 static Tree sigPow(Tree x, int p)
 {
-    return tree(gGlobal->gPowPrim->symbol(), x, sigInt(p));
+    return tree(::Faust::Primitive::Math::pow.symbol(), x, sigInt(p));
 }
 
 /**

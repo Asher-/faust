@@ -23,7 +23,7 @@
 
 #include "compiler/signals/signals.hh"
 #include "compiler/signals/sigtype.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 
 // Print the signal type
 #if 0

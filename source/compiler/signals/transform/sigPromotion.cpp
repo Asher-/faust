@@ -27,7 +27,9 @@
 #include "compiler/signals/prim2.hh"
 #include "global.hh"
 #include "compiler/math_primitives/xtended.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
+
+#include "faust/primitive/math.hh"
 
 void SignalTreeChecker::visit(Tree sig)
 {
@@ -35,7 +37,7 @@ void SignalTreeChecker::visit(Tree sig)
     Tree id, x, y, sel, sf, ff, largs, chan, part, idx, tb, ws, label, min, max, t0;
 
     // Extended
-    xtended* p = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     if (p) {
         vector<Type> vt;
         for (Tree b : sig->branches()) {
@@ -44,7 +46,7 @@ void SignalTreeChecker::visit(Tree sig)
         Type tx = p->infereSigType(vt);
         for (Tree b : sig->branches()) {
             if (tx->nature() != getCertifiedSigType(b)->nature()) {
-                cerr << "ERROR : xtended wih args of incorrect types : " << ppsig(sig) << endl;
+                cerr << "ERROR : ::Faust::Primitive::Math::xtended wih args of incorrect types : " << *sig << endl;
                 faustassert(false);
             }
         }
@@ -171,7 +173,7 @@ Tree SignalPromotion::transformation(Tree sig)
     Tree id, sel, x, y, ff, largs, sf, chan, part, tb, idx, ws, min, max, label, t0;
 
     // Extended
-    xtended* p = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     if (p) {
         vector<Type> vt;
         for (Tree b : sig->branches()) {
@@ -222,14 +224,14 @@ Tree SignalPromotion::transformation(Tree sig)
                 } else {
                     // float promotion needed, rem (%) replaced by fmod
                     vector<Tree> lsig = {smartFloatCast(tx, self(x)), smartFloatCast(ty, self(y))};
-                    return gGlobal->gFmodPrim->computeSigOutput(lsig);
+                    return ::Faust::Primitive::Math::fmod.computeSigOutput(lsig);
                 }
 
             case kDiv: {
                 // done here instead of 'simplify' to be sure the signals are correctly typed
                 interval i1 = tx->getInterval();
                 interval j1 = ty->getInterval();
-                if (i1.valid & j1.valid && gGlobal->gMathExceptions && j1.haszero()) {
+                if (i1.valid & j1.valid && ::Faust::Primitive::Math::exceptions && j1.haszero()) {
                     cerr << "WARNING : potential division by zero (" << i1 << "/" << j1 << ")" << endl;
                 }
                 // the result of a division is always a float

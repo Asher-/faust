@@ -104,7 +104,7 @@ This file contains several extensions to the tree library :
 #include <stdlib.h>
 #include <cstdlib>
 #include <map>
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "global.hh"
 #include "tlib/property.hh"
 

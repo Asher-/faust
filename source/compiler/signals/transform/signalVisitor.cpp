@@ -28,7 +28,7 @@
 #include "tlib/property.hh"
 #include "signalVisitor.hh"
 #include "compiler/signals/signals.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "tlib/tlib.hh"
 #include "tlib/tree.hh"
 

@@ -1,0 +1,12 @@
+
+if (INCLUDE_EXECUTABLE)
+	add_executable(faust ${SRC} ${HH} ${ROOT}/source-main/cli.cpp)
+	target_compile_definitions (faust PRIVATE ${FAUST_DEFINITIONS})
+	target_include_directories (faust PRIVATE ${FAUST_INC} ${LLVM_INCLUDE_DIRS})
+	target_link_libraries (faust PRIVATE ${FAUST_LIBS})
+  target_link_directories( faust PRIVATE ${MACSDK}/usr/lib ${BREW_AND_PORTS_LIBS} /usr/local/lib)
+	scan_backends (faust COMPILER)
+	set_target_properties(faust PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BINDIR})
+	set_target_properties(faust PROPERTIES COMPILE_FLAGS -DFAUST_EXE)
+	set (INSTALL_TARGETS faust)
+endif()

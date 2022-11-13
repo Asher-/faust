@@ -22,33 +22,11 @@
 #include <limits.h>
 #include <cstdint>
 
-#include "absprim.hh"
-#include "acosprim.hh"
-#include "asinprim.hh"
-#include "atan2prim.hh"
-#include "atanprim.hh"
 #include "compiler/signals/binop.hh"
-#include "ceilprim.hh"
-#include "cosprim.hh"
-#include "exp10prim.hh"
-#include "expprim.hh"
 #include "compiler/types/floats.hh"
-#include "floorprim.hh"
-#include "fmodprim.hh"
-#include "ftzprim.hh"
-#include "global.hh"
 #include "compiler/instruction/instructions.hh"
-#include "log10prim.hh"
-#include "logprim.hh"
-#include "maxprim.hh"
-#include "minprim.hh"
-#include "powprim.hh"
-#include "remainderprim.hh"
-#include "rintprim.hh"
-#include "sinprim.hh"
 #include "compiler/file_handling/sourcereader.hh"
-#include "sqrtprim.hh"
-#include "tanprim.hh"
+
 #include "tlib/tree.hh"
 #include "llvm_dsp_aux.hh"
 
@@ -56,20 +34,36 @@
 #include "template_code_container.hh"
 #endif
 
-// Globals for lex/yack parser
-extern FILE*       yyin;
-extern const char* yyfilename;
+#include "signals.hh"
+#include "global.hh"
+#include "faust/primitive/math.hh"
 
 // Garbageable globals
-list<Garbageable*> global::gObjectTable;
-bool               global::gHeapCleanup = false;
+bool                    global::gHeapCleanup = false;
 
 global* gGlobal = nullptr;
+
+std::list<Garbageable*>& global::getObjectTable()
+{
+  static std::list<Garbageable*> objectTable;
+  return objectTable;
+}
+
+global& global::config()
+{
+  static global global_instance;
+  return global_instance;
+}
+
+std::list<Garbageable*>& global::gObjectTable = getObjectTable();
+
+
 
 /*
 faust1 uses a loop size of 512, but 512 makes faust2 crash (stack allocation error).
 So we use a lower value here.
 */
+
 global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(MAX_STACK_SIZE), gNextFreeColor(1)
 {
     CTree::init();
@@ -80,7 +74,81 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
 
     EVALPROPERTY   = symbol("EvalProperty");
     PMPROPERTYNODE = symbol("PMPROPERTY");
-    
+
+    gResult          = nullptr;
+    gResult2         = nullptr;
+    gExpandedDefList = nullptr;
+
+    gDetailsSwitch    = false;
+    gDrawSignals      = false;
+    gDrawRouteFrame   = false;
+    gShadowBlur       = false;  // note: svg2pdf doesn't like the blur filter
+    gScaledSVG        = false;
+    gStripDocSwitch   = false;  // Strip <mdoc> content from doc listings.
+    gFoldThreshold    = 25;
+    gFoldComplexity   = 2;
+    gMaxNameSize      = 40;
+    gSimpleNames      = false;
+    gSimplifyDiagrams = false;
+    gMaxCopyDelay     = 16;
+
+    gVectorSwitch      = false;
+    gDeepFirstSwitch   = false;
+    gVecSize           = 32;
+    gVectorLoopVariant = 0;
+
+    gOpenMPSwitch    = false;
+    gOpenMPLoop      = false;
+    gSchedulerSwitch = false;
+    gOpenCLSwitch    = false;
+    gCUDASwitch      = false;
+    gGroupTaskSwitch = false;
+    gFunTaskSwitch   = false;
+
+    gUIMacroSwitch = false;
+    gDumpNorm      = -1;
+    gRangeUI       = false;
+
+    gPrintFileListSwitch = false;
+    gInlineArchSwitch    = false;
+
+    gDSPStruct  = false;
+    gLightMode  = false;
+    gClang      = false;
+    gNoVirtual  = false;
+    gCheckTable = "";
+
+    gClassName      = "mydsp";
+    gSuperClassName = "dsp";
+    gProcessName    = "process";
+
+    gDSPFactory = nullptr;
+
+    gInputString = nullptr;
+
+    // Backend configuration : default values
+    gAllowForeignFunction = true;
+    gAllowForeignConstant = true;
+    gAllowForeignVar      = true;
+    gComputeIOTA          = false;
+    gFAUSTFLOAT2Internal  = false;
+    gInPlace              = false;
+    gLoopVarInBytes       = false;
+    gWaveformInDSP        = false;
+    gUseDefaultSound      = true;
+    gHasTeeLocal          = false;
+    gFastMath             = false;
+    gRemoveVarAddress     = false;
+    gOneSample            = -1;
+    gOneSampleControl     = false;
+    gComputeMix           = false;
+    gFastMathLib          = "default";
+    gNameSpace            = "";
+    gFullParentheses      = false;
+
+    gNarrowingLimit = 0;
+    gWideningLimit  = 0;
+
     // Fastmath mapping float version
     gFastMathLibTable["fabsf"]      = "fast_fabsf";
     gFastMathLibTable["acosf"]      = "fast_acosf";
@@ -129,28 +197,29 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
     gFastMathLibTable["sqrt"]      = "fast_sqrt";
     gFastMathLibTable["tan"]       = "fast_tan";
 
-    gAbsPrim       = new AbsPrim();
-    gAcosPrim      = new AcosPrim();
-    gTanPrim       = new TanPrim();
-    gSqrtPrim      = new SqrtPrim();
-    gSinPrim       = new SinPrim();
-    gRintPrim      = new RintPrim();
-    gRemainderPrim = new RemainderPrim();
-    gPowPrim       = new PowPrim();
-    gMinPrim       = new MinPrim();
-    gMaxPrim       = new MaxPrim();
-    gLogPrim       = new LogPrim();
-    gLog10Prim     = new Log10Prim();
-    gFmodPrim      = new FmodPrim();
-    gFloorPrim     = new FloorPrim();
-    gExpPrim       = new ExpPrim();
-    gExp10Prim     = new Exp10Prim();
-    gCosPrim       = new CosPrim();
-    gCeilPrim      = new CeilPrim();
-    gAtanPrim      = new AtanPrim();
-    gAtan2Prim     = new Atan2Prim();
-    gAsinPrim      = new AsinPrim();
-    gFtzPrim       = new FtzPrim();
+    gLatexDocSwitch = true;  // Only LaTeX outformat is handled for the moment.
+
+    gErrorCount = 0;
+
+    gFileNum = 0;
+
+    gBoxCounter    = 0;
+    gSignalCounter = 0;
+
+    gCountInferences = 0;
+    gCountMaximal    = 0;
+
+    gDummyInput = 10000;
+
+    gBoxSlotNumber = 0;
+    gMemoryManager = false;
+
+    gLocalCausalityCheck = false;
+    gCausality           = false;
+
+    gOccurrences = nullptr; // FIX - only used for Draw
+    gFoldingFlag = false;
+    gDevSuffix   = nullptr;
 
     BOXIDENT         = symbol("BoxIdent");
     BOXCUT           = symbol("BoxCut");
@@ -289,11 +358,11 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
 #endif
 
     gMachineMaxStackSize = MAX_MACHINE_STACK_SIZE;
-}
 
 #ifdef TEMPLATE_BUILD
     gTemplateVisitor = nullptr;    // Will be (possibly) allocated in Template backend
 #endif
+    gOutputLang          = "";
 
     gHelpSwitch       = false;
     gVersionSwitch    = false;
@@ -382,10 +451,6 @@ void global::init()
 
     PROPAGATEPROPERTY = symbol("PropagateProperty");
 
-    // yyfilename is defined in errormsg.cpp but must be redefined at each compilation.
-    yyfilename = "";
-    yyin       = nullptr;
-
     gLatexheaderfilename = "latexheader.tex";
     gDocTextsDefaultFile = "mathdoctexts-default.txt";
 
@@ -462,7 +527,7 @@ void global::init()
 
 string global::printFloat()
 {
-    switch (gGlobal->gFloatSize) {
+    switch (::Faust::Primitive::Math::floatSize) {
         case 1:
             return "-single ";
         case 2:
@@ -498,18 +563,18 @@ void global::printCompilationOptions(stringstream& dst, bool backend)
     if (gMemoryManager) dst << "-mem ";
     if (gComputeMix) dst << "-cm ";
     if (gRangeUI) dst << "-rui ";
-    if (gMathApprox) dst << "-mapp ";
+    if (::Faust::Primitive::Math::approx) dst << "-mapp ";
     if (gClassName != "mydsp") dst << "-cn " << gClassName << " ";
     if (gSuperClassName != "dsp") dst << "-scn " << gSuperClassName << " ";
     if (gProcessName != "process") dst << "-pn " << gProcessName << " ";
     if (gMaskDelayLineThreshold != INT_MAX) dst << "-dtl " << gMaskDelayLineThreshold << " ";
     dst << "-es " << gEnableFlag << " ";
-    if (gHasExp10) dst << "-exp10 ";
+    if (::Faust::Primitive::Math::hasExp10) dst << "-exp10 ";
     if (gSchedulerSwitch) dst << "-sch ";
     if (gOpenMPSwitch) dst << "-omp " << ((gOpenMPLoop) ? "-pl " : "");
     dst << "-mcd " << gGlobal->gMaxCopyDelay << " ";
     if (gGlobal->gUIMacroSwitch) dst << "-uim ";
-    dst << printFloat() << "-ftz " << gFTZMode << " ";
+    dst << printFloat() << "-ftz " << ::Faust::Primitive::Math::FTZMode << " ";
     if (gVectorSwitch) {
         dst << "-vec "
             << "-lv " << gVectorLoopVariant << " "
@@ -586,7 +651,7 @@ void global::initTypeSizeMap()
 
 int global::audioSampleSize()
 {
-    return int(pow(2.f, float(gFloatSize + 1)));
+    return int(pow(2.f, float(::Faust::Primitive::Math::floatSize + 1)));
 }
 
 bool global::hasForeignFunction(const string& name, const string& inc_file)
@@ -772,7 +837,7 @@ void* Garbageable::operator new(size_t size)
 {
     // HACK : add 16 bytes to avoid unsolved memory smashing bug...
     Garbageable* res = (Garbageable*)malloc(size + 16);
-    global::gObjectTable.push_front(res);
+    global::getObjectTable().push_front(res);
     return res;
 }
 

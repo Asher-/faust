@@ -29,7 +29,9 @@
 #include "compiler/visitor/text_instruction_visitor.hh"
 #include "compiler/visitor/typing_instruction_visitor.hh"
 
-#define offStrNum ((gGlobal->gFloatSize == 1) ? 2 : ((gGlobal->gFloatSize == 2) ? 3 : 0))
+#include "faust/primitive/math.hh"
+
+#define offStrNum ((::Faust::Primitive::Math::floatSize == 1) ? 2 : ((::Faust::Primitive::Math::floatSize == 2) ? 3 : 0))
 #define audioPtrSize gGlobal->audioSampleSize()
 #define wasmBlockSize int(pow(2, 16))
 

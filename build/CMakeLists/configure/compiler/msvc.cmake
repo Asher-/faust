@@ -1,0 +1,2 @@
+
+	set (FAUST_DEFINITIONS ${FAUST_DEFINITIONS} -DMSVisualStudio)

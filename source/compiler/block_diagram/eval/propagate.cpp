@@ -25,12 +25,14 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 #include "labels.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/prim2.hh"
 #include "simplify.hh"
 #include "compiler/math_primitives/xtended.hh"
+
+#include "faust/primitive/math.hh"
 
 ////////////////////////////////////////////////////////////////////////
 /**
@@ -259,7 +261,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, slot, body, chan;
     tvec wf;
 
-    xtended* xt = (xtended*)getUserData(box);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
 
     // Extended Primitives
 
@@ -524,7 +526,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
         siglist l0 = makeMemSigProjList(ref(1), in2);
         siglist l1 = propagate(slotenv2, path, t2, l0);
         siglist l2 = propagate(slotenv2, path, t1, listConcat(l1, listLift(lsig)));
-        siglist l3 = (gGlobal->gFTZMode > 0) ? wrapWithFTZ(l2) : l2;
+        siglist l3 = (::Faust::Primitive::Math::FTZMode > 0) ? wrapWithFTZ(l2) : l2;
         Tree    g  = rec(listConvert(l3));
 
         // compute output list of recursive signals

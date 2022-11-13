@@ -24,7 +24,7 @@
 #include "compiler/errors/errormsg.hh"
 #include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 
 //----------------------- New environment management --------------------------

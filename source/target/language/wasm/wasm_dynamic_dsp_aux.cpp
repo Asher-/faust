@@ -25,7 +25,7 @@
 
 #include "wasm_dynamic_dsp_aux.hh"
 #include "compiler/type_manager/Text.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 
 #ifdef WIN32
 #define strdup _strdup

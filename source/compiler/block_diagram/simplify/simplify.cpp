@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <map>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "tlib/list.hh"
@@ -34,9 +34,10 @@
 #include "sigorderrules.hh"
 #include "sigprint.hh"
 #include "compiler/signals/sigtype.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "simplify.hh"
 #include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math.hh"
 
 #undef TRACE
 
@@ -84,7 +85,7 @@ static Tree simplification(Tree sig)
     int  opnum;
     Tree t1, t2, t3;
 
-    xtended* xt = (xtended*)getUserData(sig);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(sig);
     // primitive elements
     if (xt) {
         vector<Tree> args;
@@ -93,7 +94,7 @@ static Tree simplification(Tree sig)
         }
 
         // to avoid negative power to further normalization
-        if (xt != gGlobal->gPowPrim) {
+        if (xt != ::Faust::Primitive::Math::Pow::self) {
             return xt->computeSigOutput(args);
         } else {
             return normalizeAddTerm(xt->computeSigOutput(args));

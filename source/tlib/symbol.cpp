@@ -25,7 +25,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/errors/exception.hh"
 #include "symbol.hh"
 

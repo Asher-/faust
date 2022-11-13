@@ -19,9 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#ifndef __FAUST_SOURCE_COMPILER_PARSER_LEXER_DECLARATION_HH__
-#define __FAUST_SOURCE_COMPILER_PARSER_LEXER_DECLARATION_HH__
+#include "compiler/parser/lexer/implementation.hh"
 
-
-#endif
-
+int FaustAbstractFlexLexer::yylex() { throw "Should never have gotten here."; return -1; }
+int FaustAbstractFlexLexer::yywrap() { return 1; }

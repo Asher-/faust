@@ -24,6 +24,8 @@
 #include "compiler/signals/prim2.hh"
 #include "global.hh"
 
+#include "faust/primitive/math.hh"
+
 Tree ffunction(Tree signature, Tree incfile, Tree libfile)
 {
     return tree(gGlobal->FFUN, signature, incfile, libfile);
@@ -57,7 +59,7 @@ int ffrestype(Tree t)
 const char* ffname(Tree t)
 {
     Tree namelist = nth(ffsignature(t), 1);
-    return tree2str(nth(namelist, gGlobal->gFloatSize - 1));
+    return tree2str(nth(namelist, ::Faust::Primitive::Math::floatSize - 1));
 }
 
 int ffarity(Tree t)

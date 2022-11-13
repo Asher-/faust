@@ -32,13 +32,13 @@
 #include <stdio.h>
 #include <cstdlib>
 
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "environment.hh"
 #include "compiler/errors/errormsg.hh"
 #include "compiler/block_diagram/eval/eval.hh"
 #include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "patternmatcher.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "propagate.hh"
@@ -200,7 +200,7 @@ static Tree real_a2sb(Tree exp)
             return abstr;
 
         } else {
-            evalerror(yyfilename, -1, "a2sb : internal error : not an abstraction inside closure (1)", exp);
+            evalerror(gGlobal->gParser._streamName.c_str(), -1, "a2sb : internal error : not an abstraction inside closure (1)", exp);
             // Never reached since evalerror throws an exception
             return 0;
         }
@@ -353,7 +353,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
     // cerr << "EVAL " << *exp << " (visited : " << *visited << ")" << endl;
     // cerr << "REALEVAL of " << *exp << endl;
 
-    xtended* xt = (xtended*)getUserData(exp);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(exp);
 
     // constants
     //-----------
@@ -384,7 +384,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         Tree a2 = eval(e2, visited, localValEnv);
         Tree re = boxSeq(a1, a2);
 
-        xtended* xxt = (xtended*)getUserData(a2);
+        ::Faust::Primitive::Math::xtended* xxt = (::Faust::Primitive::Math::xtended*)getUserData(a2);
         siglist  lsig;
         // try a numerical simplification of expressions of type 2,3:+
         if ( isNumericalTuple(a1, lsig)
@@ -767,7 +767,7 @@ static double eval2double(Tree exp, Tree visited, Tree localValEnv)
     int  numInputs, numOutputs;
     getBoxType(diagram, &numInputs, &numOutputs);
     if ((numInputs > 0) || (numOutputs != 1)) {
-        evalerror(yyfilename, yylineno, "not a constant expression of type : (0->1)", exp);
+        evalerror(gGlobal->gParser._streamName.c_str(), gGlobal->gParser._lexer->lineno(), "not a constant expression of type : (0->1)", exp);
         // Never reached since evalerror throws an exception
         return 1;
     } else {
@@ -797,7 +797,7 @@ static int eval2int(Tree exp, Tree visited, Tree localValEnv)
     int  numInputs, numOutputs;
     getBoxType(diagram, &numInputs, &numOutputs);
     if ((numInputs > 0) || (numOutputs != 1)) {
-        evalerror(yyfilename, yylineno, "not a constant expression of type : (0->1)", exp);
+        evalerror(gGlobal->gParser._streamName.c_str(), gGlobal->gParser._lexer->lineno(), "not a constant expression of type : (0->1)", exp);
         // Never reached since evalerror throws an exception
         return 1;
     } else {
@@ -1202,7 +1202,7 @@ static Tree applyList(Tree fun, Tree larg)
         }
 
         if ((outs == 1) && ((isBoxPrim2(fun, &p2) && (p2 != sigPrefix)) ||
-                            (getUserData(fun) && ((xtended*)getUserData(fun))->isSpecialInfix()))) {
+                            (getUserData(fun) && ((::Faust::Primitive::Math::xtended*)getUserData(fun))->isSpecialInfix()))) {
             // special case : /(3) ==> _,3 : /
             Tree larg2 = concat(nwires(ins - outs), larg);
             return boxSeq(larg2par(larg2), fun);
@@ -1216,7 +1216,7 @@ static Tree applyList(Tree fun, Tree larg)
     // Here fun is a closure, we can test the content of abstr
 
     if (isBoxEnvironment(abstr)) {
-        evalerrorbox(yyfilename, -1, "an environment can't be used as a function", fun);
+        evalerrorbox(gGlobal->gParser._streamName.c_str(), -1, "an environment can't be used as a function", fun);
     }
 
     if (isBoxIdent(abstr)) {
@@ -1229,7 +1229,7 @@ static Tree applyList(Tree fun, Tree larg)
     }
 
     if (!isBoxAbstr(abstr, id, body)) {
-        evalerror(yyfilename, -1, "(internal) not an abstraction inside closure (2)", fun);
+        evalerror(gGlobal->gParser._streamName.c_str(), -1, "(internal) not an abstraction inside closure (2)", fun);
     }
 
     // Here abstr is an abstraction, we can test the content of abstr
@@ -1286,7 +1286,7 @@ static Tree revEvalList(Tree lexp, Tree visited, Tree localValEnv)
 static Tree larg2par(Tree larg)
 {
     if (isNil(larg)) {
-        evalerror(yyfilename, -1, "empty list of arguments", larg);
+        evalerror(gGlobal->gParser._streamName.c_str(), -1, "empty list of arguments", larg);
     }
     if (isNil(tl(larg))) {
         return hd(larg);
@@ -1544,7 +1544,7 @@ static Tree insideBoxSimplification(Tree box)
 
     Tree t1, t2, ff, label, cur, min, max, step, type, name, file, slot, body;
 
-    xtended* xt = (xtended*)getUserData(box);
+    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
 
     // Extended Primitives
 

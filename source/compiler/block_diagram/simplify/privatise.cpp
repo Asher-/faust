@@ -20,14 +20,14 @@
  ************************************************************************/
 
 #include <stdio.h>
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/signals/sigtype.hh"
 
 #include "compiler/errors/exception.hh"
 #include "global.hh"
 #include "privatise.hh"
 #include "sigprint.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 
 /*****************************************************************************
                          privatise : compile a list of signals

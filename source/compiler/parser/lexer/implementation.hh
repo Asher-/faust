@@ -24,17 +24,9 @@
 
 #include <string>
 
-#include "compiler/parser/faustparser.hh"
+#include "compiler/parser/abstract/implementation.hh"
 
 #include "tlib/tree.hh"
-
-namespace Faust { namespace Compiler { namespace Parser {
-  namespace Type { struct Driver; }
-  namespace Lexer {
-    struct Implementation;
-} } } }
-
-#define YY_DECL symbol_type ::Faust::Compiler::Parser::Lexer::Implementation::lex()
 
 #ifndef FaustAbstractFlexLexer
   #undef yyFlexLexer
@@ -45,34 +37,47 @@ namespace Faust { namespace Compiler { namespace Parser {
 namespace Faust {
   namespace Compiler {
     namespace Parser {
-      namespace Type { struct Driver; }
+      struct Implementation;
       namespace Lexer {
-      
+
         struct Implementation : FaustAbstractFlexLexer
         {
-          using Driver = ::Faust::Compiler::Parser::Type::Driver;
-          using Parser = ::Faust::Compiler::Parser::Implementation;
+          using Self = ::Faust::Compiler::Parser::Implementation;
+          using Parser = ::Faust::Compiler::Parser::AbstractImplementation;
 
           Implementation
-          ( std::istream& arg_yyin,
+          ( Self&         self,
+            std::istream& arg_yyin,
             std::ostream& arg_yyout )
           : FaustAbstractFlexLexer(
               arg_yyin,
               arg_yyout
-            )
+            ),
+            self( self )
           {}
           
           Implementation
-          ( std::istream* arg_yyin = nullptr,
+          ( Self&         self,
+            std::istream* arg_yyin = nullptr,
             std::ostream* arg_yyout = nullptr )
           : FaustAbstractFlexLexer(
               arg_yyin,
               arg_yyout
-            )
+            ),
+            self( self )
           {}
+          
+          void LexerError( const char* msg )
+          override
+          {
+//            error << "ERROR : parse code = " << yyerr << endl;
+            throw faustexception(msg);
+          }
 
           typename Parser::symbol_type
-          lex( Driver& driver );
+          lex( Self& self );
+          
+          Self& self;
           
         };
         

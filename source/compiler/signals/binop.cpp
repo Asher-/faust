@@ -24,7 +24,7 @@
 #endif
 
 #include "compiler/signals/binop.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/signals/signals.hh"
 
 bool falsePredicate(Node const& a)

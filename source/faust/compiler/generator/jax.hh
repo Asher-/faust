@@ -28,6 +28,8 @@
 
 #include "jax_code_container.hh"
 
+#include "faust/primitive/math.hh"
+
 namespace Faust {
   namespace Compiler {
 
@@ -43,7 +45,7 @@ namespace Faust {
               throw faustexception("ERROR : -lang jax not supported since JAX backend is not built\n");
           #endif
           gGlobal->gAllowForeignFunction = true;  // foreign functions are supported (we use jax.random.PRNG for example)
-          gGlobal->gNeedManualPow        = false;
+          ::Faust::Primitive::Math::needManualPow = false;
           gGlobal->gFAUSTFLOAT2Internal  = true;
           this->_codeContainer = JAXCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
 

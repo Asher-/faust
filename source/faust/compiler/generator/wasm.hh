@@ -27,6 +27,8 @@
 
 #include "wasm_code_container.hh"
 
+#include "faust/primitive/math.hh"
+
 namespace Faust {
   namespace Compiler {
 
@@ -55,7 +57,7 @@ namespace Faust {
           gGlobal->gLoopVarInBytes   = true;
           gGlobal->gWaveformInDSP    = true;   // waveform are allocated in the DSP and not as global data
           gGlobal->gMachinePtrSize   = 4;      // WASM is currently 32 bits
-          gGlobal->gNeedManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
+          ::Faust::Primitive::Math::needManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
           gGlobal->gRemoveVarAddress = true;   // To be used in -vec mode
                                                // gGlobal->gHasTeeLocal = true;     // combined store/load
 

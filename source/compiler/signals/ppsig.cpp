@@ -163,7 +163,7 @@ ostream& ppsig::printrec(ostream& fout, Tree lexp, bool hide) const
 ostream& ppsig::printextended(ostream& fout, Tree sig1) const
 {
     string   sep = "";
-    xtended* p   = (xtended*)getUserData(fSig);
+    ::Faust::Primitive::Math::xtended* p   = (::Faust::Primitive::Math::xtended*)getUserData(fSig);
 
     fout << p->name() << '(';
     for (int i = 0; i < sig1->arity(); i++) {
@@ -422,7 +422,7 @@ ostream& ppsigShared::printrec(ostream& fout, Tree lexp, bool hide) const
 ostream& ppsigShared::printextended(ostream& fout, Tree sig1) const
 {
     string   sep = "";
-    xtended* p   = (xtended*)getUserData(fSig);
+    ::Faust::Primitive::Math::xtended* p   = (::Faust::Primitive::Math::xtended*)getUserData(fSig);
 
     fout << p->name() << '(';
     for (int i = 0; i < sig1->arity(); i++) {

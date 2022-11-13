@@ -24,6 +24,7 @@
 #include "compiler/errors/exception.hh"
 #include "compiler/types/floats.hh"
 #include "global.hh"
+#include "faust/primitive/math.hh"
 
 using namespace std;
 
@@ -47,7 +48,7 @@ CodeContainer* JAVACodeContainer::createContainer(const string& name, const stri
 {
     CodeContainer* container;
 
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for Java\n");
     }
     if (gGlobal->gOpenCLSwitch) {

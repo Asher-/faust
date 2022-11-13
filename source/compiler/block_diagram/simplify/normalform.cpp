@@ -28,7 +28,7 @@
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "simplify.hh"
 #include "sigPromotion.hh"
-#include "sigtyperules.hh"
+#include "compiler/signals/sigtyperules.hh"
 #include "timing.hh"
 
 // Implementation

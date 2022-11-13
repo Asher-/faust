@@ -10,47 +10,43 @@
 %define api.token.prefix {FAUST_}
 
 %define api.namespace {::Faust::Compiler::Parser}
-%define api.parser.class {Implementation}
-//%define api.location.type { Type::Location }
+%define api.parser.class {AbstractImplementation}
 
 %define parse.assert /* runtime assertions to catch invalid uses */
 %define parse.trace /* set yydebug = 1 to print trace to stderr */
-%define parse.error detailed /* simple, detailed, verbose */
+%define parse.error verbose /* simple, detailed, verbose */
 %define parse.lac full /* look-ahead correction (5.8.3 LAC) */
 
-%param { Type::Driver& driver }
+%param { Implementation& self }
 
-%header "faustparser.hh"   /* Generate faustparser.hh */
+%header "abstract/implementation.hh"   /* Generate faustparser.hh */
 
 %locations /* Generate location.hh */
 %verbose   /* Generate faustparser.output */
 
 %initial-action
 {
-  @$.begin.filename = @$.end.filename = &driver._streamName;
+  @$.begin.filename = @$.end.filename = &this->self._streamName;
 };
 
 %code requires { /* Faust requires */
   #include <string>
   #include "compiler/parser/type/tokens.hh"
-  #include "compiler/parser/location.hh"
+  #include "compiler/parser/abstract/location.hh"
   namespace Faust { namespace Compiler { namespace Parser {
-    namespace Type { struct Driver; }
-    namespace Lexer {
-      struct Implementation;
-  } } } }
+    struct Implementation;
+    namespace Lexer { struct Implementation; }
+  } } }
 }
 
 %code { /* Faust code */
-  #include "compiler/parser/type/driver.hh"
+  #include "compiler/parser/implementation.hh"
 }
 
 %{ /* Faust */
 
 #include <list>
 #include <iostream>
-
-#include "global.hh"
 
 #include "tlib/tree.hh"
 #include "compiler/math_primitives/xtended.hh"
@@ -62,46 +58,58 @@
 #include "documentator/doc.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 
-#include "string_substitution.hh"
-
 #define YYMAXDEPTH	100000
 
-extern char* 		yytext;
-extern const char* 	yyfilename;
-extern int 			yylineno;
-extern int 			yyerr;
+#include "faust/primitive/math.hh"
 
 #include "compiler/parser/lexer/implementation.hh"
 #undef yylex
-#define yylex driver._lexer->lex
+#define yylex this->self._lexer->lex
+
 
 %}
 
 %start program
 
 /* With local environment (lowest priority)*/
-%left WITH
-%left LETREC
+%left <std::string> WITH
+%left <std::string> LETREC
 
 /* Block Diagram Algebra */
 /*%left SEQ SPLIT MIX*/
-%right SPLIT MIX
-%right SEQ
-%right COMMA
-%left REC
+%right <std::string> SPLIT
+%right <std::string> MIX
+%right <std::string> SEQ
+%right <std::string> COMMA
+%left <std::string> REC
 
 /* Primitive boxes */
 
 //%left LT LE EQ GT GE NE
-%nonassoc LT LE EQ GT GE NE
+%nonassoc <std::string> LT
+%nonassoc <std::string> LE
+%nonassoc <std::string> EQ
+%nonassoc <std::string> GT
+%nonassoc <std::string> GE
+%nonassoc <std::string> NE
 
-%left ADD SUB OR
-%left MUL DIV MOD AND XOR LSH RSH
-%left POWOP
-%left FDELAY
-%left DELAY1
+%left <std::string> ADD
+%left <std::string> SUB
+%left <std::string> OR
+
+%left <std::string> MUL
+%left <std::string> DIV
+%left <std::string> MOD
+%left <std::string> AND
+%left <std::string> XOR
+%left <std::string> LSH
+%left <std::string> RSH
+
+%left <std::string> POWOP
+%left <std::string> FDELAY
+%left <std::string> DELAY1
 /*%left APPL*/
-%left DOT
+%left <std::string> DOT
 
 %token <std::string> MEM
 %token <std::string> PREFIX
@@ -163,20 +171,17 @@ extern int 			yyerr;
 %token <float> FLOAT
 
 %token <std::string> LAMBDA
-%token <std::string> DOT
 
 %token <std::string> WIRE
 %token <std::string> CUT
 %token <std::string> ENDDEF
 %token <std::string> VIRG
 %left <std::string> LPAR
-%token <std::string> RPAR
+%left <std::string> RPAR
 %token <std::string> LBRAQ
-%token <std::string> RBRAQ
+%left <std::string> RBRAQ
 %left <std::string> LCROC
-%token <std::string> RCROC
-%token <std::string> WITH
-%token <std::string> LETREC
+%left <std::string> RCROC
 %token <std::string> WHERE
 %token <std::string> DEF
 
@@ -216,6 +221,8 @@ extern int 			yyerr;
 %token <int> QUADMODE
 %token <int> FIXEDPOINTMODE
 
+%token ENDOFINPUT 0
+
  /* Beg<std::string> in and End tags for documentations, equations and diagrams */
 %token <std::string> BDOC
 %token <std::string> EDOC
@@ -240,146 +247,152 @@ extern int 			yyerr;
 %token <std::string> LSTQ
 %token <std::string> ENDL
 
-%type <Type::exp> doc
-%type <Type::exp> doc.attribute.list
-%type <Type::exp> doc.attribute.definition
+%type <Tree> doc
+%type <Tree> doc.attribute.list
+%type <Tree> doc.attribute.definition
 %type <bool> doc.attribute.value
 %type <std::string> doc.text
-%type <Type::exp> doc.equation
-%type <Type::exp> doc.diagram
-%type <Type::exp> doc.notice
-%type <Type::exp> doc.list
-%type <Type::exp> doc.metadata
+%type <Tree> doc.equation
+%type <Tree> doc.diagram
+%type <Tree> doc.notice
+%type <Tree> doc.list
+%type <Tree> doc.metadata
 
-%type <Type::exp> expression
-%type <Type::exp> expression.component
-%type <Type::exp> expression.composition
-%type <Type::exp> expression.composition.mix
-%type <Type::exp> expression.composition.record
-%type <Type::exp> expression.composition.sequence
-%type <Type::exp> expression.composition.split
-%type <Type::exp> expression.composition.list
-%type <Type::exp> expression.environment
-%type <Type::exp> expression.infix
-%type <Type::exp> expression.infix.definitions.local
-%type <Type::exp> expression.infix.environment.access
-%type <Type::exp> expression.infix.math
-%type <Type::exp> expression.infix.math.algebra
-%type <Type::exp> expression.infix.math.comparison
-%type <Type::exp> expression.infix.math.logic
-%type <Type::exp> expression.infix.math.shift
-%type <Type::exp> expression.infix.prefix
-%type <Type::exp> expression.infix.signal.delay
-%type <Type::exp> expression.iterate.parallel
-%type <Type::exp> expression.iterate.sequence
-%type <Type::exp> expression.iterate.sum
-%type <Type::exp> expression.iterate.product
-%type <Type::exp> expression.lambda
-%type <Type::exp> expression.lambda.params
-%type <Type::exp> expression.lambda.params.start
-%type <Type::exp> expression.lambda.params.append
-%type <Type::exp> expression.letrec
-%type <Type::exp> expression.letrec.list
-%type <Type::exp> expression.letrec.list.start
-%type <Type::exp> expression.letrec.list.append
-%type <Type::exp> expression.letrec.equation
-%type <Type::exp> expression.letrec.equation.name
-%type <Type::exp> expression.library
-%type <Type::exp> expression.math
-%type <Type::exp> expression.math.comparison
-%type <Type::exp> expression.math.rounding
-%type <Type::exp> expression.math.scalar
-%type <Type::exp> expression.math.signal
-%type <Type::exp> expression.math.signal.algebra
-%type <Type::exp> expression.math.signal.shift
-%type <Type::exp> expression.math.signal.power
-%type <Type::exp> expression.math.trigonometry
-%type <Type::exp> expression.parallel
-%type <Type::exp> expression.parenthesis
-%type <Type::exp> expression.signal
-%type <Type::exp> expression.signal.control
-%type <Type::exp> expression.signal.delay
-%type <Type::exp> expression.signal.logic
+%type <Tree> expression
+%type <Tree> expression.component
+%type <Tree> expression.composition
+%type <Tree> expression.composition.parallel
+%type <Tree> expression.composition.serial
+%type <Tree> expression.composition.mix
+%type <Tree> expression.composition.recursive
+%type <Tree> expression.composition.sequence
+%type <Tree> expression.composition.split
+//%type <Tree> expression.composition.list
+//%type <Tree> expression.composition.list.start
+//%type <Tree> expression.composition.list.append
+%type <Tree> expression.environment
+%type <Tree> statement.identifier.box
+%type <Tree> expression.infix
+%type <Tree> expression.infix.definitions.substitution
+%type <Tree> expression.infix.environment.access
+%type <Tree> expression.infix.math
+%type <Tree> expression.infix.math.algebra
+%type <Tree> expression.infix.math.comparison
+%type <Tree> expression.infix.math.logic
+%type <Tree> expression.infix.math.shift
+%type <Tree> expression.infix.prefix
+%type <Tree> expression.infix.signal.delay
+%type <Tree> expression.iterate.parallel
+%type <Tree> expression.iterate.sequence
+%type <Tree> expression.iterate.sum
+%type <Tree> expression.iterate.product
+%type <Tree> expression.lambda
+%type <Tree> expression.lambda.params
+%type <Tree> expression.lambda.params.start
+%type <Tree> expression.lambda.params.append
+%type <Tree> expression.letrec
+%type <Tree> expression.letrec.list
+%type <Tree> expression.letrec.list.start
+%type <Tree> expression.letrec.list.append
+%type <Tree> expression.letrec.equation
+%type <Tree> expression.letrec.equation.name
+%type <Tree> expression.library
+%type <Tree> expression.math
+%type <Tree> expression.math.comparison
+%type <Tree> expression.math.rounding
+%type <Tree> expression.math.scalar
+%type <Tree> expression.math.signal
+%type <Tree> expression.math.signal.algebra
+%type <Tree> expression.math.signal.shift
+%type <Tree> expression.math.signal.power
+%type <Tree> expression.math.trigonometry
+%type <Tree> expression.parenthesis
+%type <Tree> expression.signal
+%type <Tree> expression.signal.control
+%type <Tree> expression.signal.delay
+%type <Tree> expression.signal.logic
 
-%type <Type::exp> primitive
-%type <Type::exp> primitive.foreign
-%type <Type::exp> primitive.foreign.constant
-%type <Type::exp> primitive.foreign.function
-%type <Type::exp> primitive.foreign.function.signature
-%type <Type::exp> primitive.foreign.variable
-%type <Type::exp> primitive.signal.input.implicit
-%type <Type::exp> primitive.signal.input.terminate
-%type <Type::exp> primitive.signal.inputs
-%type <Type::exp> primitive.number
-%type <Type::exp> primitive.type.number.list
-%type <Type::exp> primitive.type.number.list.start
-%type <Type::exp> primitive.type.number.list.append
-%type <Type::exp> primitive.type.number.list.member
-%type <Type::exp> primitive.signal.outputs
-%type <Type::exp> primitive.signal
-%type <Type::exp> primitive.signal.route
-%type <Type::exp> primitive.signal.source
-%type <Type::exp> primitive.signal.source.soundfile
-%type <Type::exp> primitive.signal.source.table
-%type <Type::exp> primitive.signal.source.waveform
-%type <Type::exp> primitive.string.quoted
-%type <Type::exp> primitive.string.tag
-%type <Type::exp> primitive.string.unquoted
-%type <Type::exp> primitive.type
-%type <Type::exp> primitive.type.list
-%type <Type::exp> primitive.type.list.start
-%type <Type::exp> primitive.type.list.append
-%type <Type::exp> primitive.type.number
-%type <Type::exp> primitive.type.number.int
-%type <Type::exp> primitive.type.number.float
-%type <Type::exp> primitive.type.any
+%type <Tree> primitive
+%type <Tree> primitive.foreign
+%type <Tree> primitive.foreign.constant
+%type <Tree> primitive.foreign.function
+%type <Tree> primitive.foreign.function.signature
+%type <Tree> primitive.foreign.variable
+%type <Tree> primitive.signal.input.implicit
+%type <Tree> primitive.signal.input.terminate
+%type <Tree> primitive.signal.inputs
+%type <Tree> primitive.number
+%type <Tree> primitive.type.number.list
+%type <Tree> primitive.type.number.list.start
+%type <Tree> primitive.type.number.list.append
+%type <Tree> primitive.type.number.list.member
+%type <Tree> primitive.signal.outputs
+%type <Tree> primitive.signal
+%type <Tree> primitive.signal.route
+%type <Tree> primitive.signal.route.implied.outputs
+%type <Tree> primitive.signal.route.implied.connections
+%type <Tree> primitive.signal.route.explicit
+%type <Tree> primitive.signal.source
+%type <Tree> primitive.signal.source.soundfile
+%type <Tree> primitive.signal.source.table
+%type <Tree> primitive.signal.source.waveform
+%type <Tree> primitive.string.quoted
+%type <Tree> primitive.string.tag
+%type <Tree> primitive.string.unquoted
+%type <Tree> primitive.type
+%type <Tree> primitive.type.list
+%type <Tree> primitive.type.list.start
+%type <Tree> primitive.type.list.append
+%type <Tree> primitive.type.number
+%type <Tree> primitive.type.number.int
+%type <Tree> primitive.type.number.float
+%type <Tree> primitive.type.any
 
-%type <Type::exp> primitive.ui
-%type <Type::exp> primitive.ui.button
-%type <Type::exp> primitive.ui.checkbox
-%type <Type::exp> primitive.ui.vslider
-%type <Type::exp> primitive.ui.hslider
-%type <Type::exp> primitive.ui.nentry
-%type <Type::exp> primitive.ui.vgroup
-%type <Type::exp> primitive.ui.hgroup
-%type <Type::exp> primitive.ui.tgroup
-%type <Type::exp> primitive.ui.vbargraph
-%type <Type::exp> primitive.ui.hbargraph
+%type <Tree> primitive.ui
+%type <Tree> primitive.ui.button
+%type <Tree> primitive.ui.checkbox
+%type <Tree> primitive.ui.vslider
+%type <Tree> primitive.ui.hslider
+%type <Tree> primitive.ui.nentry
+%type <Tree> primitive.ui.vgroup
+%type <Tree> primitive.ui.hgroup
+%type <Tree> primitive.ui.tgroup
+%type <Tree> primitive.ui.vbargraph
+%type <Tree> primitive.ui.hbargraph
 
-%type <Type::exp> program
+%type <Tree> program
 
-%type <Type::exp> statement
-%type <Type::exp> statement.definition
-%type <Type::exp> statement.definition.substitution
-%type <Type::exp> statement.definition.error
-%type <Type::exp> statement.definition.function
-%type <Type::exp> statement.definition.function.incomplete
-%type <Type::exp> statement.definition.list
-%type <Type::exp> statement.definition.list.start
-%type <Type::exp> statement.definition.list.start.qualified
-%type <Type::exp> statement.definition.list.append
-%type <Type::exp> statement.definition.list.append.qualified
-%type <Type::exp> statement.definition.with
-%type <Type::exp> statement.declare.doc
-%type <Type::exp> statement.declare.metadata
-%type <Type::exp> statement.declare.feature.metadata
-%type <Type::exp> statement.identifier
-%type <Type::exp> statement.identifier.box
-%type <Type::exp> statement.identifier.waveform
-%type <Type::exp> statement.import
-%type <Type::exp> statement.list
-%type <Type::exp> statement.list.start
-%type <Type::exp> statement.list.start.qualified
-%type <Type::exp> statement.list.append
-%type <Type::exp> statement.list.append.qualified
+%type <Tree> statement
+%type <Tree> statement.definition
+%type <Tree> statement.definition.assignment
+%type <Tree> statement.definition.error
+%type <Tree> statement.definition.function
+%type <Tree> statement.definition.function.incomplete
+%type <Tree> statement.definition.list
+%type <Tree> statement.definition.list.start
+%type <Tree> statement.definition.list.start.qualified
+%type <Tree> statement.definition.list.append
+%type <Tree> statement.definition.list.append.qualified
+%type <Tree> statement.definition.with
+%type <Tree> statement.declare.doc
+%type <Tree> statement.declare.metadata
+%type <Tree> statement.declare.feature.metadata
+%type <Tree> statement.identifier
+%type <Tree> statement.identifier.waveform
+%type <Tree> statement.import
+%type <Tree> statement.list
+%type <Tree> statement.list.start
+%type <Tree> statement.list.start.qualified
+%type <Tree> statement.list.append
+%type <Tree> statement.list.append.qualified
 %type <int> statement.math.precision
 %type <int> statement.math.precision.list
 %type <int> statement.math.precision.list.start
 %type <int> statement.math.precision.list.append
-%type <Type::exp> statement.signal.pattern.rule
-%type <Type::exp> statement.signal.pattern.rule.list
-%type <Type::exp> statement.signal.pattern.rule.list.start
-%type <Type::exp> statement.signal.pattern.rule.list.append
+%type <Tree> statement.signal.pattern.rule
+%type <Tree> statement.signal.pattern.rule.list
+%type <Tree> statement.signal.pattern.rule.list.start
+%type <Tree> statement.signal.pattern.rule.list.append
 
 %% /* grammar rules and actions follow; tokens in caps, rules lowercase */
 
@@ -391,13 +404,13 @@ extern int 			yyerr;
 program:
 		statement.list {
 			$$ = $[statement.list];
-			gGlobal->gResult = formatDefinitions($$);
+			self._ast = self.formatDefinitions($$);
 		}
-  | /* empty */ { $$ = gGlobal->nil; }
+  | /* empty */ { $$ = self._nil; }
 
-/*--------------------------------------------*
-|  Everything else is in alphabetical order.  |
-*--------------------------------------------*/
+/*-----------------------------------------------------*
+|  Everything else is in (mostly) alphabetical order.  |
+*-----------------------------------------------------*/
 
 /*********************************************/
 /******************** Doc ********************/
@@ -413,11 +426,11 @@ doc:
   | doc.notice { $$ = docNtc(); }
   | doc.list { $$ = docLst(); }
   | doc.metadata { $$ = docMtd($[doc.metadata]); }
-	| /* empty */ { $$ = gGlobal->nil; }
+	| /* empty */ { $$ = self._nil; }
 
   doc.text:
       DOCCHAR { $$ = $DOCCHAR; }
-    | doc.text[prior] DOCCHAR { $$ = $prior.append(yytext); }
+    | doc.text[prior] DOCCHAR { $$ = $prior.append(self._lexer->YYText()); }
 
   doc.equation:
       BEQN expression EEQN { $$ = $expression; }
@@ -427,6 +440,11 @@ doc:
 
   doc.notice:
       NOTICE { }
+
+  doc.metadata:
+    BMETADATA statement.identifier[metadata] EMETADATA { $$ = $metadata; }
+
+  /*------------------- doc.list -------------------*/
 
   doc.list:
       BLST doc.attribute.list ELST { }
@@ -438,23 +456,20 @@ doc:
 
     doc.attribute.definition:
         LSTDEPENDENCIES LSTEQ LSTQ doc.attribute.value LSTQ {
-          gGlobal->gLstDependenciesSwitch = $[doc.attribute.value];
+          self._lstDependenciesSwitch = $[doc.attribute.value];
         }
       | LSTMDOCTAGS LSTEQ LSTQ doc.attribute.value LSTQ {
-          gGlobal->gStripDocSwitch = $[doc.attribute.value];
-          gGlobal->gStripDocSwitch ? gGlobal->gStripDocSwitch=false
-                                   : gGlobal->gStripDocSwitch=true;
+          self._stripDocSwitch = $[doc.attribute.value];
+          self._stripDocSwitch ? self._stripDocSwitch=false
+                                   : self._stripDocSwitch=true;
         }
       | LSTDISTRIBUTED LSTEQ LSTQ doc.attribute.value LSTQ {
-          gGlobal->gLstDistributedSwitch = $[doc.attribute.value];
+          self._lstDistributedSwitch = $[doc.attribute.value];
         }
 
     doc.attribute.value:
         LSTTRUE { $$ = true; }
       | LSTFALSE { $$ = false; }
-
-  doc.metadata:
-    BMETADATA statement.identifier[metadata] EMETADATA { $$ = $metadata; }
 
 /****************************************************/
 /******************** Expression ********************/
@@ -463,50 +478,83 @@ doc:
 expression:
 		statement.definition.with
   | expression.letrec
-  | expression.parallel
   | expression.composition
-  
+
   /******************** Component ********************/
   
   expression.component:
-      COMPONENT LPAR primitive.string.unquoted RPAR { $$ = boxComponent($[primitive.string.unquoted]); }
+      COMPONENT LPAR primitive.string.unquoted RPAR {
+        $$ = boxComponent($[primitive.string.unquoted]);
+      }
 
   /******************** Composition ********************/
 
   expression.composition:
+    expression.composition.serial
+  | expression.composition.parallel
+  
+  expression.composition.parallel:
+      expression[lhs] COMMA expression[rhs] {
+        $$ = boxPar( $lhs, $rhs );
+      }
+                
+  expression.composition.serial:
       expression.composition.sequence
     | expression.composition.split
     | expression.composition.mix
-    | expression.composition.record
+    | expression.composition.recursive
     | expression.infix
 
-    expression.composition.list:
-        expression.composition { $$ = cons($[expression.composition],gGlobal->nil); }
-      | expression.composition.list[prior] COMMA expression.composition[next] { $$ = cons($next,$prior); }
-
     expression.composition.mix:
-        expression.composition[lhs] MIX expression.composition[rhs] { $$ = boxMerge($lhs,$rhs); }
-        
-    expression.composition.record:
-        expression.composition[lhs] REC expression.composition[rhs] { $$ = boxRec($lhs,$rhs); }
+        expression.composition.serial[lhs] MIX expression.composition.serial[rhs] {
+          $$ = boxMerge( $lhs, $rhs );
+        }
+          
+    expression.composition.recursive:
+        expression.composition.serial[lhs] REC expression.composition.serial[rhs] {
+          $$ = boxRec($lhs,$rhs);
+        }
       
     expression.composition.sequence:
-        expression.composition[lhs] SEQ expression.composition[rhs] { $$ = boxSeq($lhs,$rhs); }
+        expression.composition.serial[lhs] SEQ expression.composition.serial[rhs] {
+          $$ = boxSeq($lhs,$rhs);
+        }
 
     expression.composition.split:
-        expression.composition[lhs] SPLIT expression.composition[rhs] { $$ = boxSplit($lhs,$rhs); }
-        
+        expression.composition.serial[lhs] SPLIT expression.composition.serial[rhs] {
+          $$ = boxSplit($lhs,$rhs);
+        }
+
+    /*------------------- composition.list -------------------*/
+
+//    expression.composition.list:
+//      expression.composition.list.start
+//    | expression.composition.list.append
+//
+//    expression.composition.list.start:
+//        expression.composition.serial {
+//          $$ = cons( $[expression.composition.serial], self._nil );
+//        }
+//
+//    expression.composition.list.append:
+//        expression.composition.list COMMA expression.composition.serial {
+//          $$ = cons(
+//            $[expression.composition.serial],
+//            $[expression.composition.list]
+//          );
+//        }
+
   /******************** Environment ********************/
 
   expression.environment:
       ENVIRONMENT LBRAQ statement.list RBRAQ {
-        $$ = boxWithLocalDef(boxEnvironment(),formatDefinitions($[statement.list]));
+        $$ = boxWithLocalDef(boxEnvironment(),self.formatDefinitions($[statement.list]));
       }
 
   /******************** Infix ********************/
 
   expression.infix:
-      expression.infix.definitions.local
+      expression.infix.definitions.substitution
     | expression.infix.environment.access
     | expression.infix.math
     | expression.infix.signal.delay
@@ -527,9 +575,12 @@ expression:
 
     | primitive
 
-  expression.infix.definitions.local:
+  expression.infix.definitions.substitution:
       expression.infix[lhs] LCROC statement.definition.list[defs] RCROC {
-        $$ = boxModifLocalDef($lhs,formatDefinitions($defs));
+        $$ = boxModifLocalDef(
+          $lhs,
+          self.formatDefinitions($defs)
+        );
       }
       
   expression.infix.environment.access:
@@ -548,7 +599,7 @@ expression:
     | expression.infix[lhs] DIV   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigDiv)); }
     | expression.infix[lhs] MOD   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigRem)); }
     | expression.infix[lhs] POWOP expression.infix[rhs] {
-        $$ = boxSeq(boxPar($lhs,$rhs),gGlobal->gPowPrim->box());
+        $$ = boxSeq(boxPar($lhs,$rhs),::Faust::Primitive::Math::pow.box());
       }
 
   expression.infix.math.comparison:
@@ -571,7 +622,7 @@ expression:
       }
 
   expression.infix.prefix:
-      expression.infix[lhs] LPAR  expression.composition.list RPAR { $$ = buildBoxAppl($lhs,$[expression.composition.list]); }
+      expression.infix[lhs] LPAR  expression.composition.parallel RPAR { $$ = buildBoxAppl($lhs,$[expression.composition.parallel]); }
   
   expression.infix.signal.delay:
       expression.infix[lhs] FDELAY expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigDelay)); }
@@ -580,23 +631,23 @@ expression:
   /******************** Iteration ********************/
 
   expression.iterate.parallel:
-      ITERATE_PARALLEL LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
-        $$ = boxIPar($[statement.identifier.box],$[expression.composition],$expression);
+      ITERATE_PARALLEL LPAR statement.identifier.box COMMA expression.composition.serial COMMA expression RPAR {
+        $$ = boxIPar($[statement.identifier.box],$[expression.composition.serial],$expression);
       }
 
   expression.iterate.sequence:
-      ISEQ LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
-        $$ = boxISeq($[statement.identifier.box],$[expression.composition],$expression);
+      ISEQ LPAR statement.identifier.box COMMA expression.composition.serial COMMA expression RPAR {
+        $$ = boxISeq($[statement.identifier.box],$[expression.composition.serial],$expression);
       }
 
   expression.iterate.sum:
-      ISUM LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
-        $$ = boxISum($[statement.identifier.box],$[expression.composition],$expression);
+      ISUM LPAR statement.identifier.box COMMA expression.composition.serial COMMA expression RPAR {
+        $$ = boxISum($[statement.identifier.box],$[expression.composition.serial],$expression);
       }
 
   expression.iterate.product:
-      IPROD LPAR statement.identifier.box COMMA expression.composition COMMA expression RPAR {
-        $$ = boxIProd($[statement.identifier.box],$[expression.composition],$expression);
+      IPROD LPAR statement.identifier.box COMMA expression.composition.serial COMMA expression RPAR {
+        $$ = boxIProd($[statement.identifier.box],$[expression.composition.serial],$expression);
       }
 
   /******************** Lambda ********************/
@@ -611,7 +662,7 @@ expression:
   | expression.lambda.params.append
 
     expression.lambda.params.start:
-        statement.identifier.box { $$ = cons($[statement.identifier.box],gGlobal->nil); }
+        statement.identifier.box { $$ = cons($[statement.identifier.box],self._nil); }
 
     expression.lambda.params.append:
         expression.lambda.params[prior] COMMA statement.identifier.box[next] { $$ = cons($next,$prior); }
@@ -620,31 +671,45 @@ expression:
 
   expression.letrec:
     expression[lhs] LETREC LBRAQ /* empty expression.letrec.list */ RBRAQ {
-			$$ = boxWithRecDef($lhs,formatDefinitions(gGlobal->nil), gGlobal->nil);
+			$$ = boxWithRecDef(
+        $lhs,
+        self.formatDefinitions(self._nil),
+        self._nil
+      );
 		}
   | expression[lhs] LETREC LBRAQ expression.letrec.list RBRAQ {
-			$$ = boxWithRecDef($lhs,formatDefinitions($[expression.letrec.list]), gGlobal->nil);
+			$$ = boxWithRecDef(
+        $lhs,
+        self.formatDefinitions($[expression.letrec.list]),
+        self._nil
+      );
 		}
   | expression[lhs] LETREC LBRAQ expression.letrec.list WHERE statement.definition.list RBRAQ {
-			$$ = boxWithRecDef($lhs,formatDefinitions($[expression.letrec.list]),formatDefinitions($[expression.letrec.list]));
+			$$ = boxWithRecDef(
+        $lhs,
+        self.formatDefinitions($[expression.letrec.list]),
+        self.formatDefinitions($[expression.letrec.list])
+      );
 		}
+
+  /*------------------- letrec.list -------------------*/
 
   expression.letrec.list:
       expression.letrec.list.start
     | expression.letrec.list.append
 
     expression.letrec.list.start:
-        expression.letrec.equation[item] { $$ = cons($item, gGlobal->nil); }
+        expression.letrec.equation[item] { $$ = cons($item, self._nil); }
         
     expression.letrec.list.append:
         expression.letrec.list[prior] expression.letrec.equation[next] { $$ = cons ($next,$prior); }
         
   expression.letrec.equation:
       expression.letrec.equation.name[variable] DEF expression ENDDEF {
-        $$ = cons($variable,cons(gGlobal->nil,$expression));
-        setDefProp($variable, yyfilename, yylineno);
+        $$ = cons($variable,cons(self._nil,$expression));
+        setDefProp($variable, self._streamName.c_str(), self._lexer->lineno());
       }
-    | error ENDDEF { $$ = gGlobal->nil; yyerr++; }
+    | error ENDDEF { $$ = self._nil; self._lexer->LexerError("Expected expression."); }
 
     expression.letrec.equation.name:
         DELAY1 statement.identifier.box { $$=$[statement.identifier.box]; }
@@ -673,15 +738,15 @@ expression:
       | NE { $$ = boxPrim2(sigNE); }
 
       expression.math.rounding:
-          ABS { $$ = gGlobal->gAbsPrim->box(); }
-        | MIN { $$ = gGlobal->gMinPrim->box(); }
-        | MAX { $$ = gGlobal->gMaxPrim->box(); }
-        | FLOOR { $$ = gGlobal->gFloorPrim->box(); }
-        | CEIL { $$ = gGlobal->gCeilPrim->box(); }
+          ABS { $$ = ::Faust::Primitive::Math::abs.box(); }
+        | MIN { $$ = ::Faust::Primitive::Math::min.box(); }
+        | MAX { $$ = ::Faust::Primitive::Math::max.box(); }
+        | FLOOR { $$ = ::Faust::Primitive::Math::floor.box(); }
+        | CEIL { $$ = ::Faust::Primitive::Math::ceil.box(); }
         | ASSERTBOUNDS { $$ = boxPrim3(sigAssertBounds);}
         | LOWEST { $$ = boxPrim1(sigLowest);}
         | HIGHEST { $$ = boxPrim1(sigHighest);}
-        | RINT { $$ = gGlobal->gRintPrim->box(); }
+        | RINT { $$ = ::Faust::Primitive::Math::rint.box(); }
 
     expression.math.signal:
         expression.math.signal.algebra
@@ -694,8 +759,8 @@ expression:
         | MUL { $$ = boxPrim2(sigMul); }
         | DIV { $$ = boxPrim2(sigDiv); }
         | MOD { $$ = boxPrim2(sigRem); }
-        | FMOD { $$ = gGlobal->gFmodPrim->box(); }
-        | REMAINDER { $$ = gGlobal->gRemainderPrim->box(); }
+        | FMOD { $$ = ::Faust::Primitive::Math::fmod.box(); }
+        | REMAINDER { $$ = ::Faust::Primitive::Math::remainder.box(); }
         | SUB statement.identifier.box { $$ = boxSeq(boxPar(boxInt(0),$[statement.identifier.box]),boxPrim2(sigSub)); }
 
       expression.math.signal.shift:
@@ -703,40 +768,33 @@ expression:
         | RSH { $$ = boxPrim2(sigARightShift); }
 
       expression.math.signal.power:
-          EXP { $$ = gGlobal->gExpPrim->box(); }
-        | LOG { $$ = gGlobal->gLogPrim->box(); }
-        | LOG10 { $$ = gGlobal->gLog10Prim->box(); }
-        | POWOP { $$ = gGlobal->gPowPrim->box(); }
-        | POWFUN { $$ = gGlobal->gPowPrim->box(); }
-        | SQRT { $$ = gGlobal->gSqrtPrim->box(); }
+          EXP { $$ = ::Faust::Primitive::Math::exp.box(); }
+        | LOG { $$ = ::Faust::Primitive::Math::log.box(); }
+        | LOG10 { $$ = ::Faust::Primitive::Math::log10.box(); }
+        | POWOP { $$ = ::Faust::Primitive::Math::pow.box(); }
+        | POWFUN { $$ = ::Faust::Primitive::Math::pow.box(); }
+        | SQRT { $$ = ::Faust::Primitive::Math::sqrt.box(); }
 
       expression.math.scalar:
-          ADD INT { $$ = boxInt(str2int(yytext)); }
+          ADD INT { $$ = boxInt(std::stoi(self._lexer->YYText())); }
         | ADD FLOAT { $$ = boxReal($FLOAT); }
         | SUB INT { $$ = boxInt ( -$INT ); }
         | SUB FLOAT { $$ = boxReal( -$FLOAT ); }
 
       expression.math.trigonometry:
-          ACOS { $$ = gGlobal->gAcosPrim->box(); }
-        | ASIN { $$ = gGlobal->gAsinPrim->box(); }
-        | ATAN { $$ = gGlobal->gAtanPrim->box(); }
-        | ATAN2 { $$ = gGlobal->gAtan2Prim->box(); }
-        | COS { $$ = gGlobal->gCosPrim->box(); }
-        | SIN { $$ = gGlobal->gSinPrim->box(); }
-        | TAN { $$ = gGlobal->gTanPrim->box(); }
+          ACOS { $$ = ::Faust::Primitive::Math::acos.box(); }
+        | ASIN { $$ = ::Faust::Primitive::Math::asin.box(); }
+        | ATAN { $$ = ::Faust::Primitive::Math::atan.box(); }
+        | ATAN2 { $$ = ::Faust::Primitive::Math::atan2.box(); }
+        | COS { $$ = ::Faust::Primitive::Math::cos.box(); }
+        | SIN { $$ = ::Faust::Primitive::Math::sin.box(); }
+        | TAN { $$ = ::Faust::Primitive::Math::tan.box(); }
 
   /******************** Parenthesis ********************/
 
   expression.parenthesis:
     LPAR expression RPAR { $$ = $expression; }
 
-  /******************** Parallel ********************/
-
-  expression.parallel:
-      expression[lhs] COMMA expression[rhs] {
-        $$ = boxPar($lhs,$rhs);
-      }
-      
   /******************** Signal ********************/
 
   expression.signal:
@@ -760,7 +818,9 @@ expression:
       | XOR { $$ = boxPrim2(sigXOR); }
       | SELECT2 { $$ = boxPrim3(sigSelect2); }
       | SELECT3 { $$ = boxPrim4(sigSelect3); }
-      | CASE LBRAQ statement.signal.pattern.rule.list RBRAQ { $$ = boxCase(checkRulelist($[statement.signal.pattern.rule.list])); }
+      | CASE LBRAQ statement.signal.pattern.rule.list RBRAQ {
+          $$ = boxCase(self.checkRulelist($[statement.signal.pattern.rule.list]));
+        }
 
 /***************************************************/
 /******************** Primitive ********************/
@@ -783,20 +843,20 @@ primitive:
   /******************** Number ********************/
 
   primitive.number:
-      INT { $$ = boxInt(str2int(yytext)); }
-    | FLOAT { $$ = boxReal(atof(yytext)); }
+      INT { $$ = boxInt(std::stoi(self._lexer->YYText())); }
+    | FLOAT { $$ = boxReal(atof(self._lexer->YYText())); }
 
   /******************** String ********************/
         
   primitive.string.quoted:
-      STRING { $$ = tree(yytext); }
+      STRING { $$ = tree(self._lexer->YYText()); }
 
   primitive.string.unquoted:
-      STRING { $$ = unquote(yytext); }
+      STRING { $$ = self.unquote(self._lexer->YYText()); }
 
   primitive.string.tag:
-      STRING { $$ = tree(yytext); }
-    | TAGSTRING { $$ = tree(yytext); }
+      STRING { $$ = tree(self._lexer->YYText()); }
+    | TAGSTRING { $$ = tree(self._lexer->YYText()); }
 
   /******************** Signal ********************/
 
@@ -820,6 +880,21 @@ primitive:
 
     /******************** Numbers ********************/
 
+    primitive.type.number:
+        primitive.type.number.int
+      | primitive.type.number.float
+
+      primitive.type.number.int:
+          INTCAST { $$ = boxPrim1(sigIntCast); }
+
+      primitive.type.number.float:
+          FLOATCAST { $$ = boxPrim1(sigFloatCast); }
+
+    primitive.type.any:
+        ANYCAST { $$ = tree(2); }
+
+    /*------------------- type.number.list -------------------*/
+
     primitive.type.number.list:
         primitive.type.number.list.start
       | primitive.type.number.list.append
@@ -838,27 +913,34 @@ primitive:
       primitive.type.number.list.append:
           primitive.type.number.list COMMA primitive.type.number.list.member
 
-    primitive.type.number:
-        primitive.type.number.int
-      | primitive.type.number.float
-
-      primitive.type.number.int:
-          INTCAST { $$ = boxPrim1(sigIntCast); }
-
-      primitive.type.number.float:
-          FLOATCAST { $$ = boxPrim1(sigFloatCast); }
-
-    primitive.type.any:
-        ANYCAST { $$ = tree(2); }
+    /******************** Route ********************/
 
     primitive.signal.route:
-        ROUTE[fake] LPAR expression.composition[arg1] COMMA expression.composition[arg2] RPAR {
-          $$ = boxRoute($arg1, $arg2, boxPar(boxInt(0),boxInt(0)));
-        } /* fake route */
-      | ROUTE LPAR expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression RPAR {
-          $$ = boxRoute($arg1, $arg2, $expression);
-        }
-        
+      primitive.signal.route.implied.outputs
+    | primitive.signal.route.implied.connections
+    | primitive.signal.route.explicit
+
+      primitive.signal.route.implied.outputs:
+          ROUTE LPAR expression.composition.serial[connections] RPAR {
+            $$ = boxRoute($connections, $connections, boxPar(boxInt(0),boxInt(0)));
+          }
+
+      primitive.signal.route.implied.connections:
+          ROUTE LPAR expression.composition.serial[inputs] COMMA expression.composition.serial[outputs] RPAR {
+            $$ = boxRoute($inputs, $outputs, boxPar(boxInt(0),boxInt(0)));
+          }
+
+      primitive.signal.route.explicit:
+          ROUTE LPAR expression.composition.serial[inputs] COMMA expression.composition.serial[outputs] COMMA expression.composition.parallel RPAR {
+            $$ = boxRoute(
+              $inputs,
+              $outputs,
+              $[expression.composition.parallel]
+            );
+          }
+
+    /******************** Source ********************/
+
     primitive.signal.source:
         primitive.signal.source.waveform
       | primitive.signal.source.soundfile
@@ -887,7 +969,7 @@ primitive:
       | primitive.type.list.append
 
       primitive.type.list.start:
-          primitive.type { $$ = cons($[primitive.type],gGlobal->nil); }
+          primitive.type { $$ = cons($[primitive.type],self._nil); }
 
       primitive.type.list.append:
           primitive.type.list[prior] COMMA primitive.type[next] { $$ = cons($next,$prior); }
@@ -914,17 +996,17 @@ primitive:
         CHECKBOX LPAR primitive.string.unquoted RPAR { $$ = boxCheckbox($[primitive.string.unquoted]); }
 
     primitive.ui.vslider:
-        VSLIDER LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression.composition[arg3] COMMA expression.composition[arg4] RPAR {
+        VSLIDER LPAR primitive.string.unquoted COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
           $$ = boxVSlider($[primitive.string.unquoted],$arg1,$arg2,$arg3,$arg4);
         }
 
     primitive.ui.hslider:
-        HSLIDER LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression.composition[arg3] COMMA expression.composition[arg4] RPAR {
+        HSLIDER LPAR primitive.string.unquoted COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
           $$ = boxHSlider($[primitive.string.unquoted],$arg1,$arg2,$arg3,$arg4);
         }
 
     primitive.ui.nentry:
-        NENTRY LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] COMMA expression.composition[arg3] COMMA expression.composition[arg4] RPAR {
+        NENTRY LPAR primitive.string.unquoted COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
           $$ = boxNumEntry($[primitive.string.unquoted],$arg1,$arg2,$arg3,$arg4);
         }
 
@@ -938,12 +1020,12 @@ primitive:
         TGROUP LPAR primitive.string.unquoted COMMA expression RPAR { $$ = boxTGroup($[primitive.string.unquoted], $expression); }
 
     primitive.ui.vbargraph:
-        VBARGRAPH LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] RPAR {
+        VBARGRAPH LPAR primitive.string.unquoted COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] RPAR {
           $$ = boxVBargraph($[primitive.string.unquoted],$arg1,$arg2);
         }
 
     primitive.ui.hbargraph:
-        HBARGRAPH LPAR primitive.string.unquoted COMMA expression.composition[arg1] COMMA expression.composition[arg2] RPAR {
+        HBARGRAPH LPAR primitive.string.unquoted COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] RPAR {
           $$ = boxHBargraph($[primitive.string.unquoted],$arg1,$arg2);
         }
 
@@ -956,22 +1038,22 @@ primitive:
 
       primitive.foreign.function.signature:
           primitive.type.number statement.identifier.waveform[fun] LPAR primitive.type.list RPAR {
-            $$ = cons($[primitive.type.number], cons(cons($fun,cons($fun,cons($fun,gGlobal->nil))), $[primitive.type.list]));
+            $$ = cons($[primitive.type.number], cons(cons($fun,cons($fun,cons($fun,self._nil))), $[primitive.type.list]));
           }
         | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] LPAR primitive.type.list RPAR {
-            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun2,gGlobal->nil))), $[primitive.type.list]));
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun2,self._nil))), $[primitive.type.list]));
           }
         | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] OR statement.identifier.waveform[fun3] LPAR primitive.type.list RPAR {
-            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun3,gGlobal->nil))), $[primitive.type.list]));
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun3,self._nil))), $[primitive.type.list]));
           }
         | primitive.type.number statement.identifier.waveform[fun] LPAR RPAR {
-            $$ = cons($[primitive.type.number], cons(cons($fun,cons($fun,cons($fun,gGlobal->nil))), gGlobal->nil));
+            $$ = cons($[primitive.type.number], cons(cons($fun,cons($fun,cons($fun,self._nil))), self._nil));
           }
         | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] LPAR RPAR {
-            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun2,gGlobal->nil))), gGlobal->nil));
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun2,self._nil))), self._nil));
           }
         | primitive.type.number statement.identifier.waveform[fun1] OR statement.identifier.waveform[fun2] OR statement.identifier.waveform[fun3] LPAR RPAR {
-            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun3,gGlobal->nil))), gGlobal->nil));
+            $$ = cons($[primitive.type.number], cons(cons($fun1,cons($fun2,cons($fun3,self._nil))), self._nil));
           }
 
     primitive.foreign.constant:
@@ -1008,16 +1090,16 @@ statement:
 
   statement.definition:
       statement.definition.function
-    | statement.definition.substitution
+    | statement.definition.assignment
     | statement.definition.error
 
     statement.definition.function.incomplete:
-      statement.identifier.box LPAR expression.composition.list RPAR DEF expression {
+      statement.identifier.box LPAR expression.composition.parallel RPAR DEF expression {
         $$ = cons(
           $[statement.identifier.box],
-          cons( $[expression.composition.list], $expression )
+          cons( $[expression.composition.parallel], $expression )
         );
-        setDefProp($[statement.identifier.box], yyfilename, yylineno);
+        setDefProp($[statement.identifier.box], self._streamName.c_str(), self._lexer->lineno());
       }
       
     statement.definition.function:
@@ -1025,30 +1107,36 @@ statement:
           $$ = $[statement.definition.function.incomplete];
         }
       | statement.definition.function.incomplete error ENDL {
-          yyerr++;
-//          error(*yylocationp, std::string("Missing semicolon.");
-//          delete (yysemantic_stack_[(1) - (1)].stringVal);
+          self._lexer->LexerError("Incomplete function definition.");
           $$ = $[statement.definition.function.incomplete];
           yyerrok;
         }
 
-      
-    statement.definition.substitution:
-        statement.identifier.box[substitution_name] DEF expression[body] ENDDEF {
-          $$ = cons($substitution_name,cons(gGlobal->nil,$body));
-          setDefProp($substitution_name, yyfilename, yylineno);
+    statement.definition.assignment:
+        statement.identifier.box DEF expression[body] ENDDEF {
+          $$ = cons(
+            $[statement.identifier.box],
+            cons( self._nil, $body )
+          );
+          setDefProp(
+            $[statement.identifier.box],
+            self._streamName.c_str(),
+            self._lexer->lineno()
+          );
         }
     
     statement.definition.with:
       expression WITH LBRAQ statement.definition.list RBRAQ {
-        $$ = boxWithLocalDef($expression,formatDefinitions($[statement.definition.list]));
+        $$ = boxWithLocalDef($expression,self.formatDefinitions($[statement.definition.list]));
       }
 
     statement.definition.error:
         error ENDDEF {
-          $$ = gGlobal->nil;
-          yyerr++;
+          $$ = self._nil;
+          self._lexer->LexerError("Error in definition.");
         }
+
+    /*------------------- statement.definition.list -------------------*/
 
     statement.definition.list:
         statement.definition.list.start
@@ -1058,15 +1146,15 @@ statement:
 
       statement.definition.list.start:
           statement.definition {
-            $$ = cons( $[statement.definition.list.start], gGlobal->nil );
+            $$ = cons( $[statement.definition.list.start], self._nil );
           }
 
       statement.definition.list.start.qualified:
           statement.math.precision.list statement.definition {
-            if (acceptdefinition($[statement.math.precision.list]))
-              $$ = cons( $[statement.definition], gGlobal->nil );
+            if (self.acceptdefinition($[statement.math.precision.list]))
+              $$ = cons( $[statement.definition], self._nil );
             else
-              $$ = gGlobal->nil;
+              $$ = self._nil;
           }
 
       statement.definition.list.append:
@@ -1076,7 +1164,7 @@ statement:
           
       statement.definition.list.append.qualified:
           statement.definition.list statement.math.precision.list statement.definition {
-            if (acceptdefinition($[statement.math.precision.list]))
+            if (self.acceptdefinition($[statement.math.precision.list]))
               $$ = cons ($[statement.definition],$[statement.definition.list]);
             else
               $$ = $[statement.definition.list];
@@ -1086,38 +1174,38 @@ statement:
 
   statement.declare.metadata:
       DECLARE statement.identifier[key] primitive.string.quoted[value] ENDDEF {
-        declareMetadata($key,$value);
-        $$ = gGlobal->nil;
+        self.declareMetadata($key,$value);
+        $$ = self._nil;
       }
 
   statement.declare.feature.metadata:
       DECLARE statement.identifier[feature] statement.identifier[key] primitive.string.quoted[value] ENDDEF {
-        declareDefinitionMetadata( $feature, $key, $value );
-        $$ = gGlobal->nil;
+        self.declareDefinitionMetadata( $feature, $key, $value );
+        $$ = self._nil;
       }
 
   statement.declare.doc:
       BDOC doc[body] EDOC {
         declareDoc($body);
-        $$ = gGlobal->nil;
+        $$ = self._nil;
       }
 
   /******************** Identifier ********************/
 
   statement.identifier:
       IDENT {
-        $$ = tree(yytext);
-        setUseProp($$, yyfilename, yylineno);
+        $$ = tree(self._lexer->YYText());
+        setUseProp($$, self._streamName.c_str(), self._lexer->lineno());
       }
 
   statement.identifier.box:
       IDENT {
-        $$ = boxIdent(yytext);
-        setUseProp($$, yyfilename, yylineno);
+        $$ = boxIdent(self._lexer->YYText());
+        setUseProp($$, self._streamName.c_str(), self._lexer->lineno());
       }
 
   statement.identifier.waveform:
-      IDENT { $$ = tree(yytext); }
+      IDENT { $$ = tree(self._lexer->YYText()); }
 
   /******************** Import ********************/
 
@@ -1134,15 +1222,15 @@ statement:
    
     statement.list.start:
         statement {
-          $$ = cons($statement, gGlobal->nil);
+          $$ = cons($statement, self._nil);
         }
 
     statement.list.start.qualified:
         statement.math.precision.list statement {
-          if (acceptdefinition($[statement.math.precision.list]))
-            $$ = cons($statement, gGlobal->nil);
+          if (self.acceptdefinition($[statement.math.precision.list]))
+            $$ = cons($statement, self._nil);
           else
-            $$ = gGlobal->nil;
+            $$ = self._nil;
         }
 
     statement.list.append:
@@ -1152,7 +1240,7 @@ statement:
     
     statement.list.append.qualified:
         statement.list statement.math.precision.list statement {
-          if (acceptdefinition($[statement.math.precision.list]))
+          if (self.acceptdefinition($[statement.math.precision.list]))
             $$ = cons($[statement.list],$[statement]);
           else
             $$=$[statement.list];
@@ -1165,6 +1253,8 @@ statement:
       | DOUBLEMODE { $$ = 2; }
       | QUADMODE { $$ = 4; }
       | FIXEDPOINTMODE { $$ = 8; }
+
+      /*------------------- math.precision.list -------------------*/
 
       statement.math.precision.list:
           statement.math.precision.list.start
@@ -1180,17 +1270,19 @@ statement:
 
   /******************** Rules ********************/
 
+  statement.signal.pattern.rule:
+      LPAR expression.composition.parallel RPAR ARROW expression ENDDEF { $$ = cons($[expression.composition.parallel],$expression); }
+
+  /*------------------- signal.pattern.rule.list -------------------*/
+
   statement.signal.pattern.rule.list:
       statement.signal.pattern.rule.list.start
     | statement.signal.pattern.rule.list.append
 
     statement.signal.pattern.rule.list.start:
-        statement.signal.pattern.rule { $$ = cons($[statement.signal.pattern.rule],gGlobal->nil); }
+        statement.signal.pattern.rule { $$ = cons($[statement.signal.pattern.rule],self._nil); }
     
     statement.signal.pattern.rule.list.append:
         statement.signal.pattern.rule.list[prior] statement.signal.pattern.rule[next] { $$ = cons($next,$prior); }
-
-  statement.signal.pattern.rule:
-      LPAR expression.composition.list RPAR ARROW expression ENDDEF { $$ = cons($[expression.composition.list],$expression); }
 
 %%

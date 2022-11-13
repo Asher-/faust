@@ -27,6 +27,8 @@
 #include "global.hh"
 #include "target/fir/visitor/function_call_inliner.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 /*
@@ -146,7 +148,7 @@ void JAXCodeContainer::produceClass()
     *fOut << "\"\"\"";
     tab(n, *fOut);
 
-    if (gGlobal->gFloatSize == 2) {
+    if (::Faust::Primitive::Math::floatSize == 2) {
         tab(n, *fOut);
         *fOut << "# enable double precision: https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html#double-64bit-precision";
         tab(n, *fOut);
@@ -227,7 +229,7 @@ void JAXCodeContainer::produceClass()
     *fOut << "def getJSON(self):";
     {
         string json;
-        if (gGlobal->gFloatSize == 1) {
+        if (::Faust::Primitive::Math::floatSize == 1) {
             json = generateJSON<float>();
         } else {
             json = generateJSON<double>();

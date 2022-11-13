@@ -26,6 +26,8 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 //-----------------------------------------------
@@ -249,38 +251,38 @@ void ::Faust::Type::Float::init()
 ///< suffix for math functions
 const char* isuffix()
 {
-    return mathsuffix[gGlobal->gFloatSize];
+    return mathsuffix[::Faust::Primitive::Math::floatSize];
 }
 
 ///< suffix for numeric constants
 const char* inumix()
 {
-    return numsuffix[gGlobal->gFloatSize];
+    return numsuffix[::Faust::Primitive::Math::floatSize];
 }
 
 const char* ifloat()
 {
-    return floatname[gGlobal->gFloatSize];
+    return floatname[::Faust::Primitive::Math::floatSize];
 }
 
 const char* ifloatptr()
 {
-    return floatptrname[gGlobal->gFloatSize];
+    return floatptrname[::Faust::Primitive::Math::floatSize];
 }
 
 const char* ifloatptrptr()
 {
-    return floatptrptrname[gGlobal->gFloatSize];
+    return floatptrptrname[::Faust::Primitive::Math::floatSize];
 }
 
 const char* icast()
 {
-    return castname[gGlobal->gFloatSize];
+    return castname[::Faust::Primitive::Math::floatSize];
 }
 
 double inummin()
 {
-    return floatmin[gGlobal->gFloatSize];
+    return floatmin[::Faust::Primitive::Math::floatSize];
 }
 
 const char* xfloat()
@@ -295,7 +297,7 @@ const char* xcast()
 
 int ifloatsize()
 {
-    switch (gGlobal->gFloatSize) {
+    switch (::Faust::Primitive::Math::floatSize) {
         case 1:
             return gGlobal->gMachineFloatSize;
         case 2:
@@ -312,7 +314,7 @@ int ifloatsize()
 
 Typed::VarType itfloat()
 {
-    switch (gGlobal->gFloatSize) {
+    switch (::Faust::Primitive::Math::floatSize) {
         case 1:
             return Typed::kFloat;
         case 2:
@@ -329,7 +331,7 @@ Typed::VarType itfloat()
 
 Typed::VarType itfloatptr()
 {
-    switch (gGlobal->gFloatSize) {
+    switch (::Faust::Primitive::Math::floatSize) {
         case 1:
             return Typed::kFloat_ptr;
         case 2:
@@ -346,7 +348,7 @@ Typed::VarType itfloatptr()
 
 Typed::VarType itfloatptrptr()
 {
-    switch (gGlobal->gFloatSize) {
+    switch (::Faust::Primitive::Math::floatSize) {
         case 1:
             return Typed::kFloat_ptr_ptr;
         case 2:
@@ -367,7 +369,7 @@ void printfloatdef(std::ostream& fout)
     fout << "#define " << FLOATMACRO << " float" << std::endl;
     fout << "#endif " << std::endl;
     fout << std::endl;
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         fout << "typedef long double quad;" << std::endl;
     }
 }

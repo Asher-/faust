@@ -22,8 +22,9 @@
 #ifndef FAUST_LIB
 
 #include <iostream>
-#include "compatibility.hh"
+<<<<<<< HEAD
 #include "global.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
 
 #include "faust/cli.hh"

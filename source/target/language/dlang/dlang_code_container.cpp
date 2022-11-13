@@ -26,6 +26,8 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 map<string, bool> DLangInstVisitor::gFunctionSymbolTable;
@@ -49,7 +51,7 @@ CodeContainer* DLangCodeContainer::createContainer(const string& name, const str
 {
     CodeContainer* container;
 
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for D\n");
     }
     if (gGlobal->gOpenCLSwitch) {

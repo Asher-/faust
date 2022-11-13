@@ -37,10 +37,12 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#include "global.hh"
+
 #include "compiler/block_diagram/boxes/boxes.hh"
 #include "compiler/errors/exception.hh"
-#include "global.hh"
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
 #include "compiler/math_primitives/xtended.hh"
@@ -167,7 +169,7 @@ static string computeTypeRecErrorMessage(Tree a, Tree b, int u, int v, int x, in
  * The box expression is assumed to be in 'propagation normal form'
  * that is to have been evaluated and residual abstractions to have been
  * converted to symbolic boxes (using a2sb()).
- * \param box the box we want to know the type
+ * \param t the box we want to know the type
  * \param inum the place to return the number of inputs
  * \param onum the place to return the number of outputs
  * \return true if the box expression has a type
@@ -178,7 +180,7 @@ static bool infereBoxType(Tree t, int* inum, int* onum)
     Tree a, b, ff, l, s, c, ins, outs, lroutes;
     // Tree abstr, genv, vis, lenv;
 
-    xtended* p = (xtended*)getUserData(t);
+    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(t);
 
     if (p) {
         *inum = p->arity();

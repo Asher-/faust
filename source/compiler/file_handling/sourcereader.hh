@@ -30,13 +30,11 @@
 using namespace std;
 
 Tree formatDefinitions(Tree rldef);
-Tree checkRulelist (Tree lrules);
 void declareMetadata(Tree key, Tree value);
 void declareDefinitionMetadata(Tree id, Tree key, Tree value);
 void declareDoc(Tree t);
 
 FILE* fopenSearch(const char* filename, std::string& fullpath);
-std::string stripEnd(const std::string& name, const std::string& ext);
 
 /**
  * Helper class used for additional DSP of library files needed in the parsing process.
@@ -68,6 +66,7 @@ class SourceReader
 
         Tree parseFile(const char* fname);
         Tree parseString(const char* fname);
+        Tree parseString(const char* buffer, const char* stream_name);
 
 };
 

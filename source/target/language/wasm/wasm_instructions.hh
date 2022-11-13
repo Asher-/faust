@@ -30,6 +30,8 @@
 #include "was_instructions.hh"
 #include "wasm_binary.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 //
@@ -762,7 +764,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         *fOut << int8_t(BinaryConsts::LocalGet) << U32LEB(2);  // 2 = value
 
         // Store value at index
-        *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::F32StoreMem) : int8_t(BinaryConsts::F64StoreMem));
+        *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::F32StoreMem) : int8_t(BinaryConsts::F64StoreMem));
         generateMemoryAccess();
 
         // Generate end
@@ -787,7 +789,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         *fOut << int8_t(gBinOpTable[kAdd]->fWasmInt32);
 
         // Load value from index
-        *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::F32LoadMem) : int8_t(BinaryConsts::F64LoadMem));
+        *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::F32LoadMem) : int8_t(BinaryConsts::F64LoadMem));
         generateMemoryAccess();
 
         // Return value
@@ -916,7 +918,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
                 inst->fAddress->accept(this);
             }
             if (isRealType(type)) {
-                *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::F32LoadMem)
+                *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::F32LoadMem)
                                                      : int8_t(BinaryConsts::F64LoadMem));
             } else if (isInt64Type(type)) {
                 *fOut << int8_t(BinaryConsts::I64LoadMem);
@@ -971,7 +973,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             }
             inst->fValue->accept(this);
             if (isRealType(type) || isRealPtrType(type)) {
-                *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::F32StoreMem)
+                *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::F32StoreMem)
                                                      : int8_t(BinaryConsts::F64StoreMem));
             } else if (isInt64Type(type)) {
                 *fOut << int8_t(BinaryConsts::I64StoreMem);
@@ -1210,7 +1212,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
                     *fOut << int8_t(BinaryConsts::I32WrapI64);
                 } else {
                     inst->fInst->accept(this);
-                    *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::I32STruncF32)
+                    *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::I32STruncF32)
                                                          : int8_t(BinaryConsts::I32STruncF64));
                 }
                 break;
@@ -1227,11 +1229,11 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
                     faustassert(false);
                 } else if (isInt64Type(type)) {
                     inst->fInst->accept(this);
-                    *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::F32SConvertI64)
+                    *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::F32SConvertI64)
                                                          : int8_t(BinaryConsts::F64SConvertI64));
                 } else if (isInt32Type(type) || isBoolType(type)) {
                     inst->fInst->accept(this);
-                    *fOut << ((gGlobal->gFloatSize == 1) ? int8_t(BinaryConsts::F32SConvertI32)
+                    *fOut << ((::Faust::Primitive::Math::floatSize == 1) ? int8_t(BinaryConsts::F32SConvertI32)
                                                          : int8_t(BinaryConsts::F64SConvertI32));
                 } else {
                     faustassert(false);

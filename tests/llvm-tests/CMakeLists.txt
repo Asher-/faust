@@ -22,7 +22,7 @@ set (CMAKE_CXX_STANDARD 17)
 
 ####################################
 # LLVM
-include (../../build/misc/llvm.cmake)
+include (../../build/llvm/llvm.cmake)
 if(USE_LLVM_CONFIG)
 	llvm_config()
 else()

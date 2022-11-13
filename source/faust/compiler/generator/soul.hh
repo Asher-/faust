@@ -27,6 +27,8 @@
 
 #include "target/language/soul/code_container.hh"
 
+#include "faust/primitive/math.hh"
+
 namespace Faust {
   namespace Compiler {
 
@@ -51,7 +53,7 @@ namespace Faust {
 
           // "one sample control" model by default;
           gGlobal->gOneSampleControl = true;
-          gGlobal->gNeedManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
+          ::Faust::Primitive::Math::needManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
 
           this->_codeContainer = SOULCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
 

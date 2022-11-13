@@ -24,12 +24,14 @@
 #endif
 
 #include "llvm_code_container.hh"
-#include "compatibility.hh"
+#include "tlib/compatibility.hh"
 #include "compiler/errors/exception.hh"
 #include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "llvm_dynamic_dsp_aux.hh"
 #include "target/language/llvm/llvm_instructions.hh"
+
+#include "faust/primitive/math.hh"
 
 /*
  LLVM module description:
@@ -94,7 +96,7 @@ CodeContainer* LLVMCodeContainer::createContainer(const string& name, int numInp
     gGlobal->gDSPStruct = true;
     CodeContainer* container;
 
-    if (gGlobal->gFloatSize == 3) {
+    if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for LLVM\n");
     }
     if (gGlobal->gOpenCLSwitch) {
@@ -230,7 +232,7 @@ dsp_factory_base* LLVMCodeContainer::produceFactory()
     generateDestroy("destroy" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
 
     // generateGetJSON generation
-    if (gGlobal->gFloatSize == 1) {
+    if (::Faust::Primitive::Math::floatSize == 1) {
         generateGetJSON<float>();
     } else {
         generateGetJSON<double>();

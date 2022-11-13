@@ -25,7 +25,7 @@
  *
  **/
 
-#include "names.hh"
+#include "compiler/util/names.hh"
 #include "compiler/type_manager/Text.hh"
 #include "documentator/doc_Text.hh"
 #include "compiler/errors/exception.hh"
