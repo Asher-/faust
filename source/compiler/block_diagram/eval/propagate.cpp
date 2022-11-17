@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -147,7 +147,7 @@ static siglist listLift(const siglist& l)
  */
 static void setPropagateProperty(Tree args, const siglist& lsig)
 {
-    setProperty(args, tree(gGlobal->PROPAGATEPROPERTY), listConvert(lsig));
+    setProperty(args, tree(global::config().PROPAGATEPROPERTY), listConvert(lsig));
 }
 
 /**
@@ -159,7 +159,7 @@ static void setPropagateProperty(Tree args, const siglist& lsig)
 static bool getPropagateProperty(Tree args, siglist& lsig)
 {
     Tree value;
-    if (getProperty(args, tree(gGlobal->PROPAGATEPROPERTY), value)) {
+    if (getProperty(args, tree(global::config().PROPAGATEPROPERTY), value)) {
         treelist2siglist(value, lsig);
         return true;
     } else {
@@ -189,7 +189,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
 
 siglist propagate(Tree slotenv, Tree path, Tree box, const siglist& lsig)
 {
-    Tree    args = tree(gGlobal->PROPAGATEPROPERTY, slotenv, path, box, listConvert(lsig));
+    Tree    args = tree(global::config().PROPAGATEPROPERTY, slotenv, path, box, listConvert(lsig));
     siglist result;
     if (!getPropagateProperty(args, result)) {
         result = realPropagate(slotenv, path, box, lsig);
@@ -318,7 +318,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
         if (!searchEnv(box, sig, slotenv)) {
             // test YO : diagrams simplification 
             // cerr << "propagate : internal error (slot undefined)\n");
-            sig = sigInput(++gGlobal->gDummyInput);
+            sig = sigInput(++global::config().gDummyInput);
         }
         return makeList(sig);
     }
@@ -349,7 +349,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
         // cerr << "prim2 receive : " << ppsig(lsig) << endl;
         faustassert(lsig.size() == 2);
         if (p2 == &sigEnable) {
-            if (gGlobal->gEnableFlag) {
+            if (global::config().gEnableFlag) {
                 // special case for sigEnable that requires a transformation
                 // enable(X,Y) -> sigControl(X*Y, Y!=0)
                 return makeList(sigControl(sigMul(lsig[0], lsig[1]), sigNE(lsig[1], sigReal(0.0))));
@@ -358,7 +358,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
                 return makeList(sigMul(lsig[0], lsig[1]));
             }
         } else if (p2 == &sigControl) {
-            if (gGlobal->gEnableFlag) {
+            if (global::config().gEnableFlag) {
                 // special case for sigControl that requires a transformation
                 // control(X,Y) -> sigControl(X, Y!=0)
                 return makeList(sigControl(lsig[0], sigNE(lsig[1], sigReal(0.0))));
@@ -613,5 +613,5 @@ siglist makeSigInputList(int n)
 
 Tree boxPropagateSig(Tree path, Tree box, const siglist& lsig)
 {
-    return listConvert(propagate(gGlobal->nil, path, box, lsig));
+    return listConvert(propagate(global::config().nil, path, box, lsig));
 }

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -42,21 +42,21 @@ namespace Faust {
           #ifndef LLVM_BUILD
               throw faustexception("ERROR : -lang llvm not supported since LLVM backend is not built\n");
           #endif
-          this->_codeContainer = LLVMCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+          this->_codeContainer = LLVMCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs);
 
           // libc functions will be found by the LLVM linker, but not user defined ones...
-          gGlobal->gAllowForeignFunction = false;
+          global::config().gAllowForeignFunction = false;
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
-          gGlobal->gUseDefaultSound     = false;
+          global::config().gFAUSTFLOAT2Internal = true;
+          global::config().gUseDefaultSound     = false;
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
 
           if (generate) {
               this->_instructionCompiler->compileMultiSignal(signals);

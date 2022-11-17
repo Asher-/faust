@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -50,15 +50,15 @@ namespace Faust {
           #ifndef C_BUILD
             throw faustexception("ERROR : -lang c not supported since C backend is not built\n");
           #endif
-          this->_codeContainer = CCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+          this->_codeContainer = CCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out);
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };

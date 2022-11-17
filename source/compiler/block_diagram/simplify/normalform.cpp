@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -41,10 +41,10 @@ static Tree simplifyToNormalFormAux(Tree LS)
     
     // Annotate L1 with type information
     startTiming("L1 typeAnnotation");
-    typeAnnotation(L1, gGlobal->gLocalCausalityCheck);
+    typeAnnotation(L1, global::config().gLocalCausalityCheck);
     endTiming("L1 typeAnnotation");
     
-    if (gGlobal->gCheckTable) {
+    if (global::config().gCheckTable) {
         // Generate safe access to rdtable/rwtable
         startTiming("Safe access to rdtable/rwtable");
         L1 = signalTablePromote(L1);
@@ -52,11 +52,11 @@ static Tree simplifyToNormalFormAux(Tree LS)
         
         // Annotate L1 with type information
         startTiming("L1 typeAnnotation");
-        typeAnnotation(L1, gGlobal->gLocalCausalityCheck);
+        typeAnnotation(L1, global::config().gLocalCausalityCheck);
         endTiming("L1 typeAnnotation");
     }
     
-    if (gGlobal->gRangeUI) {
+    if (global::config().gRangeUI) {
         // Generate safe values for range UI items (sliders and nentry)
         startTiming("Safe access to rdtable/rwtable");
         L1 = signalUIPromote(L1);
@@ -64,7 +64,7 @@ static Tree simplifyToNormalFormAux(Tree LS)
         
         // Annotate L1 with type information
         startTiming("L1 typeAnnotation");
-        typeAnnotation(L1, gGlobal->gLocalCausalityCheck);
+        typeAnnotation(L1, global::config().gLocalCausalityCheck);
         endTiming("L1 typeAnnotation");
     }
     
@@ -80,7 +80,7 @@ static Tree simplifyToNormalFormAux(Tree LS)
     
     // Annotate L3 with type information
     startTiming("L3 typeAnnotation");
-    typeAnnotation(L3, gGlobal->gLocalCausalityCheck);
+    typeAnnotation(L3, global::config().gLocalCausalityCheck);
     endTiming("L3 typeAnnotation");
     
     startTiming("Cast and Promotion");
@@ -88,7 +88,7 @@ static Tree simplifyToNormalFormAux(Tree LS)
     endTiming("Cast and Promotion");
     
     startTiming("L4 typeAnnotation");
-    typeAnnotation(L4, gGlobal->gLocalCausalityCheck);
+    typeAnnotation(L4, global::config().gLocalCausalityCheck);
     endTiming("L4 typeAnnotation");
      
     // Check signal tree
@@ -100,14 +100,14 @@ static Tree simplifyToNormalFormAux(Tree LS)
 LIBFAUST_API Tree simplifyToNormalForm(Tree t)
 {
     if (isList(t)) {
-        Tree t2 = t->getProperty(gGlobal->NORMALFORM);
+        Tree t2 = t->getProperty(global::config().NORMALFORM);
         if (!t2) {
             t2 = simplifyToNormalFormAux(t);
-            t->setProperty(gGlobal->NORMALFORM, t2);
+            t->setProperty(global::config().NORMALFORM, t2);
         }
         return t2;
     } else {
-        return simplifyToNormalForm(cons(t, gGlobal->nil));
+        return simplifyToNormalForm(cons(t, global::config().nil));
     }
 }
 
@@ -119,7 +119,7 @@ LIBFAUST_API tvec simplifyToNormalForm2(tvec siglist)
 LIBFAUST_API string printSignal(Tree sig, bool shared)
 {
     // Clear print state
-    gGlobal->clear();
+    global::config().clear();
     stringstream str;
     if (shared) {
         ppsigShared(sig, str);
@@ -132,7 +132,7 @@ LIBFAUST_API string printSignal(Tree sig, bool shared)
 LIBFAUST_API string printBox(Tree box, bool shared)
 {
     // Clear print state
-    gGlobal->clear();
+    global::config().clear();
     stringstream str;
     if (shared) {
         boxppShared(box, str);

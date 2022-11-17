@@ -71,21 +71,21 @@ CodeContainer* JuliaCodeContainer::createScalarContainer(const string& name, int
 
 CodeContainer* JuliaCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
 {
-    gGlobal->gDSPStruct = true;
+    global::config().gDSPStruct = true;
     CodeContainer* container;
 
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for Julia\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for Julia\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for Julia\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for Julia\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         //container = new JuliaVectorCodeContainer(name, numInputs, numOutputs, dst);
         throw faustexception("ERROR : Vector not supported for Julia\n");
     } else {
@@ -104,7 +104,7 @@ void JuliaCodeContainer::produceClass()
           << "Code generated with Faust version " << FAUSTVERSION << endl;
     *fOut << "Compilation options: ";
     stringstream stream;
-    gGlobal->printCompilationOptions(stream);
+    global::config().printCompilationOptions(stream);
     *fOut << stream.str();
     tab(n, *fOut);
     *fOut << "=#";
@@ -305,7 +305,7 @@ void JuliaCodeContainer::produceMetadata(int tabs)
     *fOut << "function metadata!(dsp::" << fKlassName << "{T}, m::FMeta) where {T}";
 
         // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(tabs + 1, *fOut);
             *fOut << "declare!(m, \"" << *(i.first) << "\", " << **(i.second.begin()) << ");";
@@ -347,20 +347,20 @@ void JuliaScalarCodeContainer::generateCompute(int n)
     *fOut << "@inbounds function compute!(dsp::" << fKlassName
     << "{T}, " << fFullCount << subst("::Int32, inputs::Matrix{$0}, outputs::Matrix{$0}) where {T}", xfloat());
     tab(n + 1, *fOut);
-    gGlobal->gJuliaVisitor->Tab(n + 1);
+    global::config().gJuliaVisitor->Tab(n + 1);
     
     // Generates local variables declaration and setup
-    generateComputeBlock(gGlobal->gJuliaVisitor);
+    generateComputeBlock(global::config().gJuliaVisitor);
     
     // Generates one single scalar loop
     SimpleForLoopInst* loop = fCurLoop->generateSimpleScalarLoop(fFullCount);
-    loop->accept(gGlobal->gJuliaVisitor);
+    loop->accept(global::config().gJuliaVisitor);
     
     /*
      // TODO : atomic switch
      // Currently for soundfile management
      */
-    generatePostComputeBlock(gGlobal->gJuliaVisitor);
+    generatePostComputeBlock(global::config().gJuliaVisitor);
     
     back(1, *fOut);
     *fOut << "end" << endl;

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -79,7 +79,7 @@ CodeContainer::CodeContainer()
       fInt32ControlNum(0),
       fRealControlNum(0)
 {
-    fCurLoop = new CodeLoop(0, gGlobal->getFreshID("i"));
+    fCurLoop = new CodeLoop(0, global::config().getFreshID("i"));
 }
 
 CodeContainer::~CodeContainer()
@@ -331,11 +331,11 @@ void CodeContainer::generateDAGLoopInternal(CodeLoop* loop, BlockInst* block, De
 void CodeContainer::generateDAGLoopAux(CodeLoop* loop, BlockInst* loop_code, DeclareVarInst* count, int loop_num,
                                        bool omp)
 {
-    if (gGlobal->gFunTaskSwitch) {
+    if (global::config().gFunTaskSwitch) {
         BlockInst* block = InstBuilder::genBlockInst();
         // Generates scalar or vectorized loop
         generateDAGLoopInternal(loop, block, count, omp);
-        Loop2FunctionBuider builder(subst("fun$0" + getClassName(), T(loop_num)), block, gGlobal->gDSPStruct);
+        Loop2FunctionBuider builder(subst("fun$0" + getClassName(), T(loop_num)), block, global::config().gDSPStruct);
         pushOtherComputeMethod(builder.fFunctionDef);
         loop_code->pushBackInst(InstBuilder::genLabelInst((loop->fIsRecursive)
                                                               ? subst("/* Recursive function $0 */", T(loop_num))
@@ -354,7 +354,7 @@ void CodeContainer::generateDAGLoop(BlockInst* block, DeclareVarInst* count)
 {
     int loop_num = 0;
 
-    if (gGlobal->gDeepFirstSwitch) {
+    if (global::config().gDeepFirstSwitch) {
         set<CodeLoop*>  visited;
         list<CodeLoop*> result;
         sortDeepFirstDAG(fCurLoop, visited, result);
@@ -375,30 +375,30 @@ void CodeContainer::generateDAGLoop(BlockInst* block, DeclareVarInst* count)
 void CodeContainer::processFIR(void)
 {
     // Types used in 'compute' prototype
-    gGlobal->setVarType("count", Typed::kInt32);
-    gGlobal->setVarType("inputs", Typed::kFloatMacro_ptr_ptr);
-    gGlobal->setVarType("outputs", Typed::kFloatMacro_ptr_ptr);
+    global::config().setVarType("count", Typed::kInt32);
+    global::config().setVarType("inputs", Typed::kFloatMacro_ptr_ptr);
+    global::config().setVarType("outputs", Typed::kFloatMacro_ptr_ptr);
 
     // Type used in several methods using 'sample_rate' parameter
-    gGlobal->setVarType("sample_rate", Typed::kInt32);
+    global::config().setVarType("sample_rate", Typed::kInt32);
 
     /*
         Used in SOUL backend and -os mode (C/C++)
-        18/08/22 : gGlobal->gOneSample == 3 fails because of typing
+        18/08/22 : global::config().gOneSample == 3 fails because of typing
         issues with iControl/fControl, so deactivated for now
     */
-    if ((gGlobal->gOneSample >= 0 && gGlobal->gOneSample < 3) || gGlobal->gOneSampleControl) {
+    if ((global::config().gOneSample >= 0 && global::config().gOneSample < 3) || global::config().gOneSampleControl) {
         // Control is separated in the 'control()' function and iControl/fControl arrays
         // are used to compute control related state to be used in 'run'
-        gGlobal->setVarType("iControl", Typed::kInt32_ptr);
-        gGlobal->setVarType("fControl", itfloatptr());
+        global::config().setVarType("iControl", Typed::kInt32_ptr);
+        global::config().setVarType("fControl", itfloatptr());
     }
 
     // Possibly add "fSamplingRate" field
     generateSR();
 
     // Possibly groups tasks (used by VectorCodeContainer, OpenMPCodeContainer and WSSCodeContainer)
-    if (gGlobal->gGroupTaskSwitch) {
+    if (global::config().gGroupTaskSwitch) {
         CodeLoop::computeUseCount(fCurLoop);
         set<CodeLoop*> visited;
         CodeLoop::groupSeqLoops(fCurLoop, visited);
@@ -417,7 +417,7 @@ void CodeContainer::processFIR(void)
         // Init DSP
         DSP->instanceInit(44100);
      */
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         {
             // Compute DSP struct arrays size
             StructInstVisitor struct_visitor;
@@ -441,7 +441,7 @@ void CodeContainer::processFIR(void)
                     fMemoryLayout.push_back(make_tuple(it->getClassName(), int(Typed::kNoType), 0, struct_size.fSizeBytes, 0, 0));
 
                     // Get the associated table size and access
-                    pair<std::string, int> field = gGlobal->gTablesSize[it->getClassName()];
+                    pair<std::string, int> field = global::config().gTablesSize[it->getClassName()];
 
                     // Check the table name memory description
                     MemoryDesc& decs = struct_visitor.getMemoryDesc(field.first);
@@ -593,13 +593,13 @@ BlockInst* CodeContainer::inlineSubcontainersFunCalls(BlockInst* block)
 void CodeContainer::printMacros(ostream& fout, int n)
 {
     // generate user interface macros if needed
-    if (gGlobal->gUIMacroSwitch) {
-        if (gGlobal->gOutputLang == "c" || gGlobal->gOutputLang == "cpp") {
+    if (global::config().gUIMacroSwitch) {
+        if (global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp") {
             tab(n, fout);
             fout << "#ifdef FAUST_UIMACROS";
             tab(n + 1, fout);
             tab(n + 1, fout);
-            for (const auto& it : gGlobal->gMetaDataSet) {
+            for (const auto& it : global::config().gMetaDataSet) {
                 if (it.first == tree("filename")) {
                     fout << "#define FAUST_FILE_NAME " << **(it.second.begin());
                     break;
@@ -608,7 +608,7 @@ void CodeContainer::printMacros(ostream& fout, int n)
             tab(n + 1, fout);
             fout << "#define FAUST_CLASS_NAME " << "\"" << fKlassName << "\"";
             tab(n + 1, fout);
-            fout << "#define FAUST_COMPILATION_OPIONS \"" << gGlobal->printCompilationOptions1() << "\"";
+            fout << "#define FAUST_COMPILATION_OPIONS \"" << global::config().printCompilationOptions1() << "\"";
             tab(n + 1, fout);
             fout << "#define FAUST_INPUTS " << fNumInputs;
             tab(n + 1, fout);
@@ -634,7 +634,7 @@ void CodeContainer::printMacros(ostream& fout, int n)
                 tab(n, fout);
             }
             fout << "#endif" << endl;
-        } else if (gGlobal->gOutputLang == "rust") {
+        } else if (global::config().gOutputLang == "rust") {
             fout << "pub const FAUST_INPUTS: i32 = " << fNumInputs << ";";
             tab(n, fout);
             fout << "pub const FAUST_OUTPUTS: i32 = " << fNumOutputs << ";";
@@ -848,7 +848,7 @@ DeclareFunInst* CodeContainer::generateFillFun(const std::string& name, const st
     BlockInst* block = InstBuilder::genBlockInst();
     block->pushBackInst(fComputeBlockInstructions);
     // Hack for Julia
-    if (gGlobal->gOutputLang == "julia" || gGlobal->gOutputLang == "jax") {
+    if (global::config().gOutputLang == "julia" || global::config().gOutputLang == "jax") {
         block->pushBackInst(fCurLoop->generateSimpleScalarLoop("count"));
     } else {
         block->pushBackInst(fCurLoop->generateScalarLoop("count"));
@@ -1034,7 +1034,7 @@ DeclareFunInst* CodeContainer::generateDeleteDsp(const std::string& name, const 
 void CodeContainer::generateJSONFile()
 {
     // Generate JSON (which checks for non duplicated path)
-    if (gGlobal->gPrintJSONSwitch) {
+    if (global::config().gPrintJSONSwitch) {
         if (::Faust::Primitive::Math::floatSize == 1) {
             generateJSONFile<float>();
         } else {

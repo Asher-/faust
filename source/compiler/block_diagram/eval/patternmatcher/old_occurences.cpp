@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -115,13 +115,13 @@ void old_OccMarkup::mark(Tree root)
     if (isList(root)) {
         while (isList(root)) {
             // incOcc(kSamp, 1, hd(root));
-            incOcc(gGlobal->nil, kSamp, 0, 0, gGlobal->nil, hd(root));
+            incOcc(global::config().nil, kSamp, 0, 0, global::config().nil, hd(root));
             root = tl(root);
         }
         // cerr << "END OF LIST IS " << *root << endl;
     } else {
         // incOcc(kSamp, 1, root);
-        incOcc(gGlobal->nil, kSamp, 0, 0, gGlobal->nil, root);
+        incOcc(global::config().nil, kSamp, 0, 0, global::config().nil, root);
     }
 }
 
@@ -146,7 +146,7 @@ void old_OccMarkup::incOcc(Tree env, int v, int r, int d, Tree xc, Tree t)
         int  v0 = ty->variability();
         int  r0 = getRecursivness(t);
         // fConditions may have been initialized empty
-        Tree c0 = (fConditions.find(t) == fConditions.end()) ? gGlobal->nil : fConditions[t];        
+        Tree c0 = (fConditions.find(t) == fConditions.end()) ? global::config().nil : fConditions[t];        
         occ     = new old_Occurences(v0, r0, c0);
         setOcc(t, occ);
 

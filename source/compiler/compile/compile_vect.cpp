@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -58,8 +58,8 @@ void VectorCompiler::compileMultiSignal(Tree L)
         fDescription->ui(prepareUserInterfaceTree(fUIRoot));
     }
 
-    if (gGlobal->gPrintJSONSwitch) {
-        ofstream xout(subst("$0.json", gGlobal->makeDrawPath()).c_str());
+    if (global::config().gPrintJSONSwitch) {
+        ofstream xout(subst("$0.json", global::config().makeDrawPath()).c_str());
         xout << fJSON.JSON();
     }
 }
@@ -258,13 +258,13 @@ string VectorCompiler::generateCacheCode(Tree sig, const std::string& exp)
                 //cerr << "CHASING BUG 2 " << exp << endl;
                 return exp;
             } else {
-                if (d < gGlobal->gMaxCopyDelay) {
+                if (d < global::config().gMaxCopyDelay) {
                     string sss = subst("$0[i]", vname);
                     //cerr << "CHASING BUG 3 " << sss << endl;
                     return sss;
                 } else {
                     // we use a ring buffer
-                    string mask = T(pow2limit(d + gGlobal->gVecSize) - 1);
+                    string mask = T(pow2limit(d + global::config().gVecSize) - 1);
                     string sss  = subst("$0[($0_idx+i) & $1]", vname, mask);
                     //cerr << "CHASING BUG 4 " << sss << endl;
                     return sss;
@@ -375,7 +375,7 @@ string VectorCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
         // not a real vector name but a scalar name
         return subst("$0[i]", vecname);
 
-    } else if (mxd < gGlobal->gMaxCopyDelay) {
+    } else if (mxd < global::config().gMaxCopyDelay) {
         if (isSigInt(delay, &d)) {
             if (d == 0) {
                 return subst("$0[i]", vecname);
@@ -388,7 +388,7 @@ string VectorCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
 
     } else {
         // long delay : we use a ring buffer of size 2^x
-        int N = pow2limit(mxd + gGlobal->gVecSize);
+        int N = pow2limit(mxd + global::config().gVecSize);
 
         if (isSigInt(delay, &d)) {
             if (d == 0) {
@@ -446,7 +446,7 @@ void VectorCompiler::generateVectorLoop(const std::string& tname, const std::str
     fClass->addSharedDecl(vecname);
 
     // -- variables moved as class fields...
-    fClass->addZone1(subst("$0 \t$1[$2];", tname, vecname, T(gGlobal->gVecSize)));
+    fClass->addZone1(subst("$0 \t$1[$2];", tname, vecname, T(global::config().gVecSize)));
 
     // -- compute the new samples
     fClass->addExecCode(Statement(ccs, subst("$0[i] = $1;", vecname, cexp)));
@@ -464,7 +464,7 @@ void VectorCompiler::generateVectorLoop(const std::string& tname, const std::str
 void VectorCompiler::generateDlineLoop(const std::string& tname, const std::string& dlname, int delay, const std::string& cexp,
                                        const std::string& ccs)
 {
-    if (delay < gGlobal->gMaxCopyDelay) {
+    if (delay < global::config().gMaxCopyDelay) {
         // Implementation of a copy based delayline
 
         // create names for temporary and permanent storage
@@ -487,7 +487,7 @@ void VectorCompiler::generateDlineLoop(const std::string& tname, const std::stri
         fClass->addSharedDecl(buf);
 
         // -- variables moved as class fields...
-        fClass->addZone1(subst("$0 \t$1[$2+$3];", tname, buf, T(gGlobal->gVecSize), dsize));
+        fClass->addZone1(subst("$0 \t$1[$2+$3];", tname, buf, T(global::config().gVecSize), dsize));
 
         fClass->addFirstPrivateDecl(dlname);
         fClass->addZone2(subst("$0* \t$1 = &$2[$3];", tname, dlname, buf, dsize));
@@ -505,7 +505,7 @@ void VectorCompiler::generateDlineLoop(const std::string& tname, const std::stri
         // Implementation of a ring-buffer delayline
 
         // the size should be large enough and aligned on a power of two
-        delay        = pow2limit(delay + gGlobal->gVecSize);
+        delay        = pow2limit(delay + global::config().gVecSize);
         string dsize = T(delay);
         string mask  = T(delay - 1);
 

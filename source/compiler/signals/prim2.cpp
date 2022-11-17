@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -28,12 +28,12 @@
 
 Tree ffunction(Tree signature, Tree incfile, Tree libfile)
 {
-    return tree(gGlobal->FFUN, signature, incfile, libfile);
+    return tree(global::config().FFUN, signature, incfile, libfile);
 }
 
 bool isffunction(Tree t)
 {
-    return t->node() == Node(gGlobal->FFUN);
+    return t->node() == Node(global::config().FFUN);
 }
 
 Tree ffsignature(Tree ff)

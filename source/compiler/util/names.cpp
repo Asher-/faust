@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -46,14 +46,14 @@
 void setDefNameProperty(Tree t, Tree id)
 {
     // cerr << "setDefNameProperty : " << *id << " FOR " << t << "#" << boxpp(t) << endl;
-    setProperty(t, gGlobal->DEFNAMEPROPERTY, id);
+    setProperty(t, global::config().DEFNAMEPROPERTY, id);
 }
 
 void setDefNameProperty(Tree t, const string& name)
 {
     // cerr << "setDefNameProperty : " << name << " FOR " << t << "#" << boxpp(t) << endl;
     int n = (int)name.size();
-    int m = (gGlobal->gMaxNameSize > 1023) ? 1023 : gGlobal->gMaxNameSize;
+    int m = (global::config().gMaxNameSize > 1023) ? 1023 : global::config().gMaxNameSize;
 
     if (n > m) {
         // the name is too long we reduce it to 2/3 of maxsize
@@ -72,16 +72,16 @@ void setDefNameProperty(Tree t, const string& name)
             buf[i] = name[c];
         }
         buf[i] = 0;
-        setProperty(t, gGlobal->DEFNAMEPROPERTY, tree(buf));
+        setProperty(t, global::config().DEFNAMEPROPERTY, tree(buf));
     } else {
-        setProperty(t, gGlobal->DEFNAMEPROPERTY, tree(name.c_str()));
+        setProperty(t, global::config().DEFNAMEPROPERTY, tree(name.c_str()));
     }
 }
 
 LIBFAUST_API bool getDefNameProperty(Tree t, Tree& id)
 {
     // cerr << "getDefNameProperty of : " << t << endl;
-    return getProperty(t, gGlobal->DEFNAMEPROPERTY, id);
+    return getProperty(t, global::config().DEFNAMEPROPERTY, id);
 }
 
 /**
@@ -101,9 +101,9 @@ void setSigNickname(Tree t, const string& id)
 {
     Tree s, d;
     if (isSigDelay(t, s, d) && isZero(d)) {
-        setProperty(s, gGlobal->NICKNAMEPROPERTY, tree(id));
+        setProperty(s, global::config().NICKNAMEPROPERTY, tree(id));
     } else {
-        setProperty(t, gGlobal->NICKNAMEPROPERTY, tree(id));
+        setProperty(t, global::config().NICKNAMEPROPERTY, tree(id));
     }
 }
 
@@ -112,7 +112,7 @@ void setSigNickname(Tree t, const string& id)
  */
 bool getSigNickname(Tree t, Tree& id)
 {
-    bool r = getProperty(t, gGlobal->NICKNAMEPROPERTY, id);
+    bool r = getProperty(t, global::config().NICKNAMEPROPERTY, id);
     return r;
 }
 

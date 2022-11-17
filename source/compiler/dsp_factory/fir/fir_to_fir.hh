@@ -415,7 +415,7 @@ struct LoopVariableRenamer : public BasicCloneVisitor {
         // Rename 'loop' variables
         if (dynamic_cast<NamedAddress*>(inst->fAddress) && inst->fAddress->getAccess() == Address::kLoop) {
             std::string name = inst->fAddress->getName();
-            fLoopIndexMap[name] = gGlobal->getFreshID(name + "_re");
+            fLoopIndexMap[name] = global::config().getFreshID(name + "_re");
         }
         return BasicCloneVisitor::visit(inst);
     }

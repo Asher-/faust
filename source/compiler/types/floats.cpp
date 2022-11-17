@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -57,7 +57,7 @@ void ::Faust::Type::Float::init()
     mathsuffix[4] = "";
 
     // Specific for Rust backend
-    if (gGlobal->gOutputLang == "rust") {
+    if (global::config().gOutputLang == "rust") {
         numsuffix[0] = "";
         numsuffix[1] = "";
         numsuffix[2] = "";
@@ -95,7 +95,7 @@ void ::Faust::Type::Float::init()
         floatmin[4] = FLT_MIN;
 
     // Specific for Julia backend
-    } else  if (gGlobal->gOutputLang == "julia") {
+    } else  if (global::config().gOutputLang == "julia") {
         numsuffix[0] = "";
         numsuffix[1] = "f0";
         numsuffix[2] = "";
@@ -133,7 +133,7 @@ void ::Faust::Type::Float::init()
         floatmin[4] = FLT_MIN;
 
     // Specific for JAX backend
-    } else  if (gGlobal->gOutputLang == "jax") {
+    } else  if (global::config().gOutputLang == "jax") {
         numsuffix[0] = "";
         numsuffix[1] = "";
         numsuffix[2] = "";
@@ -171,7 +171,7 @@ void ::Faust::Type::Float::init()
         floatmin[4] = FLT_MIN;
 
     // Specific for D backend
-    } else if (gGlobal->gOutputLang == "dlang") {
+    } else if (global::config().gOutputLang == "dlang") {
         numsuffix[0] = "";
         numsuffix[1] = "";
         numsuffix[2] = "";
@@ -299,13 +299,13 @@ int ifloatsize()
 {
     switch (::Faust::Primitive::Math::floatSize) {
         case 1:
-            return gGlobal->gMachineFloatSize;
+            return global::config().gMachineFloatSize;
         case 2:
-            return gGlobal->gMachineDoubleSize;
+            return global::config().gMachineDoubleSize;
         case 3:
-            return gGlobal->gMachineQuadSize;
+            return global::config().gMachineQuadSize;
         case 4:
-            return gGlobal->gMachineFixedPointSize;
+            return global::config().gMachineFixedPointSize;
         default:
             faustassert(false);
             return 0;

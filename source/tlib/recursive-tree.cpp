@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -44,25 +44,25 @@ static Tree calcliftn(Tree t, int threshold);
 // de Bruijn declaration of a recursive tree
 Tree rec(Tree body)
 {
-    return tree(gGlobal->DEBRUIJN, body);
+    return tree(global::config().DEBRUIJN, body);
 }
 
 bool isRec(Tree t, Tree& body)
 {
-    return isTree(t, gGlobal->DEBRUIJN, body);
+    return isTree(t, global::config().DEBRUIJN, body);
 }
 
 Tree ref(int level)
 {
     faustassert(level > 0);
-    return tree(gGlobal->DEBRUIJNREF, tree(level));  // reference to enclosing recursive tree starting from 1
+    return tree(global::config().DEBRUIJNREF, tree(level));  // reference to enclosing recursive tree starting from 1
 }
 
 bool isRef(Tree t, int& level)
 {
     Tree u;
 
-    if (isTree(t, gGlobal->DEBRUIJNREF, u)) {
+    if (isTree(t, global::config().DEBRUIJNREF, u)) {
         return isInt(u->node(), &level);
     } else {
         return false;
@@ -76,15 +76,15 @@ bool isRef(Tree t, int& level)
 // declaration of a recursive tree using a symbolic variable
 Tree rec(Tree var, Tree body)
 {
-    Tree t = tree(gGlobal->SYMREC, var);
-    t->setProperty(gGlobal->RECDEF, body);
+    Tree t = tree(global::config().SYMREC, var);
+    t->setProperty(global::config().RECDEF, body);
     return t;
 }
 
 bool LIBFAUST_API isRec(Tree t, Tree& var, Tree& body)
 {
-    if (isTree(t, gGlobal->SYMREC, var)) {
-        body = t->getProperty(gGlobal->RECDEF);
+    if (isTree(t, global::config().SYMREC, var)) {
+        body = t->getProperty(global::config().RECDEF);
         return true;
     } else {
         return false;
@@ -93,12 +93,12 @@ bool LIBFAUST_API isRec(Tree t, Tree& var, Tree& body)
 
 Tree ref(Tree id)
 {
-    return tree(gGlobal->SYMREC, id);  // reference to a symbolic id
+    return tree(global::config().SYMREC, id);  // reference to a symbolic id
 }
 
 bool isRef(Tree t, Tree& v)
 {
-    return isTree(t, gGlobal->SYMREC, v);
+    return isTree(t, global::config().SYMREC, v);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ bool isRef(Tree t, Tree& v)
 int CTree::calcTreeAperture(const Node& n, const tvec& br)
 {
     int x;
-    if (n == gGlobal->DEBRUIJNREF) {
+    if (n == global::config().DEBRUIJNREF) {
         faustassert(br[0]);
         if (isInt(br[0]->node(), &x)) {
             return x;
@@ -117,7 +117,7 @@ int CTree::calcTreeAperture(const Node& n, const tvec& br)
             return 0;
         }
 
-    } else if (n == gGlobal->DEBRUIJN) {
+    } else if (n == global::config().DEBRUIJN) {
         faustassert(br[0]);
         return br[0]->fAperture - 1;
 
@@ -158,7 +158,7 @@ Tree liftn(Tree t, int threshold)
 
 Tree liftn(Tree t, int threshold)
 {
-    Tree L  = tree(Node(gGlobal->SYMLIFTN), tree(Node(threshold)));
+    Tree L  = tree(Node(global::config().SYMLIFTN), tree(Node(threshold)));
     Tree t2 = t->getProperty(L);
 
     if (!t2) {
@@ -207,11 +207,11 @@ static Tree calcliftn(Tree t, int threshold)
 Tree deBruijn2Sym(Tree t)
 {
     faustassert(isClosed(t));
-    Tree t2 = t->getProperty(gGlobal->DEBRUIJN2SYM);
+    Tree t2 = t->getProperty(global::config().DEBRUIJN2SYM);
 
     if (!t2) {
         t2 = calcDeBruijn2Sym(t);
-        t->setProperty(gGlobal->DEBRUIJN2SYM, t2);
+        t->setProperty(global::config().DEBRUIJN2SYM, t2);
     }
     return t2;
 }
@@ -248,7 +248,7 @@ static Tree calcDeBruijn2Sym(Tree t)
 
 static Tree substitute(Tree t, int level, Tree id)
 {
-    Tree S  = tree(Node(gGlobal->SUBSTITUTE), tree(Node(level)), id);
+    Tree S  = tree(Node(global::config().SUBSTITUTE), tree(Node(level)), id);
     Tree t2 = t->getProperty(S);
 
     if (!t2) {

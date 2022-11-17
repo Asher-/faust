@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -48,7 +48,7 @@ namespace Faust {
        - some of them have optimized versions for specific arguments (like 'pow') or with ::Faust::Primitive::Math::approx (experimental)
        */
 
-      class xtended : public virtual Garbageable {
+      class xtended {
          private:
           Symbol* fSymbol;  ///< the symbol the xtended is attached to
 

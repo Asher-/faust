@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -70,7 +70,7 @@ void sigToGraph(Tree L, ostream& fout)
  */
 static void recdraw(Tree sig, set<Tree>& drawn, ostream& fout)
 {
-    // cerr << ++gGlobal->TABBER << "ENTER REC DRAW OF " << sig << "$" << *sig << endl;
+    // cerr << ++global::config().TABBER << "ENTER REC DRAW OF " << sig << "$" << *sig << endl;
     vector<Tree> subsig;
     int          n;
 
@@ -114,7 +114,7 @@ static void recdraw(Tree sig, set<Tree>& drawn, ostream& fout)
             }
         }
     }
-    // cerr << --gGlobal->TABBER << "EXIT REC DRAW OF " << sig << endl;
+    // cerr << --global::config().TABBER << "EXIT REC DRAW OF " << sig << endl;
 }
 
 string commonAttr(Type t)

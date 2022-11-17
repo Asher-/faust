@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -72,7 +72,7 @@ void SchedulerCompiler::vectorLoop(const std::string& tname, const std::string& 
     fClass->addSharedDecl(vecname);
 
     // -- variables moved as class fields...
-    fClass->addDeclCode(subst("$0 \t$1[$2];", tname, vecname, T(gGlobal->gVecSize)));
+    fClass->addDeclCode(subst("$0 \t$1[$2];", tname, vecname, T(global::config().gVecSize)));
 
     // -- compute the new samples
     fClass->addExecCode(Statement(ccs, subst("$0[i] = $1;", vecname, cexp)));
@@ -90,7 +90,7 @@ void SchedulerCompiler::vectorLoop(const std::string& tname, const std::string& 
 void SchedulerCompiler::dlineLoop(const std::string& tname, const std::string& dlname, int delay, const std::string& cexp,
                                   const std::string& ccs)
 {
-    if (delay < gGlobal->gMaxCopyDelay) {
+    if (delay < global::config().gMaxCopyDelay) {
         // Implementation of a copy based delayline
 
         // create names for temporary and permanent storage
@@ -113,7 +113,7 @@ void SchedulerCompiler::dlineLoop(const std::string& tname, const std::string& d
         fClass->addSharedDecl(buf);
 
         // -- variables moved as class fields...
-        fClass->addDeclCode(subst("$0 \t$1[$2+$3];", tname, buf, T(gGlobal->gVecSize), dsize));
+        fClass->addDeclCode(subst("$0 \t$1[$2+$3];", tname, buf, T(global::config().gVecSize), dsize));
 
         fClass->addFirstPrivateDecl(dlname);
         fClass->addZone2(subst("$0* \t$1 = &$2[$3];", tname, dlname, buf, dsize));
@@ -131,7 +131,7 @@ void SchedulerCompiler::dlineLoop(const std::string& tname, const std::string& d
         // Implementation of a ring-buffer delayline
 
         // the size should be large enough and aligned on a power of two
-        delay        = pow2limit(delay + gGlobal->gVecSize);
+        delay        = pow2limit(delay + global::config().gVecSize);
         string dsize = T(delay);
         string mask  = T(delay - 1);
 

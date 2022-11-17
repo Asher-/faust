@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -69,13 +69,13 @@ dsp_factory_base* CPPCodeContainer::produceFactory()
 
 CodeContainer* CPPCodeContainer::createScalarContainer(const std::string& name, const std::string& super, int numInputs, int numOutputs, ostream* dst, int sub_container_type)
 {
-    if (gGlobal->gOneSample == 0) {
+    if (global::config().gOneSample == 0) {
         return new CPPScalarOneSampleCodeContainer1(name,super, numInputs, numOutputs, dst, sub_container_type);
-    } else if (gGlobal->gOneSample == 1) {
+    } else if (global::config().gOneSample == 1) {
         return new CPPScalarOneSampleCodeContainer2(name, super, numInputs, numOutputs, dst, sub_container_type);
-    } else if (gGlobal->gOneSample == 2) {
+    } else if (global::config().gOneSample == 2) {
         return new CPPScalarOneSampleCodeContainer3(name, super, numInputs, numOutputs, dst, sub_container_type);
-    } else if (gGlobal->gOneSample == 3) {
+    } else if (global::config().gOneSample == 3) {
         return new CPPScalarOneSampleCodeContainer4(name, super, numInputs, numOutputs, dst, sub_container_type);
     } else {
         return new CPPScalarCodeContainer(name, super, numInputs, numOutputs, dst, sub_container_type);
@@ -92,29 +92,29 @@ CodeContainer* CPPCodeContainer::createContainer(const string& name, const strin
 {
     CodeContainer* container;
 
-    if (gGlobal->gOpenCLSwitch) {
-        if (gGlobal->gFunTaskSwitch) {
+    if (global::config().gOpenCLSwitch) {
+        if (global::config().gFunTaskSwitch) {
             throw faustexception("ERROR : -fun not yet supported in OpenCL mode\n");
         }
-        if (gGlobal->gVectorSwitch) {
+        if (global::config().gVectorSwitch) {
             container = new CPPOpenCLVectorCodeContainer(name, super, numInputs, numOutputs, dst);
         } else {
             container = new CPPOpenCLCodeContainer(name, super, numInputs, numOutputs, dst);
         }
-    } else if (gGlobal->gCUDASwitch) {
-        if (gGlobal->gFunTaskSwitch) {
+    } else if (global::config().gCUDASwitch) {
+        if (global::config().gFunTaskSwitch) {
             throw faustexception("ERROR : -fun not yet supported in CUDA mode\n");
         }
-        if (gGlobal->gVectorSwitch) {
+        if (global::config().gVectorSwitch) {
             container = new CPPCUDAVectorCodeContainer(name, super, numInputs, numOutputs, dst);
         } else {
             container = new CPPCUDACodeContainer(name, super, numInputs, numOutputs, dst);
         }
-    } else if (gGlobal->gOpenMPSwitch) {
+    } else if (global::config().gOpenMPSwitch) {
         container = new CPPOpenMPCodeContainer(name, super, numInputs, numOutputs, dst);
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         container = new CPPWorkStealingCodeContainer(name, super, numInputs, numOutputs, dst);
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         container = new CPPVectorCodeContainer(name, super, numInputs, numOutputs, dst);
     } else {
         container = createScalarContainer(name, super, numInputs, numOutputs, dst, kInt);
@@ -125,12 +125,12 @@ CodeContainer* CPPCodeContainer::createContainer(const string& name, const strin
 
 string CPPCodeContainer::genVirtual()
 {
-    return (gGlobal->gNoVirtual) ? "" : "virtual ";
+    return (global::config().gNoVirtual) ? "" : "virtual ";
 }
 
 string CPPCodeContainer::genFinal()
 {
-    return (gGlobal->gNoVirtual) ? " final" : "";
+    return (global::config().gNoVirtual) ? " final" : "";
 }
 
 // Scalar
@@ -147,7 +147,7 @@ void CPPCodeContainer::produceMetadata(int tabs)
     *fOut << "void metadata(Meta* m) { ";
 
     // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(tabs + 1, *fOut);
             *fOut << "m->declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";
@@ -174,7 +174,7 @@ void CPPCodeContainer::produceMetadata(int tabs)
 
 void CPPCodeContainer::produceInit(int tabs)
 {
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(tabs, *fOut);
         *fOut << genVirtual() << "void init(int sample_rate) {}";
     } else {
@@ -214,7 +214,7 @@ void CPPCodeContainer::produceInternal()
 
     tab(n + 1, *fOut);
 
-    if (gGlobal->gUIMacroSwitch) {
+    if (global::config().gUIMacroSwitch) {
         tab(n, *fOut);
         *fOut << "  public:";
     } else {
@@ -280,7 +280,7 @@ void CPPCodeContainer::produceInternal()
     *fOut << "};" << endl;
 
     // Memory methods (as globals)
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n, *fOut);
         *fOut << "static " << fKlassName << "* "
               << "new" << fKlassName << "(dsp_memory_manager* manager) {"
@@ -307,9 +307,9 @@ void CPPCodeContainer::produceClass()
     // Libraries
     printLibrary(*fOut);
     printIncludeFile(*fOut);
-    if (gGlobal->gNamespace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNamespace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "namespace " << gGlobal->gNamespace << " {" << endl;
+        *fOut << "namespace " << global::config().gNamespace << " {" << endl;
     }
 
     tab(n, *fOut);
@@ -346,7 +346,7 @@ void CPPCodeContainer::produceClass()
     }
     tab(n + 1, *fOut);
 
-    if (gGlobal->gUIMacroSwitch) {
+    if (global::config().gUIMacroSwitch) {
         tab(n, *fOut);
         *fOut << " public:";
     } else {
@@ -360,7 +360,7 @@ void CPPCodeContainer::produceClass()
     tab(n + 1, *fOut);
 
     // DSP fields as flat arrays are rewritten as pointers
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         ArrayToPointer array_pointer;
         array_pointer.getCode(fDeclarationInstructions)->accept(fCodeProducer);
     } else {
@@ -392,7 +392,7 @@ void CPPCodeContainer::produceClass()
     tab(n, *fOut);
     *fOut << " public:";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static dsp_memory_manager* fManager;";
     }
@@ -421,7 +421,7 @@ void CPPCodeContainer::produceClass()
 
     tab(n + 1, *fOut);
     // No class name for main class
-    if (gGlobal->gNoVirtual) {
+    if (global::config().gNoVirtual) {
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kStaticConstExpr, fCodeProducer, "getStaticNumInputs", "getStaticNumOutputs");
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kDefault, fCodeProducer);
     } else {
@@ -442,7 +442,7 @@ void CPPCodeContainer::produceClass()
     back(1, *fOut);
     *fOut << "}";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         tab(n + 1, *fOut);
         *fOut << "static void classDestroy() {";
@@ -547,7 +547,7 @@ void CPPCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << genVirtual() << fKlassName << "* clone() {";
     tab(n + 2, *fOut);
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         *fOut << "return create();";
    } else {
         *fOut << "return new " << fKlassName << "();";
@@ -558,7 +558,7 @@ void CPPCodeContainer::produceClass()
     tab(n + 1, *fOut);
     fCodeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateGetSampleRate("getSampleRate", "dsp", true, !gGlobal->gNoVirtual)->accept(fCodeProducer);
+    generateGetSampleRate("getSampleRate", "dsp", true, !global::config().gNoVirtual)->accept(fCodeProducer);
 
     // User interface
     tab(n + 1, *fOut);
@@ -572,7 +572,7 @@ void CPPCodeContainer::produceClass()
     // Compute
     generateCompute(n);
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
 
         // 'memoryInfo' method generation
         tab(n + 1, *fOut);
@@ -667,16 +667,16 @@ void CPPCodeContainer::produceClass()
     *fOut << "};" << endl;
 
     // To improve (generalization for all backends...)
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n, *fOut);
         *fOut << "dsp_memory_manager* " << fKlassName << "::fManager = nullptr;" << endl;
     }
 
     // Generate user interface macros if needed
     printMacros(*fOut, n);
-    if (gGlobal->gNamespace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNamespace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "} // namespace " << gGlobal->gNamespace << endl;
+        *fOut << "} // namespace " << global::config().gNamespace << endl;
     }
 }
 
@@ -688,9 +688,9 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     // Libraries
     printLibrary(*fOut);
     printIncludeFile(*fOut);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "namespace " << gGlobal->gNamespace << " {" << endl;
+        *fOut << "namespace " << global::config().gNamespace << " {" << endl;
     }
 
     // Sub containers are merged in the main class
@@ -729,7 +729,7 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     *fOut << "class " << fKlassName << genFinal() << " : public " << fSuperKlassName << " {";
     tab(n + 1, *fOut);
 
-    if (gGlobal->gUIMacroSwitch) {
+    if (global::config().gUIMacroSwitch) {
         tab(n, *fOut);
         *fOut << " public:";
     } else {
@@ -768,7 +768,7 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     tab(n, *fOut);
     *fOut << " public:";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static dsp_memory_manager* fManager;";
     }
@@ -804,7 +804,7 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
 
     tab(n + 1, *fOut);
     // No class name for main class
-    if (gGlobal->gNoVirtual) {
+    if (global::config().gNoVirtual) {
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kStaticConstExpr, fCodeProducer, "getStaticNumInputs", "getStaticNumOutputs");
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kDefault, fCodeProducer);
     } else {
@@ -827,7 +827,7 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     back(1, *fOut);
     *fOut << "}";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         tab(n + 1, *fOut);
         *fOut << "static void classDestroy() {";
@@ -869,7 +869,7 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     tab(n + 1, *fOut);
 
     // Init
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << genVirtual() << "void init(int sample_rate) {}";
     } else {
@@ -907,7 +907,7 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     tab(n + 1, *fOut);
     fCodeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateGetSampleRate("getSampleRate", "dsp", true, !gGlobal->gNoVirtual)->accept(fCodeProducer);
+    generateGetSampleRate("getSampleRate", "dsp", true, !global::config().gNoVirtual)->accept(fCodeProducer);
 
     // User interface
     tab(n + 1, *fOut);
@@ -940,16 +940,16 @@ void CPPScalarOneSampleCodeContainer1::produceClass()
     *fOut << "};" << endl;
 
     // To improve (generalization for all backends...)
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n, *fOut);
         *fOut << "dsp_memory_manager* " << fKlassName << "::fManager = nullptr;" << endl;
     }
 
     // Generate user interface macros if needed
     printMacros(*fOut, n);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "} // namespace " << gGlobal->gNamespace << endl;
+        *fOut << "} // namespace " << global::config().gNamespace << endl;
     }
 }
 
@@ -961,9 +961,9 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     // Libraries
     printLibrary(*fOut);
     printIncludeFile(*fOut);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "namespace " << gGlobal->gNamespace << " {" << endl;
+        *fOut << "namespace " << global::config().gNamespace << " {" << endl;
     }
 
     // Sub containers are merged in the main class
@@ -997,7 +997,7 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     *fOut << "class " << fKlassName << genFinal() << " : public " << fSuperKlassName << " {";
     tab(n + 1, *fOut);
 
-    if (gGlobal->gUIMacroSwitch) {
+    if (global::config().gUIMacroSwitch) {
         tab(n, *fOut);
         *fOut << " public:";
     } else {
@@ -1040,7 +1040,7 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     tab(n, *fOut);
     *fOut << " public:";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static dsp_memory_manager* fManager;";
     }
@@ -1076,7 +1076,7 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
 
     tab(n + 1, *fOut);
     // No class name for main class
-    if (gGlobal->gNoVirtual) {
+    if (global::config().gNoVirtual) {
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kStaticConstExpr, fCodeProducer, "getStaticNumInputs", "getStaticNumOutputs");
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kDefault, fCodeProducer);
     } else {
@@ -1101,7 +1101,7 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     back(1, *fOut);
     *fOut << "}";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static void classDestroy() {";
         tab(n + 2, *fOut);
@@ -1141,7 +1141,7 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     tab(n + 1, *fOut);
 
     // Init
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << genVirtual() << "void init(int sample_rate, " << subst("int* iZone, $0* fZone) {", ifloat());
     } else {
@@ -1179,7 +1179,7 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     tab(n + 1, *fOut);
     fCodeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateGetSampleRate("getSampleRate", "dsp", true, !gGlobal->gNoVirtual)->accept(fCodeProducer);
+    generateGetSampleRate("getSampleRate", "dsp", true, !global::config().gNoVirtual)->accept(fCodeProducer);
 
     // User interface
     tab(n + 1, *fOut);
@@ -1229,16 +1229,16 @@ void CPPScalarOneSampleCodeContainer2::produceClass()
     tab(n, *fOut);
 
     // To improve (generalization for all backends...)
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n, *fOut);
         *fOut << "dsp_memory_manager* " << fKlassName << "::fManager = nullptr;" << endl;
     }
 
     // Generate user interface macros if needed
     printMacros(*fOut, n);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "} // namespace " << gGlobal->gNamespace << endl;
+        *fOut << "} // namespace " << global::config().gNamespace << endl;
     }
 }
 
@@ -1257,9 +1257,9 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     // Libraries
     printLibrary(*fOut);
     printIncludeFile(*fOut);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "namespace " << gGlobal->gNamespace << " {" << endl;
+        *fOut << "namespace " << global::config().gNamespace << " {" << endl;
     }
 
     // Sub containers are merged in the main class
@@ -1293,7 +1293,7 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     *fOut << "class " << fKlassName << genFinal() << " : public " << fSuperKlassName << " {";
     tab(n + 1, *fOut);
 
-    if (gGlobal->gUIMacroSwitch) {
+    if (global::config().gUIMacroSwitch) {
         tab(n, *fOut);
         *fOut << " public:";
     } else {
@@ -1336,7 +1336,7 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     tab(n, *fOut);
     *fOut << " public:";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static dsp_memory_manager* fManager;";
     }
@@ -1372,7 +1372,7 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
 
     tab(n + 1, *fOut);
     // No class name for main class
-    if (gGlobal->gNoVirtual) {
+    if (global::config().gNoVirtual) {
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kStaticConstExpr, fCodeProducer, "getStaticNumInputs", "getStaticNumOutputs");
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kDefault, fCodeProducer);
     } else {
@@ -1397,7 +1397,7 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     back(1, *fOut);
     *fOut << "}";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static void classDestroy() {";
         tab(n + 2, *fOut);
@@ -1461,7 +1461,7 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     tab(n + 1, *fOut);
 
     // Init
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << genVirtual() << "void init(int sample_rate, " << subst("int* iZone, $0* fZone) {", ifloat());
     } else {
@@ -1501,7 +1501,7 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     tab(n + 1, *fOut);
     fCodeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateGetSampleRate("getSampleRate", "dsp", true, !gGlobal->gNoVirtual)->accept(fCodeProducer);
+    generateGetSampleRate("getSampleRate", "dsp", true, !global::config().gNoVirtual)->accept(fCodeProducer);
 
     // User interface
     tab(n + 1, *fOut);
@@ -1552,16 +1552,16 @@ void CPPScalarOneSampleCodeContainer3::produceClass()
     tab(n, *fOut);
 
     // To improve (generalization for all backends...)
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n, *fOut);
         *fOut << "dsp_memory_manager* " << fKlassName << "::fManager = nullptr;" << endl;
     }
 
     // Generate user interface macros if needed
     printMacros(*fOut, n);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "} // namespace " << gGlobal->gNamespace << endl;
+        *fOut << "} // namespace " << global::config().gNamespace << endl;
     }
 }
 
@@ -1580,9 +1580,9 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     // Libraries
     printLibrary(*fOut);
     printIncludeFile(*fOut);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "namespace " << gGlobal->gNamespace << " {" << endl;
+        *fOut << "namespace " << global::config().gNamespace << " {" << endl;
     }
 
     // Sub containers are merged in the main class
@@ -1616,7 +1616,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     *fOut << "class " << fKlassName << genFinal() << " : public " << fSuperKlassName << " {";
     tab(n + 1, *fOut);
 
-    if (gGlobal->gUIMacroSwitch) {
+    if (global::config().gUIMacroSwitch) {
         tab(n, *fOut);
         *fOut << " public:";
     } else {
@@ -1665,7 +1665,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     tab(n, *fOut);
     *fOut << " public:";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "static dsp_memory_manager* fManager;";
     }
@@ -1694,7 +1694,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
 
     tab(n + 1, *fOut);
     // No class name for main class
-    if (gGlobal->gNoVirtual) {
+    if (global::config().gNoVirtual) {
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kStaticConstExpr, fCodeProducer, "getStaticNumInputs", "getStaticNumOutputs");
         produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kDefault, fCodeProducer);
     } else {
@@ -1719,7 +1719,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     back(1, *fOut);
     *fOut << "}";
 
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         tab(n + 1, *fOut);
         *fOut << "static void classDestroy() {";
@@ -1788,7 +1788,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
 
     /*
     // Init
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n + 1, *fOut);
         *fOut << "virtual void init(int sample_rate) {}";
     } else {
@@ -1829,7 +1829,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     tab(n + 1, *fOut);
     *fOut << genVirtual() << fKlassName << "* clone() {";
     tab(n + 2, *fOut);
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         *fOut << "return new " << fKlassName << "();";
     } else {
         // Use the same memory for now
@@ -1841,7 +1841,7 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     tab(n + 1, *fOut);
     fCodeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateGetSampleRate("getSampleRate", "dsp", true, !gGlobal->gNoVirtual)->accept(fCodeProducer);
+    generateGetSampleRate("getSampleRate", "dsp", true, !global::config().gNoVirtual)->accept(fCodeProducer);
 
     // User interface
     tab(n + 1, *fOut);
@@ -1880,17 +1880,17 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     tab(n, *fOut);
 
     tab(n + 1, *fOut);
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         // Constructor
         *fOut << fKlassName << "() {";
         tab(n + 2, *fOut);
         *fOut << "iControl = static_cast<int*>(fManager->allocate(" << fInt32ControlNum * sizeof(int) << "));";
         tab(n + 2, *fOut);
-        *fOut << "fControl = static_cast<" << ifloat() << "*>(fManager->allocate(" << fRealControlNum * gGlobal->audioSampleSize() << "));";
+        *fOut << "fControl = static_cast<" << ifloat() << "*>(fManager->allocate(" << fRealControlNum * global::config().audioSampleSize() << "));";
         tab(n + 2, *fOut);
         *fOut << "iZone = static_cast<int*>(fManager->allocate(" << int_zone_size * sizeof(int) << "));";
         tab(n + 2, *fOut);
-        *fOut << "fZone = static_cast<" << ifloat() << "*>(fManager->allocate(" << real_zone_size * gGlobal->audioSampleSize() << "));";
+        *fOut << "fZone = static_cast<" << ifloat() << "*>(fManager->allocate(" << real_zone_size * global::config().audioSampleSize() << "));";
         tab(n + 1, *fOut);
         *fOut << "}";
         tab(n + 1, *fOut);
@@ -1943,16 +1943,16 @@ void CPPScalarOneSampleCodeContainer4::produceClass()
     tab(n, *fOut);
 
     // To improve (generalization for all backends...)
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         tab(n, *fOut);
         *fOut << "dsp_memory_manager* " << fKlassName << "::fManager = nullptr;" << endl;
     }
 
     // Generate user interface macros if needed
     printMacros(*fOut, n);
-    if (gGlobal->gNameSpace != "" && gGlobal->gArchFile == "") {
+    if (global::config().gNameSpace != "" && global::config().gArchFile == "") {
         tab(n, *fOut);
-        *fOut << "} // namespace " << gGlobal->gNamespace << endl;
+        *fOut << "} // namespace " << global::config().gNamespace << endl;
     }
 }
 
@@ -1961,7 +1961,7 @@ void CPPScalarCodeContainer::generateCompute(int n)
     // Generates declaration
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute(int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
         *fOut << genVirtual() << subst("void compute(int $0, $1** RESTRICT inputs, $1** RESTRICT outputs) {", fFullCount, xfloat());
@@ -1992,7 +1992,7 @@ void CPPScalarOneSampleCodeContainer1::generateCompute(int n)
     // Generates declaration
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute($0* inputs, $0* outputs, int* RESTRICT iControl, $0* RESTRICT fControl) {", ifloat());
     } else {
         *fOut << genVirtual() << subst("void compute($0* RESTRICT inputs, $0* RESTRICT outputs, int* RESTRICT iControl, $0* RESTRICT fControl) {", ifloat());
@@ -2020,7 +2020,7 @@ void CPPScalarOneSampleCodeContainer2::generateCompute(int n)
     // Generates declaration
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute($0* inputs, $0* outputs, int* RESTRICT iControl, $0* RESTRICT fControl, int* RESTRICT iZone, $0* RESTRICT fZone) {", ifloat());
     } else {
         *fOut << genVirtual() << subst("void compute($0* RESTRICT inputs, $0* RESTRICT outputs, int* RESTRICT iControl, $0* RESTRICT fControl, int* RESTRICT iZone, $0* RESTRICT fZone) {", ifloat());
@@ -2048,7 +2048,7 @@ void CPPScalarOneSampleCodeContainer4::generateCompute(int n)
     // Generates declaration
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute($0* inputs, $0* outputs) {", xfloat());
     } else {
         *fOut << genVirtual() << subst("void compute($0* RESTRICT inputs, $0* RESTRICT outputs) {", xfloat());
@@ -2086,7 +2086,7 @@ void CPPVectorCodeContainer::generateCompute(int n)
 
     // Generates declaration
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute(int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
         *fOut << genVirtual() << subst("void compute(int $0, $1** RESTRICT inputs, $1** RESTRICT outputs) {", fFullCount, xfloat());
@@ -2120,7 +2120,7 @@ void CPPOpenMPCodeContainer::generateCompute(int n)
 
     // Generates declaration
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute(int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
         *fOut << genVirtual() << subst("void compute(int $0, $1** RESTRICT inputs, $1** RESTRICT outputs) {", fFullCount, xfloat());
@@ -2169,7 +2169,7 @@ void CPPWorkStealingCodeContainer::generateCompute(int n)
 
     // Generates declaration
     tab(n + 1, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << genVirtual() << subst("void compute(int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
         *fOut << genVirtual() << subst("void compute(int $0, $1** RESTRICT inputs, $1** RESTRICT outputs) {", fFullCount, xfloat());

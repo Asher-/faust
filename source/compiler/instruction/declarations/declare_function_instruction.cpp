@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -27,13 +27,13 @@
 DeclareFunInst::DeclareFunInst(const std::string& name, FunTyped* type, BlockInst* code)
     : fName(name), fType(type), fCode(code)
 {
-    if (gGlobal->gVarTypeTable.find(name) == gGlobal->gVarTypeTable.end()) {
-        gGlobal->gVarTypeTable[name] = type;
+    if (global::config().gVarTypeTable.find(name) == global::config().gVarTypeTable.end()) {
+        global::config().gVarTypeTable[name] = type;
     } else {
-        FunTyped* fun_type = static_cast<FunTyped*>(gGlobal->gVarTypeTable[name]);
+        FunTyped* fun_type = static_cast<FunTyped*>(global::config().gVarTypeTable[name]);
         // If same result type
         if (fun_type->getTyped() == type->getTyped()) {
-            if ((gGlobal->gOutputLang == "llvm") && (fun_type->getPrototype() != type->getPrototype())) {
+            if ((global::config().gOutputLang == "llvm") && (fun_type->getPrototype() != type->getPrototype())) {
                 std::stringstream str;
                 str << "ERROR : foreign function '" << name
                     << "' conflicts with another (possibly compiler internally defined) function with a different "

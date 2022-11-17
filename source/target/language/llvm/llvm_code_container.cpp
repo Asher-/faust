@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,7 @@ CodeContainer* LLVMCodeContainer::createScalarContainer(const string& name, int 
 LLVMCodeContainer::LLVMCodeContainer(const string& name, int numInputs, int numOutputs)
 {
     LLVMContext* context = new LLVMContext();
-    Module* module = new Module(gGlobal->printCompilationOptions1() + ", v" + string(FAUSTVERSION), *context);
+    Module* module = new Module(global::config().printCompilationOptions1() + ", v" + string(FAUSTVERSION), *context);
     
     init(name, numInputs, numOutputs, module, context);
 }
@@ -93,24 +93,24 @@ LLVMCodeContainer::~LLVMCodeContainer()
 
 CodeContainer* LLVMCodeContainer::createContainer(const string& name, int numInputs, int numOutputs)
 {
-    gGlobal->gDSPStruct = true;
+    global::config().gDSPStruct = true;
     CodeContainer* container;
 
     if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for LLVM\n");
     }
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for LLVM\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for LLVM\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for LLVM\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         container = new LLVMWorkStealingCodeContainer(name, numInputs, numOutputs);
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         container = new LLVMVectorCodeContainer(name, numInputs, numOutputs);
     } else {
         container = new LLVMScalarCodeContainer(name, numInputs, numOutputs);
@@ -133,7 +133,7 @@ PointerType* LLVMCodeContainer::generateDspStruct()
 
 void LLVMCodeContainer::generateFunMaps()
 {
-    if (gGlobal->gFastMath) {
+    if (global::config().gFastMath) {
         generateFunMap("fabs", "fast_fabs", 1);
         generateFunMap("acos", "fast_acos", 1);
         generateFunMap("asin", "fast_asin", 1);
@@ -172,7 +172,7 @@ void LLVMCodeContainer::generateFunMap(const string& fun1_aux, const string& fun
     list<NamedTyped*> args1;
     list<ValueInst*>  args2;
     for (int i = 0; i < num_args; i++) {
-        string var = gGlobal->getFreshID("val");
+        string var = global::config().getFreshID("val");
         args1.push_back(InstBuilder::genNamedTyped(var, type));
         args2.push_back(InstBuilder::genLoadFunArgsVar(var));
     }

@@ -32,7 +32,7 @@
 #include "faust/primitive/math.hh"
 
 #define offStrNum ((::Faust::Primitive::Math::floatSize == 1) ? 2 : ((::Faust::Primitive::Math::floatSize == 2) ? 3 : 0))
-#define audioPtrSize gGlobal->audioSampleSize()
+#define audioPtrSize global::config().audioSampleSize()
 #define wasmBlockSize int(pow(2, 16))
 
 typedef map<string, int> PathTableType;
@@ -59,7 +59,7 @@ inline int wasm_pow2limit(int x)
 // DSP size + (inputs + outputs) * (fsize() + max_buffer_size * audioSampleSize), json_len
 inline int genMemSize(int struct_size, int channels, int json_len)
 {
-    return std::max<int>((wasm_pow2limit(std::max<int>(json_len, struct_size + channels * (audioPtrSize + (8192 * gGlobal->audioSampleSize())))) / wasmBlockSize), 1);
+    return std::max<int>((wasm_pow2limit(std::max<int>(json_len, struct_size + channels * (audioPtrSize + (8192 * global::config().audioSampleSize())))) / wasmBlockSize), 1);
 }
 
 // Base class for textual 'wast' and binary 'wasm' visitors

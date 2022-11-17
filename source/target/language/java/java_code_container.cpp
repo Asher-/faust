@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -51,18 +51,18 @@ CodeContainer* JAVACodeContainer::createContainer(const string& name, const stri
     if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for Java\n");
     }
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for Java\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for Java\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for Java\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for Java\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         throw faustexception("ERROR : Vector mode not supported for Java\n");
     } else {
         container = new JAVAScalarCodeContainer(name, super, numInputs, numOutputs, dst, kInt);
@@ -201,7 +201,7 @@ void JAVACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "public void metadata(Meta m) { ";
 
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(n + 2, *fOut);
             *fOut << "m.declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

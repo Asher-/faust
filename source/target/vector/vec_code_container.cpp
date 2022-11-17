@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -90,7 +90,7 @@ BlockInst* VectorCodeContainer::generateDAGLoopVariant0(const std::string& count
 
     // Generate : int count = 32;
     DeclareVarInst* size_dec =
-        InstBuilder::genDecLoopVar(size, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(gGlobal->gVecSize));
+        InstBuilder::genDecLoopVar(size, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(global::config().gVecSize));
     loop_code->pushBackInst(size_dec);
 
     // Debug code
@@ -107,8 +107,8 @@ BlockInst* VectorCodeContainer::generateDAGLoopVariant0(const std::string& count
     StoreVarInst* loop_init = index_dec->store(InstBuilder::genInt32NumInst(0));
 
     ValueInst* loop_end = InstBuilder::genLessEqual(
-        index_dec->load(), InstBuilder::genSub(InstBuilder::genLoadFunArgsVar(counter), gGlobal->gVecSize));
-    StoreVarInst*  loop_increment = index_dec->store(InstBuilder::genAdd(index_dec->load(), gGlobal->gVecSize));
+        index_dec->load(), InstBuilder::genSub(InstBuilder::genLoadFunArgsVar(counter), global::config().gVecSize));
+    StoreVarInst*  loop_increment = index_dec->store(InstBuilder::genAdd(index_dec->load(), global::config().gVecSize));
     StatementInst* loop           = InstBuilder::genForLoopInst(loop_init, loop_end, loop_increment, loop_code, true);
 
     // Put loop in block_res
@@ -165,7 +165,7 @@ BlockInst* VectorCodeContainer::generateDAGLoopVariant1(const std::string& count
     ValueInst*       init1 = InstBuilder::genLoadFunArgsVar(counter);
     ValueInst*       init2 = InstBuilder::genSub(init1, loop_dec->load());
     Values min_fun_args;
-    min_fun_args.push_back(InstBuilder::genInt32NumInst(gGlobal->gVecSize));
+    min_fun_args.push_back(InstBuilder::genInt32NumInst(global::config().gVecSize));
     min_fun_args.push_back(init2);
     ValueInst*      init3    = InstBuilder::genFunCallInst("min_i", min_fun_args);
     DeclareVarInst* size_dec = InstBuilder::genDecLoopVar(size, InstBuilder::genInt32Typed(), init3);
@@ -182,7 +182,7 @@ BlockInst* VectorCodeContainer::generateDAGLoopVariant1(const std::string& count
     generateDAGLoop(loop_code, size_dec);
 
     ValueInst*     loop_end       = InstBuilder::genLessThan(loop_dec->load(), InstBuilder::genLoadFunArgsVar(counter));
-    StoreVarInst*  loop_increment = loop_dec->store(InstBuilder::genAdd(loop_dec->load(), gGlobal->gVecSize));
+    StoreVarInst*  loop_increment = loop_dec->store(InstBuilder::genAdd(loop_dec->load(), global::config().gVecSize));
     StatementInst* loop           = InstBuilder::genForLoopInst(loop_dec, loop_end, loop_increment, loop_code, true);
 
     BlockInst* res_block = InstBuilder::genBlockInst();
@@ -205,11 +205,11 @@ void VectorCodeContainer::processFIR(void)
      fComputeBlockInstructions and fDAGBlock, so a *unique* one is defined here.
     */
     VarAddressRemover remover;
-    if (gGlobal->gRemoveVarAddress) {
+    if (global::config().gRemoveVarAddress) {
         fComputeBlockInstructions = remover.getCode(fComputeBlockInstructions);
     }
 
-    if (counter.fSizeBytes > gGlobal->gMachineMaxStackSize) {
+    if (counter.fSizeBytes > global::config().gMachineMaxStackSize) {
         // Transform stack array variables in struct variables
         moveStack2Struct();
     } else {
@@ -217,16 +217,16 @@ void VectorCodeContainer::processFIR(void)
         // fComputeBlockInstructions->fCode.sort(sortArrayDeclarations);
     }
 
-    if (gGlobal->gVectorLoopVariant == 0) {
+    if (global::config().gVectorLoopVariant == 0) {
         fDAGBlock = generateDAGLoopVariant0(fFullCount);
-    } else if (gGlobal->gVectorLoopVariant == 1) {
+    } else if (global::config().gVectorLoopVariant == 1) {
         fDAGBlock = generateDAGLoopVariant1(fFullCount);
     } else {
         faustassert(false);
     }
 
     // Possibly remove LoadVarAddress
-    if (gGlobal->gRemoveVarAddress) {
+    if (global::config().gRemoveVarAddress) {
         fDAGBlock = remover.getCode(fDAGBlock);
     }
 

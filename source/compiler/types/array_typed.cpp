@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -26,8 +26,8 @@ int ArrayTyped::getSizeBytes() const
 {
     if (fSize == 0) {
         // Array of zero size are treated as pointer in the corresponding type
-        faustassert(gGlobal->gTypeSizeMap.find(getType()) != gGlobal->gTypeSizeMap.end());
-        return gGlobal->gTypeSizeMap[getType()];
+        faustassert(global::config().gTypeSizeMap.find(getType()) != global::config().gTypeSizeMap.end());
+        return global::config().gTypeSizeMap[getType()];
     } else {
         return fType->getSizeBytes() * fSize;
     }

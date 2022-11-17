@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -100,13 +100,13 @@ void OccMarkup::mark(Tree root)
     if (isList(root)) {
         while (isList(root)) {
             // incOcc(kSamp, 1, hd(root));
-            incOcc(gGlobal->nil, kSamp, 0, 0, hd(root));
+            incOcc(global::config().nil, kSamp, 0, 0, hd(root));
             root = tl(root);
         }
         // cerr << "END OF LIST IS " << *root << endl;
     } else {
         // incOcc(kSamp, 1, root);
-        incOcc(gGlobal->nil, kSamp, 0, 0, root);
+        incOcc(global::config().nil, kSamp, 0, 0, root);
     }
 }
 

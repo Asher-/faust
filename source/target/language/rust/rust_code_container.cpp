@@ -59,24 +59,24 @@ CodeContainer* RustCodeContainer::createScalarContainer(const string& name, int 
 
 CodeContainer* RustCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
 {
-    gGlobal->gDSPStruct = true;
+    global::config().gDSPStruct = true;
     CodeContainer* container;
 
     if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for Rust\n");
     }
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for Rust\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for Rust\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for Rust\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for Rust\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         // container = new RustVectorCodeContainer(name, numInputs, numOutputs, dst);
         throw faustexception("ERROR : Vector not supported for Rust\n");
     } else {
@@ -365,7 +365,7 @@ void RustCodeContainer::produceMetadata(int n)
     *fOut << "fn metadata(&self, m: &mut dyn Meta) { ";
 
     // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(n + 1, *fOut);
             *fOut << "m.declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

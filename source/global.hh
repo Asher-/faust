@@ -91,8 +91,11 @@ extern bool           gAllWarning;
 // Global singleton like compiler state
 struct global {
 
-    static std::list<Garbageable*>& getObjectTable();
+    static std::list<Garbageable*>& objectTable();
     static global& config();
+    static std::string& locale();
+    
+    bool _initialized = false;
 
     ::Faust::Compiler::Common* compiler = nullptr;
 
@@ -638,7 +641,6 @@ struct global {
     string gErrorMessage;
 
     // GC
-    static list<Garbageable*>& gObjectTable;
     static bool               gHeapCleanup;
 
     global();

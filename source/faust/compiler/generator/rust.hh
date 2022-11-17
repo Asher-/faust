@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -43,16 +43,16 @@ namespace Faust {
           #endif
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
-          this->_codeContainer     = RustCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+          global::config().gFAUSTFLOAT2Internal = true;
+          this->_codeContainer     = RustCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out);
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler1(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };

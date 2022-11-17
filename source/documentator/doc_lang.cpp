@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -57,7 +57,7 @@ void loadTranslationFile(const string& lang)
     initDocMetadatas();
 
     /** First ensure that the default file is loaded a least. */
-    importDocStrings(gGlobal->gDocTextsDefaultFile);
+    importDocStrings(global::config().gDocTextsDefaultFile);
 
     /** Then try and load the target file. */
     if (!lang.empty()) {
@@ -108,10 +108,10 @@ static void importDocStrings(const string& filename)
         storePair(key, text);
     }
 
-    printStringMapContent(gGlobal->gDocNoticeStringMap, "gGlobal->gDocNoticeStringMap");
-    printStringMapContent(gGlobal->gDocAutodocStringMap, "gGlobal->gDocAutodocStringMap");
-    printStringMapContent(gGlobal->gDocMathStringMap, "gGlobal->gDocMathStringMap");
-    printStringMapContent(gGlobal->gDocMetadatasStringMap, "gGlobal->gDocMetadatasStringMap");
+    printStringMapContent(global::config().gDocNoticeStringMap, "global::config().gDocNoticeStringMap");
+    printStringMapContent(global::config().gDocAutodocStringMap, "global::config().gDocAutodocStringMap");
+    printStringMapContent(global::config().gDocMathStringMap, "global::config().gDocMathStringMap");
+    printStringMapContent(global::config().gDocMetadatasStringMap, "global::config().gDocMetadatasStringMap");
 }
 
 static void getKey(const string& s, string& key, size_t& pt1)
@@ -146,19 +146,19 @@ static void storePair(const string& key, const string& text)
 {
     /* Store the current pair. */
     if (!key.empty() && !text.empty()) {
-        if (gGlobal->gDocNoticeKeySet.find(key) != gGlobal->gDocNoticeKeySet.end()) {
-            gGlobal->gDocNoticeStringMap[key] = text;
-        } else if (gGlobal->gDocAutodocKeySet.find(key) != gGlobal->gDocAutodocKeySet.end()) {
-            gGlobal->gDocAutodocStringMap[key] = text;
-        } else if (gGlobal->gDocMathKeySet.find(key) != gGlobal->gDocMathKeySet.end()) {
-            gGlobal->gDocMathStringMap[key] = text;
-        } else if (gGlobal->gDocMetadatasKeySet.find(key) != gGlobal->gDocMetadatasKeySet.end()) {
-            gGlobal->gDocMetadatasStringMap[key] = text;
+        if (global::config().gDocNoticeKeySet.find(key) != global::config().gDocNoticeKeySet.end()) {
+            global::config().gDocNoticeStringMap[key] = text;
+        } else if (global::config().gDocAutodocKeySet.find(key) != global::config().gDocAutodocKeySet.end()) {
+            global::config().gDocAutodocStringMap[key] = text;
+        } else if (global::config().gDocMathKeySet.find(key) != global::config().gDocMathKeySet.end()) {
+            global::config().gDocMathStringMap[key] = text;
+        } else if (global::config().gDocMetadatasKeySet.find(key) != global::config().gDocMetadatasKeySet.end()) {
+            global::config().gDocMetadatasStringMap[key] = text;
         } else {
             cerr << "Documentator : importDocStings : "
                  << "warning : unknown key \"" << key << "\"" << endl;
         }
-        // cerr << "gGlobal->gDocNoticeStringMap[\"" << key << "\"] = \"" << gGlobal->gDocNoticeStringMap[key] << "\""
+        // cerr << "global::config().gDocNoticeStringMap[\"" << key << "\"] = \"" << global::config().gDocNoticeStringMap[key] << "\""
         // << endl;
     }
 }

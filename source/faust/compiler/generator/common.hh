@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -96,8 +96,8 @@ namespace Faust {
         _generate(generate)
       {
           if (dsp_content.length() > 0) {
-              gGlobal->gInputString = dsp_content.c_str();
-              gGlobal->gInputFiles.push_back(name);
+              global::config().gInputString = dsp_content.c_str();
+              global::config().gInputFiles.push_back(name);
           }
       }
 
@@ -123,7 +123,7 @@ namespace Faust {
 
       static void printDeclareHeader(ostream& dst)
       {
-          for (const auto& i : gGlobal->gMetaDataSet) {
+          for (const auto& i : global::config().gMetaDataSet) {
               if (i.first != tree("author")) {
                   dst << "declare ";
                   stringstream key;
@@ -162,11 +162,11 @@ namespace Faust {
       )
       {
           faustassert(description);
-          ofstream xout(subst("$0.xml", gGlobal->makeDrawPath()).c_str());
+          ofstream xout(subst("$0.xml", global::config().makeDrawPath()).c_str());
 
           MetaDataSet::const_iterator it1;
           set<Tree>::const_iterator   it2;
-          for (const auto& it1 : gGlobal->gMetaDataSet) {
+          for (const auto& it1 : global::config().gMetaDataSet) {
               const string key = tree2str(it1.first);
               for (it2 = it1.second.begin(); it2 != it1.second.end(); ++it2) {
                   const string value = tree2str(*it2);
@@ -186,7 +186,7 @@ namespace Faust {
               }
           }
 
-          description->className(gGlobal->gClassName);
+          description->className(global::config().gClassName);
           description->inputs(inputs);
           description->outputs(outputs);
           description->print(0, xout);
@@ -195,9 +195,9 @@ namespace Faust {
       void createHelperFile(const string& outpath)
       {
           // Additional file with JS code
-          if (gGlobal->gOutputFile == "binary") {
+          if (global::config().gOutputFile == "binary") {
               // Nothing
-          } else if (gGlobal->gOutputFile != "") {
+          } else if (global::config().gOutputFile != "") {
               string outpath_js;
               bool   res = replaceExtension(outpath, ".js", outpath_js);
               if (res) {
@@ -222,10 +222,10 @@ namespace Faust {
            *****************************************************************/
 
           // Check if this is a code injection
-          if (gGlobal->gInjectFlag) {
-              if (gGlobal->gArchFile == "") {
+          if (global::config().gInjectFlag) {
+              if (global::config().gArchFile == "") {
                   std::stringstream error;
-                  error << "ERROR : no architecture file specified to inject \"" << gGlobal->gInjectFile << "\"" << endl;
+                  error << "ERROR : no architecture file specified to inject \"" << global::config().gInjectFile << "\"" << endl;
                   throw faustexception(error.str());
               } else {
                   streamCopyUntil(*enrobage.get(), dst, "<<includeIntrinsic>>");
@@ -243,14 +243,14 @@ namespace Faust {
           startTiming("evaluation");
 
           Tree process = evalprocess(expandedDefList);
-          if (gGlobal->gErrorCount > 0) {
+          if (global::config().gErrorCount > 0) {
               stringstream error;
-              error << "ERROR : total of " << gGlobal->gErrorCount << " errors during the compilation of "
-                    << gGlobal->gMasterDocument << endl;
+              error << "ERROR : total of " << global::config().gErrorCount << " errors during the compilation of "
+                    << global::config().gMasterDocument << endl;
               throw faustexception(error.str());
           }
 
-          if (gGlobal->gDetailsSwitch) {
+          if (global::config().gDetailsSwitch) {
               cout << "process = " << boxpp(process) << ";\n";
           }
 
@@ -260,26 +260,26 @@ namespace Faust {
               throw faustexception(error.str());
           }
 
-          if (gGlobal->gDrawPSSwitch) {
-              drawSchema(process, subst("$0-ps", gGlobal->makeDrawPathNoExt()).c_str(), "ps");
+          if (global::config().gDrawPSSwitch) {
+              drawSchema(process, subst("$0-ps", global::config().makeDrawPathNoExt()).c_str(), "ps");
           }
 
-          if (gGlobal->gDrawSVGSwitch) {
-              drawSchema(process, subst("$0-svg", gGlobal->makeDrawPathNoExt()).c_str(), "svg");
+          if (global::config().gDrawSVGSwitch) {
+              drawSchema(process, subst("$0-svg", global::config().makeDrawPathNoExt()).c_str(), "svg");
           }
 
-          if (gGlobal->gDetailsSwitch) {
+          if (global::config().gDetailsSwitch) {
               cout << "process has " << numInputs << " inputs, and " << numOutputs << " outputs" << endl;
           }
 
           endTiming("evaluation");
 
-          if (gGlobal->gPrintFileListSwitch) {
+          if (global::config().gPrintFileListSwitch) {
               cout << "---------------------------\n";
               cout << "List of file dependencies :\n";
               cout << "---------------------------\n";
               // print the pathnames of the files used to evaluate process
-              vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+              vector<string> pathnames = global::config().gReader.listSrcFiles();
               for (size_t i = 0; i < pathnames.size(); i++) cout << pathnames[i] << endl;
               cout << "---------------------------\n";
               cout << endl;
@@ -290,26 +290,26 @@ namespace Faust {
 
       void parseSourceFiles()
       {
-          assert( gGlobal->gInjectFlag || (gGlobal->gInputFiles.begin() != gGlobal->gInputFiles.end()) );
+          assert( global::config().gInjectFlag || (global::config().gInputFiles.begin() != global::config().gInputFiles.end()) );
 
           startTiming("parser");
 
           std::list<string>::iterator s;
-          gGlobal->gResult2 = gGlobal->nil;
-          gGlobal->gReader.init();
+          global::config().gResult2 = global::config().nil;
+          global::config().gReader.init();
 
-          if (!gGlobal->gInjectFlag && gGlobal->gInputFiles.begin() == gGlobal->gInputFiles.end()) {
+          if (!global::config().gInjectFlag && global::config().gInputFiles.begin() == global::config().gInputFiles.end()) {
               throw faustexception("ERROR : no files specified; for help type \"faust --help\"\n");
           }
 
-          for (s = gGlobal->gInputFiles.begin(); s != gGlobal->gInputFiles.end(); s++) {
-              if (s == gGlobal->gInputFiles.begin()) {
-                  gGlobal->gMasterDocument = *s;
+          for (s = global::config().gInputFiles.begin(); s != global::config().gInputFiles.end(); s++) {
+              if (s == global::config().gInputFiles.begin()) {
+                  global::config().gMasterDocument = *s;
               }
-              gGlobal->gResult2 = cons(importFile(tree(s->c_str())), gGlobal->gResult2);
+              global::config().gResult2 = cons(importFile(tree(s->c_str())), global::config().gResult2);
           }
 
-          gGlobal->gExpandedDefList = gGlobal->gReader.expandList(gGlobal->gResult2);
+          global::config().gExpandedDefList = global::config().gReader.expandList(global::config().gResult2);
 
           endTiming("parser");
       }
@@ -318,10 +318,10 @@ namespace Faust {
       {
           ::Faust::Compiler::Common* compiler{reinterpret_cast<::Faust::Compiler::Common*>(arg)};
           try {
-              gGlobal->gProcessTree =
-                  compiler->evaluateBlockDiagram(gGlobal->gExpandedDefList, gGlobal->gNumInputs, gGlobal->gNumOutputs);
+              global::config().gProcessTree =
+                  compiler->evaluateBlockDiagram(global::config().gExpandedDefList, global::config().gNumInputs, global::config().gNumOutputs);
           } catch (faustexception& e) {
-              gGlobal->gErrorMessage = e.Message();
+              global::config().gErrorMessage = e.Message();
           }
           return 0;
       }
@@ -360,14 +360,14 @@ namespace Faust {
            1 - process command line
            *****************************************************************/
 
-          faust_alarm(gGlobal->gTimeout);
+          faust_alarm(global::config().gTimeout);
 
           /****************************************************************
            2 - parse source files
            *****************************************************************/
           if (dsp_content.c_str()) {
-              gGlobal->gInputString = dsp_content.c_str();
-              gGlobal->gInputFiles.push_back(name_app.c_str());
+              global::config().gInputString = dsp_content.c_str();
+              global::config().gInputFiles.push_back(name_app.c_str());
           }
           ::Faust::Controller::initDocumentNames();
           ::Faust::Type::Float::init();
@@ -384,12 +384,12 @@ namespace Faust {
            *****************************************************************/
 
           evaluateBlockDiagramInNewThread();
-          if (gGlobal->gProcessTree) {
-              *inputs  = gGlobal->gNumInputs;
-              *outputs = gGlobal->gNumOutputs;
-              return gGlobal->gProcessTree;
+          if (global::config().gProcessTree) {
+              *inputs  = global::config().gNumInputs;
+              *outputs = global::config().gNumOutputs;
+              return global::config().gProcessTree;
           } else {
-              error_msg = gGlobal->gErrorMessage;
+              error_msg = global::config().gErrorMessage;
               return nullptr;
           }
       }
@@ -400,11 +400,11 @@ namespace Faust {
            1.5 - Inject Code if needed
           *****************************************************************/
           // Check for injected code (before checking for architectures)
-          if (gGlobal->gInjectFlag) {
-              _injcode = openArchStream(gGlobal->gInjectFile.c_str());
+          if (global::config().gInjectFlag) {
+              _injcode = openArchStream(global::config().gInjectFile.c_str());
               if (!_injcode) {
                   stringstream error;
-                  error << "ERROR : can't inject \"" << gGlobal->gInjectFile << "\" external code file, file not found\n";
+                  error << "ERROR : can't inject \"" << global::config().gInjectFile << "\" external code file, file not found\n";
                   throw faustexception(error.str());
               }
           }
@@ -418,8 +418,8 @@ namespace Faust {
 
           evaluateBlockDiagramInNewThread();
 
-          if (!gGlobal->gProcessTree) {
-              throw faustexception(gGlobal->gErrorMessage);
+          if (!global::config().gProcessTree) {
+              throw faustexception(global::config().gErrorMessage);
           }
       }
 
@@ -429,9 +429,9 @@ namespace Faust {
          3.1 - possibly expand the DSP and return
          *****************************************************************/
 
-        if (gGlobal->gExportDSP) {
+        if (global::config().gExportDSP) {
             string outpath =
-                (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + gGlobal->gOutputFile) : gGlobal->gOutputFile;
+                (global::config().gOutputDir != "") ? (global::config().gOutputDir + "/" + global::config().gOutputFile) : global::config().gOutputFile;
             ofstream out(outpath.c_str());
             this->expandDSPInternalAux(out);
             return true;
@@ -455,7 +455,7 @@ namespace Faust {
           out << COMPILATION_OPTIONS << this->_compileOptions << ';' << endl;
 
           // Encode all libraries paths as 'declare'
-          vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+          vector<string> pathnames = global::config().gReader.listSrcFiles();
           // Remove DSP filename
           pathnames.erase(pathnames.begin());
           int i = 0;
@@ -464,16 +464,16 @@ namespace Faust {
           }
 
           this->printDeclareHeader(out);
-          boxppShared(gGlobal->gProcessTree, out);
+          boxppShared(global::config().gProcessTree, out);
       }
 
       static void* threadBoxPropagateSig(void* arg)
       {
           try {
-              gGlobal->gLsignalsTree =
-                  boxPropagateSig(gGlobal->nil, gGlobal->gProcessTree, makeSigInputList(gGlobal->gNumInputs));
+              global::config().gLsignalsTree =
+                  boxPropagateSig(global::config().nil, global::config().gProcessTree, makeSigInputList(global::config().gNumInputs));
           } catch (faustexception& e) {
-              gGlobal->gErrorMessage = e.Message();
+              global::config().gErrorMessage = e.Message();
           }
           return 0;
       }
@@ -487,12 +487,12 @@ namespace Faust {
           startTiming("propagation");
 
           ::Faust::Compiler::Common::callFunctionInNewThread(threadBoxPropagateSig);  // In a thread with more stack size...
-          if (!gGlobal->gLsignalsTree) {
-              throw faustexception(gGlobal->gErrorMessage);
+          if (!global::config().gLsignalsTree) {
+              throw faustexception(global::config().gErrorMessage);
           }
-          _lsignals = gGlobal->gLsignalsTree;
+          _lsignals = global::config().gLsignalsTree;
 
-          if (gGlobal->gDetailsSwitch) {
+          if (global::config().gDetailsSwitch) {
               cout << "output signals are : " << endl;
               printSignal(_lsignals, stdout);
               cout << std::endl << ppsig(_lsignals) << std::endl;
@@ -508,8 +508,8 @@ namespace Faust {
           5 - preparation of the signal tree and translate output signals
           **************************************************************************/
 
-          int numInputs  = gGlobal->gNumInputs;
-          int numOutputs = gGlobal->gNumOutputs;
+          int numInputs  = global::config().gNumInputs;
+          int numOutputs = global::config().gNumOutputs;
           if (numOutputs == 0) {
               throw faustexception("ERROR : the Faust program has no output signal\n");
           }
@@ -522,7 +522,7 @@ namespace Faust {
            1 - generate XML description (if required)
           *****************************************************************/
 
-          if (gGlobal->gPrintXMLSwitch) {
+          if (global::config().gPrintXMLSwitch) {
             this->printXML();
           }
       }
@@ -539,16 +539,16 @@ namespace Faust {
            2 - generate documentation from Faust comments (if required)
           *****************************************************************/
 
-          if (gGlobal->gPrintDocSwitch && gGlobal->gLatexDocSwitch) {
-              printDoc(subst("$0-mdoc", gGlobal->makeDrawPathNoExt()).c_str(), "tex", FAUSTVERSION);
+          if (global::config().gPrintDocSwitch && global::config().gLatexDocSwitch) {
+              printDoc(subst("$0-mdoc", global::config().makeDrawPathNoExt()).c_str(), "tex", FAUSTVERSION);
           }
 
           /****************************************************************
            3 - generate the task graph file in dot format
           *****************************************************************/
 
-          if (gGlobal->gGraphSwitch) {
-              ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
+          if (global::config().gGraphSwitch) {
+              ofstream dotfile(subst("$0.dot", global::config().makeDrawPath()).c_str());
               this->printGraphDotFormat(dotfile);
           }
       }
@@ -565,7 +565,7 @@ namespace Faust {
       /* From Source */
       void createFactory()
       {
-          faust_alarm(gGlobal->gTimeout);
+          faust_alarm(global::config().gTimeout);
 
           /****************************************************************
            1.5 - Inject Code if needed
@@ -626,19 +626,19 @@ namespace Faust {
            5 - preparation of the signal tree and translate output signals
            **************************************************************************/
 
-          gGlobal->gMetaDataSet[tree("name")].insert(tree(quote(name)));
+          global::config().gMetaDataSet[tree("name")].insert(tree(quote(name)));
           compileCode(signals, numInputs, numOutputs);
       }
 
       void generateCode(unique_ptr<ostream>& dst)
       {
         unique_ptr<ifstream> enrobage;
-          if (gGlobal->gArchFile != "") {
-              if ((enrobage = openArchStream(gGlobal->gArchFile.c_str()))) {
-                  if (gGlobal->gNameSpace != "" && gGlobal->gOutputLang == "cpp")
-                      *dst.get() << "namespace " << gGlobal->gNameSpace << " {" << endl;
+          if (global::config().gArchFile != "") {
+              if ((enrobage = openArchStream(global::config().gArchFile.c_str()))) {
+                  if (global::config().gNameSpace != "" && global::config().gOutputLang == "cpp")
+                      *dst.get() << "namespace " << global::config().gNameSpace << " {" << endl;
       #ifdef DLANG_BUILD
-                  else if (gGlobal->gOutputLang == "dlang") {
+                  else if (global::config().gOutputLang == "dlang") {
                       DLangCodeContainer::printDRecipeComment(*dst.get(), this->_codeContainer->getClassName());
                       DLangCodeContainer::printDModuleStmt(*dst.get(), this->_codeContainer->getClassName());
                   }
@@ -652,7 +652,7 @@ namespace Faust {
                   streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
                   streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
 
-                  if (gGlobal->gOpenCLSwitch || gGlobal->gCUDASwitch) {
+                  if (global::config().gOpenCLSwitch || global::config().gCUDASwitch) {
                       includeFile("thread.h", *dst.get());
                   }
 
@@ -661,33 +661,33 @@ namespace Faust {
 
                   streamCopyUntilEnd(*enrobage.get(), *dst.get());
 
-                  if (gGlobal->gSchedulerSwitch) {
+                  if (global::config().gSchedulerSwitch) {
                       includeFile("scheduler.cpp", *dst.get());
                   }
 
                   this->_codeContainer->printFooter();
 
                   // Generate factory
-                  gGlobal->gDSPFactory = this->_codeContainer->produceFactory();
+                  global::config().gDSPFactory = this->_codeContainer->produceFactory();
 
-                  if (gGlobal->gOutputFile == "string") {
-                      gGlobal->gDSPFactory->write(dst.get(), false, false);
-                  } else if (gGlobal->gOutputFile == "binary") {
-                      gGlobal->gDSPFactory->write(dst.get(), true, false);
-                  } else if (gGlobal->gOutputFile != "") {
+                  if (global::config().gOutputFile == "string") {
+                      global::config().gDSPFactory->write(dst.get(), false, false);
+                  } else if (global::config().gOutputFile == "binary") {
+                      global::config().gDSPFactory->write(dst.get(), true, false);
+                  } else if (global::config().gOutputFile != "") {
                       // Binary mode for LLVM backend if output different of 'cout'
-                      gGlobal->gDSPFactory->write(dst.get(), true, false);
+                      global::config().gDSPFactory->write(dst.get(), true, false);
                   } else {
-                      gGlobal->gDSPFactory->write(&cout, false, false);
+                      global::config().gDSPFactory->write(&cout, false, false);
                   }
 
-                  if (gGlobal->gNameSpace != "" && gGlobal->gOutputLang == "cpp") {
-                      *dst.get() << "} // namespace " << gGlobal->gNameSpace << endl;
+                  if (global::config().gNameSpace != "" && global::config().gOutputLang == "cpp") {
+                      *dst.get() << "} // namespace " << global::config().gNameSpace << endl;
                   }
 
               } else {
                   stringstream error;
-                  error << "ERROR : can't open architecture file " << gGlobal->gArchFile << endl;
+                  error << "ERROR : can't open architecture file " << global::config().gArchFile << endl;
                   throw faustexception(error.str());
               }
 
@@ -698,21 +698,21 @@ namespace Faust {
               this->_codeContainer->printFooter();
 
               // Generate factory
-              gGlobal->gDSPFactory = this->_codeContainer->produceFactory();
+              global::config().gDSPFactory = this->_codeContainer->produceFactory();
 
-              if (gGlobal->gOutputFile == "string") {
-                  gGlobal->gDSPFactory->write(dst.get(), false, false);
-                  if (_helpers) gGlobal->gDSPFactory->writeHelper(_helpers.get(), false, false);
-              } else if (gGlobal->gOutputFile == "binary") {
-                  gGlobal->gDSPFactory->write(dst.get(), true, false);
-                  if (_helpers) gGlobal->gDSPFactory->writeHelper(_helpers.get(), true, false);
-              } else if (gGlobal->gOutputFile != "") {
+              if (global::config().gOutputFile == "string") {
+                  global::config().gDSPFactory->write(dst.get(), false, false);
+                  if (_helpers) global::config().gDSPFactory->writeHelper(_helpers.get(), false, false);
+              } else if (global::config().gOutputFile == "binary") {
+                  global::config().gDSPFactory->write(dst.get(), true, false);
+                  if (_helpers) global::config().gDSPFactory->writeHelper(_helpers.get(), true, false);
+              } else if (global::config().gOutputFile != "") {
                   // Binary mode for LLVM backend if output different of 'cout'
-                  gGlobal->gDSPFactory->write(dst.get(), true, false);
-                  if (_helpers) gGlobal->gDSPFactory->writeHelper(_helpers.get(), false, false);
+                  global::config().gDSPFactory->write(dst.get(), true, false);
+                  if (_helpers) global::config().gDSPFactory->writeHelper(_helpers.get(), false, false);
               } else {
-                  gGlobal->gDSPFactory->write(&cout, false, false);
-                  if (_helpers) gGlobal->gDSPFactory->writeHelper(&cout, false, false);
+                  global::config().gDSPFactory->write(&cout, false, false);
+                  if (_helpers) global::config().gDSPFactory->writeHelper(&cout, false, false);
               }
           }
       }
@@ -727,13 +727,13 @@ namespace Faust {
           unique_ptr<ostream> dst;
           string              outpath;
 
-          if (gGlobal->gOutputFile == "string") {
+          if (global::config().gOutputFile == "string") {
               dst = unique_ptr<ostream>(new ostringstream());
-          } else if (gGlobal->gOutputFile == "binary") {
+          } else if (global::config().gOutputFile == "binary") {
               dst = unique_ptr<ostream>(new ostringstream(ostringstream::out | ostringstream::binary));
-          } else if (gGlobal->gOutputFile != "") {
+          } else if (global::config().gOutputFile != "") {
               outpath =
-                  (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + gGlobal->gOutputFile) : gGlobal->gOutputFile;
+                  (global::config().gOutputDir != "") ? (global::config().gOutputDir + "/" + global::config().gOutputFile) : global::config().gOutputFile;
 
               unique_ptr<ofstream> fdst = unique_ptr<ofstream>(new ofstream(outpath.c_str()));
               if (!fdst->is_open()) {

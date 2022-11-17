@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -42,8 +42,8 @@ struct TypingVisitor : public InstVisitor {
     {
         std::string name = inst->getName();
         // Stack or struct variables
-        if (gGlobal->hasVarType(name)) {
-            fCurType                = gGlobal->getVarType(name);
+        if (global::config().hasVarType(name)) {
+            fCurType                = global::config().getVarType(name);
             IndexedAddress* indexed = dynamic_cast<IndexedAddress*>(inst->fAddress);
             if (indexed) {
                 // IndexedAddress is also used for struct type
@@ -65,8 +65,8 @@ struct TypingVisitor : public InstVisitor {
     virtual void visit(TeeVarInst* inst)
     {
         std::string name = inst->getName();
-        if (gGlobal->hasVarType(name)) {
-            fCurType = gGlobal->getVarType(name);
+        if (global::config().hasVarType(name)) {
+            fCurType = global::config().getVarType(name);
         } else {
             fCurType = Typed::kNoType;
             cerr << "ERROR in TypingVisitor : variable '" << name << "' has Typed::kNoType" << endl;
@@ -132,8 +132,8 @@ struct TypingVisitor : public InstVisitor {
 
     virtual void visit(FunCallInst* inst)
     {
-        if (gGlobal->hasVarType(inst->fName)) {
-            fCurType = gGlobal->getVarType(inst->fName);
+        if (global::config().hasVarType(inst->fName)) {
+            fCurType = global::config().getVarType(inst->fName);
         } else {
             // Should never happen...
             cerr << "TypingVisitor::visit(FunCallInst* inst) name " << inst->fName << std::endl;

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,7 @@ struct LoopVariableRenamer : public BasicCloneVisitor {
         // Rename 'loop' variables
         if (dynamic_cast<NamedAddress*>(inst->fAddress) && inst->fAddress->getAccess() == Address::kLoop) {
             std::string name = inst->fAddress->getName();
-            fLoopIndexMap[name] = gGlobal->getFreshID(name + "_re");
+            fLoopIndexMap[name] = global::config().getFreshID(name + "_re");
         }
         return BasicCloneVisitor::visit(inst);
     }

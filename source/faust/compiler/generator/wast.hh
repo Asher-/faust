@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -48,37 +48,37 @@ namespace Faust {
           assert(out!=nullptr);
           assert(outpath!="");
 
-          gGlobal->gAllowForeignFunction = false;  // No foreign functions
-          gGlobal->gAllowForeignConstant = false;  // No foreign constant
-          gGlobal->gAllowForeignVar      = false;  // No foreign variable
+          global::config().gAllowForeignFunction = false;  // No foreign functions
+          global::config().gAllowForeignConstant = false;  // No foreign constant
+          global::config().gAllowForeignVar      = false;  // No foreign variable
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
+          global::config().gFAUSTFLOAT2Internal = true;
           // the 'i' variable used in the scalar loop moves by bytes instead of frames
-          gGlobal->gLoopVarInBytes   = true;
-          gGlobal->gWaveformInDSP    = true;   // waveform are allocated in the DSP and not as global data
-          gGlobal->gMachinePtrSize   = 4;      // WASM is currently 32 bits
+          global::config().gLoopVarInBytes   = true;
+          global::config().gWaveformInDSP    = true;   // waveform are allocated in the DSP and not as global data
+          global::config().gMachinePtrSize   = 4;      // WASM is currently 32 bits
           ::Faust::Primitive::Math::needManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
-          gGlobal->gRemoveVarAddress = true;   // To be used in -vec mode
-                                               // gGlobal->gHasTeeLocal = true;     // combined store/load
+          global::config().gRemoveVarAddress = true;   // To be used in -vec mode
+                                               // global::config().gHasTeeLocal = true;     // combined store/load
 
-          gGlobal->gUseDefaultSound = false;
+          global::config().gUseDefaultSound = false;
 
           // This speedup (freeverb for instance) ==> to be done at signal level
-          // gGlobal->gComputeIOTA = true;     // Ensure IOTA base fixed delays are computed once
+          // global::config().gComputeIOTA = true;     // Ensure IOTA base fixed delays are computed once
 
           this->_codeContainer =
-              WASTCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out,
-                                                 ((gGlobal->gOutputLang == "wast") || (gGlobal->gOutputLang == "wast-i")));
+              WASTCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out,
+                                                 ((global::config().gOutputLang == "wast") || (global::config().gOutputLang == "wast-i")));
           this->createHelperFile(outpath);
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream and std::string required."; };

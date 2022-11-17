@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -75,7 +75,7 @@ inline std::string to_string(const T& t)
 void Lateq::println(ostream& docout)
 {
     /* 1. Make titles of sub-sets of formulas. */
-    string suchthat = gGlobal->gDocMathStringMap["suchthat"];
+    string suchthat = global::config().gDocMathStringMap["suchthat"];
 
     string sInputs =
         makeItemTitle(fInputSigsFormulas.size(), "inputsigtitle") + makeSignamesList(fInputSigsFormulas, "");
@@ -107,12 +107,12 @@ void Lateq::println(ostream& docout)
 
     /* 2. Successively print each Lateq field containing LaTeX formulas, with a title. */
 
-    docout << endl << gGlobal->gDocMathStringMap["lateqcomment"] << endl;
+    docout << endl << global::config().gDocMathStringMap["lateqcomment"] << endl;
     docout << "\\begin{enumerate}" << endl << endl;
 
     printDGroup(sOutputs, fOutputSigsFormulas, docout);
     printOneLine(sInputs, docout);
-    const string outputsTitle = "\\item " + sOutputs + "\\ $y_i$\\ " + gGlobal->gDocMathStringMap["for"] +
+    const string outputsTitle = "\\item " + sOutputs + "\\ $y_i$\\ " + global::config().gDocMathStringMap["for"] +
                                 " $i \\in [1," + to_string(fOutputSigsFormulas.size()) + "]$: ";
     printHierarchy(sUIElements, fUISigsFormulas, docout);
 
@@ -143,8 +143,8 @@ string Lateq::makeItemTitle(size_t formulasListSize, const string& titleName)
     string item = "\\item ";
 
     /* Plural handling for titles of sub-sets of formulas. */
-    string title = formulasListSize > 1 ? gGlobal->gDocMathStringMap[titleName + "2"]
-                                        : gGlobal->gDocMathStringMap[titleName + "1"];
+    string title = formulasListSize > 1 ? global::config().gDocMathStringMap[titleName + "2"]
+                                        : global::config().gDocMathStringMap[titleName + "1"];
 
     return item + title;
 }
@@ -159,7 +159,7 @@ string Lateq::makeSigDomain(const list<string>& formulasList)
         signame        = getSigName(firstEq);
 
         if (formulasList.size() > 1) {
-            sigDomain = " $" + signame + "_i$ " + gGlobal->gDocMathStringMap["for"] + " $i \\in [1," +
+            sigDomain = " $" + signame + "_i$ " + global::config().gDocMathStringMap["for"] + " $i \\in [1," +
                         to_string(formulasList.size()) + "]$";
         } else {
             if (signame == "x" || signame == "y") {
@@ -169,7 +169,7 @@ string Lateq::makeSigDomain(const list<string>& formulasList)
             }
         }
     } else {
-        sigDomain = gGlobal->gDocMathStringMap["emptyformulafield"];
+        sigDomain = global::config().gDocMathStringMap["emptyformulafield"];
     }
     return sigDomain;
 }
@@ -179,7 +179,7 @@ string Lateq::makeSignamesList(const list<string>& formulasList, const string& e
     if (formulasList.size() > 0) {
         return makeSigDomain(formulasList) + " " + ending;
     } else {
-        return " (" + gGlobal->gDocMathStringMap["emptyformulafield"] + ")";
+        return " (" + global::config().gDocMathStringMap["emptyformulafield"] + ")";
     }
 }
 
@@ -191,11 +191,11 @@ string Lateq::makeSignamesList(const vector<list<string> >& formulasListsVector,
         string                                sep      = " ";
         for (it = formulasListsVector.begin(); it != formulasListsVector.end(); ++it) {
             signames += sep + makeSigDomain(*it);
-            (it != (formulasListsVector.end() - 2)) ? sep = ", " : sep = " " + gGlobal->gDocMathStringMap["and"] + " ";
+            (it != (formulasListsVector.end() - 2)) ? sep = ", " : sep = " " + global::config().gDocMathStringMap["and"] + " ";
         }
         return signames + " " + ending;
     } else {
-        return " (" + gGlobal->gDocMathStringMap["emptyformulafield"] + ")";
+        return " (" + global::config().gDocMathStringMap["emptyformulafield"] + ")";
     }
 }
 
@@ -390,7 +390,7 @@ void Lateq::printHierarchy(const string& section, multimap<string, string>& fiel
                         docout << "\\item \\textsf{" << it->first << "}" << endl;
                     } else {
                         tab(n + 0, docout);
-                        docout << "\\item \\emph{" << gGlobal->gDocMathStringMap["rootlevel"] << "}" << endl;
+                        docout << "\\item \\emph{" << global::config().gDocMathStringMap["rootlevel"] << "}" << endl;
                     }
                 }
                 tab(n + 1, docout);
@@ -514,27 +514,27 @@ static int getLateqIndex(const string& s)
 }
 
 /**
- * Initialize gGlobal->gDocMathKeySet, a set containing all the keywords.
+ * Initialize global::config().gDocMathKeySet, a set containing all the keywords.
  */
 static void initDocMathKeySet()
 {
-    gGlobal->gDocMathKeySet.insert("inputsigtitle1");
-    gGlobal->gDocMathKeySet.insert("inputsigtitle2");
-    gGlobal->gDocMathKeySet.insert("outputsigtitle1");
-    gGlobal->gDocMathKeySet.insert("outputsigtitle2");
-    gGlobal->gDocMathKeySet.insert("constsigtitle1");
-    gGlobal->gDocMathKeySet.insert("constsigtitle2");
-    gGlobal->gDocMathKeySet.insert("uisigtitle1");
-    gGlobal->gDocMathKeySet.insert("uisigtitle2");
-    gGlobal->gDocMathKeySet.insert("intermedsigtitle1");
-    gGlobal->gDocMathKeySet.insert("intermedsigtitle2");
-    gGlobal->gDocMathKeySet.insert("lateqcomment");
-    gGlobal->gDocMathKeySet.insert("emptyformulafield");
-    gGlobal->gDocMathKeySet.insert("defaultvalue");
-    gGlobal->gDocMathKeySet.insert("suchthat");
-    gGlobal->gDocMathKeySet.insert("and");
-    gGlobal->gDocMathKeySet.insert("for");
-    gGlobal->gDocMathKeySet.insert("rootlevel");
+    global::config().gDocMathKeySet.insert("inputsigtitle1");
+    global::config().gDocMathKeySet.insert("inputsigtitle2");
+    global::config().gDocMathKeySet.insert("outputsigtitle1");
+    global::config().gDocMathKeySet.insert("outputsigtitle2");
+    global::config().gDocMathKeySet.insert("constsigtitle1");
+    global::config().gDocMathKeySet.insert("constsigtitle2");
+    global::config().gDocMathKeySet.insert("uisigtitle1");
+    global::config().gDocMathKeySet.insert("uisigtitle2");
+    global::config().gDocMathKeySet.insert("intermedsigtitle1");
+    global::config().gDocMathKeySet.insert("intermedsigtitle2");
+    global::config().gDocMathKeySet.insert("lateqcomment");
+    global::config().gDocMathKeySet.insert("emptyformulafield");
+    global::config().gDocMathKeySet.insert("defaultvalue");
+    global::config().gDocMathKeySet.insert("suchthat");
+    global::config().gDocMathKeySet.insert("and");
+    global::config().gDocMathKeySet.insert("for");
+    global::config().gDocMathKeySet.insert("rootlevel");
 
-    gGlobal->gDocMathKeySet.insert("dgmcaption");
+    global::config().gDocMathKeySet.insert("dgmcaption");
 }

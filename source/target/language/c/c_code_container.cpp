@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -53,13 +53,13 @@ dsp_factory_base* CCodeContainer::produceFactory()
 
 CodeContainer* CCodeContainer::createScalarContainer(const std::string& name, int numInputs, int numOutputs, ostream* dst, int sub_container_type)
 {
-    if (gGlobal->gOneSample == 0) {
+    if (global::config().gOneSample == 0) {
         return new CScalarOneSampleCodeContainer1(name, numInputs, numOutputs, dst, sub_container_type);
-    } else if (gGlobal->gOneSample == 1) {
+    } else if (global::config().gOneSample == 1) {
         return new CScalarOneSampleCodeContainer2(name, numInputs, numOutputs, dst, sub_container_type);
-    } else if (gGlobal->gOneSample == 2) {
+    } else if (global::config().gOneSample == 2) {
         return new CScalarOneSampleCodeContainer3(name, numInputs, numOutputs, dst, sub_container_type);
-    } else if (gGlobal->gOneSample == 3) {
+    } else if (global::config().gOneSample == 3) {
         return new CScalarOneSampleCodeContainer4(name, numInputs, numOutputs, dst, sub_container_type);
     } else {
         return new CScalarCodeContainer(name, numInputs, numOutputs, dst, sub_container_type);
@@ -73,21 +73,21 @@ CodeContainer* CCodeContainer::createScalarContainer(const string& name, int sub
 
 CodeContainer* CCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
 {
-    gGlobal->gDSPStruct = true;
+    global::config().gDSPStruct = true;
     CodeContainer* container;
 
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for C\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for C\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         container = new COpenMPCodeContainer(name, numInputs, numOutputs, dst);
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         container = new CWorkStealingCodeContainer(name, numInputs, numOutputs, dst);
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         container = new CVectorCodeContainer(name, numInputs, numOutputs, dst);
     } else {
         container = createScalarContainer(name, numInputs, numOutputs, dst, kInt);
@@ -116,7 +116,7 @@ void CCodeContainer::produceInternal()
     back(1, *fOut);
     *fOut << "} " << fKlassName << ";";
 
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
         // Memory methods
         tab(n, *fOut);
         tab(n, *fOut);
@@ -207,7 +207,7 @@ void CCodeContainer::produceClass()
     *fOut << "#define exp10 __exp10" << endl;
     *fOut << "#endif" << endl;
 
-    if (gGlobal->gLightMode) {
+    if (global::config().gLightMode) {
         tab(n, *fOut);
         *fOut << "#define max(a,b) ((a < b) ? b : a)\n";
         *fOut << "#define min(a,b) ((a < b) ? a : b)\n";
@@ -226,7 +226,7 @@ void CCodeContainer::produceClass()
 
     // Memory methods
     tab(n, *fOut);
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
 
         if (fAllocateInstructions->fCode.size() > 0) {
             tab(n, *fOut);
@@ -368,7 +368,7 @@ void CCodeContainer::produceClass()
     tab(n, *fOut);
     *fOut << "}";
 
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
         // User interface
         tab(n, *fOut);
         tab(n, *fOut);
@@ -433,7 +433,7 @@ void CScalarOneSampleCodeContainer1::produceClass()
     *fOut << "#define exp10 __exp10" << endl;
     *fOut << "#endif" << endl;
 
-    if (gGlobal->gLightMode) {
+    if (global::config().gLightMode) {
         tab(n, *fOut);
         *fOut << "#define max(a,b) ((a < b) ? b : a)\n";
         *fOut << "#define min(a,b) ((a < b) ? a : b)\n";
@@ -461,7 +461,7 @@ void CScalarOneSampleCodeContainer1::produceClass()
 
     // Memory methods
     tab(n, *fOut);
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
 
         if (fAllocateInstructions->fCode.size() > 0) {
             tab(n, *fOut);
@@ -595,7 +595,7 @@ void CScalarOneSampleCodeContainer1::produceClass()
     tab(n, *fOut);
     *fOut << "}";
 
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
         // User interface
         tab(n, *fOut);
         tab(n, *fOut);
@@ -682,7 +682,7 @@ void CScalarOneSampleCodeContainer2::produceClass()
     *fOut << "#define exp10 __exp10" << endl;
     *fOut << "#endif" << endl;
 
-    if (gGlobal->gLightMode) {
+    if (global::config().gLightMode) {
         tab(n, *fOut);
         *fOut << "#define max(a,b) ((a < b) ? b : a)\n";
         *fOut << "#define min(a,b) ((a < b) ? a : b)\n";
@@ -710,7 +710,7 @@ void CScalarOneSampleCodeContainer2::produceClass()
 
     // Memory methods
     tab(n, *fOut);
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
 
         if (fAllocateInstructions->fCode.size() > 0) {
             tab(n, *fOut);
@@ -846,7 +846,7 @@ void CScalarOneSampleCodeContainer2::produceClass()
     tab(n, *fOut);
     *fOut << "}";
 
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
         // User interface
         tab(n, *fOut);
         tab(n, *fOut);
@@ -956,7 +956,7 @@ void CScalarOneSampleCodeContainer3::produceClass()
     *fOut << "#define exp10 __exp10" << endl;
     *fOut << "#endif" << endl;
 
-    if (gGlobal->gLightMode) {
+    if (global::config().gLightMode) {
         tab(n, *fOut);
         *fOut << "#define max(a,b) ((a < b) ? b : a)\n";
         *fOut << "#define min(a,b) ((a < b) ? a : b)\n";
@@ -984,7 +984,7 @@ void CScalarOneSampleCodeContainer3::produceClass()
 
     // Memory methods
     tab(n, *fOut);
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
 
         if (fAllocateInstructions->fCode.size() > 0) {
             tab(n, *fOut);
@@ -1151,7 +1151,7 @@ void CScalarOneSampleCodeContainer3::produceClass()
     tab(n, *fOut);
     *fOut << "}";
 
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
         // User interface
         tab(n, *fOut);
         tab(n, *fOut);
@@ -1264,7 +1264,7 @@ void CScalarOneSampleCodeContainer4::produceClass()
     *fOut << "#define exp10 __exp10" << endl;
     *fOut << "#endif" << endl;
 
-    if (gGlobal->gLightMode) {
+    if (global::config().gLightMode) {
         tab(n, *fOut);
         *fOut << "#define max(a,b) ((a < b) ? b : a)\n";
         *fOut << "#define min(a,b) ((a < b) ? a : b)\n";
@@ -1298,7 +1298,7 @@ void CScalarOneSampleCodeContainer4::produceClass()
 
     // Memory methods
     tab(n, *fOut);
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
 
         if (fAllocateInstructions->fCode.size() > 0) {
             tab(n, *fOut);
@@ -1488,7 +1488,7 @@ void CScalarOneSampleCodeContainer4::produceClass()
     tab(n, *fOut);
     *fOut << "}";
 
-    if (!gGlobal->gLightMode) {
+    if (!global::config().gLightMode) {
         // User interface
         tab(n, *fOut);
         tab(n, *fOut);
@@ -1556,7 +1556,7 @@ void CCodeContainer::produceMetadata(int tabs)
     *fOut << "void metadata" << fKlassName << "(MetaGlue* m) { ";
 
     // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(tabs + 1, *fOut);
             *fOut << "m->declare(m->metaInterface, \"" << *(i.first) << "\", " << **(i.second.begin()) << ");";
@@ -1593,7 +1593,7 @@ void CScalarCodeContainer::generateComputeAux(int n)
 {
     // Generates declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
               << subst("* dsp, int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
@@ -1625,7 +1625,7 @@ void CScalarOneSampleCodeContainer1::generateComputeAux(int n)
 {
     // Generates declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
         << subst("* dsp, $0* inputs, $0* outputs, int* RESTRICT iControl, $0* RESTRICT fControl) {", ifloat());
     } else {
@@ -1654,7 +1654,7 @@ void CScalarOneSampleCodeContainer2::generateComputeAux(int n)
 {
     // Generates declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
         << subst("* dsp, $0* inputs, $0* outputs, int* RESTRICT iControl, $0* RESTRICT fControl, int* RESTRICT iZone, $0* RESTRICT fZone) {", ifloat());
 
@@ -1684,7 +1684,7 @@ void CScalarOneSampleCodeContainer4::generateComputeAux(int n)
 {
     // Generates declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
               << subst("* dsp, $0* inputs, $0* outputs) {", xfloat(), ifloat());
 
@@ -1719,7 +1719,7 @@ void CVectorCodeContainer::generateComputeAux(int n)
 {
     // Generates declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
               << subst("* dsp, int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
@@ -1749,7 +1749,7 @@ void COpenMPCodeContainer::generateComputeAux(int n)
 {
     // Compute declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
         << subst("* dsp, int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {
@@ -1792,7 +1792,7 @@ void CWorkStealingCodeContainer::generateComputeAux(int n)
 
     // Compute "compute" declaration
     tab(n, *fOut);
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         *fOut << "void compute" << fKlassName << "(" << fKlassName
         << subst("* dsp, int $0, $1** inputs, $1** outputs) {", fFullCount, xfloat());
     } else {

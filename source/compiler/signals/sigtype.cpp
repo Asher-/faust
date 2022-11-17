@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -42,7 +42,7 @@ using namespace std;
 AudioType::AudioType(int n, int v, int c, int vec, int b, interval i, res r)
     : fNature(n), fVariability(v), fComputability(c), fVectorability(vec), fBoolean(b), fInterval(i), fRes(r), fCode(0)
 {
-    TRACE(cerr << gGlobal->TABBER << "Building audioType : n="
+    TRACE(cerr << global::config().TABBER << "Building audioType : n="
                << "NR"[n] << ", v="
                << "KB?S"[v] << ", c="
                << "CI?E"[c] << ", vec="
@@ -383,12 +383,12 @@ static Tree codeSimpleType(SimpleType* st)
 
     elems.push_back(tree(st->getRes().valid));
     elems.push_back(tree(st->getRes().index));
-    return CTree::make(gGlobal->SIMPLETYPE, elems);
+    return CTree::make(global::config().SIMPLETYPE, elems);
 }
 
 AudioType* makeSimpleType(int n, int v, int c, int vec, int b, const interval& i)
 {
-    return makeSimpleType(n, v, c, vec, b, i, gGlobal->RES);
+    return makeSimpleType(n, v, c, vec, b, i, global::config().RES);
 }
 
 AudioType* makeSimpleType(int n, int v, int c, int vec, int b, const interval& i, const res& lsb)
@@ -397,12 +397,12 @@ AudioType* makeSimpleType(int n, int v, int c, int vec, int b, const interval& i
     Tree       code = codeAudioType(&prototype);
 
     AudioType* t;
-    if (gGlobal->gMemoizedTypes->get(code, t)) {
+    if (global::config().gMemoizedTypes->get(code, t)) {
         return t;
     } else {
-        gGlobal->gAllocationCount++;
+        global::config().gAllocationCount++;
         t = new SimpleType(n, v, c, vec, b, i, lsb);
-        gGlobal->gMemoizedTypes->set(code, t);
+        global::config().gMemoizedTypes->set(code, t);
         t->setCode(code);
         return t;
     }
@@ -427,7 +427,7 @@ static Tree codeTableType(TableType* tt)
     elems.push_back(tree(tt->getRes().valid));
     elems.push_back(tree(tt->getRes().index));
 
-    return CTree::make(gGlobal->TABLETYPE, elems);
+    return CTree::make(global::config().TABLETYPE, elems);
 }
 
 AudioType* makeTableType(const Type& ct)
@@ -436,12 +436,12 @@ AudioType* makeTableType(const Type& ct)
     Tree      code = codeAudioType(&prototype);
 
     AudioType* tt;
-    if (gGlobal->gMemoizedTypes->get(code, tt)) {
+    if (global::config().gMemoizedTypes->get(code, tt)) {
         return tt;
     } else {
-        gGlobal->gAllocationCount++;
+        global::config().gAllocationCount++;
         tt = new TableType(prototype);
-        gGlobal->gMemoizedTypes->set(code, tt);
+        global::config().gMemoizedTypes->set(code, tt);
         tt->setCode(code);
         return tt;
     }
@@ -453,12 +453,12 @@ AudioType* makeTableType(const Type& ct, int n, int v, int c, int vec, int b, co
     Tree      code = codeAudioType(&prototype);
 
     AudioType* tt;
-    if (gGlobal->gMemoizedTypes->get(code, tt)) {
+    if (global::config().gMemoizedTypes->get(code, tt)) {
         return tt;
     } else {
-        gGlobal->gAllocationCount++;
+        global::config().gAllocationCount++;
         tt = new TableType(ct, n, v, c, vec, b, i);
-        gGlobal->gMemoizedTypes->set(code, tt);
+        global::config().gMemoizedTypes->set(code, tt);
         tt->setCode(code);
         return tt;
     }
@@ -473,7 +473,7 @@ static Tree codeTupletType(TupletType* nt)
     for (int i = 0; i < nt->arity(); i++) {
         elems.push_back(codeAudioType((*nt)[i]));
     }
-    return CTree::make(gGlobal->TUPLETTYPE, elems);
+    return CTree::make(global::config().TUPLETTYPE, elems);
 }
 
 AudioType* makeTupletType(ConstTypes vt)
@@ -482,12 +482,12 @@ AudioType* makeTupletType(ConstTypes vt)
     Tree       code = codeAudioType(&prototype);
 
     AudioType* t;
-    if (gGlobal->gMemoizedTypes->get(code, t)) {
+    if (global::config().gMemoizedTypes->get(code, t)) {
         return t;
     } else {
-        gGlobal->gAllocationCount++;
+        global::config().gAllocationCount++;
         t = new TupletType(vt);
-        gGlobal->gMemoizedTypes->set(code, t);
+        global::config().gMemoizedTypes->set(code, t);
         t->setCode(code);
         return t;
     }
@@ -499,12 +499,12 @@ AudioType* makeTupletType(ConstTypes vt, int n, int v, int c, int vec, int b, co
     Tree       code = codeAudioType(&prototype);
 
     AudioType* t;
-    if (gGlobal->gMemoizedTypes->get(code, t)) {
+    if (global::config().gMemoizedTypes->get(code, t)) {
         return t;
     } else {
-        gGlobal->gAllocationCount++;
+        global::config().gAllocationCount++;
         t = new TupletType(vt, n, v, c, vec, b, i);
-        gGlobal->gMemoizedTypes->set(code, t);
+        global::config().gMemoizedTypes->set(code, t);
         t->setCode(code);
         return t;
     }

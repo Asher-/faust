@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -114,7 +114,7 @@ namespace Faust {
                           container->pushGlobalDeclare(InstBuilder::genDeclareFunInst(subst("fabs$0", isuffix()), fun_type));
 
                           // we need to create a temporary variable to store the expression
-                          string vname = gGlobal->getFreshID("fTempFTZ");
+                          string vname = global::config().getFreshID("fTempFTZ");
                           container->addIncludeFile("<float.h>");
                           container->pushComputeDSPMethod(
                               InstBuilder::genDecStackVar(vname, InstBuilder::genItFloatTyped(), *args.begin()));
@@ -135,7 +135,7 @@ namespace Faust {
 
                       case 2: {
                           // Bitcast based solution
-                          string vname = gGlobal->getFreshID("fTempFTZ");
+                          string vname = global::config().getFreshID("fTempFTZ");
                           container->pushComputeDSPMethod(
                               InstBuilder::genDecStackVar(vname, InstBuilder::genItFloatTyped(), *args.begin()));
                           switch (::Faust::Primitive::Math::floatSize) {

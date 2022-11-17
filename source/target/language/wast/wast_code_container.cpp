@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -94,20 +94,20 @@ CodeContainer* WASTCodeContainer::createContainer(const string& name, int numInp
     if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for WebAssembly\n");
     }
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for WebAssembly\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for WebAssembly\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for WebAssembly\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler mode not supported for WebAssembly\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         // throw faustexception("ERROR : Vector mode not supported for WebAssembly\n");
-        if (gGlobal->gVectorLoopVariant == 0) {
+        if (global::config().gVectorLoopVariant == 0) {
             throw faustexception("ERROR : Vector mode with -lv 0 not supported for WebAssembly\n");
         }
         container = new WASTVectorCodeContainer(name, numInputs, numOutputs, dst, internal_memory);
@@ -355,7 +355,7 @@ void WASTCodeContainer::produceClass()
     fHelper << "/*\n"
             << "Code generated with Faust version " << FAUSTVERSION << endl;
     fHelper << "Compilation options: ";
-    gGlobal->printCompilationOptions(fHelper);
+    global::config().printCompilationOptions(fHelper);
     fHelper << "\n*/\n";
 
     // Generate JSON
@@ -373,8 +373,8 @@ void WASTCodeContainer::produceClass()
 
 DeclareFunInst* WASInst::generateIntMin()
 {
-    string v1 = gGlobal->getFreshID("v1");
-    string v2 = gGlobal->getFreshID("v2");
+    string v1 = global::config().getFreshID("v1");
+    string v2 = global::config().getFreshID("v2");
 
     Names args;
     args.push_back(InstBuilder::genNamedTyped(v1, Typed::kInt32));
@@ -391,8 +391,8 @@ DeclareFunInst* WASInst::generateIntMin()
 
 DeclareFunInst* WASInst::generateIntMax()
 {
-    string v1 = gGlobal->getFreshID("v1");
-    string v2 = gGlobal->getFreshID("v2");
+    string v1 = global::config().getFreshID("v1");
+    string v2 = global::config().getFreshID("v2");
 
     Names args;
     args.push_back(InstBuilder::genNamedTyped(v1, Typed::kInt32));
@@ -444,7 +444,7 @@ void WASTScalarCodeContainer::generateCompute(int n)
 
     // Loop 'i' variable is moved by bytes
     BlockInst* compute_block = InstBuilder::genBlockInst();
-    compute_block->pushBackInst(fCurLoop->generateScalarLoop(fFullCount, gGlobal->gLoopVarInBytes));
+    compute_block->pushBackInst(fCurLoop->generateScalarLoop(fFullCount, global::config().gLoopVarInBytes));
 
     // Generates post DSP loop code
     compute_block->pushBackInst(fPostComputeBlockInstructions);
@@ -458,7 +458,7 @@ WASTVectorCodeContainer::WASTVectorCodeContainer(const string& name, int numInpu
     : VectorCodeContainer(numInputs, numOutputs), WASTCodeContainer(name, numInputs, numOutputs, out, internal_memory)
 {
     // No array on stack, move all of them in struct
-    gGlobal->gMachineMaxStackSize = -1;
+    global::config().gMachineMaxStackSize = -1;
 }
 
 void WASTVectorCodeContainer::generateCompute(int n)

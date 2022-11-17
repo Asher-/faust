@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -25,24 +25,24 @@
 
 void DeclareVarInst::cleanup()
 {
-    gGlobal->gVarTypeTable.clear();
+    global::config().gVarTypeTable.clear();
 }
 
 // Variable types are kept in the global name <===> type table
 DeclareVarInst::DeclareVarInst(Address* address, Typed* type, ValueInst* value)
     : fAddress(address), fType(type), fValue(value)
 {
-    if (gGlobal->gVarTypeTable.find(fAddress->getName()) == gGlobal->gVarTypeTable.end()) {
-        gGlobal->gVarTypeTable[fAddress->getName()] = type;
-    } else if (gGlobal->gVarTypeTable[fAddress->getName()] != type) {
+    if (global::config().gVarTypeTable.find(fAddress->getName()) == global::config().gVarTypeTable.end()) {
+        global::config().gVarTypeTable[fAddress->getName()] = type;
+    } else if (global::config().gVarTypeTable[fAddress->getName()] != type) {
         // If named type, check their name and internal type
-        NamedTyped* name_t1 = dynamic_cast<NamedTyped*>(gGlobal->gVarTypeTable[fAddress->getName()]);
+        NamedTyped* name_t1 = dynamic_cast<NamedTyped*>(global::config().gVarTypeTable[fAddress->getName()]);
         NamedTyped* name_t2 = dynamic_cast<NamedTyped*>(type);
         if (name_t1 && name_t2) {
             faustassert(name_t1->fName == name_t2->fName && name_t1->fType == name_t2->fType);
         } else {
             // If array type, check their size and internal type
-            ArrayTyped* array_t1 = dynamic_cast<ArrayTyped*>(gGlobal->gVarTypeTable[fAddress->getName()]);
+            ArrayTyped* array_t1 = dynamic_cast<ArrayTyped*>(global::config().gVarTypeTable[fAddress->getName()]);
             ArrayTyped* array_t2 = dynamic_cast<ArrayTyped*>(type);
             if (array_t1 && array_t2) {
                 // Arrays have the exact same size

@@ -45,8 +45,8 @@ TemplateCodeContainer::TemplateCodeContainer(const std::string& name, int numInp
     fOut = out;
     
     // Allocate one static visitor
-    if (!gGlobal->gTemplateVisitor) {
-        gGlobal->gTemplateVisitor = new TemplateInstVisitor(out, name);
+    if (!global::config().gTemplateVisitor) {
+        global::config().gTemplateVisitor = new TemplateInstVisitor(out, name);
     }
 }
 
@@ -63,21 +63,21 @@ CodeContainer* TemplateCodeContainer::createScalarContainer(const string& name, 
 */
 CodeContainer* TemplateCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
 {
-    gGlobal->gDSPStruct = true;
+    global::config().gDSPStruct = true;
     CodeContainer* container;
 
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for Template\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for Template\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for Template\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for Template\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         container = new TemplateVectorCodeContainer(name, numInputs, numOutputs, dst);
     } else {
         container = new TemplateScalarCodeContainer(name, numInputs, numOutputs, dst, kInt);
@@ -110,18 +110,18 @@ void TemplateCodeContainer::produceClass()
     // Only generate globals functions
     for (const auto& it : fGlobalDeclarationInstructions->fCode) {
         if (dynamic_cast<DeclareFunInst*>(it)) {
-            it->accept(gGlobal->gTemplateVisitor);
+            it->accept(global::config().gTemplateVisitor);
         }
     }
     */
     
     // Fields
     /*
-    generateDeclarations(gGlobal->gTemplateVisitor);
+    generateDeclarations(global::config().gTemplateVisitor);
     // Generate global variables definition
     for (const auto& it : fGlobalDeclarationInstructions->fCode) {
         if (dynamic_cast<DeclareVarInst*>(it)) {
-            it->accept(gGlobal->gTemplateVisitor);
+            it->accept(global::config().gTemplateVisitor);
         }
     }
     */
@@ -141,25 +141,25 @@ void TemplateCodeContainer::produceClass()
     // produceMetadata(n);
 
     // getSampleRate
-    // generateGetSampleRate("getSampleRate", "dsp", false, false)->accept(gGlobal->gTemplateVisitor);
+    // generateGetSampleRate("getSampleRate", "dsp", false, false)->accept(global::config().gTemplateVisitor);
   
     // Info functions: getNumInputs/getNumOuputs
     
     // classInit
     // TODO if mergeSubContainers() is used
     // Rename 'sig' in 'dsp', remove 'dsp' allocation, inline subcontainers 'instanceInit' and 'fill' function call
-    // inlineSubcontainersFunCalls(fStaticInitInstructions)->accept(gGlobal->gTemplateVisitor);
+    // inlineSubcontainersFunCalls(fStaticInitInstructions)->accept(global::config().gTemplateVisitor);
     
     // instanceResetUserInterface
-    // generateResetUserInterface(gGlobal->gTemplateVisitor);
+    // generateResetUserInterface(global::config().gTemplateVisitor);
     
     // instanceClear
-    // generateClear(gGlobal->gTemplateVisitor);
+    // generateClear(global::config().gTemplateVisitor);
   
     // instanceConstants
     // TODO if mergeSubContainers() is used
     // Rename 'sig' in 'dsp', remove 'dsp' allocation, inline subcontainers 'instanceInit' and 'fill' function call
-    // inlineSubcontainersFunCalls(fInitInstructions)->accept(gGlobal->gTemplateVisitor);
+    // inlineSubcontainersFunCalls(fInitInstructions)->accept(global::config().gTemplateVisitor);
 
     // instanceInit
     // TODO
@@ -196,15 +196,15 @@ void TemplateScalarCodeContainer::generateCompute(int n)
     // TODO
 
     // Generates local variables declaration and setup
-    // generateComputeBlock(gGlobal->gTemplateVisitor);
+    // generateComputeBlock(global::config().gTemplateVisitor);
 
     // Generates one single scalar loop
     // TO CHECK
     // SimpleForLoopInst* loop = fCurLoop->generateSimpleScalarLoop(fFullCount);
-    // loop->accept(gGlobal->gTemplateVisitor);
+    // loop->accept(global::config().gTemplateVisitor);
 
     // Generates post compute
-    // generatePostComputeBlock(gGlobal->gTemplateVisitor);
+    // generatePostComputeBlock(global::config().gTemplateVisitor);
 }
 
 // Vector

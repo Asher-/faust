@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -44,19 +44,19 @@ namespace Faust {
           #endif
 
           this->_codeContainer = CPPCodeContainer::createContainer(
-            gGlobal->gClassName,
-            gGlobal->gSuperClassName,
+            global::config().gClassName,
+            global::config().gSuperClassName,
             numInputs,
             numOutputs,
             out
           );
 
-          this->_instructionCompiler = gGlobal->gVectorSwitch ?
+          this->_instructionCompiler = global::config().gVectorSwitch ?
             new DAGInstructionsCompiler(this->_codeContainer)
           : new InstructionsCompiler(this->_codeContainer);
 
-          if ( gGlobal->gPrintXMLSwitch
-            || gGlobal->gPrintDocSwitch ) {
+          if ( global::config().gPrintXMLSwitch
+            || global::config().gPrintDocSwitch ) {
             this->_instructionCompiler->setDescription( new Description() );
           }
           this->_instructionCompiler->compileMultiSignal(signals);

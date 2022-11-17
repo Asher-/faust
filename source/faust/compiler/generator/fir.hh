@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -41,9 +41,9 @@ namespace Faust {
           #ifndef FIR_BUILD
               throw faustexception("ERROR : -lang fir not supported since FIR backend is not built\n");
           #endif
-          this->_codeContainer = FIRCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out, true);
+          this->_codeContainer = FIRCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out, true);
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);

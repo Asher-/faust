@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -657,7 +657,7 @@ void Signal2VHDLVisitor::entity_cast(const string& name, int nature_in, int natu
     string range_in   = getRange(nature_in);
     string range_out  = getRange(nature_out);
     string range_init = getFloatMSB(nature_out);
-//        ((gGlobal->gVHDLFloatType == 1) ? ((nature_out == kReal) ? " temp ": ",") : ",") + getFloatLSB(nature_out);
+//        ((global::config().gVHDLFloatType == 1) ? ((nature_out == kReal) ? " temp ": ",") : ",") + getFloatLSB(nature_out);
 //    string range_init_ = getFloatMSB(nature_out);
     if (globalCodingFloat() && nature_out == kReal)
          range_init.append(" temp ");
@@ -714,7 +714,7 @@ void Signal2VHDLVisitor::entity_select2(const string& name, int nature, string& 
 
 void Signal2VHDLVisitor::entity_faust()
 {
-    string separator = gGlobal->gVHDLFloatType ? " downto " : ",";
+    string separator = global::config().gVHDLFloatType ? " downto " : ",";
     string sig_float_coding = "float_coding";
 
     entity_header(fDeclEntity);
@@ -987,7 +987,7 @@ void Signal2VHDLVisitor::decl_sig(Tree sig, int msb, int lsb, int nature)
     int i;
     double r;
     string stype = getSignalType(nature);
-    string separator = gGlobal->gVHDLFloatType ? " downto " : ",";
+    string separator = global::config().gVHDLFloatType ? " downto " : ",";
     string val_init_sfixed, val_init_float;
     val_init_sfixed = "(" + val_to_str(sig) + "," + to_string(msb) + separator + to_string(lsb) + ")";
     val_init_float = "(" + val_to_str(sig) + ", sig_float_coding )";
@@ -995,7 +995,7 @@ void Signal2VHDLVisitor::decl_sig(Tree sig, int msb, int lsb, int nature)
     if (nature == kReal) {
         // float type: " + float_coding + "(msb,lsb)
         if (isSigInt(sig, &i) || isSigReal(sig, &r)) {// with initialization
-            fDeclSig += "signal    sig" + addr_to_str(sig) + " : " + stype + "(" + to_string(msb) + " downto " + to_string(lsb) + ") := to_" + stype + (gGlobal->gVHDLFloatType ? val_init_float : val_init_sfixed) + ";\n";
+            fDeclSig += "signal    sig" + addr_to_str(sig) + " : " + stype + "(" + to_string(msb) + " downto " + to_string(lsb) + ") := to_" + stype + (global::config().gVHDLFloatType ? val_init_float : val_init_sfixed) + ";\n";
         } else {
             // without initialization
             fDeclSig += "signal    sig" + addr_to_str(sig) + " : " + stype + "(" + to_string(msb) + " downto " + to_string(lsb) + ");\n";
@@ -1016,7 +1016,7 @@ void Signal2VHDLVisitor::input_affectation(Tree sig, int i)
     if (i == 0) {
         // left channel
         fInput +="in_left_fixed_24bits <= to_sfixed(in_left_V_buf,0,-23);\n";
-        if (gGlobal->gVHDLFloatType == 0) {
+        if (global::config().gVHDLFloatType == 0) {
             // sfixed
             fInput += "sig" + addr_to_str(sig) +
             " <= resize(in_left_fixed_24bits," + to_string(HIGH) + "," + to_string(LOW) + ");\n";
@@ -1028,7 +1028,7 @@ void Signal2VHDLVisitor::input_affectation(Tree sig, int i)
     } else {
         // right channel
         fInput +="in_right_fixed_24bits <= to_sfixed(in_right_V_buf,0,-23);\n";
-        if (gGlobal->gVHDLFloatType == 0) {
+        if (global::config().gVHDLFloatType == 0) {
             // sfixed
             fInput += "sig" + addr_to_str(sig) +
             " <= resize(in_right_fixed_24bits," + to_string(HIGH) + "," + to_string(LOW) + ");\n";

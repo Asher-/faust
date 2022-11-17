@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -37,19 +37,19 @@ void DAGInstructionsCompiler::compileMultiSignal(Tree L)
     startTiming("compileMultiSignal");
 
     // Has to be done *after* gMachinePtrSize is set by the actual backend
-    gGlobal->initTypeSizeMap();
+    global::config().initTypeSizeMap();
 
     L = prepare(L);  // Optimize, share and annotate expression
 
     // "input" and "inputs" used as a name convention
-    if (!gGlobal->gOpenCLSwitch && !gGlobal->gCUDASwitch) {  // HACK
+    if (!global::config().gOpenCLSwitch && !global::config().gCUDASwitch) {  // HACK
 
         Typed* type = InstBuilder::genArrayTyped(InstBuilder::genFloatMacroTyped(), 0);
 
         for (int index = 0; index < fContainer->inputs(); index++) {
             // 'name1' variable must be shared between 'compute' and computeThread' methods,
             // so it is moved in the DSP struct
-            if (gGlobal->gSchedulerSwitch) {
+            if (global::config().gSchedulerSwitch) {
                 std::string name1 = subst("fInput$0_ptr", T(index));
                 pushDeclare(InstBuilder::genDecStructVar(name1, type));
                 pushComputeBlockMethod(InstBuilder::genStoreStructVar(
@@ -65,7 +65,7 @@ void DAGInstructionsCompiler::compileMultiSignal(Tree L)
         for (int index = 0; index < fContainer->outputs(); index++) {
             // 'name1' variable must be shared between 'compute' and computeThread' methods,
             // so it is moved in the DSP struct
-            if (gGlobal->gSchedulerSwitch) {
+            if (global::config().gSchedulerSwitch) {
                 std::string name1 = subst("fOutput$0_ptr", T(index));
                 pushDeclare(InstBuilder::genDecStructVar(name1, type));
                 pushComputeBlockMethod(InstBuilder::genStoreStructVar(
@@ -78,7 +78,7 @@ void DAGInstructionsCompiler::compileMultiSignal(Tree L)
         }
     }
 
-    if (gGlobal->gOpenCLSwitch || gGlobal->gCUDASwitch) {  // HACK
+    if (global::config().gOpenCLSwitch || global::config().gCUDASwitch) {  // HACK
 
         for (int index = 0; isList(L); L = tl(L), index++) {
             Tree   sig  = hd(L);
@@ -105,7 +105,7 @@ void DAGInstructionsCompiler::compileMultiSignal(Tree L)
             // Possibly cast to external float
             ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->nature(), CS(sig));
 
-            if (gGlobal->gComputeMix) {
+            if (global::config().gComputeMix) {
                 ValueInst* res1 = InstBuilder::genAdd(res, InstBuilder::genLoadArrayStackVar(name, getCurrentLoopIndex()));
                 pushComputeDSPMethod(InstBuilder::genStoreArrayStackVar(name, getCurrentLoopIndex(), res1));
             } else {
@@ -324,13 +324,13 @@ ValueInst* DAGInstructionsCompiler::generateCacheCode(Tree sig, ValueInst* exp)
             if (verySimple(sig)) {
                 return exp;
             } else {
-                if (d < gGlobal->gMaxCopyDelay) {
+                if (d < global::config().gMaxCopyDelay) {
                     // return subst("$0[i]", vname);
                     return InstBuilder::genLoadArrayVar(vname, var_access, getCurrentLoopIndex());
                 } else {
                     // we use a ring buffer
                     std::string vname_idx = vname + "_idx";
-                    int    mask      = pow2limit(d + gGlobal->gVecSize) - 1;
+                    int    mask      = pow2limit(d + global::config().gVecSize) - 1;
                     // return subst("$0[($0_idx+i) & $1]", vname, mask);
                     FIRIndex index1 = (getCurrentLoopIndex() + InstBuilder::genLoadStructVar(vname_idx)) & mask;
                     return InstBuilder::genLoadArrayStructVar(vname, index1);
@@ -412,7 +412,7 @@ ValueInst* DAGInstructionsCompiler::generateVariableStore(Tree sig, ValueInst* e
 
 ValueInst* DAGInstructionsCompiler::generateInput(Tree sig, int idx)
 {
-    if (gGlobal->gOpenCLSwitch || gGlobal->gCUDASwitch) {  // HACK
+    if (global::config().gOpenCLSwitch || global::config().gCUDASwitch) {  // HACK
         // "input" use as a name convention
         std::string     name = subst("input$0", T(idx));
         ValueInst* res =
@@ -450,7 +450,7 @@ ValueInst* DAGInstructionsCompiler::generateDelay(Tree sig, Tree exp, Tree delay
         // return subst("$0[i]", vname);
         return InstBuilder::genLoadArrayStackVar(vname, getCurrentLoopIndex());
 
-    } else if (mxd < gGlobal->gMaxCopyDelay) {
+    } else if (mxd < global::config().gMaxCopyDelay) {
         if (isSigInt(delay, &d)) {
             if (d == 0) {
                 // return subst("$0[i]", vname);
@@ -467,7 +467,7 @@ ValueInst* DAGInstructionsCompiler::generateDelay(Tree sig, Tree exp, Tree delay
         }
     } else {
         // long delay : we use a ring buffer of size 2^x
-        int    N         = pow2limit(mxd + gGlobal->gVecSize);
+        int    N         = pow2limit(mxd + global::config().gVecSize);
         std::string vname_idx = vname + "_idx";
 
         if (isSigInt(delay, &d)) {
@@ -526,7 +526,7 @@ void DAGInstructionsCompiler::generateVectorLoop(Typed::VarType ctype, const std
 {
     // "$0 $1[$2];"
     DeclareVarInst* table_inst = InstBuilder::genDecStackVar(
-        vname, InstBuilder::genArrayTyped(InstBuilder::genBasicTyped(ctype), gGlobal->gVecSize));
+        vname, InstBuilder::genArrayTyped(InstBuilder::genBasicTyped(ctype), global::config().gVecSize));
     pushComputeBlockMethod(table_inst);
 
     // -- compute the new samples
@@ -542,7 +542,7 @@ void DAGInstructionsCompiler::generateDlineLoop(Typed::VarType ctype, const std:
 {
     BasicTyped* typed = InstBuilder::genBasicTyped(ctype);
 
-    if (delay < gGlobal->gMaxCopyDelay) {
+    if (delay < global::config().gMaxCopyDelay) {
         // Implementation of a copy based delayline
         // create names for temporary and permanent storage
         std::string buf  = subst("$0_tmp", vname);
@@ -558,7 +558,7 @@ void DAGInstructionsCompiler::generateDlineLoop(Typed::VarType ctype, const std:
 
         // -- declare a buffer and a "shifted" vector
         DeclareVarInst* table_inst1 =
-            InstBuilder::genDecStackVar(buf, InstBuilder::genArrayTyped(typed, gGlobal->gVecSize + delay));
+            InstBuilder::genDecStackVar(buf, InstBuilder::genArrayTyped(typed, global::config().gVecSize + delay));
         pushComputeBlockMethod(table_inst1);
 
         ValueInst* address_value = InstBuilder::genLoadArrayStackVarAddress(buf, InstBuilder::genInt32NumInst(delay));
@@ -580,7 +580,7 @@ void DAGInstructionsCompiler::generateDlineLoop(Typed::VarType ctype, const std:
 
     } else {
         // Implementation of a ring-buffer delayline, the size should be large enough and aligned on a power of two
-        delay = pow2limit(delay + gGlobal->gVecSize);
+        delay = pow2limit(delay + global::config().gVecSize);
 
         // create names for temporary and permanent storage
         std::string idx      = subst("$0_idx", vname);
@@ -618,7 +618,7 @@ void DAGInstructionsCompiler::generateDlineLoop(Typed::VarType ctype, const std:
 StatementInst* DAGInstructionsCompiler::generateCopyBackArray(const std::string& vname_to, const std::string& vname_from,
                                                               int size)
 {
-    std::string index = gGlobal->getFreshID("j");
+    std::string index = global::config().getFreshID("j");
 
     // Generates init table loop
     DeclareVarInst* loop_decl =

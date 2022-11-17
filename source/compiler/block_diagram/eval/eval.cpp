@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -98,11 +98,11 @@ static bool getNumericProperty(Tree t, Tree& num);
 Tree evalprocess(Tree eqlist)
 {
     // Init stack overflow detector
-    gGlobal->gStackOverflowDetector = stackOverflowDetector(MAX_STACK_SIZE);
-    Tree b = a2sb(eval(boxIdent(gGlobal->gProcessName.c_str()), gGlobal->nil,
-                       pushMultiClosureDefs(eqlist, gGlobal->nil, gGlobal->nil)));
+    global::config().gStackOverflowDetector = stackOverflowDetector(MAX_STACK_SIZE);
+    Tree b = a2sb(eval(boxIdent(global::config().gProcessName.c_str()), global::config().nil,
+                       pushMultiClosureDefs(eqlist, global::config().nil, global::config().nil)));
 
-    if (gGlobal->gSimplifyDiagrams) {
+    if (global::config().gSimplifyDiagrams) {
         b = boxSimplification(b);
     }
 
@@ -114,8 +114,8 @@ Tree evalprocess(Tree eqlist)
 Tree evaldocexpr(Tree docexpr, Tree eqlist)
 {
     // Init stack overflow detector
-    gGlobal->gStackOverflowDetector = stackOverflowDetector(MAX_STACK_SIZE);
-    return a2sb(eval(docexpr, gGlobal->nil, pushMultiClosureDefs(eqlist, gGlobal->nil, gGlobal->nil)));
+    global::config().gStackOverflowDetector = stackOverflowDetector(MAX_STACK_SIZE);
+    return a2sb(eval(docexpr, global::config().nil, pushMultiClosureDefs(eqlist, global::config().nil, global::config().nil)));
 }
 
 /**
@@ -155,7 +155,7 @@ static Tree a2sb(Tree exp)
     Tree result;
     Tree id;
 
-    if (gGlobal->gSymbolicBoxProperty->get(exp, result)) {
+    if (global::config().gSymbolicBoxProperty->get(exp, result)) {
         return result;
     }
 
@@ -163,7 +163,7 @@ static Tree a2sb(Tree exp)
     if (result != exp && getDefNameProperty(exp, id)) {
         setDefNameProperty(result, id);  // propagate definition name property when needed
     }
-    gGlobal->gSymbolicBoxProperty->set(exp, result);
+    global::config().gSymbolicBoxProperty->set(exp, result);
     return result;
 }
 
@@ -184,7 +184,7 @@ static Tree real_a2sb(Tree exp)
             // Here we have remaining abstraction that we will try to
             // transform in a symbolic box by applying it to a slot
 
-            Tree         slot = boxSlot(++gGlobal->gBoxSlotNumber);
+            Tree         slot = boxSlot(++global::config().gBoxSlotNumber);
             stringstream s;
             s << boxpp(var);
             setDefNameProperty(slot, s.str());  // ajout YO
@@ -200,7 +200,7 @@ static Tree real_a2sb(Tree exp)
             return abstr;
 
         } else {
-            evalerror(gGlobal->gParser._streamName.c_str(), -1, "a2sb : internal error : not an abstraction inside closure (1)", exp);
+            evalerror(global::config().gParser._streamName.c_str(), -1, "a2sb : internal error : not an abstraction inside closure (1)", exp);
             // Never reached since evalerror throws an exception
             return 0;
         }
@@ -209,13 +209,13 @@ static Tree real_a2sb(Tree exp)
         // Here we have remaining PM rules that we will try to
         // transform in a symbolic box by applying it to a slot
 
-        Tree         slot = boxSlot(++gGlobal->gBoxSlotNumber);
+        Tree         slot = boxSlot(++global::config().gBoxSlotNumber);
         stringstream s;
-        s << "PM" << gGlobal->gBoxSlotNumber;
+        s << "PM" << global::config().gBoxSlotNumber;
         setDefNameProperty(slot, s.str());
 
         // apply the PM rules to the slot and transfoms the result in a symbolic box
-        Tree result = boxSymbolic(slot, a2sb(applyList(exp, cons(slot, gGlobal->nil))));
+        Tree result = boxSymbolic(slot, a2sb(applyList(exp, cons(slot, global::config().nil))));
 
         // propagate definition name property when needed
         if (getDefNameProperty(exp, name)) setDefNameProperty(result, name);
@@ -264,7 +264,7 @@ static bool getArgName(Tree t, Tree& id)
  */
 static void setEvalProperty(Tree box, Tree env, Tree value)
 {
-    setProperty(box, tree(gGlobal->EVALPROPERTY, env), value);
+    setProperty(box, tree(global::config().EVALPROPERTY, env), value);
 }
 
 /**
@@ -276,7 +276,7 @@ static void setEvalProperty(Tree box, Tree env, Tree value)
  */
 static bool getEvalProperty(Tree box, Tree env, Tree& value)
 {
-    return getProperty(box, tree(gGlobal->EVALPROPERTY, env), value);
+    return getProperty(box, tree(global::config().EVALPROPERTY, env), value);
 }
 
 /**
@@ -294,8 +294,8 @@ static Tree eval(Tree exp, Tree visited, Tree localValEnv)
     Tree result;
 
     if (!getEvalProperty(exp, localValEnv, result)) {
-        gGlobal->gLoopDetector.detect(cons(exp, localValEnv));
-        gGlobal->gStackOverflowDetector.detect();
+        global::config().gLoopDetector.detect(cons(exp, localValEnv));
+        global::config().gStackOverflowDetector.detect();
         // cerr << "ENTER eval("<< *exp << ") with env " << *localValEnv << endl;
         result = realeval(exp, visited, localValEnv);
         setEvalProperty(exp, localValEnv, result);
@@ -396,7 +396,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
             int n, m;
             getBoxType(re, &n, &m);
 
-            Tree lres = boxPropagateSig(gGlobal->nil, a2, lsig);
+            Tree lres = boxPropagateSig(global::config().nil, a2, lsig);
             if (isList(lres) && isNil(tl(lres))) {
                 // cerr << "simplify 355" << endl;
                 Tree r = simplify(hd(lres));
@@ -450,18 +450,18 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
 
     } else if (isBoxComponent(exp, label)) {
         const char* fname = tree2str(label);
-        Tree        eqlst = gGlobal->gReader.expandList(gGlobal->gReader.getList(fname));
-        Tree        res   = closure(boxIdent("process"), gGlobal->nil, gGlobal->nil,
-                                    pushMultiClosureDefs(eqlst, gGlobal->nil, gGlobal->nil));
+        Tree        eqlst = global::config().gReader.expandList(global::config().gReader.getList(fname));
+        Tree        res   = closure(boxIdent("process"), global::config().nil, global::config().nil,
+                                    pushMultiClosureDefs(eqlst, global::config().nil, global::config().nil));
         setDefNameProperty(res, label);
         // cerr << "component is " << boxpp(res) << endl;
         return res;
 
     } else if (isBoxLibrary(exp, label)) {
         const char* fname = tree2str(label);
-        Tree        eqlst = gGlobal->gReader.expandList(gGlobal->gReader.getList(fname));
-        Tree        res   = closure(boxEnvironment(), gGlobal->nil, gGlobal->nil,
-                                    pushMultiClosureDefs(eqlst, gGlobal->nil, gGlobal->nil));
+        Tree        eqlst = global::config().gReader.expandList(global::config().gReader.getList(fname));
+        Tree        res   = closure(boxEnvironment(), global::config().nil, global::config().nil,
+                                    pushMultiClosureDefs(eqlst, global::config().nil, global::config().nil));
         setDefNameProperty(res, label);
         // cerr << "component is " << boxpp(res) << endl;
         return res;
@@ -529,7 +529,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
                             tree(eval2double(hi, visited, localValEnv)));
 
     } else if (isBoxMetadata(exp, e1, e2)) {
-        gGlobal->gMetaDataSet[hd(e2)].insert(tl(e2));
+        global::config().gMetaDataSet[hd(e2)].insert(tl(e2));
         return eval(e1, visited, localValEnv);
 
     } else if (isBoxVBargraph(exp, label, lo, hi)) {
@@ -545,7 +545,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         return evalIdDef(exp, visited, localValEnv);
 
     } else if (isBoxWithLocalDef(exp, body, ldef)) {
-        Tree expandedldef = gGlobal->gReader.expandList(ldef);
+        Tree expandedldef = global::config().gReader.expandList(ldef);
         return eval(body, visited, pushMultiClosureDefs(expandedldef, visited, localValEnv));
 
     } else if (isBoxAppl(exp, fun, arg)) {
@@ -553,19 +553,19 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
 
     } else if (isBoxAbstr(exp)) {
         // it is an abstraction : return a closure
-        return closure(exp, gGlobal->nil, visited, localValEnv);
+        return closure(exp, global::config().nil, visited, localValEnv);
 
     } else if (isBoxEnvironment(exp)) {
         // environment : return also a closure
-        return closure(exp, gGlobal->nil, visited, localValEnv);
+        return closure(exp, global::config().nil, visited, localValEnv);
 
     } else if (isClosure(exp, exp2, notused, visited2, lenv2)) {
         if (isBoxAbstr(exp2)) {
             // a 'real' closure
-            return closure(exp2, gGlobal->nil, setUnion(visited, visited2), lenv2);
+            return closure(exp2, global::config().nil, setUnion(visited, visited2), lenv2);
         } else if (isBoxEnvironment(exp2)) {
             // a 'real' closure
-            return closure(exp2, gGlobal->nil, setUnion(visited, visited2), lenv2);
+            return closure(exp2, global::config().nil, setUnion(visited, visited2), lenv2);
         } else {
             // it was a suspended evaluation
             return eval(exp2, setUnion(visited, visited2), lenv2);
@@ -647,9 +647,9 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
 
         if ((i1 == 0) & (o1 == 1) & (i2 == 0) & (o2 == 1) & (i3 == 0) & (o3 > 1) & ((o3 % 2) == 0)) {
             // we are in good shape
-            Tree ls1 = boxPropagateSig(gGlobal->nil, v1, makeSigInputList(0));
-            Tree ls2 = boxPropagateSig(gGlobal->nil, v2, makeSigInputList(0));
-            Tree lsr = boxPropagateSig(gGlobal->nil, vr, makeSigInputList(0));
+            Tree ls1 = boxPropagateSig(global::config().nil, v1, makeSigInputList(0));
+            Tree ls2 = boxPropagateSig(global::config().nil, v2, makeSigInputList(0));
+            Tree lsr = boxPropagateSig(global::config().nil, vr, makeSigInputList(0));
 
             // all these lists should be list of constant numerical signals
             // that we need to convert back to box expressions
@@ -694,12 +694,12 @@ static inline bool isBoxPatternOp(Tree box, Node& n, Tree& t1, Tree& t2)
 
 static void setNumericProperty(Tree t, Tree num)
 {
-    setProperty(t, gGlobal->NUMERICPROPERTY, num);
+    setProperty(t, global::config().NUMERICPROPERTY, num);
 }
 
 static bool getNumericProperty(Tree t, Tree& num)
 {
-    return getProperty(t, gGlobal->NUMERICPROPERTY, num);
+    return getProperty(t, global::config().NUMERICPROPERTY, num);
 }
 
 static bool isBoxNumeric(Tree in, Tree& out)
@@ -718,7 +718,7 @@ static bool isBoxNumeric(Tree in, Tree& out)
         v = a2sb(in);
         if (getBoxType(v, &numInputs, &numOutputs) && (numInputs == 0) && (numOutputs == 1)) {
             // potential numerical expression
-            Tree lsignals = boxPropagateSig(gGlobal->nil, v, makeSigInputList(numInputs));
+            Tree lsignals = boxPropagateSig(global::config().nil, v, makeSigInputList(numInputs));
             // cerr << "simplify 658" << endl;
             Tree res = simplify(hd(lsignals));
             if (isSigReal(res, &x)) {
@@ -767,11 +767,11 @@ static double eval2double(Tree exp, Tree visited, Tree localValEnv)
     int  numInputs, numOutputs;
     getBoxType(diagram, &numInputs, &numOutputs);
     if ((numInputs > 0) || (numOutputs != 1)) {
-        evalerror(gGlobal->gParser._streamName.c_str(), gGlobal->gParser._lexer->lineno(), "not a constant expression of type : (0->1)", exp);
+        evalerror(global::config().gParser._streamName.c_str(), global::config().gParser._lexer->lineno(), "not a constant expression of type : (0->1)", exp);
         // Never reached since evalerror throws an exception
         return 1;
     } else {
-        Tree lsignals = boxPropagateSig(gGlobal->nil, diagram, makeSigInputList(numInputs));
+        Tree lsignals = boxPropagateSig(global::config().nil, diagram, makeSigInputList(numInputs));
         // cerr << "simplify 710" << endl;
         Tree val = simplify(hd(lsignals));
         return tree2float(val);
@@ -797,11 +797,11 @@ static int eval2int(Tree exp, Tree visited, Tree localValEnv)
     int  numInputs, numOutputs;
     getBoxType(diagram, &numInputs, &numOutputs);
     if ((numInputs > 0) || (numOutputs != 1)) {
-        evalerror(gGlobal->gParser._streamName.c_str(), gGlobal->gParser._lexer->lineno(), "not a constant expression of type : (0->1)", exp);
+        evalerror(global::config().gParser._streamName.c_str(), global::config().gParser._lexer->lineno(), "not a constant expression of type : (0->1)", exp);
         // Never reached since evalerror throws an exception
         return 1;
     } else {
-        Tree lsignals = boxPropagateSig(gGlobal->nil, diagram, makeSigInputList(numInputs));
+        Tree lsignals = boxPropagateSig(global::config().nil, diagram, makeSigInputList(numInputs));
         // cerr << "simplify 739" << endl;
         Tree val = simplify(hd(lsignals));
         return tree2int(val);
@@ -1097,7 +1097,7 @@ static bool boxlistOutputs(Tree boxlist, int* outputs)
  */
 static Tree nwires(int n)
 {
-    Tree l = gGlobal->nil;
+    Tree l = global::config().nil;
     while (n--) {
         l = cons(boxWire(), l);
     }
@@ -1166,7 +1166,7 @@ static Tree applyList(Tree fun, Tree larg)
             if (isClosure(result, body, globalDefEnv, visited, localValEnv)) {
                 // why ??? return simplifyPattern(eval(body, nil, localValEnv));
                 // return eval(body, nil, localValEnv);
-                return applyList(eval(body, gGlobal->nil, localValEnv), tl(larg));
+                return applyList(eval(body, global::config().nil, localValEnv), tl(larg));
             } else {
                 cerr << "wrong result from pattern matching (not a closure) : " << boxpp(result) << endl;
                 return boxError();
@@ -1216,7 +1216,7 @@ static Tree applyList(Tree fun, Tree larg)
     // Here fun is a closure, we can test the content of abstr
 
     if (isBoxEnvironment(abstr)) {
-        evalerrorbox(gGlobal->gParser._streamName.c_str(), -1, "an environment can't be used as a function", fun);
+        evalerrorbox(global::config().gParser._streamName.c_str(), -1, "an environment can't be used as a function", fun);
     }
 
     if (isBoxIdent(abstr)) {
@@ -1229,7 +1229,7 @@ static Tree applyList(Tree fun, Tree larg)
     }
 
     if (!isBoxAbstr(abstr, id, body)) {
-        evalerror(gGlobal->gParser._streamName.c_str(), -1, "(internal) not an abstraction inside closure (2)", fun);
+        evalerror(global::config().gParser._streamName.c_str(), -1, "(internal) not an abstraction inside closure (2)", fun);
     }
 
     // Here abstr is an abstraction, we can test the content of abstr
@@ -1247,7 +1247,7 @@ static Tree applyList(Tree fun, Tree larg)
         if (getDefNameProperty(fun, fname)) {
             stringstream s;
             s << tree2str(fname);
-            if (!gGlobal->gSimpleNames) s << "(" << boxpp(arg) << ")";
+            if (!global::config().gSimpleNames) s << "(" << boxpp(arg) << ")";
             setDefNameProperty(f, s.str());
         }
         return applyList(f, tl(larg));
@@ -1265,7 +1265,7 @@ static Tree applyList(Tree fun, Tree larg)
  */
 static Tree revEvalList(Tree lexp, Tree visited, Tree localValEnv)
 {
-    Tree result = gGlobal->nil;
+    Tree result = global::config().nil;
     // Tree lexp_orig = lexp;
     // cerr << "ENTER revEvalList(" << *lexp_orig << ", env:" << *localValEnv << ")" << endl;
     while (!isNil(lexp)) {
@@ -1286,7 +1286,7 @@ static Tree revEvalList(Tree lexp, Tree visited, Tree localValEnv)
 static Tree larg2par(Tree larg)
 {
     if (isNil(larg)) {
-        evalerror(gGlobal->gParser._streamName.c_str(), -1, "empty list of arguments", larg);
+        evalerror(global::config().gParser._streamName.c_str(), -1, "empty list of arguments", larg);
     }
     if (isNil(tl(larg))) {
         return hd(larg);
@@ -1340,7 +1340,7 @@ static Tree evalIdDef(Tree id, Tree visited, Tree lenv)
     }
 
     // return the evaluated definition
-    return eval(def, addElement(p, visited), gGlobal->nil);
+    return eval(def, addElement(p, visited), global::config().nil);
 }
 
 /**
@@ -1352,7 +1352,7 @@ static Tree evalIdDef(Tree id, Tree visited, Tree lenv)
 
 static Tree listn(int n, Tree e)
 {
-    return (n <= 0) ? gGlobal->nil : cons(e, listn(n - 1, e));
+    return (n <= 0) ? global::config().nil : cons(e, listn(n - 1, e));
 }
 
 /**
@@ -1362,12 +1362,12 @@ static Tree listn(int n, Tree e)
 
 static void setPMProperty(Tree t, Tree env, Tree pm)
 {
-    setProperty(t, tree(gGlobal->PMPROPERTYNODE, env), pm);
+    setProperty(t, tree(global::config().PMPROPERTYNODE, env), pm);
 }
 
 static bool getPMProperty(Tree t, Tree env, Tree& pm)
 {
-    return getProperty(t, tree(gGlobal->PMPROPERTYNODE, env), pm);
+    return getProperty(t, tree(global::config().PMPROPERTYNODE, env), pm);
 }
 
 /**
@@ -1384,7 +1384,7 @@ static Tree evalCase(Tree rules, Tree env)
     Tree pm;
     if (!getPMProperty(rules, env, pm)) {
         PM::Automaton* a = PM::Automaton::make_pattern_matcher(evalRuleList(rules, env));
-        pm               = boxPatternMatcher(a, 0, listn(len(rules), pushEnvBarrier(env)), rules, gGlobal->nil);
+        pm               = boxPatternMatcher(a, 0, listn(len(rules), pushEnvBarrier(env)), rules, global::config().nil);
         setPMProperty(rules, env, pm);
     }
     return pm;
@@ -1397,7 +1397,7 @@ static Tree evalRuleList(Tree rules, Tree env)
 {
     // cerr << "evalRuleList "<< *rules << " in " << *env << endl;
     if (isNil(rules))
-        return gGlobal->nil;
+        return global::config().nil;
     else
         return cons(evalRule(hd(rules), env), evalRuleList(tl(rules), env));
 }
@@ -1417,7 +1417,7 @@ static Tree evalRule(Tree rule, Tree env)
 static Tree evalPatternList(Tree patterns, Tree env)
 {
     if (isNil(patterns)) {
-        return gGlobal->nil;
+        return global::config().nil;
     } else {
         return cons(evalPattern(hd(patterns), env), evalPatternList(tl(patterns), env));
     }
@@ -1429,7 +1429,7 @@ static Tree evalPatternList(Tree patterns, Tree env)
  */
 static Tree evalPattern(Tree pattern, Tree env)
 {
-    Tree p = eval(pattern, gGlobal->nil, env);
+    Tree p = eval(pattern, global::config().nil, env);
     return patternSimplification(p);
 }
 
@@ -1443,7 +1443,7 @@ static void list2vec(Tree l, vector<Tree>& v)
 
 static Tree vec2list(const vector<Tree>& v)
 {
-    Tree l = gGlobal->nil;
+    Tree l = global::config().nil;
     int  n = (int)v.size();
 
     while (n--) {
@@ -1467,7 +1467,7 @@ static Tree boxSimplification(Tree box)
 {
     Tree simplified;
 
-    if (gGlobal->gSimplifiedBoxProperty->get(box, simplified)) {
+    if (global::config().gSimplifiedBoxProperty->get(box, simplified)) {
         return simplified;
 
     } else {
@@ -1478,7 +1478,7 @@ static Tree boxSimplification(Tree box)
         if (getDefNameProperty(box, name)) setDefNameProperty(simplified, name);
 
         // attach simplified expression as a property of original box
-        gGlobal->gSimplifiedBoxProperty->set(box, simplified);
+        global::config().gSimplifiedBoxProperty->set(box, simplified);
 
         return simplified;
     }
@@ -1509,7 +1509,7 @@ static Tree numericBoxSimplification(Tree box)
             // propagate signals to discover if it simplifies to a number
             int    i1;
             double x1;
-            Tree   lsignals = boxPropagateSig(gGlobal->nil, box, makeSigInputList(0));
+            Tree   lsignals = boxPropagateSig(global::config().nil, box, makeSigInputList(0));
             // cerr << "simplify 1389" << endl;
             Tree s = simplify(hd(lsignals));
 

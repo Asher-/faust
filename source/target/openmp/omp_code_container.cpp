@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -108,7 +108,7 @@ StatementInst* OpenMPCodeContainer::generateDAGLoopOMP(const std::string& counte
     ValueInst*       init1 = InstBuilder::genLoadFunArgsVar(counter);
     ValueInst*       init2 = InstBuilder::genSub(init1, InstBuilder::genLoadLoopVar(index));
     Values min_fun_args;
-    min_fun_args.push_back(InstBuilder::genInt32NumInst(gGlobal->gVecSize));
+    min_fun_args.push_back(InstBuilder::genInt32NumInst(global::config().gVecSize));
     min_fun_args.push_back(init2);
     ValueInst*      init3     = InstBuilder::genFunCallInst("min", min_fun_args);
     DeclareVarInst* count_dec = InstBuilder::genDecStackVar("vsize", InstBuilder::genInt32Typed(), init3);
@@ -129,7 +129,7 @@ StatementInst* OpenMPCodeContainer::generateDAGLoopOMP(const std::string& counte
         for (const auto& p : dag[l]) {
             BlockInst* omp_section_block = InstBuilder::genBlockInst();
             if (dag[l].size() == 1) {  // Only one loop
-                if (!p->isRecursive() && gGlobal->gOpenMPLoop) {
+                if (!p->isRecursive() && global::config().gOpenMPLoop) {
                     generateDAGLoopAux(p, omp_section_block, count_dec, loop_num++, true);
                 } else {
                     omp_section_block->setIndent(true);
@@ -156,7 +156,7 @@ StatementInst* OpenMPCodeContainer::generateDAGLoopOMP(const std::string& counte
     DeclareVarInst* loop_decl =
         InstBuilder::genDecLoopVar(index, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(0));
     ValueInst*    loop_end       = InstBuilder::genLessThan(loop_decl->load(), InstBuilder::genLoadFunArgsVar(counter));
-    StoreVarInst* loop_increment = loop_decl->store(InstBuilder::genAdd(loop_decl->load(), gGlobal->gVecSize));
+    StoreVarInst* loop_increment = loop_decl->store(InstBuilder::genAdd(loop_decl->load(), global::config().gVecSize));
 
     StatementInst* loop = InstBuilder::genForLoopInst(loop_decl, loop_end, loop_increment, loop_code);
 

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -89,7 +89,7 @@ Tree cnfOr(Tree c1, Tree c2)
                 }
             }
         }
-        Tree c3 = gGlobal->nil;
+        Tree c3 = global::config().nil;
         for (auto t1 : A) { c3 = addElement(t1,c3); }
         return c3;
     }
@@ -128,7 +128,7 @@ Tree cnfOr(Tree c1, Tree c2)
             }
         }
 
-        Tree c3 = gGlobal->nil;
+        Tree c3 = global::config().nil;
         for (auto t1 : A) {
             c3 = addElement(t1, c3);
         }
@@ -174,7 +174,7 @@ Tree cnfAnd(Tree c1, Tree c2)
         }
 
         // compute the resulting expression
-        Tree c3 = gGlobal->nil;
+        Tree c3 = global::config().nil;
         for (int i = 0; i < n; i++) {
             c3 = addElement(A[i], c3);
         }
@@ -225,7 +225,7 @@ Tree TRACE_dnfAnd(Tree c1, Tree c2)
         }
 
         // compute the resulting expression
-        Tree c3 = gGlobal->nil;
+        Tree c3 = global::config().nil;
         for (int i = 0; i < n; i++) {
             c3 = addElement(A[i], c3);
         }
@@ -277,7 +277,7 @@ Tree TRACE_dnfOr(Tree c1, Tree c2)
             }
         }
         // compute the resulting expression
-        Tree c3 = gGlobal->nil;
+        Tree c3 = global::config().nil;
         for (int i = 0; i < n; i++) {
             c3 = addElement(A[i], c3);
         }

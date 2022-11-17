@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -87,9 +87,9 @@ static string& replaceOccurrences(string& str, const string& oldstr, const strin
 static string& replaceClassName(string& str)
 {
     // "mydsp" can be replaced as the DSP class name, or appearing anywhere in the file
-    replaceOccurrences(str, "mydsp", gGlobal->gClassName, true);
+    replaceOccurrences(str, "mydsp", global::config().gClassName, true);
     // But "dsp" string has to be replaced in a strict manner
-    replaceOccurrences(str, "dsp", gGlobal->gSuperClassName, false);
+    replaceOccurrences(str, "dsp", global::config().gSuperClassName, false);
     return str;
 }
 
@@ -164,13 +164,13 @@ static bool isFaustInclude(const string& line, string& fname)
 
 static void inject(ostream& dst, const string& fname)
 {
-    if (gGlobal->gAlreadyIncluded.find(fname) == gGlobal->gAlreadyIncluded.end()) {
-        gGlobal->gAlreadyIncluded.insert(fname);
+    if (global::config().gAlreadyIncluded.find(fname) == global::config().gAlreadyIncluded.end()) {
+        global::config().gAlreadyIncluded.insert(fname);
         unique_ptr<istream> src = unique_ptr<istream>(openArchStream(fname.c_str()));
         if (src) {
             streamCopyUntilEnd(*src, dst);
         } else {
-            gGlobal->gErrorMessage = "ERROR : " + fname + " not found\n";
+            global::config().gErrorMessage = "ERROR : " + fname + " not found\n";
         }
     }
 }
@@ -278,7 +278,7 @@ unique_ptr<ifstream> openArchStream(const char* filename)
     int   err;
 
     TRY_OPEN(filename);
-    for (string dirname : gGlobal->gArchitectureDirList) {
+    for (string dirname : global::config().gArchitectureDirList) {
         if ((err = chdir(dirname.c_str())) == 0) {
             TRY_OPEN(filename);
         }
@@ -424,7 +424,7 @@ void streamCopyUntil(istream& src, ostream& dst, const string& until)
 {
     string fname, line;
     while (getline(src, line) && (removeSpaces(line) != until)) {
-        if (gGlobal->gInlineArchSwitch && isFaustInclude(line, fname)) {
+        if (global::config().gInlineArchSwitch && isFaustInclude(line, fname)) {
             inject(dst, fname);
         } else {
             dst << replaceClassName(line) << endl;
@@ -442,5 +442,5 @@ void streamCopyUntilEnd(istream& src, ostream& dst)
 
 std::string makeOutputFile(const std::string& fname)
 {
-    return (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + fname) : fname;
+    return (global::config().gOutputDir != "") ? (global::config().gOutputDir + "/" + fname) : fname;
 }

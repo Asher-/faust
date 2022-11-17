@@ -1,7 +1,7 @@
  /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -42,12 +42,12 @@ namespace Faust {
           #endif
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
+          global::config().gFAUSTFLOAT2Internal = true;
 
-          this->_codeContainer = ClangCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+          this->_codeContainer = ClangCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs);
 
           // To trigger 'sig.dot' generation
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);

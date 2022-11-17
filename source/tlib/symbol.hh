@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -40,6 +40,7 @@
 
 #include <map>
 #include <string>
+#include <array>
 
 #include "compiler/type_manager/garbageable.hh"
 
@@ -50,9 +51,19 @@
  */
 class Symbol : public virtual Garbageable {
    private:
-    static const int kHashTableSize = 511;          ///< Size of the hash table (a prime number is recommended)
-    static Symbol*   gSymbolTable[kHashTableSize];  ///< Hash table used to store the symbols
-    static std::map<const char*, unsigned int> gPrefixCounters;
+    static constexpr const int kHashTableSize = 511;          ///< Size of the hash table (a prime number is recommended)
+    
+    static std::array<Symbol*, kHashTableSize>& table()
+    {
+      static std::array<Symbol*, kHashTableSize> hash_table; ///< Hash table used to store the symbols
+      return hash_table;
+    }
+
+    static std::map<const char*, unsigned int>& prefixCounters()
+    {
+      static std::map<const char*, unsigned int> prefix_counters;
+      return prefix_counters;
+    }
 
     // Fields
     std::string  fName;  ///< Name of the symbol
@@ -68,7 +79,7 @@ class Symbol : public virtual Garbageable {
     // Others
     virtual bool equiv(unsigned int hash,
                        const char* str) const;  ///< Check if the name of the symbol is equal to string \p str
-    static unsigned int calcHashKey(const char* str);  ///< Compute the 32-bits hash key of string \p str
+    static constexpr unsigned int calcHashKey(const char* str);  ///< Compute the 32-bits hash key of string \p str
 
     // Static methods
     static Symbol* get(const std::string& str);   ///< Get the symbol of name \p str

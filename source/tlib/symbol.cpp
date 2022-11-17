@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -27,17 +27,9 @@
 
 #include "tlib/compatibility.hh"
 #include "compiler/errors/exception.hh"
-#include "symbol.hh"
+#include "tlib/symbol.hh"
 
 using namespace std;
-
-/**
- * Hash table used to store the symbols.
- */
-
-Symbol* Symbol::gSymbolTable[kHashTableSize];
-
-map<const char*, unsigned int> Symbol::gPrefixCounters;
 
 /**
  * Search the hash table for the symbol of name \p str or returns a new one.
@@ -66,10 +58,10 @@ Symbol* Symbol::get(const char* rawstr)
     }
     unsigned int hsh  = calcHashKey(str.c_str());
     int          bckt = hsh % kHashTableSize;
-    Symbol*      item = gSymbolTable[bckt];
+    Symbol*      item = table()[bckt];
 
     while (item && !item->equiv(hsh, str.c_str())) item = item->fNext;
-    Symbol* r = item ? item : gSymbolTable[bckt] = new Symbol(str, hsh, gSymbolTable[bckt]);
+    Symbol* r = item ? item : table()[bckt] = new Symbol(str, hsh, table()[bckt]);
 
     return r;
 }
@@ -84,7 +76,7 @@ bool Symbol::isnew(const char* str)
 {
     unsigned int hsh  = calcHashKey(str);
     int          bckt = hsh % kHashTableSize;
-    Symbol*      item = gSymbolTable[bckt];
+    Symbol*      item = table()[bckt];
 
     while (item && !item->equiv(hsh, str)) item = item->fNext;
     return item == 0;
@@ -101,7 +93,7 @@ Symbol* Symbol::prefix(const char* str)
     char name[256];
 
     for (int n = 0; n < 10000; n++) {
-        snprintf(name, 256, "%s%d", str, gPrefixCounters[str]++);
+        snprintf(name, 256, "%s%d", str, prefixCounters()[str]++);
         if (isnew(name)) return get(name);
     }
     faustassert(false);
@@ -129,7 +121,7 @@ bool Symbol::equiv(unsigned int hash, const char* str) const
  * \return a 32-bits hash key
  */
 
-unsigned int Symbol::calcHashKey(const char* str)
+constexpr unsigned int Symbol::calcHashKey(const char* str)
 {
     unsigned int h = 0;
 
@@ -164,6 +156,6 @@ ostream& Symbol::print(ostream& fout) const  ///< print a symbol on a stream
 
 void Symbol::init()
 {
-    gPrefixCounters.clear();
-    memset(gSymbolTable, 0, sizeof(Symbol*) * kHashTableSize);
+    prefixCounters().clear();
+    memset((void*)&table(), 0, sizeof(Symbol*) * kHashTableSize);
 }

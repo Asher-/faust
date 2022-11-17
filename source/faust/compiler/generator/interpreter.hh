@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -46,29 +46,29 @@ namespace Faust {
           #endif
 
           if (::Faust::Primitive::Math::floatSize == 1) {
-            this->_codeContainer = InterpreterCodeContainer<float>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+            this->_codeContainer = InterpreterCodeContainer<float>::createContainer(global::config().gClassName, numInputs, numOutputs);
           } else if (::Faust::Primitive::Math::floatSize == 2) {
-            this->_codeContainer = InterpreterCodeContainer<double>::createContainer(gGlobal->gClassName, numInputs, numOutputs);
+            this->_codeContainer = InterpreterCodeContainer<double>::createContainer(global::config().gClassName, numInputs, numOutputs);
           } else {
               throw faustexception("ERROR : quad format not supported in Interp\n");
           }
-          gGlobal->gAllowForeignFunction = false;  // No foreign functions
-          gGlobal->gAllowForeignConstant = false;  // No foreign constant
-          gGlobal->gAllowForeignVar      = false;  // No foreign variable
-          // gGlobal->gComputeIOTA       = true;   // Ensure IOTA base fixed delays are computed once
+          global::config().gAllowForeignFunction = false;  // No foreign functions
+          global::config().gAllowForeignConstant = false;  // No foreign constant
+          global::config().gAllowForeignVar      = false;  // No foreign variable
+          // global::config().gComputeIOTA       = true;   // Ensure IOTA base fixed delays are computed once
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
+          global::config().gFAUSTFLOAT2Internal = true;
           ::Faust::Primitive::Math::needManualPow = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
-          gGlobal->gRemoveVarAddress    = true;   // To be used in -vec mode
+          global::config().gRemoveVarAddress    = true;   // To be used in -vec mode
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InterpreterInstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
 

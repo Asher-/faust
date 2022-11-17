@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -134,7 +134,7 @@ namespace Faust {
         /*
         fun -> (file*fun -> {key*value,...})
 
-        gGlobal->gFunMetaDataSet[fun].insert(file*fun*key*value);
+        global::config().gFunMetaDataSet[fun].insert(file*fun*key*value);
         gFunMetaDataSet = map<tree, tuple<Tree,Tree,Tree,Tree>>
         */
 
@@ -211,8 +211,8 @@ namespace Faust {
 
         using Sym = Symbol*;
 
-        Sym NIL = symbol("nil");
-        Tree _nil = tree(NIL);
+        static Sym NIL;
+        static Tree _nil;
         bool _stripDocSwitch = true;
         bool _lstDependenciesSwitch = true;
         bool _lstDistributedSwitch = true;

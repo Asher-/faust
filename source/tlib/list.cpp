@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -110,20 +110,20 @@ This file contains several extensions to the tree library :
 
 Tree cons(Tree a, Tree b)
 {
-    return tree(gGlobal->CONS, a, b);
+    return tree(global::config().CONS, a, b);
 }
 Tree list0()
 {
-    return gGlobal->nil;
+    return global::config().nil;
 }
 
 LIBFAUST_API bool isNil(Tree l)
 {
-    return (l->node() == Node(gGlobal->NIL)) && (l->arity() == 0);
+    return (l->node() == Node(global::config().NIL)) && (l->arity() == 0);
 }
 bool isList(Tree l)
 {
-    return (l->node() == Node(gGlobal->CONS)) && (l->arity() == 2);
+    return (l->node() == Node(global::config().CONS)) && (l->arity() == 2);
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +201,7 @@ Tree nth(Tree l, int i)
         l = tl(l);
         i--;
     }
-    return gGlobal->nil;
+    return global::config().nil;
 }
 
 Tree replace(Tree l, int i, Tree e)
@@ -239,7 +239,7 @@ Tree concat(Tree l, Tree q)
 
 Tree lrange(Tree l, int i, int j)
 {
-    Tree r = gGlobal->nil;
+    Tree r = global::config().nil;
     int  c = j;
     while (c > i) r = cons(nth(l, --c), r);
     return r;
@@ -251,7 +251,7 @@ Tree lrange(Tree l, int i, int j)
 
 static Tree rmap(tfun f, Tree l)
 {
-    Tree r = gGlobal->nil;
+    Tree r = global::config().nil;
     while (isList(l)) {
         r = cons(f(hd(l)), r);
         l = tl(l);
@@ -261,7 +261,7 @@ static Tree rmap(tfun f, Tree l)
 
 Tree reverse(Tree l)
 {
-    Tree r = gGlobal->nil;
+    Tree r = global::config().nil;
     while (isList(l)) {
         r = cons(hd(l), r);
         l = tl(l);
@@ -304,7 +304,7 @@ Tree addElement(Tree e, Tree l)
             return cons(hd(l), addElement(e, tl(l)));
         }
     } else {
-        return cons(e, gGlobal->nil);
+        return cons(e, global::config().nil);
     }
 }
 
@@ -319,7 +319,7 @@ Tree remElement(Tree e, Tree l)
             return cons(hd(l), remElement(e, tl(l)));
         }
     } else {
-        return gGlobal->nil;
+        return global::config().nil;
     }
 }
 
@@ -330,7 +330,7 @@ Tree singleton(Tree e)
 
 Tree list2set(Tree l)
 {
-    Tree s = gGlobal->nil;
+    Tree s = global::config().nil;
     while (isList(l)) {
         s = addElement(hd(l), s);
         l = tl(l);
@@ -402,14 +402,14 @@ static bool findKey (Tree pl, Tree key, Tree& val)
 
 static Tree updateKey (Tree pl, Tree key, Tree val)
 {
-	if (isNil(pl)) 				return cons ( cons(key,val), gGlobal->nil );
+	if (isNil(pl)) 				return cons ( cons(key,val), global::config().nil );
 	if (left(hd(pl)) == key) 	return cons ( cons(key,val), tl(pl) );
 	/*  left(hd(pl)) != key	*/	return cons ( hd(pl), updateKey( tl(pl), key, val ));
 }
 
 static Tree removeKey (Tree pl, Tree key)
 {
-	if (isNil(pl)) 				return gGlobal->nil;
+	if (isNil(pl)) 				return global::config().nil;
 	if (left(hd(pl)) == key) 	return tl(pl);
 	/*  left(hd(pl)) != key	*/	return cons (hd(pl), removeKey(tl(pl), key));
 }
@@ -421,7 +421,7 @@ void setProperty (Tree t, Tree key, Tree val)
 {
 	CTree* pl = t->attribut();
 	if (pl) t->attribut(updateKey(pl, key, val)); 
-	else 	t->attribut(updateKey(gGlobal->nil, key, val));
+	else 	t->attribut(updateKey(global::config().nil, key, val));
 }
 
 void remProperty (Tree t, Tree key)
@@ -485,7 +485,7 @@ Tree tmap(Tree key, tfun f, Tree t)
 
         Tree r2 = f(r1);
         if (r2 == t) {
-            setProperty(t, key, gGlobal->nil);
+            setProperty(t, key, global::config().nil);
         } else {
             setProperty(t, key, r2);
         }
@@ -529,7 +529,7 @@ static Tree subst(Tree t, Tree propkey, Tree id, Tree val)
         Tree r = tree(t->node(), br);
 
         if (r == t) {
-            setProperty(t, propkey, gGlobal->nil);
+            setProperty(t, propkey, global::config().nil);
         } else {
             setProperty(t, propkey, r);
         }

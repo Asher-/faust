@@ -1,5 +1,5 @@
 /************************************************************************
- FAUST Architecture File
+ FAUST Compiler
  Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify

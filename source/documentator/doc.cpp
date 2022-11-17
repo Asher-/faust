@@ -143,17 +143,17 @@ static bool     doesFileBeginWithCode(const string& faustfile);
 
 Tree docTxt(const char* name)
 {
-    return tree(gGlobal->DOCTXT, tree(symbol(name)));
+    return tree(global::config().DOCTXT, tree(symbol(name)));
 }
 bool isDocTxt(Tree t)
 {
-    return t->node() == Node(gGlobal->DOCTXT);
+    return t->node() == Node(global::config().DOCTXT);
 }
 bool isDocTxt(Tree t0, const char** str)
 {
     Tree t1;
     Sym  s;
-    if (isTree(t0, gGlobal->DOCTXT, t1) && isSym(t1->node(), &s)) {
+    if (isTree(t0, global::config().DOCTXT, t1) && isSym(t1->node(), &s)) {
         *str = name(s);
         return true;
     } else {
@@ -163,47 +163,47 @@ bool isDocTxt(Tree t0, const char** str)
 
 Tree docEqn(Tree x)
 {
-    return tree(gGlobal->DOCEQN, x);
+    return tree(global::config().DOCEQN, x);
 }
 bool isDocEqn(Tree t, Tree& x)
 {
-    return isTree(t, gGlobal->DOCEQN, x);
+    return isTree(t, global::config().DOCEQN, x);
 }
 
 Tree docDgm(Tree x)
 {
-    return tree(gGlobal->DOCDGM, x);
+    return tree(global::config().DOCDGM, x);
 }
 bool isDocDgm(Tree t, Tree& x)
 {
-    return isTree(t, gGlobal->DOCDGM, x);
+    return isTree(t, global::config().DOCDGM, x);
 }
 
 Tree docNtc()
 {
-    return tree(gGlobal->DOCNTC);
+    return tree(global::config().DOCNTC);
 }
 bool isDocNtc(Tree t)
 {
-    return isTree(t, gGlobal->DOCNTC);
+    return isTree(t, global::config().DOCNTC);
 }
 
 Tree docLst()
 {
-    return tree(gGlobal->DOCLST);
+    return tree(global::config().DOCLST);
 }
 bool isDocLst(Tree t)
 {
-    return isTree(t, gGlobal->DOCLST);
+    return isTree(t, global::config().DOCLST);
 }
 
 Tree docMtd(Tree x)
 {
-    return tree(gGlobal->DOCMTD, x);
+    return tree(global::config().DOCMTD, x);
 }
 bool isDocMtd(Tree t, Tree& x)
 {
-    return isTree(t, gGlobal->DOCMTD, x);
+    return isTree(t, global::config().DOCMTD, x);
 }
 
 /*****************************************************************************
@@ -223,13 +223,13 @@ bool isDocMtd(Tree t, Tree& x)
  */
 void printDoc(const char* projname, const char* docdev, const char* faustversion)
 {
-    gGlobal->gDocDevSuffix = docdev;
+    global::config().gDocDevSuffix = docdev;
 
     /** File stuff : create doc directories and a tex file. */
-    // cerr << "Documentator : printDoc : gGlobal->gFaustDirectory = '" << gGlobal->gFaustDirectory << "'" << endl;
-    // cerr << "Documentator : printDoc : gGlobal->gFaustSuperDirectory = '" << gGlobal->gFaustSuperDirectory << "'" <<
-    // endl;  cerr << "Documentator : printDoc : gGlobal->gFaustSuperSuperDirectory = '" <<
-    // gGlobal->gFaustSuperSuperDirectory << "'" << endl;  cerr << "Documentator : printDoc : gCurrentDir = '" <<
+    // cerr << "Documentator : printDoc : global::config().gFaustDirectory = '" << global::config().gFaustDirectory << "'" << endl;
+    // cerr << "Documentator : printDoc : global::config().gFaustSuperDirectory = '" << global::config().gFaustSuperDirectory << "'" <<
+    // endl;  cerr << "Documentator : printDoc : global::config().gFaustSuperSuperDirectory = '" <<
+    // global::config().gFaustSuperSuperDirectory << "'" << endl;  cerr << "Documentator : printDoc : gCurrentDir = '" <<
     // gCurrentDir << "'" << endl;
 
     makeDir(projname);  // create a top directory to store files
@@ -244,29 +244,29 @@ void printDoc(const char* projname, const char* docdev, const char* faustversion
     makeDir(pdfdir.c_str());  // create a pdf directory.
 
     /* Copy all Faust source files into an 'src' sub-directory. */
-    vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+    vector<string> pathnames = global::config().gReader.listSrcFiles();
     copyFaustSources(projname, pathnames);
 
     string texdir = subst("$0/tex", projname);
     mkchDir(texdir.c_str());  // create a directory and move into.
 
     /** Create THE mathdoc tex file. */
-    ofstream docout(subst("$0.$1", gGlobal->gDocName, docdev).c_str());
+    ofstream docout(subst("$0.$1", global::config().gDocName, docdev).c_str());
     choldDir();  // return to current directory
 
     /** Init and load translation file. */
-    loadTranslationFile(gGlobal->gDocLang);
+    loadTranslationFile(global::config().gDocLang);
 
     /** Simulate a default doc if no <mdoc> tag detected. */
-    if (gGlobal->gDocVector.empty()) {
+    if (global::config().gDocVector.empty()) {
         declareAutoDoc();
     }
 
     /** Printing stuff : in the '.tex' ouptut file, eventually including SVG files. */
     printFaustdocStamp(faustversion, docout);  ///< Faust version and compilation date (comment).
-    unique_ptr<istream> latexheader = openArchFile(gGlobal->gLatexheaderfilename);
+    unique_ptr<istream> latexheader = openArchFile(global::config().gLatexheaderfilename);
     printLatexHeader(*latexheader, faustversion, docout);  ///< Static LaTeX header (packages and setup).
-    printDocContent(svgTopDir.c_str(), gGlobal->gDocVector, faustversion,
+    printDocContent(svgTopDir.c_str(), global::config().gDocVector, faustversion,
                     docout);   ///< Generate math contents (main stuff!).
     printLatexFooter(docout);  ///< Static LaTeX footer.
 }
@@ -288,9 +288,9 @@ static void printLatexHeader(istream& latexheader, const string& faustversion, o
     while (getline(latexheader, s)) docout << s << endl;
 
     /** Specific LaTeX macros for Faust */
-    docout << "\\newcommand{\\faustfilename}{" << gGlobal->gMasterDocument << "}" << endl;
-    docout << "\\newcommand{\\faustdocdir}{" << gGlobal->gMasterName << "-mdoc}" << endl;
-    docout << "\\newcommand{\\faustprogname}{" << gGlobal->gMasterName << "}" << endl;
+    docout << "\\newcommand{\\faustfilename}{" << global::config().gMasterDocument << "}" << endl;
+    docout << "\\newcommand{\\faustdocdir}{" << global::config().gMasterName << "-mdoc}" << endl;
+    docout << "\\newcommand{\\faustprogname}{" << global::config().gMasterName << "}" << endl;
     docout << "\\newcommand{\\faustversion}{" << faustversion << "}" << endl;
     char datebuf[150];
     strftime(datebuf, 150, "%B %d, %Y", getCompilationDate());
@@ -311,9 +311,9 @@ static void printLatexHeader(istream& latexheader, const string& faustversion, o
  */
 static void printDocMetadata(const Tree expr, ostream& docout)
 {
-    if (gGlobal->gMetaDataSet.count(expr)) {
+    if (global::config().gMetaDataSet.count(expr)) {
         string    sep  = "";
-        set<Tree> mset = gGlobal->gMetaDataSet[expr];
+        set<Tree> mset = global::config().gMetaDataSet[expr];
         for (set<Tree>::iterator j = mset.begin(); j != mset.end(); j++) {
             docout << sep << unquote(tree2str(*j));
             sep = ", ";
@@ -329,13 +329,13 @@ static void printDocMetadata(const Tree expr, ostream& docout)
  */
 static void printFaustListings(ostream& docout)
 {
-    if (gGlobal->gParser._lstDependenciesSwitch) {
-        vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+    if (global::config().gParser._lstDependenciesSwitch) {
+        vector<string> pathnames = global::config().gReader.listSrcFiles();
         for (unsigned int i = 0; i < pathnames.size(); i++) {
             printFaustListing(pathnames[i], docout);
         }
     } else {
-        printFaustListing(gGlobal->gMasterDocument, docout);
+        printFaustListing(global::config().gMasterDocument, docout);
     }
 }
 
@@ -362,12 +362,12 @@ static void printFaustListing(string& faustfile, ostream& docout)
     if (faustfile != "" && src.good()) {
         while (getline(src, s)) { /** We suppose there's only one <mdoc> tag per line. */
             size_t foundopendoc = s.find("<mdoc>");
-            if (foundopendoc != string::npos && gGlobal->gStripDocSwitch) isInsideDoc = true;
+            if (foundopendoc != string::npos && global::config().gStripDocSwitch) isInsideDoc = true;
 
             if (isInsideDoc == false) docout << s << endl;
 
             size_t foundclosedoc = s.find("</mdoc>");
-            if (foundclosedoc != string::npos && gGlobal->gStripDocSwitch) isInsideDoc = false;
+            if (foundclosedoc != string::npos && global::config().gStripDocSwitch) isInsideDoc = false;
         }
     } else {
         stringstream error;
@@ -414,13 +414,13 @@ static void printFaustdocStamp(const string& faustversion, ostream& docout)
 /**
  * @brief Main documentator loop.
  *
- * First loop on gGlobal->gGlobal->gDocVector, which contains the faust <mdoc> trees.
+ * First loop on global::config().global::config().gDocVector, which contains the faust <mdoc> trees.
  * Second loop for each of these <mdoc> trees, which contain parsed input expressions of 3 types :
- * gGlobal->DOCEQN for <equation> tags, gGlobal->DOCDGM for <diagram> tags, and gGlobal->DOCTXT for direct LaTeX text
+ * global::config().DOCEQN for <equation> tags, global::config().DOCDGM for <diagram> tags, and global::config().DOCTXT for direct LaTeX text
  *(no tag).
- * - gGlobal->DOCTXT expressions printing is trivial.
- * - gGlobal->DOCDGM expressions printing calls 'printDocDgm' to generate SVG files and print LaTeX "figure" code.
- * - gGlobal->DOCEQN expressions printing calls 'printDocEqn' after an important preparing work
+ * - global::config().DOCTXT expressions printing is trivial.
+ * - global::config().DOCDGM expressions printing calls 'printDocDgm' to generate SVG files and print LaTeX "figure" code.
+ * - global::config().DOCEQN expressions printing calls 'printDocEqn' after an important preparing work
  *   has been done by 'prepareDocEqns'.
  *
  * @param[in]	projname		Basename of the new doc directory ("*-math").
@@ -441,14 +441,14 @@ static void printDocContent(const char* svgTopDir, const vector<Tree>& docVector
     int dgmIndex = 1;  ///< For diagram directories numbering.
 
     vector<string> docMasterCodeMap;
-    docMasterCodeMap = docCodeSlicer(gGlobal->gMasterDocument, docMasterCodeMap);
+    docMasterCodeMap = docCodeSlicer(global::config().gMasterDocument, docMasterCodeMap);
 
     vector<Tree>::const_iterator   doc;
     vector<string>::const_iterator code;
     code = docMasterCodeMap.begin();
 
-    if (doesFileBeginWithCode(gGlobal->gMasterDocument) && (!docMasterCodeMap.empty()) &&
-        gGlobal->gParser._lstDistributedSwitch) {
+    if (doesFileBeginWithCode(global::config().gMasterDocument) && (!docMasterCodeMap.empty()) &&
+        global::config().gParser._lstDistributedSwitch) {
         printdocCodeSlices(*code, docout);
         code++;
     }
@@ -480,7 +480,7 @@ static void printDocContent(const char* svgTopDir, const vector<Tree>& docVector
         }
         // cerr << " ...end of <mdoc> parsing." << endl;
 
-        if (code != docMasterCodeMap.end() && gGlobal->gParser._lstDistributedSwitch) {
+        if (code != docMasterCodeMap.end() && global::config().gParser._lstDistributedSwitch) {
             printdocCodeSlices(*code, docout);
         }
     }
@@ -507,7 +507,7 @@ static void prepareDocEqns(const vector<Tree>& docBoxes, vector<Lateq*>& docComp
 
     if (!eqBoxes.empty()) {
         vector<Tree> evalEqBoxes;
-        mapEvalDocEqn(eqBoxes, gGlobal->gExpandedDefList, evalEqBoxes);  ///< step 1. Evaluate boxes.
+        mapEvalDocEqn(eqBoxes, global::config().gExpandedDefList, evalEqBoxes);  ///< step 1. Evaluate boxes.
         vector<string> eqNames;
         mapGetEqName(evalEqBoxes, eqNames);  ///< step 2. Get boxes name.
         vector<string> eqNicknames;
@@ -656,7 +656,7 @@ static void mapPrepareEqSig(const vector<Tree>& evalEqBoxes, vector<int>& eqInpu
         eqInputs.push_back(numInputs);
         eqOutputs.push_back(numOutputs);
 
-        Tree lsig1 = boxPropagateSig(gGlobal->nil, *eq, makeSigInputList(numInputs));
+        Tree lsig1 = boxPropagateSig(global::config().nil, *eq, makeSigInputList(numInputs));
         // cerr << "output signals are : " << endl;  printSignal(lsig1, stderr);
 
         Tree lsig2 = deBruijn2Sym(lsig1);  ///< Convert debruijn recursion into symbolic recursion
@@ -699,7 +699,7 @@ static void collectEqSigs(const vector<Tree>& eqSigs, Tree& superEqList)
 {
     // cerr << "###\n# Documentator : collectEqSigs" << endl;
 
-    superEqList = gGlobal->nil;
+    superEqList = global::config().nil;
 
     for (vector<Tree>::const_iterator it = eqSigs.begin(); it < eqSigs.end(); ++it) {
         superEqList = cons(*it, superEqList);
@@ -822,10 +822,10 @@ static void printDocEqn(Lateq* ltq, ostream& docout)
 static void printDocDgm(const Tree expr, const char* svgTopDir, ostream& docout, int i)
 {
     /** 1. Evaluate expression. */
-    Tree docdgm = evaldocexpr(expr, gGlobal->gExpandedDefList);
-    if (gGlobal->gErrorCount > 0) {
+    Tree docdgm = evaldocexpr(expr, global::config().gExpandedDefList);
+    if (global::config().gErrorCount > 0) {
         stringstream error;
-        error << "ERROR : total of " << gGlobal->gErrorCount
+        error << "ERROR : total of " << global::config().gErrorCount
               << " errors during evaluation of : diagram docdgm = " << boxpp(docdgm) << ";\n";
         throw faustexception(error.str());
     }
@@ -848,13 +848,13 @@ static void printDocDgm(const Tree expr, const char* svgTopDir, ostream& docout,
     docout << "\\begin{figure}[ht!]" << endl;
     docout << "\t\\centering" << endl;
     docout << "\t\\includegraphics[width=\\textwidth]{" << subst("../svg/svg-$0/", dgmid) << dgmfilename << "}" << endl;
-    docout << "\t\\caption{" << gGlobal->gDocMathStringMap["dgmcaption"] << " \\texttt{" << dgmfilename << "}}" << endl;
+    docout << "\t\\caption{" << global::config().gDocMathStringMap["dgmcaption"] << " \\texttt{" << dgmfilename << "}}" << endl;
     docout << "\t\\label{figure" << i << "}" << endl;
     docout << "\\end{figure}" << endl << endl;
 
     /** 4. Warn about naming interferences (in the notice). */
-    gGlobal->gDocNoticeFlagMap["nameconflicts"] = true;
-    gGlobal->gDocNoticeFlagMap["svgdir"]        = true;
+    global::config().gDocNoticeFlagMap["nameconflicts"] = true;
+    global::config().gDocNoticeFlagMap["svgdir"]        = true;
 }
 
 /*****************************************************************************
@@ -1034,11 +1034,11 @@ static void initCompilationDate()
 {
     time_t now;
     time(&now);
-    gGlobal->gCompilationDate = *localtime(&now);
+    global::config().gCompilationDate = *localtime(&now);
 }
 
 static struct tm* getCompilationDate()
 {
     initCompilationDate();
-    return &gGlobal->gCompilationDate;
+    return &global::config().gCompilationDate;
 }

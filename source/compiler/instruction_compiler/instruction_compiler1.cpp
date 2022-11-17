@@ -26,7 +26,7 @@ StatementInst* InstructionsCompiler1::generateInitArray(const std::string& vname
 {
     ValueInst*  init  = InstBuilder::genTypedZero(ctype);
     BasicTyped* typed = InstBuilder::genBasicTyped(ctype);
-    std::string      index = gGlobal->getFreshID("l");
+    std::string      index = global::config().getFreshID("l");
 
     // Generates table declaration
     pushDeclare(InstBuilder::genDecStructVar(vname, InstBuilder::genArrayTyped(typed, delay)));
@@ -42,7 +42,7 @@ StatementInst* InstructionsCompiler1::generateInitArray(const std::string& vname
 
 StatementInst* InstructionsCompiler1::generateShiftArray(const std::string& vname, int delay)
 {
-    std::string index = gGlobal->getFreshID("j");
+    std::string index = global::config().getFreshID("j");
 
     ValueInst*         upperBound  = InstBuilder::genInt32NumInst(delay);
     ValueInst*         lowerBound  = InstBuilder::genInt32NumInst(1);
@@ -58,7 +58,7 @@ StatementInst* InstructionsCompiler1::generateShiftArray(const std::string& vnam
 
 StatementInst* InstructionsCompiler1::generateCopyArray(const std::string& vname_to, const std::string& vname_from, int size)
 {
-    std::string index = gGlobal->getFreshID("j");
+    std::string index = global::config().getFreshID("j");
 
     ValueInst*         upperBound  = InstBuilder::genInt32NumInst(size);
     SimpleForLoopInst* loop        = InstBuilder::genSimpleForLoopInst(index, upperBound);

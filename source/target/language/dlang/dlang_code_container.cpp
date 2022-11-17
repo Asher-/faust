@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -41,7 +41,7 @@ dsp_factory_base* DLangCodeContainer::produceFactory()
 
 CodeContainer* DLangCodeContainer::createScalarContainer(const string& name, int sub_container_type)
 {
-    return (gGlobal->gOneSample >= 0)
+    return (global::config().gOneSample >= 0)
         ? new DLangScalarOneSampleCodeContainer(name, "", 0, 1, fOut, sub_container_type)
         : new DLangScalarCodeContainer(name, "", 0, 1, fOut, sub_container_type);
 }
@@ -54,21 +54,21 @@ CodeContainer* DLangCodeContainer::createContainer(const string& name, const str
     if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for D\n");
     }
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for D\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for D\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for D\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for D\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         container = new DLangVectorCodeContainer(name, super, numInputs, numOutputs, dst);
     } else {
-        container = (gGlobal->gOneSample >= 0)
+        container = (global::config().gOneSample >= 0)
             ? new DLangScalarOneSampleCodeContainer(name, super, numInputs, numOutputs, dst, kInt)
             : new DLangScalarCodeContainer(name, super, numInputs, numOutputs, dst, kInt);
     }
@@ -82,7 +82,7 @@ void DLangCodeContainer::produceMetadata(int tabs)
     *fOut << "void metadata(Meta* m) nothrow @nogc { ";
 
     // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(tabs + 1, *fOut);
             *fOut << "m.declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";
@@ -133,10 +133,10 @@ void DLangCodeContainer::produceInit(int tabs)
 
 void DLangCodeContainer::printHeader()
 {
-    if (gGlobal->gArchFile == "")
+    if (global::config().gArchFile == "")
         printDRecipeComment(*fOut, fKlassName);
     CodeContainer::printHeader(*fOut);
-    if (gGlobal->gArchFile == "")
+    if (global::config().gArchFile == "")
         printDModuleStmt(*fOut, fKlassName);
 }
 
@@ -243,8 +243,8 @@ string DLangCodeContainer::dModuleName(const string& klassName)
 {
     string moduleName = klassName;
     transform(moduleName.begin(), moduleName.end(), moduleName.begin(), ::tolower);
-    if (gGlobal->gNamespace != "") {
-        moduleName = gGlobal->gNamespace + "." + moduleName;
+    if (global::config().gNamespace != "") {
+        moduleName = global::config().gNamespace + "." + moduleName;
     }
     return moduleName;
 }

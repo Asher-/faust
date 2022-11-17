@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -96,20 +96,20 @@ CodeContainer* InterpreterCodeContainer<REAL>::createContainer(const string& nam
 {
     CodeContainer* container;
 
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for Interpreter\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for Interpreter\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for Interpreter\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler mode not supported for Interpreter\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         // throw faustexception("ERROR : Vector mode not supported for Interpreter\n");
-        if (gGlobal->gVectorLoopVariant == 0) {
+        if (global::config().gVectorLoopVariant == 0) {
             throw faustexception("ERROR : Vector mode with -lv 0 not supported for Interpreter\n");
         }
         container = new InterpreterVectorCodeContainer<REAL>(name, numInputs, numOutputs);
@@ -198,7 +198,7 @@ dsp_factory_base* InterpreterCodeContainer<REAL>::produceFactory()
 
     // Prepare compilation options
     stringstream compile_options;
-    gGlobal->printCompilationOptions(compile_options);
+    global::config().printCompilationOptions(compile_options);
 
     switch (mode) {
         case 1:
@@ -305,7 +305,7 @@ FIRMetaBlockInstruction* InterpreterCodeContainer<REAL>::produceMetadata(string&
     FIRMetaBlockInstruction* block = new FIRMetaBlockInstruction();
 
     // Add global metadata
-    for (const auto& it : gGlobal->gMetaDataSet) {
+    for (const auto& it : global::config().gMetaDataSet) {
         if (it.first != tree("author")) {
             stringstream str1, str2;
             str1 << *(it.first);

@@ -2,7 +2,7 @@
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2022-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -2890,13 +2890,13 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 204: // primitive.type.number.list.member: primitive.number
                            {
-            gGlobal->gWaveForm.push_back(yystack_[0].value.as < Tree > ());
+            global::config().gWaveForm.push_back(yystack_[0].value.as < Tree > ());
           }
     break;
 
   case 205: // primitive.type.number.list.member: expression.math.scalar
                                  {
-            gGlobal->gWaveForm.push_back(yystack_[0].value.as < Tree > ());
+            global::config().gWaveForm.push_back(yystack_[0].value.as < Tree > ());
           }
     break;
 
@@ -2970,9 +2970,9 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 220: // primitive.signal.source.waveform: WAVEFORM LBRAQ primitive.type.number.list RBRAQ
                                                         {
-          yylhs.value.as < Tree > () = boxWaveform(gGlobal->gWaveForm);
-          gGlobal->gWaveForm.clear();
-          /* primitive.type.number.list pushes values onto gGlobal->gWaveForm */
+          yylhs.value.as < Tree > () = boxWaveform(global::config().gWaveForm);
+          global::config().gWaveForm.clear();
+          /* primitive.type.number.list pushes values onto global::config().gWaveForm */
         }
     break;
 

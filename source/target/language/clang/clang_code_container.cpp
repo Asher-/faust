@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -91,14 +91,14 @@ ClangCodeContainer::ClangCodeContainer(const string& name, int numInputs, int nu
 
     fContainer = CCodeContainer::createContainer(name, numInputs, numOutputs, fOut);
 
-    if (gGlobal->gVectorSwitch) {
+    if (global::config().gVectorSwitch) {
         fCompiler = new DAGInstructionsCompiler(fContainer);
     } else {
         fCompiler = new InstructionsCompiler(fContainer);
     }
 
-    if (gGlobal->gPrintXMLSwitch) fCompiler->setDescription(new Description());
-    if (gGlobal->gPrintDocSwitch) fCompiler->setDescription(new Description());
+    if (global::config().gPrintXMLSwitch) fCompiler->setDescription(new Description());
+    if (global::config().gPrintDocSwitch) fCompiler->setDescription(new Description());
 }
 
 ClangCodeContainer::~ClangCodeContainer()
@@ -132,7 +132,7 @@ LLVMResult* ClangCodeContainer::produceModule(Tree signals, const string& filena
     // Args.push_back("-O3");
     Args.push_back("-ffast-math");
 
-    for (const auto& it : gGlobal->gImportDirList) {
+    for (const auto& it : global::config().gImportDirList) {
         string path = "-I" + it;
         Args.push_back(strdup(path.c_str()));
     }
@@ -215,7 +215,7 @@ LLVMResult* ClangCodeContainer::produceModule(Tree signals, const string& filena
         }
 
         // Keep source files pathnames
-        result->fPathnameList = gGlobal->gReader.listSrcFiles();
+        result->fPathnameList = global::config().gReader.listSrcFiles();
 
         // Possibly output file
         if (filename != "") {

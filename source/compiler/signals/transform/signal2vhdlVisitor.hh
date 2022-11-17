@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -32,8 +32,8 @@
 //----------------------------------------------------------------------
 using namespace std;
 
-#define HIGH 8  //  gGlobal->gVHDLFloatMSB
-#define LOW -23 //  gGlobal->gVHDLFloatLSB
+#define HIGH 8  //  global::config().gVHDLFloatMSB
+#define LOW -23 //  global::config().gVHDLFloatLSB
 
 class Signal2VHDLVisitor : public SignalVisitor {
 
@@ -108,11 +108,11 @@ class Signal2VHDLVisitor : public SignalVisitor {
 
 
         bool globalCodingFloat() {
-            return gGlobal->gVHDLFloatType == 1;
+            return global::config().gVHDLFloatType == 1;
         }
 
         bool globalCodingSfixed() {
-            return gGlobal->gVHDLFloatType == 0;
+            return global::config().gVHDLFloatType == 0;
         }
 
         string getObjectSuffix(int nature)

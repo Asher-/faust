@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -277,7 +277,7 @@ BlockInst* WSSCodeContainer::generateDAGLoopWSS(lclgraph dag)
     BlockInst* last_block = InstBuilder::genBlockInst();
     last_block->pushBackInst(InstBuilder::genLabelInst("/* Last task */"));
     last_block->pushBackInst(InstBuilder::genVolatileStoreStructVar(
-        index, InstBuilder::genAdd(InstBuilder::genVolatileLoadStructVar(index), gGlobal->gVecSize)));
+        index, InstBuilder::genAdd(InstBuilder::genVolatileLoadStructVar(index), global::config().gVecSize)));
 
     ValueInst* if_cond = InstBuilder::genLessThan(InstBuilder::genVolatileLoadStructVar(index),
                                                   InstBuilder::genLoadStructVar(fFFullCount));
@@ -309,7 +309,7 @@ BlockInst* WSSCodeContainer::generateDAGLoopWSS(lclgraph dag)
     ValueInst*       init1 = InstBuilder::genLoadStructVar(fFFullCount);
     ValueInst*       init2 = InstBuilder::genSub(init1, InstBuilder::genVolatileLoadStructVar(index));
     Values min_fun_args;
-    min_fun_args.push_back(InstBuilder::genInt32NumInst(gGlobal->gVecSize));
+    min_fun_args.push_back(InstBuilder::genInt32NumInst(global::config().gVecSize));
     min_fun_args.push_back(init2);
     ValueInst* init3 = InstBuilder::genFunCallInst("min_i", min_fun_args);
 
@@ -463,7 +463,7 @@ void WSSCodeContainer::processFIR(void)
 
     generateDAGLoopWSSAux2(dag, fFullCount);
 
-    if (gGlobal->gRemoveVarAddress) {
+    if (global::config().gRemoveVarAddress) {
         VarAddressRemover remover;
         fComputeBlockInstructions       = remover.getCode(fComputeBlockInstructions);
         fThreadLoopBlock                = remover.getCode(fThreadLoopBlock);

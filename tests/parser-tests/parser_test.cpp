@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -34,7 +34,6 @@ struct ParserTest
     ParserTest
     ()
     {
-      global::allocate();
       /* Uncomment for Bison/Flex trace output */
       parser._traceParsing = true;
       parser._traceScanning = true;
@@ -71,7 +70,7 @@ struct ParserTest
 //TEST_F( ParserTest, simpleProgram ) {
 //  std::string source = R""""(
 //    declare name "Noise";
-//    declare copyright "(c)GRAME 2018";
+//    declare copyright "(c)GRAME 2022";
 //
 //    import("stdfaust.lib");
 //

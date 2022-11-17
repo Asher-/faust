@@ -204,7 +204,7 @@ Utf8.decode = function (strUtf) {
 
 /*
  faust2wasm
- Additional code: GRAME 2017-2018
+ Additional code: GRAME 2017-2022
 */
 
 'use strict';

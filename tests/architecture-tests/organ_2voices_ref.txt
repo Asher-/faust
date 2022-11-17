@@ -1234,7 +1234,7 @@ sample out -0.098402
 sample out -0.118059
 sample out -0.138733
 sample out -0.160145
-sample out -0.182018
+sample out -0.182022
 sample out -0.204100
 sample out -0.226178
 sample out -0.248092

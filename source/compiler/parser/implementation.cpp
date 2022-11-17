@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -31,6 +31,9 @@
 #include "faust/primitive/math.hh"
 
 using namespace ::Faust::Compiler::Parser;
+
+Sym Implementation::NIL = symbol("nil");
+Tree Implementation::_nil = tree(NIL);
 
 Tree Implementation::checkRulelist(Tree lr)
 {
@@ -100,34 +103,34 @@ string Implementation::printRedefinitionError(Tree symbol, std::list<Tree>& vari
 
 void Implementation::checkName()
 {
-    if (gGlobal->gMasterDocument == this->_streamName) {
+    if (global::config().gMasterDocument == this->_streamName) {
         Tree name = tree("name");
-        if (gGlobal->gMetaDataSet.find(name) == gGlobal->gMetaDataSet.end()) {
-            gGlobal->gMetaDataSet[name].insert(tree(quote(this->stripEnd(std::filesystem::path(this->_streamName).filename(), ".dsp"))));
+        if (global::config().gMetaDataSet.find(name) == global::config().gMetaDataSet.end()) {
+            global::config().gMetaDataSet[name].insert(tree(quote(this->stripEnd(std::filesystem::path(this->_streamName).filename(), ".dsp"))));
         }
-        gGlobal->gMetaDataSet[tree("filename")].insert(tree(quote(std::filesystem::path(this->_streamName).filename())));
+        global::config().gMetaDataSet[tree("filename")].insert(tree(quote(std::filesystem::path(this->_streamName).filename())));
     }
 }
 
 void Implementation::declareMetadata(Tree key, Tree value)
 {
-    if (gGlobal->gMasterDocument == this->_streamName) {
+    if (global::config().gMasterDocument == this->_streamName) {
         // Inside master document, no prefix needed to declare metadata
-        gGlobal->gMetaDataSet[key].insert(value);
+        global::config().gMetaDataSet[key].insert(value);
     } else {
         string fkey(this->_streamName);
         if (fkey != "") {
             fkey += "/";
         }
         fkey += tree2str(key);
-        gGlobal->gMetaDataSet[tree(fkey.c_str())].insert(value);
+        global::config().gMetaDataSet[tree(fkey.c_str())].insert(value);
     }
 }
 
 /*
 fun -> (file*fun -> {key*value,...})
 
-gGlobal->gFunMetaDataSet[fun].insert(file*fun*key*value);
+global::config().gFunMetaDataSet[fun].insert(file*fun*key*value);
 gFunMetaDataSet = map<tree, tuple<Tree,Tree,Tree,Tree>>
 */
 
@@ -139,7 +142,7 @@ void Implementation::declareDefinitionMetadata(Tree id, Tree key, Tree value)
     string fullkey = fullkeystream.str();
     Tree md = cons(tree(fullkey), value);
     //cout << "Creation of a function metadata : " << *md << endl;
-    gGlobal->gFunMDSet[boxIdent(tree2str(id))].insert(md);
+    global::config().gFunMDSet[boxIdent(tree2str(id))].insert(md);
 }
 
 /**
@@ -162,10 +165,10 @@ Tree Implementation::makeDefinition(Tree symbol, std::list<Tree>& variants)
     } else if (standardArgList(args)) {
       return buildBoxAbstr(args, body);
     } else {
-      return boxCase(cons(rhs,gGlobal->nil));
+      return boxCase(cons(rhs,global::config().nil));
     }
   } else {
-    Tree l = gGlobal->nil;
+    Tree l = global::config().nil;
     Tree prev = *variants.begin();
     int npat = len(hd(prev));
 
@@ -198,7 +201,7 @@ Tree Implementation::formatDefinitions(Tree rldef)
 {
     map<Tree, list<Tree> > dic;
     map<Tree, list<Tree> >::iterator p;
-    Tree ldef2 = gGlobal->nil;
+    Tree ldef2 = global::config().nil;
     Tree file;
 
     // Collects the definitions in a dictionnary

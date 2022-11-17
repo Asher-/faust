@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -110,9 +110,9 @@ BlockInst* FunctionInliner::ReplaceParameterByArg(BlockInst* code, NamedTyped* n
                     // More complex expressions are computed and shared in a new stack variable
                     if (fVarTable.find(fNamed->fName) == fVarTable.end()) {
                         // Create a stack variable with the value
-                        string tmp_in            = gGlobal->getFreshID("tmp_in");
+                        string tmp_in            = global::config().getFreshID("tmp_in");
                         fVarTable[fNamed->fName] = tmp_in;
-                        if (gGlobal->gHasTeeLocal) {
+                        if (global::config().gHasTeeLocal) {
                             fBlockStack.top()->pushBackInst(InstBuilder::genDecStackVar(tmp_in, fNamed->fType->clone(&cloner)));
                             return InstBuilder::genTeeVar(tmp_in, fArg->clone(&cloner));
                         } else {

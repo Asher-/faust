@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@
 #include "recursivness.hh"
 #include "compiler/math_primitives/xtended.hh"
 
-ppsig::ppsig(Tree s) : fSig(s), fEnv(gGlobal->nil), fPriority(0), fHideRecursion(false)
+ppsig::ppsig(Tree s) : fSig(s), fEnv(global::config().nil), fPriority(0), fHideRecursion(false)
 {
 }
 
@@ -295,14 +295,14 @@ ostream& ppsig::print(ostream& fout) const
 }
 
 #define SIG_INSERT_ID(exp) \
-    if (gGlobal->gSignalTable.find(fSig) == gGlobal->gSignalTable.end()) { \
+    if (global::config().gSignalTable.find(fSig) == global::config().gSignalTable.end()) { \
         stringstream s; \
         (exp); \
-        gGlobal->gSignalTable[fSig] = std::make_pair(gGlobal->gSignalCounter, s.str()); \
-        gGlobal->gSignalTrace.push_back("ID_" + std::to_string(gGlobal->gSignalCounter) + " = " + s.str() + ";\n"); \
-        gGlobal->gSignalCounter++;\
+        global::config().gSignalTable[fSig] = std::make_pair(global::config().gSignalCounter, s.str()); \
+        global::config().gSignalTrace.push_back("ID_" + std::to_string(global::config().gSignalCounter) + " = " + s.str() + ";\n"); \
+        global::config().gSignalCounter++;\
     } \
-    fout << "ID_" << gGlobal->gSignalTable[fSig].first; \
+    fout << "ID_" << global::config().gSignalTable[fSig].first; \
 
 ostream& ppsigShared::printinfix(ostream& fout, const string& opname, int priority, Tree x, Tree y) const
 {
@@ -555,7 +555,7 @@ ostream& ppsigShared::print(ostream& fout) const
 
 void ppsigShared::printIDs(ostream& fout)
 {
-    for (const auto& it : gGlobal->gSignalTrace) {
+    for (const auto& it : global::config().gSignalTrace) {
         fout << it;
     }
 }

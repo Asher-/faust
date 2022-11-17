@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -96,7 +96,7 @@ namespace PM {
       for (r = 0; r < n; r++) {
           int          s = 0, m = (int)testpats[r].size();
           Tree         C;
-          vector<Tree> E(n, gGlobal->nil);
+          vector<Tree> E(n, global::config().nil);
           /* try to match the lhs of rule #r */
           for (int i = 0; i < m; i++) {
               s = apply_pattern_matcher(A, s, testpats[r][i], C, E);
@@ -227,7 +227,7 @@ namespace PM {
       cerr << "automaton " << A << ", state " << s << ", start match on arg: " << *X << endl;
   #endif
       s = apply_pattern_matcher_internal(A, s, X, subst);
-      C = gGlobal->nil;
+      C = global::config().nil;
       if (s < 0) /* failed match */
           return s;
       /* process variable substitutions */
@@ -263,7 +263,7 @@ namespace PM {
           for (r = A->rules(s).begin(); r != A->rules(s).end(); r++)  // all rules matched in state s
               if (!isBoxError(E[r->r])) {                             // and still viable
                   /* return the rhs of the matched rule */
-                  C = closure(A->rhs[r->r], gGlobal->nil, gGlobal->nil, E[r->r]);
+                  C = closure(A->rhs[r->r], global::config().nil, global::config().nil, E[r->r]);
   #ifdef DEBUG
                   cerr << "state " << s << ", complete match yields rhs #" << r->r << ": " << *A->rhs[r->r] << endl;
   #endif

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -43,11 +43,11 @@ CodeContainer* FIRCodeContainer::createContainer(const string& name, int numInpu
 {
     CodeContainer* container;
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         container = new FIROpenMPCodeContainer(name, numInputs, numOutputs, dst, top_level);
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         container = new FIRWorkStealingCodeContainer(name, numInputs, numOutputs, dst, top_level);
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         container = new FIRVectorCodeContainer(name, numInputs, numOutputs, dst, top_level);
     } else {
         container = new FIRScalarCodeContainer(name, numInputs, numOutputs, kInt, dst, top_level);
@@ -255,7 +255,7 @@ void FIRCodeContainer::produceClass()
 
     *fOut << "======= External types declaration ==========" << endl;
     *fOut << endl;
-    for (const auto& it : gGlobal->gExternalStructTypes) {
+    for (const auto& it : global::config().gExternalStructTypes) {
         (it.second)->accept(&firvisitor);
         *fOut << endl;
     }

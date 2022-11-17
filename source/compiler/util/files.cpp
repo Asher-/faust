@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -43,7 +43,7 @@ using namespace std;
 
 void choldDir()
 {
-    if (chdir(gGlobal->gCurrentDir.c_str()) == 0) {
+    if (chdir(global::config().gCurrentDir.c_str()) == 0) {
         return;
     } else {
         stringstream error;
@@ -60,7 +60,7 @@ void choldDir()
 void mkchDir(const string& dirname)
 {
     getCurrentDir();
-    if (gGlobal->gCurrentDir != "") {
+    if (global::config().gCurrentDir != "") {
         int status = faust_mkdir(dirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         if (status == 0 || errno == EEXIST) {
             if (chdir(dirname.c_str()) == 0) {
@@ -77,7 +77,7 @@ void mkchDir(const string& dirname)
 void makeDir(const string& dirname)
 {
     getCurrentDir();
-    if (gGlobal->gCurrentDir != "") {
+    if (global::config().gCurrentDir != "") {
         int status = faust_mkdir(dirname.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         if (status == 0 || errno == EEXIST) {
             return;
@@ -93,7 +93,7 @@ void getCurrentDir()
 {
     char  buffer[FAUST_PATH_MAX];
     char* current_dir    = getcwd(buffer, FAUST_PATH_MAX);
-    gGlobal->gCurrentDir = (current_dir) ? current_dir : "";
+    global::config().gCurrentDir = (current_dir) ? current_dir : "";
 }
 
 

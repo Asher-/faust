@@ -88,21 +88,21 @@ CodeContainer* JAXCodeContainer::createScalarContainer(const string& name, int s
 
 CodeContainer* JAXCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
 {
-    gGlobal->gDSPStruct = true;
+    global::config().gDSPStruct = true;
     CodeContainer* container;
 
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for JAX\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for JAX\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for JAX\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for JAX\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         throw faustexception("ERROR : Vector not supported for JAX\n");
     } else {
         container = new JAXScalarCodeContainer(name, numInputs, numOutputs, dst, kInt);
@@ -142,7 +142,7 @@ void JAXCodeContainer::produceClass()
           << "Code generated with Faust version " << FAUSTVERSION << endl;
     *fOut << "Compilation options: ";
     stringstream stream;
-    gGlobal->printCompilationOptions(stream);
+    global::config().printCompilationOptions(stream);
     *fOut << stream.str();
     tab(n, *fOut);
     *fOut << "\"\"\"";

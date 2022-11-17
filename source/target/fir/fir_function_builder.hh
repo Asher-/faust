@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -107,12 +107,12 @@ struct Loop2FunctionBuider : public DispatchVisitor {
 
                         // Be sure variable is defined
                         // cerr << "createParameter kStack " << name << endl;
-                        faustassert(gGlobal->gVarTypeTable.find(name) != gGlobal->gVarTypeTable.end());
+                        faustassert(global::config().gVarTypeTable.find(name) != global::config().gVarTypeTable.end());
 
                         // Local in the enclosing context, becomes a fun parameter
                         BasicCloneVisitor cloner;
                         fArgsTypeList.push_back(
-                            InstBuilder::genNamedTyped(name, gGlobal->gVarTypeTable[name]->clone(&cloner)));
+                            InstBuilder::genNamedTyped(name, global::config().gVarTypeTable[name]->clone(&cloner)));
 
                         // It becomes a value in the fun-call argument list
                         fArgsValueList.push_back(InstBuilder::genLoadStackVar(name));
@@ -134,12 +134,12 @@ struct Loop2FunctionBuider : public DispatchVisitor {
 
                     // Be sure variable is defined
                     // cerr << "createParameter kFunArgs " << name << endl;
-                    faustassert(gGlobal->gVarTypeTable.find(name) != gGlobal->gVarTypeTable.end());
+                    faustassert(global::config().gVarTypeTable.find(name) != global::config().gVarTypeTable.end());
 
                     // Parameter in the enclosing function, becomes a fun parameter
                     BasicCloneVisitor cloner;
                     fArgsTypeList.push_back(
-                        InstBuilder::genNamedTyped(name, gGlobal->gVarTypeTable[name]->clone(&cloner)));
+                        InstBuilder::genNamedTyped(name, global::config().gVarTypeTable[name]->clone(&cloner)));
 
                     // It becomes a value in the fun-call argument list : keep it's kFunArgs status
                     fArgsValueList.push_back(InstBuilder::genLoadFunArgsVar(name));

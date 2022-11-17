@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -536,8 +536,8 @@ ModulePTR loadModule(const string& module_name, LLVMContext* context)
         return module;
     } else {
         // Otherwise use import directories
-        for (size_t i = 0; i < gGlobal->gImportDirList.size(); i++) {
-            string file_name = gGlobal->gImportDirList[i] + '/' + module_name;
+        for (size_t i = 0; i < global::config().gImportDirList.size(); i++) {
+            string file_name = global::config().gImportDirList[i] + '/' + module_name;
             if (ModulePTR module1 = loadSingleModule(file_name, context)) {
                 return module1;
             }
@@ -559,8 +559,8 @@ bool linkModules(Module* dst, ModulePTR src, string& error)
 
 Module* linkAllModules(LLVMContext* context, Module* dst, string& error)
 {
-    for (size_t i = 0; i < gGlobal->gLibraryList.size(); i++) {
-        string    module_name = gGlobal->gLibraryList[i];
+    for (size_t i = 0; i < global::config().gLibraryList.size(); i++) {
+        string    module_name = global::config().gLibraryList[i];
         ModulePTR src         = loadModule(module_name, context);
         if (!src) {
             error = "cannot load module : " + module_name;

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -123,7 +123,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, array_typed->fSize, array_typed->getSizeBytes(), array_typed->fType->getType());
                 // Always use biggest size so that int/real access are correctly aligned
-                fStructOffset += (array_typed->fSize * gGlobal->audioSampleSize());
+                fStructOffset += (array_typed->fSize * global::config().audioSampleSize());
             } else {
                 *fOut << "(local $" << name << " " << type2String(inst->fType->getType()) << ")";
                 EndLine();
@@ -132,7 +132,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, 1, inst->fType->getSizeBytes(), inst->fType->getType());
                 // Always use biggest size so that int/real access are correctly aligned
-                fStructOffset += gGlobal->audioSampleSize();
+                fStructOffset += global::config().audioSampleSize();
             } else {
                 *fOut << "(local $" << name << " " << type2String(inst->fType->getType()) << ")";
                 // Local variable declaration has been previously separated as 'pure declaration' first,
@@ -201,7 +201,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
                 tab(fTab, *fOut);
                 // Possibly map fastmath functions, emcc compiled functions are prefixed with '_'
                 *fOut << "(import $" << inst->fName << " \"env\" \""
-                      << "_" << gGlobal->getMathFunction(inst->fName) << "\" (param ";
+                      << "_" << global::config().getMathFunction(inst->fName) << "\" (param ";
                 for (int i = 0; i < desc.fArgs; i++) {
                     *fOut << type2String(desc.fTypeIn);
                     if (i < desc.fArgs - 1) *fOut << " ";
@@ -351,7 +351,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
             // HACK : completely adhoc code for input/output...
         } else if ((startWith(indexed->getName(), "input") || startWith(indexed->getName(), "output"))) {
             // If 'i' loop variable moves in bytes, save index code generation of input/output
-            if (gGlobal->gLoopVarInBytes) {
+            if (global::config().gLoopVarInBytes) {
                 *fOut << "(i32.add (local.get $" << indexed->getName() << ") ";
                 indexed->getIndex()->accept(this);
                 *fOut << ")";

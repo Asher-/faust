@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -22,7 +22,7 @@
 /************************************************************************
  ************************************************************************
     Signals Order Rules
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     A small typing system that computes the "order" of a signal :
         0 = numerical constant
@@ -61,11 +61,11 @@ static int infereSigOrder(Tree sig);
 int getSigOrder(Tree sig)
 {
     Tree tt;
-    if (getProperty(sig, gGlobal->ORDERPROP, tt)) {
+    if (getProperty(sig, global::config().ORDERPROP, tt)) {
         return tree2int(tt);
     } else {
         int order = infereSigOrder(sig);
-        setProperty(sig, gGlobal->ORDERPROP, tree(order));
+        setProperty(sig, global::config().ORDERPROP, tree(order));
         return order;
     }
 }

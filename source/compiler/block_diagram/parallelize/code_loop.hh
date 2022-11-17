@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -122,7 +122,7 @@ class CodeLoop : public virtual Garbageable {
     ///< create a non recursive loop
     CodeLoop(CodeLoop* encl, const std::string& index_name, int size = 0)
         : fIsRecursive(false),
-          fRecSymbolSet(gGlobal->nil),
+          fRecSymbolSet(global::config().nil),
           fEnclosingLoop(encl),
           fSize(size),
           fOrder(-1),

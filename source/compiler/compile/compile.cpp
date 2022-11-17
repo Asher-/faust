@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -135,7 +135,7 @@ static std::string wdel(const std::string& s)
 void Compiler::generateMetaData()
 {
     // Add global metadata
-    for (map<Tree, set<Tree> >::iterator i = gGlobal->gMetaDataSet.begin(); i != gGlobal->gMetaDataSet.end(); i++) {
+    for (map<Tree, set<Tree> >::iterator i = global::config().gMetaDataSet.begin(); i != global::config().gMetaDataSet.end(); i++) {
         if (i->first != tree("author")) {
             stringstream str1, str2;
             str1 << *(i->first);
@@ -197,7 +197,7 @@ void Compiler::generateUserInterfaceTree(Tree t, bool root)
         // At rool level and if label is empty, use the name kept in "metadata" (either the one coded in 'declare name
         // "XXX";' line, or the filename)
         string group = (root && (simplifiedLabel == ""))
-                           ? unquote(tree2str(*(gGlobal->gMetaDataSet[tree("name")].begin())))
+                           ? unquote(tree2str(*(global::config().gMetaDataSet[tree("name")].begin())))
                            : checkNullLabel(t, simplifiedLabel);
         switch (orient) {
             case 0:

@@ -9,7 +9,7 @@
 /******************* BEGIN max-msp.cpp ****************/
 /************************************************************************
  FAUST Architecture File
- Copyright (C) 2004-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2004-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This Architecture section is free software; you can redistribute it
  and/or modify it under the terms of the GNU Lesser General Public

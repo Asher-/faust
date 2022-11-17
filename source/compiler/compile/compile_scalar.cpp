@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -92,10 +92,10 @@ Tree ScalarCompiler::prepare(Tree LS)
     Tree L1 = simplifyToNormalForm(LS);
 
     // dump normal form
-    if (gGlobal->gDumpNorm == 0) {
+    if (global::config().gDumpNorm == 0) {
         cout << ppsig(L1) << endl;
         throw faustexception("Dump normal form finished...\n");
-    } else if (gGlobal->gDumpNorm == 1) {
+    } else if (global::config().gDumpNorm == 1) {
         ppsigShared(L1, cout);
         throw faustexception("Dump shared normal form finished...\n");
     }
@@ -128,14 +128,14 @@ Tree ScalarCompiler::prepare(Tree LS)
 
     endTiming("prepare");
 
-    if (gGlobal->gDrawSignals) {
-        ofstream dotfile(subst("$0-sig.dot", gGlobal->makeDrawPath()).c_str());
+    if (global::config().gDrawSignals) {
+        ofstream dotfile(subst("$0-sig.dot", global::config().makeDrawPath()).c_str());
         sigToGraph(L2, dotfile);
     }
 
     // Generate VHDL if -vhdl option is set
-    if (gGlobal->gVHDLSwitch) {
-        sigVHDLFile(fOccMarkup, L2, gGlobal->gVHDLTrace);
+    if (global::config().gVHDLSwitch) {
+        sigVHDLFile(fOccMarkup, L2, global::config().gVHDLTrace);
     }
 
     return L2;
@@ -165,10 +165,10 @@ Tree ScalarCompiler::prepare2(Tree L0)
 
 string ScalarCompiler::dnf2code(Tree cc)
 {
-    if (cc == gGlobal->nil) return "";
+    if (cc == global::config().nil) return "";
     Tree c1 = hd(cc);
     cc      = tl(cc);
-    if (cc == gGlobal->nil) {
+    if (cc == global::config().nil) {
         return and2code(c1);
     } else {
         return subst("($0 || $1)", and2code(c1), dnf2code(cc));
@@ -177,10 +177,10 @@ string ScalarCompiler::dnf2code(Tree cc)
 
 string ScalarCompiler::and2code(Tree cs)
 {
-    if (cs == gGlobal->nil) return "";
+    if (cs == global::config().nil) return "";
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == gGlobal->nil) {
+    if (cs == global::config().nil) {
         return CS(c1);
     } else {
         return subst("($0 && $1)", CS(c1), and2code(cs));
@@ -189,10 +189,10 @@ string ScalarCompiler::and2code(Tree cs)
 
 string ScalarCompiler::cnf2code(Tree cs)
 {
-    if (cs == gGlobal->nil) return "";
+    if (cs == global::config().nil) return "";
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == gGlobal->nil) {
+    if (cs == global::config().nil) {
         return or2code(c1);
     } else {
         return subst("(($0) && $1)", or2code(c1), cnf2code(cs));
@@ -201,10 +201,10 @@ string ScalarCompiler::cnf2code(Tree cs)
 
 string ScalarCompiler::or2code(Tree cs)
 {
-    if (cs == gGlobal->nil) return "";
+    if (cs == global::config().nil) return "";
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == gGlobal->nil) {
+    if (cs == global::config().nil) {
         return CS(c1);
     } else {
         return subst("($0 || $1)", CS(c1), or2code(cs));
@@ -221,7 +221,7 @@ string ScalarCompiler::or2code(Tree cs)
 string ScalarCompiler::getConditionCode(Tree sig)
 {
     Tree cc = fConditionProperty[sig];
-    if ((cc != 0) && (cc != gGlobal->nil)) {
+    if ((cc != 0) && (cc != global::config().nil)) {
         return CND2CODE(cc);
     } else {
         return "";
@@ -325,7 +325,7 @@ void ScalarCompiler::compileMultiSignal(Tree L)
 
     for (int i = 0; i < fClass->inputs(); i++) {
         fClass->addZone3(subst("$1* input$0 = input[$0];", T(i), xfloat()));
-        if (gGlobal->gInPlace) {
+        if (global::config().gInPlace) {
             CS(sigInput(i));
         }
     }
@@ -346,8 +346,8 @@ void ScalarCompiler::compileMultiSignal(Tree L)
         fDescription->ui(prepareUserInterfaceTree(fUIRoot));
     }
 
-    if (gGlobal->gPrintJSONSwitch) {
-        ofstream xout(subst("$0.json", gGlobal->makeDrawPath()).c_str());
+    if (global::config().gPrintJSONSwitch) {
+        ofstream xout(subst("$0.json", global::config().makeDrawPath()).c_str());
         xout << fJSON.JSON();
     }
 
@@ -482,7 +482,7 @@ string ScalarCompiler::generateCode(Tree sig)
         CS(y);
         return generateCacheCode(sig, CS(x));
     } else if (isSigControl(sig, x, y)) {
-        if (gGlobal->gVectorSwitch) {
+        if (global::config().gVectorSwitch) {
             throw faustexception("ERROR : 'control/enable' can only be used in scalar mode\n");
         }
         return generateControl(sig, x, y);
@@ -558,7 +558,7 @@ string ScalarCompiler::generateFVar(Tree sig, const std::string& file, const std
 
 string ScalarCompiler::generateInput(Tree sig, const std::string& idx)
 {
-    if (gGlobal->gInPlace) {
+    if (global::config().gInPlace) {
         // inputs must be cached for in-place transformations
         return forceCacheCode(sig, subst("$1input$0[i]", idx, icast()));
     } else {
@@ -1038,7 +1038,7 @@ string ScalarCompiler::generateStaticTable(Tree sig, Tree tsize, Tree content)
     }
 
     // declaration de la table
-    if (gGlobal->gMemoryManager) {
+    if (global::config().gMemoryManager) {
         fClass->addDeclCode(subst("static $0* \t$1;", ctype, vname));
         fClass->addStaticFields(subst("$0* \t$1::$2 = 0;", ctype, fClass->getClassName(), vname));
         fClass->addStaticInitCode(
@@ -1301,7 +1301,7 @@ string ScalarCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
         // not a real vector name but a scalar name
         return vecname;
 
-    } else if (mxd < gGlobal->gMaxCopyDelay) {
+    } else if (mxd < global::config().gMaxCopyDelay) {
         int d;
         if (isSigInt(delay, &d)) {
             return subst("$0[$1]", vecname, CS(delay));
@@ -1342,7 +1342,7 @@ string ScalarCompiler::generateDelayVecNoTemp(Tree sig, const std::string& exp, 
     // bool odocc = fOccMarkup->retrieve(sig)->hasOutDelayOccurences();
     string ccs = getConditionCode(sig);
 
-    if (mxd < gGlobal->gMaxCopyDelay) {
+    if (mxd < global::config().gMaxCopyDelay) {
         // short delay : we copy
         fClass->addDeclCode(subst("$0 \t$1[$2];", ctype, vname, T(mxd + 1)));
         fClass->addClearCode(subst("for (int i=0; i<$1; i++) $0[i] = 0;", vname, T(mxd + 1)));
@@ -1395,7 +1395,7 @@ void ScalarCompiler::generateDelayLine(const std::string& ctype, const std::stri
             fClass->addExecCode(Statement(ccs, subst("\t$0 = $1;", vname, exp)));
         }
 
-    } else if (mxd < gGlobal->gMaxCopyDelay) {
+    } else if (mxd < global::config().gMaxCopyDelay) {
         // cerr << "small delay : " << vname << "[" << mxd << "]" << endl;
 
         // short delay : we copy

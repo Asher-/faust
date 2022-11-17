@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -44,26 +44,26 @@ namespace Faust {
               throw faustexception("ERROR : -lang soul not supported since SOUL backend is not built\n");
           #endif
 
-          gGlobal->gAllowForeignFunction = false;  // No foreign functions
-          gGlobal->gAllowForeignConstant = false;  // No foreign constant
-          gGlobal->gAllowForeignVar      = false;  // No foreign variable
+          global::config().gAllowForeignFunction = false;  // No foreign functions
+          global::config().gAllowForeignConstant = false;  // No foreign constant
+          global::config().gAllowForeignVar      = false;  // No foreign variable
 
           // FIR is generated with internal real instead of FAUSTFLOAT (see InstBuilder::genBasicTyped)
-          gGlobal->gFAUSTFLOAT2Internal = true;
+          global::config().gFAUSTFLOAT2Internal = true;
 
           // "one sample control" model by default;
-          gGlobal->gOneSampleControl = true;
+          global::config().gOneSampleControl = true;
           ::Faust::Primitive::Math::needManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
 
-          this->_codeContainer = SOULCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+          this->_codeContainer = SOULCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out);
 
-          if (gGlobal->gVectorSwitch) {
+          if (global::config().gVectorSwitch) {
               this->_instructionCompiler = new DAGInstructionsCompiler(this->_codeContainer);
           } else {
               this->_instructionCompiler = new InstructionsCompiler(this->_codeContainer);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
       void compile(Tree signals, int numInputs, int numOutputs) override { throw "std::ostream required."; };

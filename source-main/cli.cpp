@@ -22,7 +22,6 @@
 #ifndef FAUST_LIB
 
 #include <iostream>
-<<<<<<< HEAD
 #include "global.hh"
 #include "tlib/compatibility.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
@@ -40,8 +39,8 @@ int main(int argc, const char* argv[])
       ::Faust::CLI faust_cli(argc, argv);
       ::Faust::Compiler::Common* compiler = faust_cli.parse();
       compiler->createFactory();
-      error_msg = gGlobal->gErrorMsg;
-      factory   = gGlobal->gDSPFactory;
+      error_msg = global::config().gErrorMsg;
+      factory   = global::config().gDSPFactory;
       if (factory) {
           vector<string> warning_messages = factory->getWarningMessages();
           if (gAllWarning && warning_messages.size() > 0) {

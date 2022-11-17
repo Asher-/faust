@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -29,12 +29,12 @@
 
 DeclareStructTypeInst* isStructType(const std::string& name)
 {
-    if (gGlobal->gVarTypeTable.find(name) != gGlobal->gVarTypeTable.end()) {
-        Typed*         type     = gGlobal->gVarTypeTable[name];
+    if (global::config().gVarTypeTable.find(name) != global::config().gVarTypeTable.end()) {
+        Typed*         type     = global::config().gVarTypeTable[name];
         Typed::VarType ext_type = Typed::getTypeFromPtr(type->getType());
         // If type is an external Structured type
-        if (gGlobal->gExternalStructTypes.find(ext_type) != gGlobal->gExternalStructTypes.end()) {
-            return gGlobal->gExternalStructTypes[ext_type];
+        if (global::config().gExternalStructTypes.find(ext_type) != global::config().gExternalStructTypes.end()) {
+            return global::config().gExternalStructTypes[ext_type];
         }
     }
     return nullptr;

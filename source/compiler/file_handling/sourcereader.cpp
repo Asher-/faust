@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -105,12 +105,12 @@ FILE* fopenSearch(const char* filename, string& fullpath)
         buildFullPathname(fullpath, filename);
         // enrich the supplied directories paths with the directory containing the loaded file,
         // so that local files relative to this added directory can then be loaded
-        gGlobal->gImportDirList.push_back(fileDirname(fullpath));
+        global::config().gImportDirList.push_back(fileDirname(fullpath));
         return f;
     }
 
     // otherwise search file in user supplied directories paths
-    for (string dirname : gGlobal->gImportDirList) {
+    for (string dirname : global::config().gImportDirList) {
         if ((f = fopenAt(fullpath, dirname, filename))) {
             return f;
         }
@@ -196,12 +196,12 @@ Tree SourceReader::parseFile(const char* fname)
         #ifdef EMCC
             // Try to open with the complete URL
             Tree res = nullptr;
-            for (size_t i = 0; i < gGlobal->gImportDirList.size(); i++) {
-                if (isURL(gGlobal->gImportDirList[i].c_str())) {
+            for (size_t i = 0; i < global::config().gImportDirList.size(); i++) {
+                if (isURL(global::config().gImportDirList[i].c_str())) {
                     // Keep the created filename in the global state, so that the 'fname'
                     // global variable always points to a valid string
-                    gGlobal->gImportFilename = gGlobal->gImportDirList[i] + fname;
-                    if ((res = parseFile(gGlobal->gImportFilename.c_str()))) return res;
+                    global::config().gImportFilename = global::config().gImportDirList[i] + fname;
+                    if ((res = parseFile(global::config().gImportFilename.c_str()))) return res;
                 }
             }
         #endif
@@ -214,25 +214,25 @@ Tree SourceReader::parseFile(const char* fname)
 
 void declareDoc(Tree t)
 {
-	gGlobal->gDocVector.push_back(t);
+	global::config().gDocVector.push_back(t);
 }
 
 Tree SourceReader::parseString(const char* stream_name)
 {
     // Clear global "inputstring" so that imported files will be correctly parsed with "parse"
-    std::string parse_string( gGlobal->gInputString );
-    gGlobal->gInputString = nullptr;
+    std::string parse_string( global::config().gInputString );
+    global::config().gInputString = nullptr;
 
-    gGlobal->gParser.parseString(parse_string, stream_name);
+    global::config().gParser.parseString(parse_string, stream_name);
     /* We have parsed a valid file */
-    fFilePathnames.push_back(gGlobal->gParser._streamName);
-    gGlobal->gResult = gGlobal->gParser._ast;
-    return gGlobal->gParser._ast;
+    fFilePathnames.push_back(global::config().gParser._streamName);
+    global::config().gResult = global::config().gParser._ast;
+    return global::config().gParser._ast;
 }
 
 Tree SourceReader::parseString(const char* buffer, const char* stream_name)
 {
-    gGlobal->gInputString = buffer;
+    global::config().gInputString = buffer;
 
     return parseString( stream_name );
 }
@@ -240,11 +240,11 @@ Tree SourceReader::parseString(const char* buffer, const char* stream_name)
 
 Tree SourceReader::parseLocal(const char* fname)
 {
-    gGlobal->gParser.parseFile(fname);
+    global::config().gParser.parseFile(fname);
     /* We have parsed a valid file */
-    fFilePathnames.push_back(gGlobal->gParser._streamName);
-    gGlobal->gResult = gGlobal->gParser._ast;
-    return gGlobal->gParser._ast;
+    fFilePathnames.push_back(global::config().gParser._streamName);
+    global::config().gResult = global::config().gParser._ast;
+    return global::config().gParser._ast;
 }
 
 /**
@@ -262,7 +262,7 @@ bool SourceReader::cached(string fname)
 // Add function metadata (using a boxMetadata construction) to a list of definitions
 static Tree addFunctionMetadata(Tree ldef, FunMDSet& M)
 {
-    Tree lresult = gGlobal->nil; // the transformed list of definitions
+    Tree lresult = global::config().nil; // the transformed list of definitions
 
     // for each definition def of ldef
     for (; !isNil(ldef); ldef = tl(ldef)) {
@@ -286,12 +286,12 @@ static Tree addFunctionMetadata(Tree ldef, FunMDSet& M)
 
 void SourceReader::checkName()
 {
-    if (gGlobal->gMasterDocument == yyfilename) {
+    if (global::config().gMasterDocument == yyfilename) {
         Tree name = tree("name");
-        if (gGlobal->gMetaDataSet.find(name) == gGlobal->gMetaDataSet.end()) {
-            gGlobal->gMetaDataSet[name].insert(tree(quote(stripEnd(basename((char*)yyfilename), ".dsp"))));
+        if (global::config().gMetaDataSet.find(name) == global::config().gMetaDataSet.end()) {
+            global::config().gMetaDataSet[name].insert(tree(quote(stripEnd(basename((char*)yyfilename), ".dsp"))));
         }
-        gGlobal->gMetaDataSet[tree("filename")].insert(tree(quote(basename((char*)yyfilename))));
+        global::config().gMetaDataSet[tree("filename")].insert(tree(quote(basename((char*)yyfilename))));
     }
 }
 
@@ -373,12 +373,12 @@ Tree SourceReader::parseFile(const char* fname)
         #ifdef EMCC
             // Try to open with the complete URL
             Tree res = nullptr;
-            for (size_t i = 0; i < gGlobal->gImportDirList.size(); i++) {
-                if (isURL(gGlobal->gImportDirList[i].c_str())) {
+            for (size_t i = 0; i < global::config().gImportDirList.size(); i++) {
+                if (isURL(global::config().gImportDirList[i].c_str())) {
                     // Keep the created filename in the global state, so that the 'yyfilename'
                     // global variable always points to a valid string
-                    gGlobal->gImportFilename = gGlobal->gImportDirList[i] + fname;
-                    if ((res = parseFile(gGlobal->gImportFilename.c_str()))) return res;
+                    global::config().gImportFilename = global::config().gImportDirList[i] + fname;
+                    if ((res = parseFile(global::config().gImportFilename.c_str()))) return res;
                 }
             }
         #endif
@@ -394,10 +394,10 @@ Tree SourceReader::parseString(const char* fname)
     yyerr = 0;
     yylineno = 1;
     yyfilename = fname;
-    yy_scan_string(gGlobal->gInputString.c_str());
+    yy_scan_string(global::config().gInputString.c_str());
 
     // Clear global "inputstring" so that imported files will be correctly parsed with "parse"
-    gGlobal->gInputString = "";
+    global::config().gInputString = "";
     return parseLocal(fname);
 }
 
@@ -420,7 +420,7 @@ Tree SourceReader::parseLocal(const char* fname)
     // We have parsed a valid file
     checkName();
     fFilePathnames.push_back(fname);
-    return gGlobal->gResult;
+    return global::config().gResult;
 }
 
 /**
@@ -446,10 +446,10 @@ Tree SourceReader::getList(const char* fname)
 {
 	if (!cached(fname)) {
         // Previous metadata need to be cleared before parsing a file
-        gGlobal->gFunMDSet.clear();
-        Tree ldef = (gGlobal->gInputString != "") ? parseString(fname) : parseFile(fname);
+        global::config().gFunMDSet.clear();
+        Tree ldef = (global::config().gInputString.length()) ? parseString(fname) : parseFile(fname);
         // Definitions with metadata have to be wrapped into a boxMetadata construction
-        fFileCache[fname] = addFunctionMetadata(ldef, gGlobal->gFunMDSet);
+        fFileCache[fname] = addFunctionMetadata(ldef, global::config().gFunMDSet);
 	}
     return fFileCache[fname];
 }
@@ -488,7 +488,7 @@ vector<string> SourceReader::listLibraryFiles()
 Tree SourceReader::expandList(Tree ldef)
 {
 	set<string> visited;
-	return expandRec(ldef, visited, gGlobal->nil);
+	return expandRec(ldef, visited, global::config().nil);
 }
 
 Tree SourceReader::expandRec(Tree ldef, set<string>& visited, Tree lresult)

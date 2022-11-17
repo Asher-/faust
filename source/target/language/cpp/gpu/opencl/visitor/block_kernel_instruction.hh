@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -40,10 +40,10 @@ struct BlockKernelInstVisitor : public KernelInstVisitor {
     {
         /*
         if (inst->fAddress->getAccess() & Address::kGlobal) {
-            if (gGlobal->gSymbolGlobalsTable.find(inst->fAddress->getName()) == gGlobal->gSymbolGlobalsTable.end())
+            if (global::config().gSymbolGlobalsTable.find(inst->fAddress->getName()) == global::config().gSymbolGlobalsTable.end())
             {
                 // If global is not defined
-                gGlobal->gSymbolGlobalsTable[inst->fAddress->getName()] = 1;
+                global::config().gSymbolGlobalsTable[inst->fAddress->getName()] = 1;
             } else {
                 return;
             }

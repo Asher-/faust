@@ -46,7 +46,7 @@ ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::Var
             pushComputeDSPMethod(InstBuilder::genControlInst(ccs, InstBuilder::genStoreStackVar(vname, exp)));
         }
 
-    } else if (mxd < gGlobal->gMaxCopyDelay) {
+    } else if (mxd < global::config().gMaxCopyDelay) {
         // Generates table init
         generateInitArray(vname, ctype, mxd + 1);
 
@@ -59,16 +59,16 @@ ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::Var
 
     } else {
         int N = pow2limit(mxd + 1);
-        if (N <= gGlobal->gMaskDelayLineThreshold) {
+        if (N <= global::config().gMaskDelayLineThreshold) {
             ensureIotaCode();
 
             // Generates table init
             generateInitArray(vname, ctype, N);
 
             // Generate table use
-            if (gGlobal->gComputeIOTA) {  // Ensure IOTA base fixed delays are computed once
+            if (global::config().gComputeIOTA) {  // Ensure IOTA base fixed delays are computed once
                 if (fIOTATable.find(N) == fIOTATable.end()) {
-                    std::string   iota_name = subst("i$0", gGlobal->getFreshID(fCurrentIOTA + "_temp"));
+                    std::string   iota_name = subst("i$0", global::config().getFreshID(fCurrentIOTA + "_temp"));
                     FIRIndex value2    = FIRIndex(InstBuilder::genLoadStructVar(fCurrentIOTA)) & FIRIndex(N - 1);
 
                     pushPreComputeDSPMethod(InstBuilder::genDecStackVar(iota_name, InstBuilder::genInt32Typed(),
@@ -130,14 +130,14 @@ ValueInst* InstructionsCompilerJAX::generateDelayLine(ValueInst* exp, Typed::Var
 
 ValueInst* InstructionsCompilerJAX::generateSoundfile(Tree sig, Tree path)
 {
-    std::string varname = gGlobal->getFreshID("fSoundfile");
+    std::string varname = global::config().getFreshID("fSoundfile");
     std::string SFcache = varname + "ca";
 
     addUIWidget(reverse(tl(path)), uiWidget(hd(path), tree(varname), sig));
 
     pushDeclare(InstBuilder::genDecStructVar(varname, InstBuilder::genBasicTyped(Typed::kSound_ptr)));
 
-    if (gGlobal->gUseDefaultSound) {
+    if (global::config().gUseDefaultSound) {
         BlockInst* block = InstBuilder::genBlockInst();
         block->pushBackInst(InstBuilder::genStoreStructVar(varname, InstBuilder::genLoadGlobalVar("defaultsound")));
 
@@ -148,7 +148,7 @@ ValueInst* InstructionsCompilerJAX::generateSoundfile(Tree sig, Tree path)
             block, InstBuilder::genBlockInst()));
     }
 
-    if (gGlobal->gOneSample >= 0) {
+    if (global::config().gOneSample >= 0) {
         pushDeclare(InstBuilder::genDecStructVar(SFcache, InstBuilder::genBasicTyped(Typed::kSound_ptr)));
         pushComputeBlockMethod(InstBuilder::genStoreStructVar(SFcache, InstBuilder::genLoadStructVar(varname)));
     } else {

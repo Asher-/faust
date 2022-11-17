@@ -53,18 +53,18 @@ CodeContainer* CSharpCodeContainer::createContainer(const string& name, const st
     if (::Faust::Primitive::Math::floatSize == 3) {
         throw faustexception("ERROR : quad format not supported for CSharp\n");
     }
-    if (gGlobal->gOpenCLSwitch) {
+    if (global::config().gOpenCLSwitch) {
         throw faustexception("ERROR : OpenCL not supported for CSharp\n");
     }
-    if (gGlobal->gCUDASwitch) {
+    if (global::config().gCUDASwitch) {
         throw faustexception("ERROR : CUDA not supported for CSharp\n");
     }
 
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for CSharp\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for CSharp\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         throw faustexception("ERROR : Vector mode not supported for CSharp\n");
     } else {
         container = new CSharpScalarCodeContainer(name, super, numInputs, numOutputs, dst, kInt);
@@ -225,7 +225,7 @@ void CSharpCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "{";
 
-    for (auto& i : gGlobal->gMetaDataSet) {
+    for (auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             tab(n + 2, *fOut);
             *fOut << "MetaData.Declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

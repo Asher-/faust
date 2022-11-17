@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,7 @@ ValueInst* InstBuilder::genTypedZero(Typed::VarType type)
         return genRealNumInst(type, 0.0);
     } else {
         // Pointer type
-        if (gGlobal->gMachinePtrSize == 4) {
+        if (global::config().gMachinePtrSize == 4) {
             return genInt32NumInst(0);
         } else {
             return genInt64NumInst(0);
@@ -49,7 +49,7 @@ ValueInst* InstBuilder::genRealNumInst(Typed::VarType ctype, double num)
     if (ctype == Typed::kFloat) {
         return new FloatNumInst(float(num));
     } else if (ctype == Typed::kFloatMacro) {
-        if (gGlobal->gFAUSTFLOAT2Internal) {
+        if (global::config().gFAUSTFLOAT2Internal) {
             return genRealNumInst(itfloat(), num);
         } else {
             return genCastInst(new DoubleNumInst(num), genBasicTyped(Typed::kFloatMacro));
@@ -82,15 +82,15 @@ ValueInst* InstBuilder::genTypedNum(Typed::VarType type, double num)
 
 BasicTyped* InstBuilder::genBasicTyped(Typed::VarType type)
 {
-    return gGlobal->genBasicTyped(type);
+    return global::config().genBasicTyped(type);
 }
 
 // Function argument variable types are kept in the global num <===> type table
 NamedTyped* InstBuilder::genNamedTyped(const std::string& name, Typed* type)
 {
-    if (gGlobal->gVarTypeTable.find(name) == gGlobal->gVarTypeTable.end()) {
+    if (global::config().gVarTypeTable.find(name) == global::config().gVarTypeTable.end()) {
         // cout << "InstBuilder::genNamedTyped " << name << " " << Typed::gTypeString[type->getType()] << endl;
-        gGlobal->gVarTypeTable[name] = type;
+        global::config().gVarTypeTable[name] = type;
     }
     return new NamedTyped(name, type);
 }

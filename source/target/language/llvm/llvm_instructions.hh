@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -107,32 +107,32 @@ struct LLVMTypeHelper {
         fTypeMap[Typed::kFloat_ptr]     = getTyPtr(fTypeMap[Typed::kFloat]);
         fTypeMap[Typed::kFloat_ptr_ptr] = getTyPtr(fTypeMap[Typed::kFloat_ptr]);
     #if LLVM_VERSION_MAJOR < 12
-        fTypeMap[Typed::kFloat_vec]     = VectorType::get(fTypeMap[Typed::kFloat], gGlobal->gVecSize);
+        fTypeMap[Typed::kFloat_vec]     = VectorType::get(fTypeMap[Typed::kFloat], global::config().gVecSize);
         fTypeMap[Typed::kFloat_vec_ptr] = getTyPtr(fTypeMap[Typed::kFloat_vec]);
     #endif
         fTypeMap[Typed::kDouble]         = getDoubleTy();
         fTypeMap[Typed::kDouble_ptr]     = getTyPtr(fTypeMap[Typed::kDouble]);
         fTypeMap[Typed::kDouble_ptr_ptr] = getTyPtr(fTypeMap[Typed::kDouble_ptr]);
     #if LLVM_VERSION_MAJOR < 12
-        fTypeMap[Typed::kDouble_vec]     = VectorType::get(fTypeMap[Typed::kDouble], gGlobal->gVecSize);
+        fTypeMap[Typed::kDouble_vec]     = VectorType::get(fTypeMap[Typed::kDouble], global::config().gVecSize);
         fTypeMap[Typed::kDouble_vec_ptr] = getTyPtr(fTypeMap[Typed::kDouble_vec]);
     #endif
         fTypeMap[Typed::kInt32]         = getInt32Ty();
         fTypeMap[Typed::kInt32_ptr]     = getTyPtr(fTypeMap[Typed::kInt32]);
     #if LLVM_VERSION_MAJOR < 12
-        fTypeMap[Typed::kInt32_vec]     = VectorType::get(fTypeMap[Typed::kInt32], gGlobal->gVecSize);
+        fTypeMap[Typed::kInt32_vec]     = VectorType::get(fTypeMap[Typed::kInt32], global::config().gVecSize);
         fTypeMap[Typed::kInt32_vec_ptr] = getTyPtr(fTypeMap[Typed::kInt32_vec]);
     #endif
         fTypeMap[Typed::kInt64]         = getInt64Ty();
         fTypeMap[Typed::kInt64_ptr]     = getTyPtr(fTypeMap[Typed::kInt64]);
     #if LLVM_VERSION_MAJOR < 12
-        fTypeMap[Typed::kInt64_vec]     = VectorType::get(fTypeMap[Typed::kInt64], gGlobal->gVecSize);
+        fTypeMap[Typed::kInt64_vec]     = VectorType::get(fTypeMap[Typed::kInt64], global::config().gVecSize);
         fTypeMap[Typed::kInt64_vec_ptr] = getTyPtr(fTypeMap[Typed::kInt64_vec]);
     #endif
         fTypeMap[Typed::kBool]         = getInt1Ty();
         fTypeMap[Typed::kBool_ptr]     = getTyPtr(fTypeMap[Typed::kBool]);
     #if LLVM_VERSION_MAJOR < 12
-        fTypeMap[Typed::kBool_vec]     = VectorType::get(fTypeMap[Typed::kBool], gGlobal->gVecSize);
+        fTypeMap[Typed::kBool_vec]     = VectorType::get(fTypeMap[Typed::kBool], global::config().gVecSize);
         fTypeMap[Typed::kBool_vec_ptr] = getTyPtr(fTypeMap[Typed::kBool_vec]);
     #endif
         // Takes the type of internal real
@@ -146,7 +146,7 @@ struct LLVMTypeHelper {
         fTypeMap[Typed::kVoid_ptr]     = getInt8TyPtr();
 
         // External structured type definition
-        for (const auto& it : gGlobal->gExternalStructTypes) {
+        for (const auto& it : global::config().gExternalStructTypes) {
             LLVMType new_type                         = convertFIRType((it.second)->fType);
             fTypeMap[it.first]                        = new_type;
             fTypeMap[Typed::getPtrFromType(it.first)] = getTyPtr(new_type);
@@ -875,7 +875,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
     #endif
         } else {
             // Get function in the module
-            Function* function = fModule->getFunction(gGlobal->getMathFunction(inst->fName));
+            Function* function = fModule->getFunction(global::config().getMathFunction(inst->fName));
             faustassert(function);
 
             // Result is function call

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -79,9 +79,9 @@ static void clearColors(Tree exp);          ///< remove the color property of ex
 int allocateColor(Tree exp)
 {
     //	return int(exp);
-    int& color = gGlobal->gColorMap[exp];
+    int& color = global::config().gColorMap[exp];
     if (!color) {
-        color = gGlobal->gNextFreeColor++;
+        color = global::config().gNextFreeColor++;
     }
     return color;
 }
@@ -142,7 +142,7 @@ void listMultiColoredExp(Tree exp, set<Tree>& lst)
  */
 void setColorProperty(Tree sig, set<int>* colorset)
 {
-    setProperty(sig, gGlobal->COLORPROPERTY, tree((void*)colorset));
+    setProperty(sig, global::config().COLORPROPERTY, tree((void*)colorset));
 }
 
 /**
@@ -152,7 +152,7 @@ void setColorProperty(Tree sig, set<int>* colorset)
 set<int>* getColorProperty(Tree sig)
 {
     Tree tt;
-    if (!getProperty(sig, gGlobal->COLORPROPERTY, tt)) {
+    if (!getProperty(sig, global::config().COLORPROPERTY, tt)) {
         return 0;
     } else {
         return (set<int>*)tree2ptr(tt);

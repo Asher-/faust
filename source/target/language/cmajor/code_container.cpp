@@ -62,11 +62,11 @@ CodeContainer* CmajorCodeContainer::createContainer(const string& name, int numI
     
     CodeContainer* container;
     
-    if (gGlobal->gOpenMPSwitch) {
+    if (global::config().gOpenMPSwitch) {
         throw faustexception("ERROR : OpenMP not supported for Cmajor\n");
-    } else if (gGlobal->gSchedulerSwitch) {
+    } else if (global::config().gSchedulerSwitch) {
         throw faustexception("ERROR : Scheduler not supported for Cmajor\n");
-    } else if (gGlobal->gVectorSwitch) {
+    } else if (global::config().gVectorSwitch) {
         throw faustexception("ERROR : Vector mode not supported for Cmajor\n");
         // container = new CmajorVectorCodeContainer(name, numInputs, numOutputs, dst);
     } else {
@@ -209,7 +209,7 @@ void CmajorCodeContainer::produceClass()
     tab(n + 1, *fOut);
     fCodeProducer.Tab(n + 1);
 
-    if (gGlobal->gOutputLang == "cmajor-dsp") {
+    if (global::config().gOutputLang == "cmajor-dsp") {
         string json = generateJSONAux();
         *fOut << "// Event used to call additional methods";
         tab(n + 1, *fOut);
@@ -263,7 +263,7 @@ void CmajorCodeContainer::produceClass()
 
     /*
     // Debug version
-    if (gGlobal->gOutputLang == "cmajor-dsp") {
+    if (global::config().gOutputLang == "cmajor-dsp") {
         *fOut << "// Event handler used to call additional methods";
         tab(n + 1, *fOut);
         *fOut << "event eventbuildUserInterface (int dummy) { console << \"eventbuildUserInterface\n\"; }";
@@ -280,7 +280,7 @@ void CmajorCodeContainer::produceClass()
     }
     */
 
-    if (gGlobal->gOutputLang == "cmajor-dsp") {
+    if (global::config().gOutputLang == "cmajor-dsp") {
         *fOut << "// Event handler used to call additional methods";
         tab(n + 1, *fOut);
         *fOut << "event eventbuildUserInterface (int dummy) {}";

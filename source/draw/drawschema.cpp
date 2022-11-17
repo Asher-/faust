@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -144,8 +144,8 @@ static schema* addSchemaOutputs(int outs, schema* x);
  */
 void drawSchema(Tree bd, const char* projname, const char* dev)
 {
-    gGlobal->gDevSuffix   = dev; // .svg or .ps used to choose output device
-    gGlobal->gFoldingFlag = boxComplexity(bd) > gGlobal->gFoldThreshold;
+    global::config().gDevSuffix   = dev; // .svg or .ps used to choose output device
+    global::config().gFoldingFlag = boxComplexity(bd) > global::config().gFoldThreshold;
 
     mkchDir(projname);      // create a directory to store files
 
@@ -199,10 +199,10 @@ static bool isIntTree(Tree l, vector<int>& v)
  */
 static void scheduleDrawing(Tree t)
 {
-    if (gGlobal->gDrawnExp.find(t) == gGlobal->gDrawnExp.end()) {
-        gGlobal->gDrawnExp.insert(t);
-        gGlobal->gBackLink.insert(std::make_pair(t, gGlobal->gSchemaFileName));  // remember the enclosing filename
-        gGlobal->gPendingExp.push(t);
+    if (global::config().gDrawnExp.find(t) == global::config().gDrawnExp.end()) {
+        global::config().gDrawnExp.insert(t);
+        global::config().gBackLink.insert(std::make_pair(t, global::config().gSchemaFileName));  // remember the enclosing filename
+        global::config().gPendingExp.push(t);
     }
 }
 
@@ -211,9 +211,9 @@ static void scheduleDrawing(Tree t)
  */
 static bool pendingDrawing(Tree& t)
 {
-    if (gGlobal->gPendingExp.empty()) return false;
-    t = gGlobal->gPendingExp.top();
-    gGlobal->gPendingExp.pop();
+    if (global::config().gPendingExp.empty()) return false;
+    t = global::config().gPendingExp.top();
+    global::config().gPendingExp.pop();
     return true;
 }
 
@@ -232,7 +232,7 @@ static void writeSchemaFile(Tree bd)
 
     char temp[1024];
 
-    gGlobal->gOccurrences = new Occurrences(bd);
+    global::config().gOccurrences = new Occurrences(bd);
     getBoxType(bd, &ins, &outs);
 
     bool hasname = getDefNameProperty(bd, id);
@@ -245,15 +245,15 @@ static void writeSchemaFile(Tree bd)
 
     // generate legal file name for the schema
     stringstream s1;
-    s1 << legalFileName(bd, 1024, temp) << "." << gGlobal->gDevSuffix;
+    s1 << legalFileName(bd, 1024, temp) << "." << global::config().gDevSuffix;
     string res1              = s1.str();
-    gGlobal->gSchemaFileName = res1;
+    global::config().gSchemaFileName = res1;
 
     // generate the label of the schema
-    string link = gGlobal->gBackLink[bd];
+    string link = global::config().gBackLink[bd];
     ts = makeTopSchema(addSchemaOutputs(outs, addSchemaInputs(ins, generateInsideSchema(bd))), 20, tree2str(id), link);
     // draw to the device defined by gDevSuffix
-    if (strcmp(gGlobal->gDevSuffix, "svg") == 0) {
+    if (strcmp(global::config().gDevSuffix, "svg") == 0) {
         SVGDev dev(res1.c_str(), ts->width(), ts->height());
         ts->place(0, 0, kLeftRight);
         ts->draw(dev);
@@ -308,7 +308,7 @@ static bool isInverter(Tree t)
 {
     // cerr << "isInverter " << t << '$' << boxpp(t) << endl;
     for (int i = 0; i < 6; i++) {
-        if (t == gGlobal->gInverter[i]) return true;
+        if (t == global::config().gInverter[i]) return true;
     }
     return false;
 }
@@ -325,17 +325,17 @@ static bool isPureRouting(Tree t)
     int  ID;
     Tree x, y;
 
-    if (gGlobal->gPureRoutingProperty->get(t, r)) {
+    if (global::config().gPureRoutingProperty->get(t, r)) {
         return r;
     } else if (isBoxCut(t) || isBoxWire(t) || isInverter(t) || isBoxSlot(t, &ID) ||
                (isBoxPar(t, x, y) && isPureRouting(x) && isPureRouting(y)) ||
                (isBoxSeq(t, x, y) && isPureRouting(x) && isPureRouting(y)) ||
                (isBoxSplit(t, x, y) && isPureRouting(x) && isPureRouting(y)) ||
                (isBoxMerge(t, x, y) && isPureRouting(x) && isPureRouting(y))) {
-        gGlobal->gPureRoutingProperty->set(t, true);
+        global::config().gPureRoutingProperty->set(t, true);
         return true;
     } else {
-        gGlobal->gPureRoutingProperty->set(t, false);
+        global::config().gPureRoutingProperty->set(t, false);
         return false;
     }
 }
@@ -359,12 +359,12 @@ static schema* generateDiagramSchema(Tree t)
         // cerr << t << "\tNAMED : " << s.str() << endl;
     }
 
-    if (gGlobal->gFoldingFlag && /*(gOccurrences->getCount(t) > 0) &&*/
-        (boxComplexity(t) >= gGlobal->gFoldComplexity) && getDefNameProperty(t, id)) {
+    if (global::config().gFoldingFlag && /*(gOccurrences->getCount(t) > 0) &&*/
+        (boxComplexity(t) >= global::config().gFoldComplexity) && getDefNameProperty(t, id)) {
         char temp[1024];
         getBoxType(t, &ins, &outs);
         stringstream l;
-        l << legalFileName(t, 1024, temp) << "." << gGlobal->gDevSuffix;
+        l << legalFileName(t, 1024, temp) << "." << global::config().gDevSuffix;
         scheduleDrawing(t);
         return makeBlockSchema(ins, outs, tree2str(id), linkcolor, l.str());
 

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -387,7 +387,7 @@ class CInstVisitor : public TextInstVisitor {
     virtual void visit(FunCallInst* inst)
     {
         string name = (gPolyMathLibTable.find(inst->fName) != gPolyMathLibTable.end()) ? gPolyMathLibTable[inst->fName] : inst->fName;
-        *fOut << gGlobal->getMathFunction(name) << "(";
+        *fOut << global::config().getMathFunction(name) << "(";
 
         // Compile parameters
         generateFunCallArgs(inst->fArgs.begin(), inst->fArgs.end(), inst->fArgs.size());
@@ -415,7 +415,7 @@ class CInstVisitor : public TextInstVisitor {
             c99_declare_inst->accept(this);
         }
 
-        if (gGlobal->gClang && !inst->fIsRecursive) {
+        if (global::config().gClang && !inst->fIsRecursive) {
             *fOut << "#pragma clang loop vectorize(enable) interleave(enable)";
             tab(fTab, *fOut);
         }

@@ -127,204 +127,204 @@ bool processCmdline(int argc, const char* argv[])
 
     while (i < argc) {
         if (isCmd(argv[i], "-h", "--help")) {
-            gGlobal->gHelpSwitch = true;
+            global::config().gHelpSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-lang", "--language") && (i + 1 < argc)) {
-            gGlobal->gOutputLang = argv[i + 1];
+            global::config().gOutputLang = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-v", "--version")) {
-            gGlobal->gVersionSwitch = true;
+            global::config().gVersionSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-libdir", "--libdir")) {
-            gGlobal->gLibDirSwitch = true;
+            global::config().gLibDirSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-includedir", "--includedir")) {
-            gGlobal->gIncludeDirSwitch = true;
+            global::config().gIncludeDirSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-archdir", "--archdir")) {
-            gGlobal->gArchDirSwitch = true;
+            global::config().gArchDirSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-dspdir", "--dspdir")) {
-            gGlobal->gDspDirSwitch = true;
+            global::config().gDspDirSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-pathslist", "--pathslist")) {
-            gGlobal->gPathListSwitch = true;
+            global::config().gPathListSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-d", "--details")) {
-            gGlobal->gDetailsSwitch = true;
+            global::config().gDetailsSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-a", "--architecture") && (i + 1 < argc)) {
-            gGlobal->gArchFile = argv[i + 1];
+            global::config().gArchFile = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-inj", "--inject") && (i + 1 < argc)) {
-            gGlobal->gInjectFlag = true;
-            gGlobal->gInjectFile = argv[i + 1];
+            global::config().gInjectFlag = true;
+            global::config().gInjectFile = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-o") && (i + 1 < argc)) {
-            gGlobal->gOutputFile = argv[i + 1];
+            global::config().gOutputFile = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-wi", "--widening-iterations") && (i + 1 < argc)) {
-            gGlobal->gWideningLimit = std::atoi(argv[i + 1]);
+            global::config().gWideningLimit = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-ni", "--narrowing-iterations") && (i + 1 < argc)) {
-            gGlobal->gNarrowingLimit = std::atoi(argv[i + 1]);
+            global::config().gNarrowingLimit = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-ps", "--postscript")) {
-            gGlobal->gDrawPSSwitch = true;
+            global::config().gDrawPSSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-xml", "--xml")) {
-            gGlobal->gPrintXMLSwitch = true;
+            global::config().gPrintXMLSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-json", "--json")) {
-            gGlobal->gPrintJSONSwitch = true;
+            global::config().gPrintJSONSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-tg", "--task-graph")) {
-            gGlobal->gGraphSwitch = true;
+            global::config().gGraphSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-sg", "--signal-graph")) {
-            gGlobal->gDrawSignals = true;
+            global::config().gDrawSignals = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-drf", "--draw-route-frame")) {
-            gGlobal->gDrawRouteFrame = true;
+            global::config().gDrawRouteFrame = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-blur", "--shadow-blur")) {
-            gGlobal->gShadowBlur = true;
+            global::config().gShadowBlur = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-sc", "--scaled-svg")) {
-            gGlobal->gScaledSVG = true;
+            global::config().gScaledSVG = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-svg", "--svg")) {
-            gGlobal->gDrawSVGSwitch = true;
+            global::config().gDrawSVGSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-vhdl", "--vhdl")) {
-            gGlobal->gVHDLSwitch = true;
+            global::config().gVHDLSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-vhdl-trace", "--vhdl-trace")) {
-            gGlobal->gVHDLTrace = true;
+            global::config().gVHDLTrace = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-vhdl-type", "--vhdl-type") && (i + 1 < argc)) {
-            gGlobal->gVHDLFloatType = std::atoi(argv[i + 1]);
+            global::config().gVHDLFloatType = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-vhdl-msb", "--vhdl-msb") && (i + 1 < argc)) {
-            gGlobal->gVHDLFloatMSB = std::atoi(argv[i + 1]);
+            global::config().gVHDLFloatMSB = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-vhdl-lsb", "--vhdl-lsb") && (i + 1 < argc)) {
-            gGlobal->gVHDLFloatLSB = std::atoi(argv[i + 1]);
+            global::config().gVHDLFloatLSB = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-f", "--fold") && (i + 1 < argc)) {
-            gGlobal->gFoldThreshold = std::atoi(argv[i + 1]);
+            global::config().gFoldThreshold = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-fc", "--fold-complexity") && (i + 1 < argc)) {
-            gGlobal->gFoldComplexity = std::atoi(argv[i + 1]);
+            global::config().gFoldComplexity = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-mns", "--max-name-size") && (i + 1 < argc)) {
-            gGlobal->gMaxNameSize = std::atoi(argv[i + 1]);
+            global::config().gMaxNameSize = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-sn", "--simple-names")) {
-            gGlobal->gSimpleNames = true;
+            global::config().gSimpleNames = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-mcd", "--max-copy-delay") && (i + 1 < argc)) {
-            gGlobal->gMaxCopyDelay = std::atoi(argv[i + 1]);
+            global::config().gMaxCopyDelay = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-dlt", "-delay-line-threshold") && (i + 1 < argc)) {
-            gGlobal->gMaskDelayLineThreshold = std::atoi(argv[i + 1]);
+            global::config().gMaskDelayLineThreshold = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-mem", "--memory-manager")) {
-            gGlobal->gMemoryManager = true;
+            global::config().gMemoryManager = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-sd", "--simplify-diagrams")) {
-            gGlobal->gSimplifyDiagrams = true;
+            global::config().gSimplifyDiagrams = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-vec", "--vectorize")) {
-            gGlobal->gVectorSwitch = true;
+            global::config().gVectorSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-scal", "--scalar")) {
-            gGlobal->gVectorSwitch = false;
+            global::config().gVectorSwitch = false;
             i += 1;
 
         } else if (isCmd(argv[i], "-dfs", "--deepFirstScheduling")) {
-            gGlobal->gDeepFirstSwitch = true;
+            global::config().gDeepFirstSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-vs", "--vec-size") && (i + 1 < argc)) {
-            gGlobal->gVecSize = std::atoi(argv[i + 1]);
+            global::config().gVecSize = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-lv", "--loop-variant") && (i + 1 < argc)) {
-            gGlobal->gVectorLoopVariant = std::atoi(argv[i + 1]);
+            global::config().gVectorLoopVariant = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-omp", "--openmp")) {
-            gGlobal->gOpenMPSwitch = true;
+            global::config().gOpenMPSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-pl", "--par-loop")) {
-            gGlobal->gOpenMPLoop = true;
+            global::config().gOpenMPLoop = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-sch", "--scheduler")) {
-            gGlobal->gSchedulerSwitch = true;
+            global::config().gSchedulerSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-ocl", "--openCL")) {
-            gGlobal->gOpenCLSwitch = true;
+            global::config().gOpenCLSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-cuda", "--CUDA")) {
-            gGlobal->gCUDASwitch = true;
+            global::config().gCUDASwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-g", "--groupTasks")) {
-            gGlobal->gGroupTaskSwitch = true;
+            global::config().gGroupTaskSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-fun", "--funTasks")) {
-            gGlobal->gFunTaskSwitch = true;
+            global::config().gFunTaskSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-uim", "--user-interface-macros")) {
-            gGlobal->gUIMacroSwitch = true;
+            global::config().gUIMacroSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-t", "--timeout") && (i + 1 < argc)) {
-            gGlobal->gTimeout = std::atoi(argv[i + 1]);
+            global::config().gTimeout = std::atoi(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-time", "--compilation-time")) {
@@ -333,168 +333,168 @@ bool processCmdline(int argc, const char* argv[])
 
             // 'real' options
         } else if (isCmd(argv[i], "-single", "--single-precision-floats")) {
-            if (float_size && gGlobal->gFloatSize != 1) {
+            if (float_size && global::config().gFloatSize != 1) {
                 throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
             } else {
                 float_size = true;
             }
-            gGlobal->gFloatSize = 1;
+            global::config().gFloatSize = 1;
             i += 1;
 
         } else if (isCmd(argv[i], "-double", "--double-precision-floats")) {
-            if (float_size && gGlobal->gFloatSize != 2) {
+            if (float_size && global::config().gFloatSize != 2) {
                 throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
             } else {
                 float_size = true;
             }
-            gGlobal->gFloatSize = 2;
+            global::config().gFloatSize = 2;
             i += 1;
 
         } else if (isCmd(argv[i], "-quad", "--quad-precision-floats")) {
-            if (float_size && gGlobal->gFloatSize != 3) {
+            if (float_size && global::config().gFloatSize != 3) {
                 throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
             } else {
                 float_size = true;
             }
-            gGlobal->gFloatSize = 3;
+            global::config().gFloatSize = 3;
             i += 1;
 
         } else if (isCmd(argv[i], "-fx", "--fixed-point")) {
-            if (float_size && gGlobal->gFloatSize != 4) {
+            if (float_size && global::config().gFloatSize != 4) {
                 throw faustexception("ERROR : cannot using -single, -double, -quad or -fx at the same time\n");
             } else {
                 float_size = true;
             }
-            gGlobal->gFloatSize = 4;
+            global::config().gFloatSize = 4;
             i += 1;
 
         } else if (isCmd(argv[i], "-mdoc", "--mathdoc")) {
-            gGlobal->gPrintDocSwitch = true;
+            global::config().gPrintDocSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-mdlang", "--mathdoc-lang") && (i + 1 < argc)) {
-            gGlobal->gDocLang = argv[i + 1];
+            global::config().gDocLang = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-stripmdoc", "--strip-mdoc-tags")) {
-            gGlobal->gStripDocSwitch = true;
+            global::config().gStripDocSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-flist", "--file-list")) {
-            gGlobal->gPrintFileListSwitch = true;
+            global::config().gPrintFileListSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-norm", "--normalized-form")) {
-            gGlobal->gDumpNorm = 0;
+            global::config().gDumpNorm = 0;
             i += 1;
 
         } else if (isCmd(argv[i], "-norm1", "--normalized-form1")) {
-            gGlobal->gDumpNorm = 1;
+            global::config().gDumpNorm = 1;
             i += 1;
 
         } else if (isCmd(argv[i], "-cn", "--class-name") && (i + 1 < argc)) {
             vector<char> rep    = {'@', ' ', '(', ')', '/', '\\', '.'};
-            gGlobal->gClassName = replaceCharList(argv[i + 1], rep, '_');
+            global::config().gClassName = replaceCharList(argv[i + 1], rep, '_');
             i += 2;
 
         } else if (isCmd(argv[i], "-scn", "--super-class-name") && (i + 1 < argc)) {
-            gGlobal->gSuperClassName = argv[i + 1];
+            global::config().gSuperClassName = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-pn", "--process-name") && (i + 1 < argc)) {
-            gGlobal->gProcessName = argv[i + 1];
+            global::config().gProcessName = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-i", "--inline-architecture-files")) {
-            gGlobal->gInlineArchSwitch = true;
+            global::config().gInlineArchSwitch = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-e", "--export-dsp")) {
-            gGlobal->gExportDSP = true;
+            global::config().gExportDSP = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-exp10", "--generate-exp10")) {
-            gGlobal->gHasExp10 = true;
+            global::config().gHasExp10 = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-os", "--one-sample") || isCmd(argv[i], "-os0", "--one-sample0")) {
-            gGlobal->gOneSample = 0;
+            global::config().gOneSample = 0;
             i += 1;
 
         } else if (isCmd(argv[i], "-os1", "--one-sample1")) {
-            gGlobal->gOneSample = 1;
+            global::config().gOneSample = 1;
             i += 1;
 
         } else if (isCmd(argv[i], "-os2", "--one-sample2")) {
-            gGlobal->gOneSample = 2;
+            global::config().gOneSample = 2;
             i += 1;
 
         } else if (isCmd(argv[i], "-os3", "--one-sample3")) {
-            gGlobal->gOneSample = 3;
+            global::config().gOneSample = 3;
             i += 1;
 
         } else if (isCmd(argv[i], "-cm", "--compute-mix")) {
-            gGlobal->gComputeMix = true;
+            global::config().gComputeMix = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-ftz", "--flush-to-zero")) {
-            gGlobal->gFTZMode = std::atoi(argv[i + 1]);
-            if ((gGlobal->gFTZMode > 2) || (gGlobal->gFTZMode < 0)) {
+            global::config().gFTZMode = std::atoi(argv[i + 1]);
+            if ((global::config().gFTZMode > 2) || (global::config().gFTZMode < 0)) {
                 stringstream error;
-                error << "ERROR : invalid -ftz option: " << gGlobal->gFTZMode << endl;
+                error << "ERROR : invalid -ftz option: " << global::config().gFTZMode << endl;
                 throw faustexception(error.str());
             }
             i += 2;
 
         } else if (isCmd(argv[i], "-rui", "--range-ui")) {
-            gGlobal->gRangeUI = true;
+            global::config().gRangeUI = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-fm", "--fast-math")) {
-            gGlobal->gFastMath    = true;
-            gGlobal->gFastMathLib = argv[i + 1];
+            global::config().gFastMath    = true;
+            global::config().gFastMathLib = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-mapp", "--math-approximation")) {
-            gGlobal->gMathApprox = true;
+            global::config().gMathApprox = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-ns", "--namespace")) {
-            gGlobal->gNamespace = argv[i + 1];
+            global::config().gNamespace = argv[i + 1];
             i += 2;
 
         } else if (isCmd(argv[i], "-fp", "--full-parentheses")) {
-            gGlobal->gFullParentheses = true;
+            global::config().gFullParentheses = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-I", "--import-dir") && (i + 1 < argc)) {
             if ((strstr(argv[i + 1], "http://") != 0) || (strstr(argv[i + 1], "https://") != 0)) {
                 // We want to search user given directories *before* the standard ones, so insert at the beginning
-                gGlobal->gImportDirList.insert(gGlobal->gImportDirList.begin(), argv[i + 1]);
+                global::config().gImportDirList.insert(global::config().gImportDirList.begin(), argv[i + 1]);
             } else {
                 char  temp[PATH_MAX + 1];
                 char* path = realpath(argv[i + 1], temp);
                 if (path) {
                     // We want to search user given directories *before* the standard ones, so insert at the beginning
-                    gGlobal->gImportDirList.insert(gGlobal->gImportDirList.begin(), path);
+                    global::config().gImportDirList.insert(global::config().gImportDirList.begin(), path);
                 }
             }
             i += 2;
 
         } else if (isCmd(argv[i], "-A", "--architecture-dir") && (i + 1 < argc)) {
             if ((strstr(argv[i + 1], "http://") != 0) || (strstr(argv[i + 1], "https://") != 0)) {
-                gGlobal->gArchitectureDirList.push_back(argv[i + 1]);
+                global::config().gArchitectureDirList.push_back(argv[i + 1]);
             } else {
                 char  temp[PATH_MAX + 1];
                 char* path = realpath(argv[i + 1], temp);
                 if (path) {
-                    gGlobal->gArchitectureDirList.push_back(path);
+                    global::config().gArchitectureDirList.push_back(path);
                 }
             }
             i += 2;
 
         } else if (isCmd(argv[i], "-L", "--library") && (i + 1 < argc)) {
-            gGlobal->gLibraryList.push_back(argv[i + 1]);
+            global::config().gLibraryList.push_back(argv[i + 1]);
             i += 2;
 
         } else if (isCmd(argv[i], "-O", "--output-dir") && (i + 1 < argc)) {
@@ -505,40 +505,40 @@ bool processCmdline(int argc, const char* argv[])
                 error << "ERROR : invalid directory path " << argv[i + 1] << endl;
                 throw faustexception(error.str());
             } else {
-                gGlobal->gOutputDir = path;
+                global::config().gOutputDir = path;
             }
             i += 2;
 
         } else if (isCmd(argv[i], "-inpl", "--in-place")) {
-            gGlobal->gInPlace = true;
+            global::config().gInPlace = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-sts", "--strict-select")) {
-            gGlobal->gStrictSelect = true;
+            global::config().gStrictSelect = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-es", "--enable-semantics")) {
-            gGlobal->gEnableFlag = (std::atoi(argv[i + 1]) == 1);
+            global::config().gEnableFlag = (std::atoi(argv[i + 1]) == 1);
             i += 2;
 
         } else if (isCmd(argv[i], "-lcc", "--local-causality-check")) {
-            gGlobal->gLocalCausalityCheck = true;
+            global::config().gLocalCausalityCheck = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-light", "--light-mode")) {
-            gGlobal->gLightMode = true;
+            global::config().gLightMode = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-clang", "--clang")) {
-            gGlobal->gClang = true;
+            global::config().gClang = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-nvi", "--no-virtual")) {
-            gGlobal->gNoVirtual = true;
+            global::config().gNoVirtual = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-ct", "--check-table")) {
-            gGlobal->gCheckTable = (std::atoi(argv[i + 1]) == 1);
+            global::config().gCheckTable = (std::atoi(argv[i + 1]) == 1);
             i += 2;
             
         } else if (isCmd(argv[i], "-wall", "--warning-all")) {
@@ -546,7 +546,7 @@ bool processCmdline(int argc, const char* argv[])
             i += 1;
         
         } else if (isCmd(argv[i], "-me", "--math-exceptions")) {
-            gGlobal->gMathExceptions = true;
+            global::config().gMathExceptions = true;
             i += 1;
 
         } else if (isCmd(argv[i], "-lm", "--local-machine") || isCmd(argv[i], "-rm", "--remote-machine") ||
@@ -558,7 +558,7 @@ bool processCmdline(int argc, const char* argv[])
         } else if (argv[i][0] != '-') {
             const char* url = argv[i];
             if (checkURL(url)) {
-                gGlobal->gInputFiles.push_back(url);
+                global::config().gInputFiles.push_back(url);
             }
             i++;
 
@@ -574,115 +574,115 @@ bool processCmdline(int argc, const char* argv[])
     }
 
     // Adjust related options
-    if (gGlobal->gOpenMPSwitch || gGlobal->gSchedulerSwitch) gGlobal->gVectorSwitch = true;
+    if (global::config().gOpenMPSwitch || global::config().gSchedulerSwitch) global::config().gVectorSwitch = true;
 
     // Check options coherency
-    if (gGlobal->gInPlace && gGlobal->gVectorSwitch) {
+    if (global::config().gInPlace && global::config().gVectorSwitch) {
         throw faustexception("ERROR : '-inpl' option can only be used in scalar mode\n");
     }
 
 #if 0
-    if (gGlobal->gOutputLang == "ocpp" && gGlobal->gVectorSwitch) {
+    if (global::config().gOutputLang == "ocpp" && global::config().gVectorSwitch) {
         throw faustexception("ERROR : 'ocpp' backend can only be used in scalar mode\n");
     }
 #endif
-    if (gGlobal->gOneSample >= 0 && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "c" && gGlobal->gOutputLang != "dlang" &&
-        !startWith(gGlobal->gOutputLang, "cmajor") && gGlobal->gOutputLang != "fir") {
+    if (global::config().gOneSample >= 0 && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "c" && global::config().gOutputLang != "dlang" &&
+        !startWith(global::config().gOutputLang, "cmajor") && global::config().gOutputLang != "fir") {
         throw faustexception("ERROR : '-os' option cannot only be used with 'cpp', 'c', 'fir' or 'cmajor' backends\n");
     }
 
-    if (gGlobal->gOneSample >= 0 && gGlobal->gVectorSwitch) {
+    if (global::config().gOneSample >= 0 && global::config().gVectorSwitch) {
         throw faustexception("ERROR : '-os' option cannot only be used in scalar mode\n");
     }
 
-    if (gGlobal->gFTZMode == 2 && gGlobal->gOutputLang == "cmajor") {
+    if (global::config().gFTZMode == 2 && global::config().gOutputLang == "cmajor") {
         throw faustexception("ERROR : '-ftz 2' option cannot be used in 'cmajor' backend\n");
     }
 
-    if (gGlobal->gVectorLoopVariant < 0 || gGlobal->gVectorLoopVariant > 1) {
+    if (global::config().gVectorLoopVariant < 0 || global::config().gVectorLoopVariant > 1) {
         stringstream error;
-        error << "ERROR : invalid loop variant [-lv = " << gGlobal->gVectorLoopVariant << "] should be 0 or 1" << endl;
+        error << "ERROR : invalid loop variant [-lv = " << global::config().gVectorLoopVariant << "] should be 0 or 1" << endl;
         throw faustexception(error.str());
     }
 
-    if (gGlobal->gVecSize < 4) {
+    if (global::config().gVecSize < 4) {
         stringstream error;
-        error << "ERROR : invalid vector size [-vs = " << gGlobal->gVecSize << "] should be at least 4" << endl;
+        error << "ERROR : invalid vector size [-vs = " << global::config().gVecSize << "] should be at least 4" << endl;
         throw faustexception(error.str());
     }
 
-    if (gGlobal->gFunTaskSwitch) {
-        if (!(gGlobal->gOutputLang == "c" || gGlobal->gOutputLang == "cpp" || gGlobal->gOutputLang == "llvm" ||
-              gGlobal->gOutputLang == "fir")) {
+    if (global::config().gFunTaskSwitch) {
+        if (!(global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp" || global::config().gOutputLang == "llvm" ||
+              global::config().gOutputLang == "fir")) {
             throw faustexception("ERROR : -fun can only be used with 'c', 'cpp', 'llvm' or 'fir' backends\n");
         }
     }
 
-    if (gGlobal->gFastMath) {
-        if (!(gGlobal->gOutputLang == "c" || gGlobal->gOutputLang == "cpp" || gGlobal->gOutputLang == "llvm" ||
-              startWith(gGlobal->gOutputLang, "wast") || startWith(gGlobal->gOutputLang, "wasm"))) {
+    if (global::config().gFastMath) {
+        if (!(global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp" || global::config().gOutputLang == "llvm" ||
+              startWith(global::config().gOutputLang, "wast") || startWith(global::config().gOutputLang, "wasm"))) {
             throw faustexception("ERROR : -fm can only be used with 'c', 'cpp', 'llvm' or 'wast/wast' backends\n");
         }
     }
 
-    if (gGlobal->gNamespace != "" && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "dlang") {
+    if (global::config().gNamespace != "" && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "dlang") {
         throw faustexception("ERROR : -ns can only be used with the 'cpp' or 'dlang' backend\n");
     }
 
-    if (gGlobal->gMaskDelayLineThreshold < INT_MAX && (gGlobal->gVectorSwitch || (gGlobal->gOutputLang == "ocpp"))) {
+    if (global::config().gMaskDelayLineThreshold < INT_MAX && (global::config().gVectorSwitch || (global::config().gOutputLang == "ocpp"))) {
         throw faustexception(
             "ERROR : '-dlt < INT_MAX' option can only be used in scalar mode and not with the 'ocpp' backend\n");
     }
 
     // gComputeMix check
-    if (gGlobal->gComputeMix && gGlobal->gOutputLang == "ocpp") {
+    if (global::config().gComputeMix && global::config().gOutputLang == "ocpp") {
         throw faustexception("ERROR : -cm cannot be used with the 'ocpp' backend\n");
     }
 
-    if (gGlobal->gComputeMix && gGlobal->gOutputLang == "interp") {
+    if (global::config().gComputeMix && global::config().gOutputLang == "interp") {
         throw faustexception("ERROR : -cm cannot be used with the 'interp' backend\n");
     }
 
-    if (gGlobal->gComputeMix && gGlobal->gOutputLang == "cmajor") {
+    if (global::config().gComputeMix && global::config().gOutputLang == "cmajor") {
         throw faustexception("ERROR : -cm cannot be used with the 'cmajor' backend\n");
     }
 
-    if (gGlobal->gFloatSize == 4
-        && gGlobal->gOutputLang != "cpp"
-        && gGlobal->gOutputLang != "ocpp"
-        && gGlobal->gOutputLang != "c"
-        && gGlobal->gOutputLang != "fir") {
+    if (global::config().gFloatSize == 4
+        && global::config().gOutputLang != "cpp"
+        && global::config().gOutputLang != "ocpp"
+        && global::config().gOutputLang != "c"
+        && global::config().gOutputLang != "fir") {
         throw faustexception("ERROR : -fx can only be used with 'c', 'cpp', 'ocpp' or 'fir' backends\n");
     }
 
-    if (gGlobal->gClang && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
-        gGlobal->gOutputLang != "c") {
+    if (global::config().gClang && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
+        global::config().gOutputLang != "c") {
         throw faustexception("ERROR : -clang can only be used with 'c', 'cpp' or 'ocpp' backends\n");
     }
 
-    if (gGlobal->gNoVirtual && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
-        gGlobal->gOutputLang != "c") {
+    if (global::config().gNoVirtual && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
+        global::config().gOutputLang != "c") {
         throw faustexception("ERROR : -nvi can only be used with 'c', 'cpp' or 'ocpp' backends\n");
     }
 
-    if (gGlobal->gMemoryManager && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp") {
+    if (global::config().gMemoryManager && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp") {
         throw faustexception("ERROR : -mem can only be used with 'cpp' or 'ocpp' backends\n");
     }
 
-    if (gGlobal->gArchFile != "" &&
-        ((gGlobal->gOutputLang == "wast") || (gGlobal->gOutputLang == "wasm") || (gGlobal->gOutputLang == "interp") ||
-         (gGlobal->gOutputLang == "llvm") || (gGlobal->gOutputLang == "fir"))) {
+    if (global::config().gArchFile != "" &&
+        ((global::config().gOutputLang == "wast") || (global::config().gOutputLang == "wasm") || (global::config().gOutputLang == "interp") ||
+         (global::config().gOutputLang == "llvm") || (global::config().gOutputLang == "fir"))) {
         throw faustexception("ERROR : -a can only be used with 'c', 'cpp', 'ocpp', 'rust' and 'cmajor' backends\n");
     }
 
-    if (gGlobal->gClassName == "") {
+    if (global::config().gClassName == "") {
         throw faustexception("ERROR : -cn used with empty string \n");
     }
 
     if (err != 0) {
         stringstream error;
         error << "WARNING : " << parse_error.str() << endl;
-        gGlobal->gErrorMessage = error.str();
+        global::config().gErrorMessage = error.str();
     }
 
     return (err == 0);
@@ -697,26 +697,26 @@ bool processCmdline(int argc, const char* argv[])
 #endif
 void printLibDir()
 {
-    cout << gGlobal->gFaustRootDir << kPSEP << LIBDIR << endl;
+    cout << global::config().gFaustRootDir << kPSEP << LIBDIR << endl;
 }
 void printIncludeDir()
 {
-    cout << gGlobal->gFaustRootDir << kPSEP << "include" << endl;
+    cout << global::config().gFaustRootDir << kPSEP << "include" << endl;
 }
 void printArchDir()
 {
-    cout << gGlobal->gFaustRootDir << kPSEP << "share" << kPSEP << "faust" << endl;
+    cout << global::config().gFaustRootDir << kPSEP << "share" << kPSEP << "faust" << endl;
 }
 void printDspDir()
 {
-    cout << gGlobal->gFaustRootDir << kPSEP << "share" << kPSEP << "faust" << endl;
+    cout << global::config().gFaustRootDir << kPSEP << "share" << kPSEP << "faust" << endl;
 }
 void printPaths()
 {
     cout << "FAUST dsp library paths:" << endl;
-    for (const auto& path : gGlobal->gImportDirList) cout << path << endl;
+    for (const auto& path : global::config().gImportDirList) cout << path << endl;
     cout << "\nFAUST architectures paths:" << endl;
-    for (const auto& path : gGlobal->gArchitectureDirList) cout << path << endl;
+    for (const auto& path : global::config().gArchitectureDirList) cout << path << endl;
     cout << endl;
 }
 
@@ -737,7 +737,7 @@ void printVersion()
 
 void printDeclareHeader(ostream& dst)
 {
-    for (const auto& i : gGlobal->gMetaDataSet) {
+    for (const auto& i : global::config().gMetaDataSet) {
         if (i.first != tree("author")) {
             dst << "declare ";
             stringstream key;
@@ -810,20 +810,20 @@ void parseSourceFiles()
     startTiming("parser");
 
     list<string>::iterator s;
-    Tree result = gGlobal->nil;
-    gGlobal->gReader.init();
+    Tree result = global::config().nil;
+    global::config().gReader.init();
 
-    if (!gGlobal->gInjectFlag && gGlobal->gInputFiles.begin() == gGlobal->gInputFiles.end()) {
+    if (!global::config().gInjectFlag && global::config().gInputFiles.begin() == global::config().gInputFiles.end()) {
         throw faustexception("ERROR : no files specified; for help type \"faust --help\"\n");
     }
-    for (s = gGlobal->gInputFiles.begin(); s != gGlobal->gInputFiles.end(); s++) {
-        if (s == gGlobal->gInputFiles.begin()) {
-            gGlobal->gMasterDocument = *s;
+    for (s = global::config().gInputFiles.begin(); s != global::config().gInputFiles.end(); s++) {
+        if (s == global::config().gInputFiles.begin()) {
+            global::config().gMasterDocument = *s;
         }
         result = cons(importFile(tree(s->c_str())), result);
     }
 
-    gGlobal->gExpandedDefList = gGlobal->gReader.expandList(result);
+    global::config().gExpandedDefList = global::config().gReader.expandList(result);
     endTiming("parser");
 }
 
@@ -832,14 +832,14 @@ Tree evaluateBlockDiagram(Tree expandedDefList, int& numInputs, int& numOutputs)
     startTiming("evaluation");
 
     Tree process = evalprocess(expandedDefList);
-    if (gGlobal->gErrorCount > 0) {
+    if (global::config().gErrorCount > 0) {
         stringstream error;
-        error << "ERROR : total of " << gGlobal->gErrorCount << " errors during the compilation of "
-              << gGlobal->gMasterDocument << endl;
+        error << "ERROR : total of " << global::config().gErrorCount << " errors during the compilation of "
+              << global::config().gMasterDocument << endl;
         throw faustexception(error.str());
     }
 
-    if (gGlobal->gDetailsSwitch) {
+    if (global::config().gDetailsSwitch) {
         cout << "process = " << boxpp(process) << ";\n";
     }
 
@@ -849,26 +849,26 @@ Tree evaluateBlockDiagram(Tree expandedDefList, int& numInputs, int& numOutputs)
         throw faustexception(error.str());
     }
 
-    if (gGlobal->gDrawPSSwitch) {
-        drawSchema(process, subst("$0-ps", gGlobal->makeDrawPathNoExt()).c_str(), "ps");
+    if (global::config().gDrawPSSwitch) {
+        drawSchema(process, subst("$0-ps", global::config().makeDrawPathNoExt()).c_str(), "ps");
     }
 
-    if (gGlobal->gDrawSVGSwitch) {
-        drawSchema(process, subst("$0-svg", gGlobal->makeDrawPathNoExt()).c_str(), "svg");
+    if (global::config().gDrawSVGSwitch) {
+        drawSchema(process, subst("$0-svg", global::config().makeDrawPathNoExt()).c_str(), "svg");
     }
 
-    if (gGlobal->gDetailsSwitch) {
+    if (global::config().gDetailsSwitch) {
         cout << "process has " << numInputs << " inputs, and " << numOutputs << " outputs" << endl;
     }
 
     endTiming("evaluation");
 
-    if (gGlobal->gPrintFileListSwitch) {
+    if (global::config().gPrintFileListSwitch) {
         cout << "---------------------------\n";
         cout << "List of file dependencies :\n";
         cout << "---------------------------\n";
         // print the pathnames of the files used to evaluate process
-        vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+        vector<string> pathnames = global::config().gReader.listSrcFiles();
         for (size_t i = 0; i < pathnames.size(); i++) cout << pathnames[i] << endl;
         cout << "---------------------------\n";
         cout << endl;
@@ -888,9 +888,9 @@ void includeFile(const string& file, ostream& dst)
 void createHelperFile(const string& outpath)
 {
     // Additional file with JS code
-    if (gGlobal->gOutputFile == "binary") {
+    if (global::config().gOutputFile == "binary") {
         // Nothing
-    } else if (gGlobal->gOutputFile != "") {
+    } else if (global::config().gOutputFile != "") {
         string outpath_js;
         bool   res = replaceExtension(outpath, ".js", outpath_js);
         if (res) {
@@ -906,12 +906,12 @@ void createHelperFile(const string& outpath)
 void generateCodeAux1(::Faust::Compiler::Return compiler_return, unique_ptr<ifstream>& injcode, unique_ptr<ostream>& dst)
 {
   unique_ptr<ifstream> enrobage;
-    if (gGlobal->gArchFile != "") {
-        if ((enrobage = openArchStream(gGlobal->gArchFile.c_str()))) {
-            if (gGlobal->gNamespace != "" && gGlobal->gOutputLang == "cpp")
-                *dst.get() << "namespace " << gGlobal->gNamespace << " {" << endl;
+    if (global::config().gArchFile != "") {
+        if ((enrobage = openArchStream(global::config().gArchFile.c_str()))) {
+            if (global::config().gNamespace != "" && global::config().gOutputLang == "cpp")
+                *dst.get() << "namespace " << global::config().gNamespace << " {" << endl;
 #ifdef DLANG_BUILD
-            else if (gGlobal->gOutputLang == "dlang") {
+            else if (global::config().gOutputLang == "dlang") {
                 DLangCodeContainer::printDRecipeComment(*dst.get(), container->getClassName());
                 DLangCodeContainer::printDModuleStmt(*dst.get(), container->getClassName());
             }
@@ -925,7 +925,7 @@ void generateCodeAux1(::Faust::Compiler::Return compiler_return, unique_ptr<ifst
             streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
             streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeclass>>");
 
-            if (gGlobal->gOpenCLSwitch || gGlobal->gCUDASwitch) {
+            if (global::config().gOpenCLSwitch || global::config().gCUDASwitch) {
                 includeFile("thread.h", *dst.get());
             }
 
@@ -934,33 +934,33 @@ void generateCodeAux1(::Faust::Compiler::Return compiler_return, unique_ptr<ifst
 
             streamCopyUntilEnd(*enrobage.get(), *dst.get());
 
-            if (gGlobal->gSchedulerSwitch) {
+            if (global::config().gSchedulerSwitch) {
                 includeFile("scheduler.cpp", *dst.get());
             }
 
             container->printFooter();
 
             // Generate factory
-            gGlobal->gDSPFactory = container->produceFactory();
+            global::config().gDSPFactory = container->produceFactory();
 
-            if (gGlobal->gOutputFile == "string") {
-                gGlobal->gDSPFactory->write(dst.get(), false, false);
-            } else if (gGlobal->gOutputFile == "binary") {
-                gGlobal->gDSPFactory->write(dst.get(), true, false);
-            } else if (gGlobal->gOutputFile != "") {
+            if (global::config().gOutputFile == "string") {
+                global::config().gDSPFactory->write(dst.get(), false, false);
+            } else if (global::config().gOutputFile == "binary") {
+                global::config().gDSPFactory->write(dst.get(), true, false);
+            } else if (global::config().gOutputFile != "") {
                 // Binary mode for LLVM backend if output different of 'cout'
-                gGlobal->gDSPFactory->write(dst.get(), true, false);
+                global::config().gDSPFactory->write(dst.get(), true, false);
             } else {
-                gGlobal->gDSPFactory->write(&cout, false, false);
+                global::config().gDSPFactory->write(&cout, false, false);
             }
 
-            if (gGlobal->gNamespace != "" && gGlobal->gOutputLang == "cpp") {
-                *dst.get() << "} // namespace " << gGlobal->gNamespace << endl;
+            if (global::config().gNamespace != "" && global::config().gOutputLang == "cpp") {
+                *dst.get() << "} // namespace " << global::config().gNamespace << endl;
             }
 
         } else {
             stringstream error;
-            error << "ERROR : can't open architecture file " << gGlobal->gArchFile << endl;
+            error << "ERROR : can't open architecture file " << global::config().gArchFile << endl;
             throw faustexception(error.str());
         }
 
@@ -971,21 +971,21 @@ void generateCodeAux1(::Faust::Compiler::Return compiler_return, unique_ptr<ifst
         container->printFooter();
 
         // Generate factory
-        gGlobal->gDSPFactory = container->produceFactory();
+        global::config().gDSPFactory = container->produceFactory();
 
-        if (gGlobal->gOutputFile == "string") {
-            gGlobal->gDSPFactory->write(dst.get(), false, false);
-            if (helpers) gGlobal->gDSPFactory->writeHelper(helpers.get(), false, false);
-        } else if (gGlobal->gOutputFile == "binary") {
-            gGlobal->gDSPFactory->write(dst.get(), true, false);
-            if (helpers) gGlobal->gDSPFactory->writeHelper(helpers.get(), true, false);
-        } else if (gGlobal->gOutputFile != "") {
+        if (global::config().gOutputFile == "string") {
+            global::config().gDSPFactory->write(dst.get(), false, false);
+            if (helpers) global::config().gDSPFactory->writeHelper(helpers.get(), false, false);
+        } else if (global::config().gOutputFile == "binary") {
+            global::config().gDSPFactory->write(dst.get(), true, false);
+            if (helpers) global::config().gDSPFactory->writeHelper(helpers.get(), true, false);
+        } else if (global::config().gOutputFile != "") {
             // Binary mode for LLVM backend if output different of 'cout'
-            gGlobal->gDSPFactory->write(dst.get(), true, false);
-            if (helpers) gGlobal->gDSPFactory->writeHelper(helpers.get(), false, false);
+            global::config().gDSPFactory->write(dst.get(), true, false);
+            if (helpers) global::config().gDSPFactory->writeHelper(helpers.get(), false, false);
         } else {
-            gGlobal->gDSPFactory->write(&cout, false, false);
-            if (helpers) gGlobal->gDSPFactory->writeHelper(&cout, false, false);
+            global::config().gDSPFactory->write(&cout, false, false);
+            if (helpers) global::config().gDSPFactory->writeHelper(&cout, false, false);
         }
     }
 }
@@ -1001,13 +1001,13 @@ void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
     unique_ptr<ostream> dst;
     string              outpath;
 
-    if (gGlobal->gOutputFile == "string") {
+    if (global::config().gOutputFile == "string") {
         dst = unique_ptr<ostream>(new ostringstream());
-    } else if (gGlobal->gOutputFile == "binary") {
+    } else if (global::config().gOutputFile == "binary") {
         dst = unique_ptr<ostream>(new ostringstream(ostringstream::out | ostringstream::binary));
-    } else if (gGlobal->gOutputFile != "") {
+    } else if (global::config().gOutputFile != "") {
         outpath =
-            (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + gGlobal->gOutputFile) : gGlobal->gOutputFile;
+            (global::config().gOutputDir != "") ? (global::config().gOutputDir + "/" + global::config().gOutputFile) : global::config().gOutputFile;
 
         unique_ptr<ofstream> fdst = unique_ptr<ofstream>(new ofstream(outpath.c_str()));
         if (!fdst->is_open()) {
@@ -1029,44 +1029,44 @@ void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
      ****************************************************************/
 
     ::Faust::Compiler::Common* compiler(nullptr);
-    if (gGlobal->gOutputLang == "cllvm") {
+    if (global::config().gOutputLang == "cllvm") {
         compiler = new ::Faust::Compiler::Clang;
-    } else if (gGlobal->gOutputLang == "llvm") {
+    } else if (global::config().gOutputLang == "llvm") {
         compiler = new ::Faust::Compiler::LLVM;
-    } else if (gGlobal->gOutputLang == "interp") {
+    } else if (global::config().gOutputLang == "interp") {
         compiler = new ::Faust::Compiler::Interpreter;
-    } else if (gGlobal->gOutputLang == "fir") {
+    } else if (global::config().gOutputLang == "fir") {
         compiler = new ::Faust::Compiler::FIR;
-    } else if (gGlobal->gOutputLang == "c") {
+    } else if (global::config().gOutputLang == "c") {
         compiler = new ::Faust::Compiler::C;
-    } else if (gGlobal->gOutputLang == "cpp") {
+    } else if (global::config().gOutputLang == "cpp") {
         compiler = new ::Faust::Compiler::CPP;
-    } else if (gGlobal->gOutputLang == "ocpp") {
+    } else if (global::config().gOutputLang == "ocpp") {
         compiler = new ::Faust::Compiler::OCPP;
-    } else if (gGlobal->gOutputLang == "rust") {
+    } else if (global::config().gOutputLang == "rust") {
         compiler = new ::Faust::Compiler::Rust;
-    } else if (gGlobal->gOutputLang == "java") {
+    } else if (global::config().gOutputLang == "java") {
         compiler = new ::Faust::Compiler::Java;
-    } else if (gGlobal->gOutputLang == "jax") {
+    } else if (global::config().gOutputLang == "jax") {
         compiler = new ::Faust::Compiler::JAX;
-    } else if (gGlobal->gOutputLang == "temp") {
+    } else if (global::config().gOutputLang == "temp") {
         compileTemplate(signals, numInputs, numOutputs, dst.get());
-    } else if (gGlobal->gOutputLang == "julia") {
+    } else if (global::config().gOutputLang == "julia") {
         compiler = new ::Faust::Compiler::Julia;
-    } else if (gGlobal->gOutputLang == "csharp") {
+    } else if (global::config().gOutputLang == "csharp") {
         compiler_return = ::Faust::Compiler::CSharp::compile(signals, numInputs, numOutputs, dst.get());
-    } else if (startWith(gGlobal->gOutputLang, "cmajor")) {
+    } else if (startWith(global::config().gOutputLang, "cmajor")) {
         compiler_return = ::Faust::Compiler::Cmajor::compile(signals, numInputs, numOutputs, dst.get());
-    } else if (startWith(gGlobal->gOutputLang, "wast")) {
+    } else if (startWith(global::config().gOutputLang, "wast")) {
         compiler = new ::Faust::Compiler::WAST;
-    } else if (startWith(gGlobal->gOutputLang, "wasm")) {
+    } else if (startWith(global::config().gOutputLang, "wasm")) {
         compiler = new ::Faust::Compiler::WASM;
-    } else if (startWith(gGlobal->gOutputLang, "dlang")) {
+    } else if (startWith(global::config().gOutputLang, "dlang")) {
         compiler = new ::Faust::Compiler::Dlang;
     } else {
         stringstream error;
         error << "ERROR : cannot find backend for "
-              << "\"" << gGlobal->gOutputLang << "\"" << endl;
+              << "\"" << global::config().gOutputLang << "\"" << endl;
         throw faustexception(error.str());
     }
 
@@ -1094,11 +1094,11 @@ void generateCode(Tree signals, int numInputs, int numOutputs, bool generate)
 void printXML(Description* D, int inputs, int outputs)
 {
     faustassert(D);
-    ofstream xout(subst("$0.xml", gGlobal->makeDrawPath()).c_str());
+    ofstream xout(subst("$0.xml", global::config().makeDrawPath()).c_str());
 
     MetaDataSet::const_iterator it1;
     set<Tree>::const_iterator   it2;
-    for (const auto& it1 : gGlobal->gMetaDataSet) {
+    for (const auto& it1 : global::config().gMetaDataSet) {
         const string key = tree2str(it1.first);
         for (it2 = it1.second.begin(); it2 != it1.second.end(); ++it2) {
             const string value = tree2str(*it2);
@@ -1118,7 +1118,7 @@ void printXML(Description* D, int inputs, int outputs)
         }
     }
 
-    D->className(gGlobal->gClassName);
+    D->className(global::config().gClassName);
     D->inputs(inputs);
     D->outputs(outputs);
     D->print(0, xout);
@@ -1130,7 +1130,7 @@ void generateOutputFiles()
      1 - generate XML description (if required)
     *****************************************************************/
 
-    if (gGlobal->gPrintXMLSwitch) {
+    if (global::config().gPrintXMLSwitch) {
         if (new_comp) {
             ::Faust::Compiler::Common::printXML(new_comp->getDescription(), container->inputs(), container->outputs());
         }
@@ -1148,16 +1148,16 @@ void generateOutputFiles()
      2 - generate documentation from Faust comments (if required)
     *****************************************************************/
 
-    if (gGlobal->gPrintDocSwitch && gGlobal->gLatexDocSwitch) {
-        printDoc(subst("$0-mdoc", gGlobal->makeDrawPathNoExt()).c_str(), "tex", FAUSTVERSION);
+    if (global::config().gPrintDocSwitch && global::config().gLatexDocSwitch) {
+        printDoc(subst("$0-mdoc", global::config().makeDrawPathNoExt()).c_str(), "tex", FAUSTVERSION);
     }
 
     /****************************************************************
      3 - generate the task graph file in dot format
     *****************************************************************/
 
-    if (gGlobal->gGraphSwitch) {
-        ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
+    if (global::config().gGraphSwitch) {
+        ofstream dotfile(subst("$0.dot", global::config().makeDrawPath()).c_str());
         if (new_comp) {
             container->printGraphDotFormat(dotfile);
         }
@@ -1179,7 +1179,7 @@ static void expandDSPInternalAux(Tree process_tree, int argc, const char* argv[]
     out << COMPILATION_OPTIONS << reorganizeCompilationOptions(argc, argv) << ';' << endl;
 
     // Encode all libraries paths as 'declare'
-    vector<string> pathnames = gGlobal->gReader.listSrcFiles();
+    vector<string> pathnames = global::config().gReader.listSrcFiles();
     // Remove DSP filename
     pathnames.erase(pathnames.begin());
     int i = 0;
@@ -1212,8 +1212,8 @@ static void* expandDSPInternal(void* arg)
          2 - parse source files
         *****************************************************************/
         if (dsp_content != "") {
-            gGlobal->gInputString = dsp_content;
-            gGlobal->gInputFiles.push_back(name_app);
+            global::config().gInputString = dsp_content;
+            global::config().gInputFiles.push_back(name_app);
         }
         ::Faust::Controller::initDocumentNames();
         ::Faust::Type::Float::init();
@@ -1225,7 +1225,7 @@ static void* expandDSPInternal(void* arg)
         *****************************************************************/
         int numInputs;
         int numOutputs;
-        Tree processTree = evaluateBlockDiagram(gGlobal->gExpandedDefList, numInputs, numOutputs);
+        Tree processTree = evaluateBlockDiagram(global::config().gExpandedDefList, numInputs, numOutputs);
         
         stringstream out;
         expandDSPInternalAux(processTree, argc, argv, out);
@@ -1233,7 +1233,7 @@ static void* expandDSPInternal(void* arg)
         return nullptr;
         
     } catch (faustexception& e) {
-        gGlobal->gErrorMessage = e.Message();
+        global::config().gErrorMessage = e.Message();
         return nullptr;
     }
 
@@ -1244,11 +1244,11 @@ static void* evaluateBlockDiagram2(void* arg)
 {
     CallContext* context = static_cast<CallContext*>(arg);
     try {
-        context->fTree = evaluateBlockDiagram(gGlobal->gExpandedDefList, context->fNumInputs, context->fNumOutputs);
+        context->fTree = evaluateBlockDiagram(global::config().gExpandedDefList, context->fNumInputs, context->fNumOutputs);
         return nullptr;
     } catch (faustexception& e) {
         context->fTree = nullptr;
-        gGlobal->gErrorMessage = e.Message();
+        global::config().gErrorMessage = e.Message();
         return nullptr;
     }
 }
@@ -1271,14 +1271,14 @@ LIBFAUST_API Tree DSPToBoxes(const string& name_app, const string& dsp_content, 
     ::Faust::CLI::initFaustDirectories(argc1, argv1);
     ::Faust::CLI::processCmdline(argc1, argv1);
 
-    faust_alarm(gGlobal->gTimeout);
+    faust_alarm(global::config().gTimeout);
 
     /****************************************************************
      2 - parse source files
      *****************************************************************/
     if (dsp_content.c_str()) {
-        gGlobal->gInputString = dsp_content;
-        gGlobal->gInputFiles.push_back(name_app);
+        global::config().gInputString = dsp_content;
+        global::config().gInputFiles.push_back(name_app);
     }
     ::Faust::Controller::initDocumentNames();
     ::Faust::Type::Float::init();
@@ -1321,42 +1321,42 @@ static void* createFactoryAux1(void* arg)
         ::Faust::CLI::initFaustDirectories(argc, argv);
         ::Faust::CLI::processCmdline(argc, argv);
 
-        if (gGlobal->gVersionSwitch) {
+        if (global::config().gVersionSwitch) {
             printVersion();
             throw faustexception("");
         }
-        if (gGlobal->gLibDirSwitch) {
+        if (global::config().gLibDirSwitch) {
             printLibDir();
             throw faustexception("");
         }
-        if (gGlobal->gIncludeDirSwitch) {
+        if (global::config().gIncludeDirSwitch) {
             printIncludeDir();
             throw faustexception("");
         }
-        if (gGlobal->gArchDirSwitch) {
+        if (global::config().gArchDirSwitch) {
             printArchDir();
             throw faustexception("");
         }
-        if (gGlobal->gDspDirSwitch) {
+        if (global::config().gDspDirSwitch) {
             printDspDir();
             throw faustexception("");
         }
-        if (gGlobal->gPathListSwitch) {
+        if (global::config().gPathListSwitch) {
             printPaths();
             throw faustexception("");
         }
 
-        faust_alarm(gGlobal->gTimeout);
+        faust_alarm(global::config().gTimeout);
 
         /****************************************************************
          1.5 - Check and open some input files
         *****************************************************************/
         // Check for injected code (before checking for architectures)
-        if (gGlobal->gInjectFlag) {
-            injcode = openArchStream(gGlobal->gInjectFile.c_str());
+        if (global::config().gInjectFlag) {
+            injcode = openArchStream(global::config().gInjectFile.c_str());
             if (!injcode) {
                 stringstream error;
-                error << "ERROR : can't inject \"" << gGlobal->gInjectFile << "\" external code file, file not found\n";
+                error << "ERROR : can't inject \"" << global::config().gInjectFile << "\" external code file, file not found\n";
                 throw faustexception(error.str());
             }
         }
@@ -1365,8 +1365,8 @@ static void* createFactoryAux1(void* arg)
          2 - parse source files
         *****************************************************************/
         if (dsp_content != "") {
-            gGlobal->gInputString = dsp_content;
-            gGlobal->gInputFiles.push_back(name_app);
+            global::config().gInputString = dsp_content;
+            global::config().gInputFiles.push_back(name_app);
         }
         ::Faust::Controller::initDocumentNames();
         ::Faust::Type::Float::init();
@@ -1378,7 +1378,7 @@ static void* createFactoryAux1(void* arg)
         *****************************************************************/
         int numInputs;
         int numOutputs;
-        Tree processTree = evaluateBlockDiagram(gGlobal->gExpandedDefList, numInputs, numOutputs);
+        Tree processTree = evaluateBlockDiagram(global::config().gExpandedDefList, numInputs, numOutputs);
         if (numOutputs == 0) {
             throw faustexception("ERROR : the Faust program has no output signal\n");
         }
@@ -1386,9 +1386,9 @@ static void* createFactoryAux1(void* arg)
         /****************************************************************
          3.1 - possibly expand the DSP and return
          *****************************************************************/
-        if (gGlobal->gExportDSP) {
+        if (global::config().gExportDSP) {
             string outpath =
-                (gGlobal->gOutputDir != "") ? (gGlobal->gOutputDir + "/" + gGlobal->gOutputFile) : gGlobal->gOutputFile;
+                (global::config().gOutputDir != "") ? (global::config().gOutputDir + "/" + global::config().gOutputFile) : global::config().gOutputFile;
             ofstream out(outpath.c_str());
             expandDSPInternalAux(processTree, argc, argv, out);
             return nullptr;
@@ -1399,9 +1399,9 @@ static void* createFactoryAux1(void* arg)
         *****************************************************************/
         startTiming("propagation");
 
-        Tree lsignals = boxPropagateSig(gGlobal->nil, processTree, makeSigInputList(numInputs));
+        Tree lsignals = boxPropagateSig(global::config().nil, processTree, makeSigInputList(numInputs));
 
-        if (gGlobal->gDetailsSwitch) {
+        if (global::config().gDetailsSwitch) {
             cout << "output signals are : " << endl;
             printSignal(lsignals, stdout);
             cout << endl << ppsig(lsignals) << endl;
@@ -1423,7 +1423,7 @@ static void* createFactoryAux1(void* arg)
         return nullptr;
         
     } catch (faustexception& e) {
-        gGlobal->gErrorMessage = e.Message();
+        global::config().gErrorMessage = e.Message();
         return nullptr;
     }
 }
@@ -1479,13 +1479,13 @@ static void* createFactoryAux2(void* arg)
         /*************************************************************************
          5 - preparation of the signal tree and translate output signals
          **************************************************************************/
-        gGlobal->gMetaDataSet[tree("name")].insert(tree(quote(name_app)));
+        global::config().gMetaDataSet[tree("name")].insert(tree(quote(name_app)));
         generateCode(signals2, numInputs, numOutputs, generate);
         
         return nullptr;
         
     } catch (faustexception& e) {
-        gGlobal->gErrorMessage = e.Message();
+        global::config().gErrorMessage = e.Message();
         return nullptr;
     }
 }
@@ -1511,8 +1511,8 @@ dsp_factory_base* createFactory(const string& name_app,
     context.fArgv = argv;
     context.fGenerate = generate;
     callFun(createFactoryAux1, &context);
-    dsp_factory_base* factory = gGlobal->gDSPFactory;
-    error_msg = gGlobal->gErrorMessage;
+    dsp_factory_base* factory = global::config().gDSPFactory;
+    error_msg = global::config().gErrorMessage;
 
     global::destroy();
     return factory;
@@ -1530,8 +1530,8 @@ dsp_factory_base* createFactory(const string& name_app, tvec signals, int argc, 
     context.fNumOutputs = signals.size();
     context.fGenerate = true;
     callFun(createFactoryAux2, &context);
-    error_msg = gGlobal->gErrorMessage;
-    return gGlobal->gDSPFactory;
+    error_msg = global::config().gErrorMessage;
+    return global::config().gDSPFactory;
 }
 
 string expandDSP(const string& name_app,
@@ -1552,7 +1552,7 @@ string expandDSP(const string& name_app,
     callFun(expandDSPInternal, &context);
     string res = context.fRes;
     sha_key   = generateSHA1(res);
-    error_msg = gGlobal->gErrorMessage;
+    error_msg = global::config().gErrorMessage;
   
     global::destroy();
     return res;
@@ -1616,42 +1616,42 @@ LIBFAUST_API Tree sigFVar(SType type, const string& name, const string& file)
 
 LIBFAUST_API Tree sigButton(const string& label)
 {
-    return sigButton(normalizePath(cons(tree(label), gGlobal->nil)));
+    return sigButton(normalizePath(cons(tree(label), global::config().nil)));
 }
 
 LIBFAUST_API Tree sigCheckbox(const string& label)
 {
-    return sigCheckbox(normalizePath(cons(tree(label), gGlobal->nil)));
+    return sigCheckbox(normalizePath(cons(tree(label), global::config().nil)));
 }
 
 LIBFAUST_API Tree sigVSlider(const string& label, Tree cur, Tree min, Tree max, Tree step)
 {
-    return sigVSlider(normalizePath(cons(tree(label), gGlobal->nil)), cur, min, max, step);
+    return sigVSlider(normalizePath(cons(tree(label), global::config().nil)), cur, min, max, step);
 }
 
 LIBFAUST_API Tree sigHSlider(const string& label, Tree cur, Tree min, Tree max, Tree step)
 {
-    return sigHSlider(normalizePath(cons(tree(label), gGlobal->nil)), cur, min, max, step);
+    return sigHSlider(normalizePath(cons(tree(label), global::config().nil)), cur, min, max, step);
 }
 
 LIBFAUST_API Tree sigNumEntry(const string& label, Tree cur, Tree min, Tree max, Tree step)
 {
-    return sigNumEntry(normalizePath(cons(tree(label), gGlobal->nil)), cur, min, max, step);
+    return sigNumEntry(normalizePath(cons(tree(label), global::config().nil)), cur, min, max, step);
 }
 
 LIBFAUST_API Tree sigVBargraph(const string& label, Tree min, Tree max, Tree x)
 {
-    return sigVBargraph(normalizePath(cons(tree(label), gGlobal->nil)), min, max, x);
+    return sigVBargraph(normalizePath(cons(tree(label), global::config().nil)), min, max, x);
 }
 
 LIBFAUST_API Tree sigHBargraph(const string& label, Tree min, Tree max, Tree x)
 {
-    return sigHBargraph(normalizePath(cons(tree(label), gGlobal->nil)), min, max, x);
+    return sigHBargraph(normalizePath(cons(tree(label), global::config().nil)), min, max, x);
 }
 
 LIBFAUST_API Tree sigSoundfile(const string& label)
 {
-    return sigSoundfile(normalizePath(cons(tree(label), gGlobal->nil)));
+    return sigSoundfile(normalizePath(cons(tree(label), global::config().nil)));
 }
 
 LIBFAUST_API Tree sigSelf()
@@ -1663,8 +1663,8 @@ LIBFAUST_API Tree sigSelf()
 
 LIBFAUST_API Tree sigRecursion(Tree s)
 {
-    // return sigDelay0(sigProj(0, rec(cons(liftn(s, 0), gGlobal->nil))));
-    return sigDelay0(sigProj(0, rec(cons(s, gGlobal->nil))));
+    // return sigDelay0(sigProj(0, rec(cons(liftn(s, 0), global::config().nil))));
+    return sigDelay0(sigProj(0, rec(cons(s, global::config().nil))));
 }
 
 // Global context, to be used in C and C++ API
@@ -2497,12 +2497,12 @@ static void* boxesToSignalsAux2(void* arg)
 {
     CallContext* context = static_cast<CallContext*>(arg);
     try {
-        Tree outputs = boxPropagateSig(gGlobal->nil, context->fTree, makeSigInputList(context->fNumInputs));
+        Tree outputs = boxPropagateSig(global::config().nil, context->fTree, makeSigInputList(context->fNumInputs));
         context->fTree = simplifyToNormalForm(outputs);
         return nullptr;
     } catch (faustexception& e) {
         context->fTree = nullptr;
-        gGlobal->gErrorMessage = e.Message();
+        global::config().gErrorMessage = e.Message();
         return nullptr;
     }
 }
@@ -2512,7 +2512,7 @@ tvec boxesToSignalsAux(Tree box)
 {
     // Cleanup all variables and reset gGlobal state
     DeclareVarInst::cleanup();
-    gGlobal->reset();
+    global::config().reset();
     
     int numInputs, numOutputs;
     if (!getBoxType(box, &numInputs, &numOutputs)) {
@@ -2529,7 +2529,7 @@ tvec boxesToSignalsAux(Tree box)
     if (context.fTree) {
         return treeConvert(context.fTree);
     } else {
-        throw faustexception(gGlobal->gErrorMessage);
+        throw faustexception(global::config().gErrorMessage);
     }
 }
 
@@ -2693,87 +2693,87 @@ LIBFAUST_API Tree boxXOR()
 
 LIBFAUST_API Tree boxAbs()
 {
-    return gGlobal->gAbsPrim->box();
+    return global::config().gAbsPrim->box();
 }
 LIBFAUST_API Tree boxAcos()
 {
-    return gGlobal->gAcosPrim->box();
+    return global::config().gAcosPrim->box();
 }
 LIBFAUST_API Tree boxTan()
 {
-    return gGlobal->gTanPrim->box();
+    return global::config().gTanPrim->box();
 }
 LIBFAUST_API Tree boxSqrt()
 {
-    return gGlobal->gSqrtPrim->box();
+    return global::config().gSqrtPrim->box();
 }
 LIBFAUST_API Tree boxSin()
 {
-    return gGlobal->gSinPrim->box();
+    return global::config().gSinPrim->box();
 }
 LIBFAUST_API Tree boxRint()
 {
-    return gGlobal->gRintPrim->box();
+    return global::config().gRintPrim->box();
 }
 LIBFAUST_API Tree boxRemainder()
 {
-    return gGlobal->gRemainderPrim->box();
+    return global::config().gRemainderPrim->box();
 }
 LIBFAUST_API Tree boxPow()
 {
-    return gGlobal->gPowPrim->box();
+    return global::config().gPowPrim->box();
 }
 LIBFAUST_API Tree boxMin()
 {
-    return gGlobal->gMinPrim->box();
+    return global::config().gMinPrim->box();
 }
 LIBFAUST_API Tree boxMax()
 {
-    return gGlobal->gMaxPrim->box();
+    return global::config().gMaxPrim->box();
 }
 LIBFAUST_API Tree boxLog()
 {
-    return gGlobal->gLogPrim->box();
+    return global::config().gLogPrim->box();
 }
 LIBFAUST_API Tree boxLog10()
 {
-    return gGlobal->gLog10Prim->box();
+    return global::config().gLog10Prim->box();
 }
 LIBFAUST_API Tree boxFmod()
 {
-    return gGlobal->gAbsPrim->box();
+    return global::config().gAbsPrim->box();
 }
 LIBFAUST_API Tree boxFloor()
 {
-    return gGlobal->gFloorPrim->box();
+    return global::config().gFloorPrim->box();
 }
 LIBFAUST_API Tree boxExp()
 {
-    return gGlobal->gExpPrim->box();
+    return global::config().gExpPrim->box();
 }
 LIBFAUST_API Tree boxExp10()
 {
-    return gGlobal->gExp10Prim->box();
+    return global::config().gExp10Prim->box();
 }
 LIBFAUST_API Tree boxCos()
 {
-    return gGlobal->gAbsPrim->box();
+    return global::config().gAbsPrim->box();
 }
 LIBFAUST_API Tree boxCeil()
 {
-    return gGlobal->gCeilPrim->box();
+    return global::config().gCeilPrim->box();
 }
 LIBFAUST_API Tree boxAtan()
 {
-    return gGlobal->gAtanPrim->box();
+    return global::config().gAtanPrim->box();
 }
 LIBFAUST_API Tree boxAtan2()
 {
-    return gGlobal->gAtan2Prim->box();
+    return global::config().gAtan2Prim->box();
 }
 LIBFAUST_API Tree boxAsin()
 {
-    return gGlobal->gAsinPrim->box();
+    return global::config().gAsinPrim->box();
 }
 
 // User Interface

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -40,29 +40,29 @@
 
 Tree pathRoot()
 {
-    return tree(gGlobal->PATHROOT);
+    return tree(global::config().PATHROOT);
 }
 bool isPathRoot(Tree t)
 {
-    return isTree(t, gGlobal->PATHROOT);
+    return isTree(t, global::config().PATHROOT);
 }
 
 Tree pathParent()
 {
-    return tree(gGlobal->PATHPARENT);
+    return tree(global::config().PATHPARENT);
 }
 bool isPathParent(Tree t)
 {
-    return isTree(t, gGlobal->PATHPARENT);
+    return isTree(t, global::config().PATHPARENT);
 }
 
 Tree pathCurrent()
 {
-    return tree(gGlobal->PATHCURRENT);
+    return tree(global::config().PATHCURRENT);
 }
 bool isPathCurrent(Tree t)
 {
-    return isTree(t, gGlobal->PATHCURRENT);
+    return isTree(t, global::config().PATHCURRENT);
 }
 
 /**
@@ -96,7 +96,7 @@ static Tree encodeName(char g, const string& name)
 static Tree label2path(const char* label)
 {
     if (label[0] == 0) {
-        return cons(tree(""), gGlobal->nil);
+        return cons(tree(""), global::config().nil);
 
     } else if (label[0] == '/') {
         return cons(pathRoot(), label2path(&label[1]));
@@ -119,7 +119,7 @@ static Tree label2path(const char* label)
         return cons(encodeName(g, s), label2path(&label[i]));
 
     } else {
-        return cons(tree(label), gGlobal->nil);
+        return cons(tree(label), global::config().nil);
     }
 }
 
@@ -134,7 +134,7 @@ static Tree concatPath(Tree relpath, Tree abspath)
     if (isList(relpath)) {
         Tree head = hd(relpath);
         if (isPathRoot(head)) {
-            return concatPath(tl(relpath), gGlobal->nil);
+            return concatPath(tl(relpath), global::config().nil);
         } else if (isPathParent(head)) {
             if (!isList(abspath)) {
                 // cerr << "abspath : " << *abspath << endl;

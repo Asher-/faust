@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
  FAUST compiler
- Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+ Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
  ---------------------------------------------------------------------
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -33,13 +33,13 @@
                         Public functions
  *****************************************************************************/
 /**
- * Initialize gGlobal->gDocMetadatasKeySet, a set containing all the keywords.
+ * Initialize global::config().gDocMetadatasKeySet, a set containing all the keywords.
  */
 void initDocMetadatas()
 {
-    gGlobal->gDocMetadatasKeySet.insert("name");
-    gGlobal->gDocMetadatasKeySet.insert("author");
-    gGlobal->gDocMetadatasKeySet.insert("copyright");
-    gGlobal->gDocMetadatasKeySet.insert("license");
-    gGlobal->gDocMetadatasKeySet.insert("version");
+    global::config().gDocMetadatasKeySet.insert("name");
+    global::config().gDocMetadatasKeySet.insert("author");
+    global::config().gDocMetadatasKeySet.insert("copyright");
+    global::config().gDocMetadatasKeySet.insert("license");
+    global::config().gDocMetadatasKeySet.insert("version");
 }

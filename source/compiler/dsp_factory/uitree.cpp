@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -55,14 +55,14 @@ static bool findKey(Tree pl, Tree key, Tree& val)
 
 static Tree updateKey(Tree pl, Tree key, Tree val)
 {
-	if (isNil(pl)) 				return cons ( cons(key,val), gGlobal->nil );
+	if (isNil(pl)) 				return cons ( cons(key,val), global::config().nil );
 	if (left(hd(pl)) == key) 	return cons ( cons(key,val), tl(pl) );
 	/*  left(hd(pl)) != key	*/	return cons ( hd(pl), updateKey( tl(pl), key, val ));
 }
 
 static Tree removeKey(Tree pl, Tree key)
 {
-	if (isNil(pl)) 				return gGlobal->nil;
+	if (isNil(pl)) 				return global::config().nil;
 	if (left(hd(pl)) == key) 	return tl(pl);
 	/*  left(hd(pl)) != key	*/	return cons (hd(pl), removeKey(tl(pl), key));
 }
@@ -106,7 +106,7 @@ static bool findKey(Tree pl, Tree key, Tree& val)
 
 static Tree updateKey(Tree pl, Tree key, Tree val)
 {
-    if (isNil(pl)) return cons(cons(key, val), gGlobal->nil);
+    if (isNil(pl)) return cons(cons(key, val), global::config().nil);
     if (left(hd(pl)) == key) return cons(cons(key, val), tl(pl));
     if (isBefore(left(hd(pl)), key)) return cons(hd(pl), updateKey(tl(pl), key, val));
     return cons(cons(key, val), pl);
@@ -117,7 +117,7 @@ static Tree updateKey(Tree pl, Tree key, Tree val)
  */
 static Tree addKey(Tree pl, Tree key, Tree val)
 {
-    if (isNil(pl)) return cons(cons(key, val), gGlobal->nil);
+    if (isNil(pl)) return cons(cons(key, val), global::config().nil);
     if (isBefore(key, left(hd(pl)))) return cons(cons(key, val), pl);
     return cons(hd(pl), addKey(tl(pl), key, val));
 }
@@ -125,7 +125,7 @@ static Tree addKey(Tree pl, Tree key, Tree val)
 #if 0
 static Tree removeKey(Tree pl, Tree key)
 {
-	if (isNil(pl)) 					return gGlobal->nil;
+	if (isNil(pl)) 					return global::config().nil;
 	if (left(hd(pl)) == key) 		return tl(pl);
 	if (isBefore(left(hd(pl)),key))	return cons (hd(pl), removeKey(tl(pl), key));
 	return pl;
@@ -139,24 +139,24 @@ static Tree removeKey(Tree pl, Tree key)
 
 Tree uiFolder(Tree label, Tree elements)
 {
-    return tree(gGlobal->UIFOLDER, label, elements);
+    return tree(global::config().UIFOLDER, label, elements);
 }
 bool isUiFolder(Tree t)
 {
-    return isTree(t, gGlobal->UIFOLDER);
+    return isTree(t, global::config().UIFOLDER);
 }
 bool isUiFolder(Tree t, Tree& label, Tree& elements)
 {
-    return isTree(t, gGlobal->UIFOLDER, label, elements);
+    return isTree(t, global::config().UIFOLDER, label, elements);
 }
 
 Tree uiWidget(Tree label, Tree varname, Tree sig)
 {
-    return tree(gGlobal->UIWIDGET, label, varname, sig);
+    return tree(global::config().UIWIDGET, label, varname, sig);
 }
 bool isUiWidget(Tree t, Tree& label, Tree& varname, Tree& sig)
 {
-    return isTree(t, gGlobal->UIWIDGET, label, varname, sig);
+    return isTree(t, global::config().UIWIDGET, label, varname, sig);
 }
 
 // places an item in a folder. Eventually replaces the element of the same name.
@@ -191,7 +191,7 @@ Tree getFolder(Tree folder, Tree ilabel)
     if (findKey(content, ilabel, item)) {
         return item;
     } else {
-        return gGlobal->nil;
+        return global::config().nil;
     }
 }
 
@@ -201,7 +201,7 @@ Tree makeSubFolderChain(Tree path, Tree elem)
     if (isNil(path)) {
         return elem;
     } else {
-        return putFolder(uiFolder(hd(path), gGlobal->nil), makeSubFolderChain(tl(path), elem));
+        return putFolder(uiFolder(hd(path), global::config().nil), makeSubFolderChain(tl(path), elem));
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
   SHARC Audio Module Faust Architecture File
-  Copyright (c) 2018 Analog Devices, Inc. All rights reserved.
+  Copyright (c) 2022 Analog Devices, Inc. All rights reserved.
  ---------------------------------------------------------------------
  This Architecture section is free software; you can redistribute it
  and/or modify it under the terms of the GNU General Public License

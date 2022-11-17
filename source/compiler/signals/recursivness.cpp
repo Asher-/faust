@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -56,7 +56,7 @@ static int position(Tree env, Tree t, int p = 1);
  */
 void recursivnessAnnotation(Tree sig)
 {
-    annotate(gGlobal->nil, sig);
+    annotate(global::config().nil, sig);
 }
 
 /**
@@ -69,7 +69,7 @@ void recursivnessAnnotation(Tree sig)
 int getRecursivness(Tree sig)
 {
     Tree tr;
-    if (!getProperty(sig, gGlobal->RECURSIVNESS, tr)) {
+    if (!getProperty(sig, global::config().RECURSIVNESS, tr)) {
         cerr << "ERROR : getRecursivness of " << *sig << endl;
         faustassert(false);
     }
@@ -87,7 +87,7 @@ static int annotate(Tree env, Tree sig)
 {
     Tree tr, var, body;
 
-    if (getProperty(sig, gGlobal->RECURSIVNESS, tr)) {
+    if (getProperty(sig, global::config().RECURSIVNESS, tr)) {
         return tree2int(tr);  // already annotated
     } else if (isRec(sig, var, body)) {
         int p = position(env, sig);
@@ -96,7 +96,7 @@ static int annotate(Tree env, Tree sig)
         } else {
             int r = annotate(cons(sig, env), body) - 1;
             if (r < 0) r = 0;
-            setProperty(sig, gGlobal->RECURSIVNESS, tree(r));
+            setProperty(sig, global::config().RECURSIVNESS, tree(r));
             return r;
         }
     } else {
@@ -107,7 +107,7 @@ static int annotate(Tree env, Tree sig)
             int r = annotate(env, v[i]);
             if (r > rmax) rmax = r;
         }
-        setProperty(sig, gGlobal->RECURSIVNESS, tree(rmax));
+        setProperty(sig, global::config().RECURSIVNESS, tree(rmax));
         return rmax;
     }
 }
@@ -140,10 +140,10 @@ static Tree symlistVisit(Tree sig, set<Tree>& visited)
 {
     Tree S;
 
-    if (gGlobal->gSymListProp->get(sig, S)) {
+    if (global::config().gSymListProp->get(sig, S)) {
         return S;
     } else if (visited.count(sig) > 0) {
-        return gGlobal->nil;
+        return global::config().nil;
     } else {
         visited.insert(sig);
         Tree id, body;
@@ -156,7 +156,7 @@ static Tree symlistVisit(Tree sig, set<Tree>& visited)
         } else {
             vector<Tree> subsigs;
             int          n = getSubSignals(sig, subsigs, true);  // tables have to be visited also
-            Tree         U = gGlobal->nil;
+            Tree         U = global::config().nil;
             for (int i = 0; i < n; i++) {
                 U = setUnion(U, symlistVisit(subsigs[i], visited));
             }
@@ -169,10 +169,10 @@ Tree symlist(Tree sig)
 {
     Tree S;
 
-    if (!gGlobal->gSymListProp->get(sig, S)) {
+    if (!global::config().gSymListProp->get(sig, S)) {
         set<Tree> visited;
         S = symlistVisit(sig, visited);
-        gGlobal->gSymListProp->set(sig, S);
+        global::config().gSymListProp->set(sig, S);
     }
     // cerr << "SYMLIST " << *S << " OF " << ppsig(sig) << endl;
     return S;

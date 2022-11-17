@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -202,7 +202,7 @@ static std::string encodeJuliaFloat(const std::string& c, bool& need_suffix)
 
 static std::string addSuffix(const std::string& num)
 {
-    if (gGlobal->gOutputLang == "julia") {
+    if (global::config().gOutputLang == "julia") {
         bool need_suffix = true;
         string res = encodeJuliaFloat(num, need_suffix);
         return (need_suffix) ? (res + inumix()) : res;
@@ -246,7 +246,7 @@ string TAux(double n)
     } if (::Faust::Primitive::Math::floatSize == 3) {
         long double q = (long double)n;
         do { snprintf(c, 512, "%.*Lg", p++, q); endp = nullptr; } while (strtold(c, &endp) != q);
-    } else if (gGlobal->gFloatSize == 4) {
+    } else if (global::config().gFloatSize == 4) {
         do { snprintf(c, 512, "%.*g", p++, n); endp = nullptr; } while (strtod(c, &endp) != n);
     } else {
         faustassert(false);

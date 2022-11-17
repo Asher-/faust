@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -31,7 +31,7 @@ class CPPCUDACodeContainer : public CPPGPUCodeContainer {
     CPPCUDACodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out)
         : CPPGPUCodeContainer(name, super, numInputs, numOutputs, out)
     {
-        string filename     = gGlobal->gOutputFile + ".cu";
+        string filename     = global::config().gOutputFile + ".cu";
         fGPUOut             = new std::ofstream(filename.c_str());
         fKernelCodeProducer = new CUDAKernelInstVisitor(fGPUOut, 0);
         fNumInputs          = numInputs;

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -104,7 +104,7 @@ This file contains several extensions to the tree library :
 #define __LIST__
 
 #include <stdio.h>
-#include "symbol.hh"
+#include "tlib/symbol.hh"
 #include "tlib/tree.hh"
 
 // Basic List Operations implemented on trees
@@ -187,7 +187,7 @@ inline Tree right(Tree t)
 }
 
 // Environment : stack of pairs key value)
-// Tree 	pushEnv (Tree key, Tree val, Tree env=gGlobal->nil);
+// Tree 	pushEnv (Tree key, Tree val, Tree env=global::config().nil);
 Tree pushEnv(Tree key, Tree val, Tree env);
 bool searchEnv(Tree key, Tree& v, Tree env);
 

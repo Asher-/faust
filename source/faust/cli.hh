@@ -53,10 +53,9 @@ namespace Faust {
        1 - process command line
       *****************************************************************/
 
-      global::allocate();
       ::Faust::Controller::initFaustDirectories( _argv[0] );
       parseArgs();
-      ::Faust::Compiler::Common* compiler = ::Faust::Compiler::Common::compiler( gGlobal->gOutputLang );
+      ::Faust::Compiler::Common* compiler = ::Faust::Compiler::Common::compiler( global::config().gOutputLang );
       resolveParsedState( compiler );
       ::Faust::Type::Float::init();
       compiler->_compileOptions = reorganizeCompilationOptions(_argc, _argv);
@@ -65,36 +64,36 @@ namespace Faust {
 
     void resolveParsedState( ::Faust::Compiler::Common* compiler )
     {
-      if (gGlobal->gHelpSwitch) {
+      if (global::config().gHelpSwitch) {
           ::Faust::CLI::printHelp();
           throw faustexception("");
       }
-      if (gGlobal->gVersionSwitch) {
+      if (global::config().gVersionSwitch) {
           compiler->printVersion();
           throw faustexception("");
       }
-      if (gGlobal->gLibDirSwitch) {
+      if (global::config().gLibDirSwitch) {
           ::Faust::Controller::printLibDir();
           throw faustexception("");
       }
-      if (gGlobal->gIncludeDirSwitch) {
+      if (global::config().gIncludeDirSwitch) {
           ::Faust::Controller::printIncludeDir();
           throw faustexception("");
       }
-      if (gGlobal->gArchDirSwitch) {
+      if (global::config().gArchDirSwitch) {
           ::Faust::Controller::printArchDir();
           throw faustexception("");
       }
-      if (gGlobal->gDspDirSwitch) {
+      if (global::config().gDspDirSwitch) {
           ::Faust::Controller::printDspDir();
           throw faustexception("");
       }
-      if (gGlobal->gPathListSwitch) {
+      if (global::config().gPathListSwitch) {
           ::Faust::Controller::printPaths();
           throw faustexception("");
       }
 
-      if (!gGlobal->gInjectFlag && gGlobal->gInputFiles.begin() == gGlobal->gInputFiles.end()) {
+      if (!global::config().gInjectFlag && global::config().gInputFiles.begin() == global::config().gInputFiles.end()) {
           throw faustexception("ERROR : no files specified; for help type \"faust --help\"\n");
       }
 
@@ -360,208 +359,208 @@ namespace Faust {
 
         while (i < _argc) {
             if (isCmd(_argv[i], "-h", "--help")) {
-                gGlobal->gHelpSwitch = true;
+                global::config().gHelpSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-lang", "--language") && (i + 1 < _argc)) {
-                gGlobal->gOutputLang = _argv[i + 1];
+                global::config().gOutputLang = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-v", "--version")) {
-                gGlobal->gVersionSwitch = true;
+                global::config().gVersionSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-libdir", "--libdir")) {
-                gGlobal->gLibDirSwitch = true;
+                global::config().gLibDirSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-includedir", "--includedir")) {
-                gGlobal->gIncludeDirSwitch = true;
+                global::config().gIncludeDirSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-archdir", "--archdir")) {
-                gGlobal->gArchDirSwitch = true;
+                global::config().gArchDirSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-dspdir", "--dspdir")) {
-                gGlobal->gDspDirSwitch = true;
+                global::config().gDspDirSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-pathslist", "--pathslist")) {
-                gGlobal->gPathListSwitch = true;
+                global::config().gPathListSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-d", "--details")) {
-                gGlobal->gDetailsSwitch = true;
+                global::config().gDetailsSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-a", "--architecture") && (i + 1 < _argc)) {
-                gGlobal->gArchFile = _argv[i + 1];
+                global::config().gArchFile = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-inj", "--inject") && (i + 1 < _argc)) {
-                gGlobal->gInjectFlag = true;
-                gGlobal->gInjectFile = _argv[i + 1];
+                global::config().gInjectFlag = true;
+                global::config().gInjectFile = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-o") && (i + 1 < _argc)) {
-                gGlobal->gOutputFile = _argv[i + 1];
+                global::config().gOutputFile = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-wi", "--widening-iterations") && (i + 1 < _argc)) {
-                gGlobal->gWideningLimit = std::atoi(_argv[i + 1]);
+                global::config().gWideningLimit = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-ni", "--narrowing-iterations") && (i + 1 < _argc)) {
-                gGlobal->gNarrowingLimit = std::atoi(_argv[i + 1]);
+                global::config().gNarrowingLimit = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-ps", "--postscript")) {
-                gGlobal->gDrawPSSwitch = true;
+                global::config().gDrawPSSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-xml", "--xml")) {
-                gGlobal->gPrintXMLSwitch = true;
+                global::config().gPrintXMLSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-json", "--json")) {
-                gGlobal->gPrintJSONSwitch = true;
+                global::config().gPrintJSONSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-tg", "--task-graph")) {
-                gGlobal->gGraphSwitch = true;
+                global::config().gGraphSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-sg", "--signal-graph")) {
-                gGlobal->gDrawSignals = true;
+                global::config().gDrawSignals = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-drf", "--draw-route-frame")) {
-                gGlobal->gDrawRouteFrame = true;
+                global::config().gDrawRouteFrame = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-blur", "--shadow-blur")) {
-                gGlobal->gShadowBlur = true;
+                global::config().gShadowBlur = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-sc", "--scaled-svg")) {
-                gGlobal->gScaledSVG = true;
+                global::config().gScaledSVG = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-svg", "--svg")) {
-                gGlobal->gDrawSVGSwitch = true;
+                global::config().gDrawSVGSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-vhdl", "--vhdl")) {
-                gGlobal->gVHDLSwitch = true;
+                global::config().gVHDLSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-vhdl-trace", "--vhdl-trace")) {
-                gGlobal->gVHDLTrace = true;
+                global::config().gVHDLTrace = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-vhdl-type", "--vhdl-type") && (i + 1 < _argc)) {
-                gGlobal->gVHDLFloatType = std::atoi(_argv[i + 1]);
+                global::config().gVHDLFloatType = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-vhdl-msb", "--vhdl-msb") && (i + 1 < _argc)) {
-                gGlobal->gVHDLFloatMSB = std::atoi(_argv[i + 1]);
+                global::config().gVHDLFloatMSB = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-vhdl-lsb", "--vhdl-lsb") && (i + 1 < _argc)) {
-                gGlobal->gVHDLFloatLSB = std::atoi(_argv[i + 1]);
+                global::config().gVHDLFloatLSB = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-elm", "--elementary")) {
-                gGlobal->gElementarySwitch = true;
+                global::config().gElementarySwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-f", "--fold") && (i + 1 < _argc)) {
-                gGlobal->gFoldThreshold = std::atoi(_argv[i + 1]);
+                global::config().gFoldThreshold = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-fc", "--fold-complexity") && (i + 1 < _argc)) {
-                gGlobal->gFoldComplexity = std::atoi(_argv[i + 1]);
+                global::config().gFoldComplexity = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-mns", "--max-name-size") && (i + 1 < _argc)) {
-                gGlobal->gMaxNameSize = std::atoi(_argv[i + 1]);
+                global::config().gMaxNameSize = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-sn", "--simple-names")) {
-                gGlobal->gSimpleNames = true;
+                global::config().gSimpleNames = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-mcd", "--max-copy-delay") && (i + 1 < _argc)) {
-                gGlobal->gMaxCopyDelay = std::atoi(_argv[i + 1]);
+                global::config().gMaxCopyDelay = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-dlt", "-delay-line-threshold") && (i + 1 < _argc)) {
-                gGlobal->gMaskDelayLineThreshold = std::atoi(_argv[i + 1]);
+                global::config().gMaskDelayLineThreshold = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-mem", "--memory-manager")) {
-                gGlobal->gMemoryManager = true;
+                global::config().gMemoryManager = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-sd", "--simplify-diagrams")) {
-                gGlobal->gSimplifyDiagrams = true;
+                global::config().gSimplifyDiagrams = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-vec", "--vectorize")) {
-                gGlobal->gVectorSwitch = true;
+                global::config().gVectorSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-scal", "--scalar")) {
-                gGlobal->gVectorSwitch = false;
+                global::config().gVectorSwitch = false;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-dfs", "--deepFirstScheduling")) {
-                gGlobal->gDeepFirstSwitch = true;
+                global::config().gDeepFirstSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-vs", "--vec-size") && (i + 1 < _argc)) {
-                gGlobal->gVecSize = std::atoi(_argv[i + 1]);
+                global::config().gVecSize = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-lv", "--loop-variant") && (i + 1 < _argc)) {
-                gGlobal->gVectorLoopVariant = std::atoi(_argv[i + 1]);
+                global::config().gVectorLoopVariant = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-omp", "--openmp")) {
-                gGlobal->gOpenMPSwitch = true;
+                global::config().gOpenMPSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-pl", "--par-loop")) {
-                gGlobal->gOpenMPLoop = true;
+                global::config().gOpenMPLoop = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-sch", "--scheduler")) {
-                gGlobal->gSchedulerSwitch = true;
+                global::config().gSchedulerSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-ocl", "--openCL")) {
-                gGlobal->gOpenCLSwitch = true;
+                global::config().gOpenCLSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-cuda", "--CUDA")) {
-                gGlobal->gCUDASwitch = true;
+                global::config().gCUDASwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-g", "--groupTasks")) {
-                gGlobal->gGroupTaskSwitch = true;
+                global::config().gGroupTaskSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-fun", "--funTasks")) {
-                gGlobal->gFunTaskSwitch = true;
+                global::config().gFunTaskSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-uim", "--user-interface-macros")) {
-                gGlobal->gUIMacroSwitch = true;
+                global::config().gUIMacroSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-t", "--timeout") && (i + 1 < _argc)) {
-                gGlobal->gTimeout = std::atoi(_argv[i + 1]);
+                global::config().gTimeout = std::atoi(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-time", "--compilation-time")) {
@@ -606,48 +605,48 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-mdoc", "--mathdoc")) {
-                gGlobal->gPrintDocSwitch = true;
+                global::config().gPrintDocSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-mdlang", "--mathdoc-lang") && (i + 1 < _argc)) {
-                gGlobal->gDocLang = _argv[i + 1];
+                global::config().gDocLang = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-stripmdoc", "--strip-mdoc-tags")) {
-                gGlobal->gStripDocSwitch = true;
+                global::config().gStripDocSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-flist", "--file-list")) {
-                gGlobal->gPrintFileListSwitch = true;
+                global::config().gPrintFileListSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-norm", "--normalized-form")) {
-                gGlobal->gDumpNorm = 0;
+                global::config().gDumpNorm = 0;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-norm1", "--normalized-form1")) {
-                gGlobal->gDumpNorm = 1;
+                global::config().gDumpNorm = 1;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-cn", "--class-name") && (i + 1 < _argc)) {
                 vector<char> rep    = {'@', ' ', '(', ')', '/', '\\', '.'};
-                gGlobal->gClassName = replaceCharList(_argv[i + 1], rep, '_');
+                global::config().gClassName = replaceCharList(_argv[i + 1], rep, '_');
                 i += 2;
 
             } else if (isCmd(_argv[i], "-scn", "--super-class-name") && (i + 1 < _argc)) {
-                gGlobal->gSuperClassName = _argv[i + 1];
+                global::config().gSuperClassName = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-pn", "--process-name") && (i + 1 < _argc)) {
-                gGlobal->gProcessName = _argv[i + 1];
+                global::config().gProcessName = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-i", "--inline-architecture-files")) {
-                gGlobal->gInlineArchSwitch = true;
+                global::config().gInlineArchSwitch = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-e", "--export-dsp")) {
-                gGlobal->gExportDSP = true;
+                global::config().gExportDSP = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-exp10", "--generate-exp10")) {
@@ -655,23 +654,23 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-os", "--one-sample") || isCmd(_argv[i], "-os0", "--one-sample0")) {
-                gGlobal->gOneSample = 0;
+                global::config().gOneSample = 0;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-os1", "--one-sample1")) {
-                gGlobal->gOneSample = 1;
+                global::config().gOneSample = 1;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-os2", "--one-sample2")) {
-                gGlobal->gOneSample = 2;
+                global::config().gOneSample = 2;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-os3", "--one-sample3")) {
-                gGlobal->gOneSample = 3;
+                global::config().gOneSample = 3;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-cm", "--compute-mix")) {
-                gGlobal->gComputeMix = true;
+                global::config().gComputeMix = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-ftz", "--flush-to-zero")) {
@@ -684,12 +683,12 @@ namespace Faust {
                 i += 2;
 
             } else if (isCmd(_argv[i], "-rui", "--range-ui")) {
-                gGlobal->gRangeUI = true;
+                global::config().gRangeUI = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-fm", "--fast-math")) {
-                gGlobal->gFastMath    = true;
-                gGlobal->gFastMathLib = _argv[i + 1];
+                global::config().gFastMath    = true;
+                global::config().gFastMathLib = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-mapp", "--math-approximation")) {
@@ -697,41 +696,41 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-ns", "--namespace")) {
-                gGlobal->gNameSpace = _argv[i + 1];
+                global::config().gNameSpace = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-fp", "--full-parentheses")) {
-                gGlobal->gFullParentheses = true;
+                global::config().gFullParentheses = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-I", "--import-dir") && (i + 1 < _argc)) {
                 if ((strstr(_argv[i + 1], "http://") != 0) || (strstr(_argv[i + 1], "https://") != 0)) {
                     // We want to search user given directories *before* the standard ones, so insert at the beginning
-                    gGlobal->gImportDirList.insert(gGlobal->gImportDirList.begin(), _argv[i + 1]);
+                    global::config().gImportDirList.insert(global::config().gImportDirList.begin(), _argv[i + 1]);
                 } else {
                     char  temp[PATH_MAX + 1];
                     char* path = realpath(_argv[i + 1], temp);
                     if (path) {
                         // We want to search user given directories *before* the standard ones, so insert at the beginning
-                        gGlobal->gImportDirList.insert(gGlobal->gImportDirList.begin(), path);
+                        global::config().gImportDirList.insert(global::config().gImportDirList.begin(), path);
                     }
                 }
                 i += 2;
 
             } else if (isCmd(_argv[i], "-A", "--architecture-dir") && (i + 1 < _argc)) {
                 if ((strstr(_argv[i + 1], "http://") != 0) || (strstr(_argv[i + 1], "https://") != 0)) {
-                    gGlobal->gArchitectureDirList.push_back(_argv[i + 1]);
+                    global::config().gArchitectureDirList.push_back(_argv[i + 1]);
                 } else {
                     char  temp[PATH_MAX + 1];
                     char* path = realpath(_argv[i + 1], temp);
                     if (path) {
-                        gGlobal->gArchitectureDirList.push_back(path);
+                        global::config().gArchitectureDirList.push_back(path);
                     }
                 }
                 i += 2;
 
             } else if (isCmd(_argv[i], "-L", "--library") && (i + 1 < _argc)) {
-                gGlobal->gLibraryList.push_back(_argv[i + 1]);
+                global::config().gLibraryList.push_back(_argv[i + 1]);
                 i += 2;
 
             } else if (isCmd(_argv[i], "-O", "--output-dir") && (i + 1 < _argc)) {
@@ -742,40 +741,40 @@ namespace Faust {
                     error << "ERROR : invalid directory path " << _argv[i + 1] << endl;
                     throw faustexception(error.str());
                 } else {
-                    gGlobal->gOutputDir = path;
+                    global::config().gOutputDir = path;
                 }
                 i += 2;
 
             } else if (isCmd(_argv[i], "-inpl", "--in-place")) {
-                gGlobal->gInPlace = true;
+                global::config().gInPlace = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-es", "--enable-semantics")) {
-                gGlobal->gEnableFlag = std::atoi(_argv[i + 1]) == 1;
+                global::config().gEnableFlag = std::atoi(_argv[i + 1]) == 1;
                 i += 2;
 
             } else if (isCmd(_argv[i], "-lcc", "--local-causality-check")) {
-                gGlobal->gLocalCausalityCheck = true;
+                global::config().gLocalCausalityCheck = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-light", "--light-mode")) {
-                gGlobal->gLightMode = true;
+                global::config().gLightMode = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-clang", "--clang")) {
-                gGlobal->gClang = true;
+                global::config().gClang = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-nvi", "--no-virtual")) {
-                gGlobal->gNoVirtual = true;
+                global::config().gNoVirtual = true;
                 i += 1;
 
             } else if (isCmd(_argv[i], "-ct", "--check-table")) {
-                gGlobal->gCheckTable = "ct";
+                global::config().gCheckTable = "ct";
                 i += 1;
 
             } else if (isCmd(_argv[i], "-cat", "--check-all-table")) {
-                gGlobal->gCheckTable = "cat";
+                global::config().gCheckTable = "cat";
                 i += 1;
 
             } else if (isCmd(_argv[i], "-me", "--math-exceptions")) {
@@ -791,7 +790,7 @@ namespace Faust {
             } else if (_argv[i][0] != '-') {
                 const char* url = _argv[i];
                 if (checkURL(url)) {
-                    gGlobal->gInputFiles.push_back(url);
+                    global::config().gInputFiles.push_back(url);
                 }
                 i++;
 
@@ -807,112 +806,112 @@ namespace Faust {
         }
 
         // Adjust related options
-        if (gGlobal->gOpenMPSwitch || gGlobal->gSchedulerSwitch) gGlobal->gVectorSwitch = true;
+        if (global::config().gOpenMPSwitch || global::config().gSchedulerSwitch) global::config().gVectorSwitch = true;
 
         // Check options coherency
-        if (gGlobal->gInPlace && gGlobal->gVectorSwitch) {
+        if (global::config().gInPlace && global::config().gVectorSwitch) {
             throw faustexception("ERROR : '-inpl' option can only be used in scalar mode\n");
         }
 
     #if 0
-        if (gGlobal->gOutputLang == "ocpp" && gGlobal->gVectorSwitch) {
+        if (global::config().gOutputLang == "ocpp" && global::config().gVectorSwitch) {
             throw faustexception("ERROR : 'ocpp' backend can only be used in scalar mode\n");
         }
     #endif
-        if (gGlobal->gOneSample >= 0 && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "c" &&
-            gGlobal->gOutputLang != "dlang" && !startWith(gGlobal->gOutputLang, "soul") && gGlobal->gOutputLang != "fir") {
+        if (global::config().gOneSample >= 0 && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "c" &&
+            global::config().gOutputLang != "dlang" && !startWith(global::config().gOutputLang, "soul") && global::config().gOutputLang != "fir") {
             throw faustexception("ERROR : '-os' option cannot only be used with 'cpp', 'c', 'fir' or 'soul' backends\n");
         }
 
-        if (gGlobal->gOneSample >= 0 && gGlobal->gVectorSwitch) {
+        if (global::config().gOneSample >= 0 && global::config().gVectorSwitch) {
             throw faustexception("ERROR : '-os' option cannot only be used in scalar mode\n");
         }
 
-        if (::Faust::Primitive::Math::FTZMode == 2 && gGlobal->gOutputLang == "soul") {
+        if (::Faust::Primitive::Math::FTZMode == 2 && global::config().gOutputLang == "soul") {
             throw faustexception("ERROR : '-ftz 2' option cannot be used in 'soul' backend\n");
         }
 
-        if (gGlobal->gVectorLoopVariant < 0 || gGlobal->gVectorLoopVariant > 1) {
+        if (global::config().gVectorLoopVariant < 0 || global::config().gVectorLoopVariant > 1) {
             stringstream error;
-            error << "ERROR : invalid loop variant [-lv = " << gGlobal->gVectorLoopVariant << "] should be 0 or 1" << endl;
+            error << "ERROR : invalid loop variant [-lv = " << global::config().gVectorLoopVariant << "] should be 0 or 1" << endl;
             throw faustexception(error.str());
         }
 
-        if (gGlobal->gVecSize < 4) {
+        if (global::config().gVecSize < 4) {
             stringstream error;
-            error << "ERROR : invalid vector size [-vs = " << gGlobal->gVecSize << "] should be at least 4" << endl;
+            error << "ERROR : invalid vector size [-vs = " << global::config().gVecSize << "] should be at least 4" << endl;
             throw faustexception(error.str());
         }
 
-        if (gGlobal->gFunTaskSwitch) {
-            if (!(gGlobal->gOutputLang == "c" || gGlobal->gOutputLang == "cpp" || gGlobal->gOutputLang == "llvm" ||
-                  gGlobal->gOutputLang == "fir")) {
+        if (global::config().gFunTaskSwitch) {
+            if (!(global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp" || global::config().gOutputLang == "llvm" ||
+                  global::config().gOutputLang == "fir")) {
                 throw faustexception("ERROR : -fun can only be used with 'c', 'cpp', 'llvm' or 'fir' backends\n");
             }
         }
 
-        if (gGlobal->gFastMath) {
-            if (!(gGlobal->gOutputLang == "c" || gGlobal->gOutputLang == "cpp" || gGlobal->gOutputLang == "llvm" ||
-                  startWith(gGlobal->gOutputLang, "wast") || startWith(gGlobal->gOutputLang, "wasm"))) {
+        if (global::config().gFastMath) {
+            if (!(global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp" || global::config().gOutputLang == "llvm" ||
+                  startWith(global::config().gOutputLang, "wast") || startWith(global::config().gOutputLang, "wasm"))) {
                 throw faustexception("ERROR : -fm can only be used with 'c', 'cpp', 'llvm' or 'wast/wast' backends\n");
             }
         }
 
-        if (gGlobal->gNameSpace != "" && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "dlang") {
+        if (global::config().gNameSpace != "" && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "dlang") {
             throw faustexception("ERROR : -ns can only be used with the 'cpp' or 'dlang' backend\n");
         }
 
-        if (gGlobal->gMaskDelayLineThreshold < INT_MAX && (gGlobal->gVectorSwitch || (gGlobal->gOutputLang == "ocpp"))) {
+        if (global::config().gMaskDelayLineThreshold < INT_MAX && (global::config().gVectorSwitch || (global::config().gOutputLang == "ocpp"))) {
             throw faustexception(
                 "ERROR : '-dlt < INT_MAX' option can only be used in scalar mode and not with the 'ocpp' backend\n");
         }
 
         // gComputeMix check
-        if (gGlobal->gComputeMix && gGlobal->gOutputLang == "ocpp") {
+        if (global::config().gComputeMix && global::config().gOutputLang == "ocpp") {
             throw faustexception("ERROR : -cm cannot be used with the 'ocpp' backend\n");
         }
 
-        if (gGlobal->gComputeMix && gGlobal->gOutputLang == "interp") {
+        if (global::config().gComputeMix && global::config().gOutputLang == "interp") {
             throw faustexception("ERROR : -cm cannot be used with the 'interp' backend\n");
         }
 
-        if (gGlobal->gComputeMix && gGlobal->gOutputLang == "soul") {
+        if (global::config().gComputeMix && global::config().gOutputLang == "soul") {
             throw faustexception("ERROR : -cm cannot be used with the 'soul' backend\n");
         }
 
-        if (::Faust::Primitive::Math::floatSize == 4 && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
-            gGlobal->gOutputLang != "c") {
+        if (::Faust::Primitive::Math::floatSize == 4 && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
+            global::config().gOutputLang != "c") {
             throw faustexception("ERROR : -fx can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }
 
-        if (gGlobal->gClang && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
-            gGlobal->gOutputLang != "c") {
+        if (global::config().gClang && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
+            global::config().gOutputLang != "c") {
             throw faustexception("ERROR : -clang can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }
 
-        if (gGlobal->gNoVirtual && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp" &&
-            gGlobal->gOutputLang != "c") {
+        if (global::config().gNoVirtual && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
+            global::config().gOutputLang != "c") {
             throw faustexception("ERROR : -nvi can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }
 
-        if (gGlobal->gMemoryManager && gGlobal->gOutputLang != "cpp" && gGlobal->gOutputLang != "ocpp") {
+        if (global::config().gMemoryManager && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp") {
             throw faustexception("ERROR : -mem can only be used with 'cpp' or 'ocpp' backends\n");
         }
 
-        if (gGlobal->gArchFile != "" &&
-            ((gGlobal->gOutputLang == "wast") || (gGlobal->gOutputLang == "wasm") || (gGlobal->gOutputLang == "interp") ||
-             (gGlobal->gOutputLang == "llvm") || (gGlobal->gOutputLang == "fir"))) {
+        if (global::config().gArchFile != "" &&
+            ((global::config().gOutputLang == "wast") || (global::config().gOutputLang == "wasm") || (global::config().gOutputLang == "interp") ||
+             (global::config().gOutputLang == "llvm") || (global::config().gOutputLang == "fir"))) {
             throw faustexception("ERROR : -a can only be used with 'c', 'cpp', 'ocpp', 'rust' and 'soul' backends\n");
         }
 
-        if (gGlobal->gClassName == "") {
+        if (global::config().gClassName == "") {
             throw faustexception("ERROR : -cn used with empty string \n");
         }
 
         if (err != 0) {
             stringstream error;
             error << "WARNING : " << parse_error.str() << endl;
-            gGlobal->gErrorMsg = error.str();
+            global::config().gErrorMsg = error.str();
         }
 
         return (err == 0);

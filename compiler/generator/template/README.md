@@ -30,7 +30,7 @@ The `rdtable` and `rwtable` primitives are treated as *sub containers* which pos
 ```c++
 // Rename 'sig' in 'dsp', remove 'dsp' allocation, 
 // inline subcontainers 'instanceInit' and 'fill' function call
-inlineSubcontainersFunCalls(fInitInstructions)->accept(gGlobal->gTemplateVisitor);
+inlineSubcontainersFunCalls(fInitInstructions)->accept(global::config().gTemplateVisitor);
 ``` 
 
 Look at the `TemplateCodeContainer::produceClass()` method for a precise way of using it.
@@ -74,18 +74,18 @@ static void compileTemplate(Tree signals, int numInputs, int numOutputs, ostream
 {
 #ifdef TEMPLATE_BUILD
     // Backend configuration
-    gGlobal->gAllowForeignFunction = true;
-    gGlobal->gNeedManualPow        = false;
-    gGlobal->gFAUSTFLOAT2Internal  = true;
-    container = TemplateCodeContainer::createContainer(gGlobal->gClassName, numInputs, numOutputs, out);
+    global::config().gAllowForeignFunction = true;
+    global::config().gNeedManualPow        = false;
+    global::config().gFAUSTFLOAT2Internal  = true;
+    container = TemplateCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out);
     
-    if (gGlobal->gVectorSwitch) {
+    if (global::config().gVectorSwitch) {
         new_comp = new DAGInstructionsCompiler(container);
     } else {
         new_comp = new InstructionsCompiler(container);
     }
     
-    if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) new_comp->setDescription(new Description());
+    if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) new_comp->setDescription(new Description());
     new_comp->compileMultiSignal(signals);
 #else
     throw faustexception("ERROR : -lang temp not supported since Template backend is not built\n");
@@ -96,7 +96,7 @@ static void compileTemplate(Tree signals, int numInputs, int numOutputs, ostream
 To be added in `generateCode` function with a new `temp` flag to be used in the `-lang` option (like `-lang temp` with this new template backend):
 
 ```c++
-else if (gGlobal->gOutputLang == "temp") {
+else if (global::config().gOutputLang == "temp") {
     compileTemplate(signals, numInputs, numOutputs, dst.get());
 }
 ```

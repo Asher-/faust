@@ -118,12 +118,12 @@ bool isSigHighest(Tree t, Tree& s);
 ```c++
 Tree sigAssertBounds(Tree s1, Tree s2, Tree s3)
 {
-    return tree(gGlobal->SIGASSERTBOUNDS, s1, s2, s3);
+    return tree(global::config().SIGASSERTBOUNDS, s1, s2, s3);
 }
 
 bool isSigAssertBounds(Tree t, Tree& s1, Tree& s2, Tree& s3)
 {
-    return isTree(t, gGlobal->SIGASSERTBOUNDS, s1, s2, s3);
+    return isTree(t, global::config().SIGASSERTBOUNDS, s1, s2, s3);
 }
 ```
 

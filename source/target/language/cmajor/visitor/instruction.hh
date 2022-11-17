@@ -170,11 +170,11 @@ class CmajorInstVisitor : public TextInstVisitor {
     {
         *fOut << "// " << inst->fLabel;
         EndLine(' ');
-        if (gGlobal->gOutputLang == "cmajor-poly") {
+        if (global::config().gOutputLang == "cmajor-poly") {
             *fOut << "event event_" << replaceCharList(inst->fLabel, gReplace, '_') << " ("
                   << fTypeManager->fTypeDirectTable[itfloat()] << " val) { " << inst->fZone
                   << " = val; fUpdated = true; }";
-        } else if (gGlobal->gOutputLang == "cmajor-hybrid") {
+        } else if (global::config().gOutputLang == "cmajor-hybrid") {
             string cmajor_meta = getCmajorMetadata();
             *fOut << "event " << ((cmajor_meta != "") ? cmajor_meta : replaceCharList(inst->fLabel, gReplace, '_'))
                   << " (" << fTypeManager->fTypeDirectTable[itfloat()] << " val) { "
@@ -193,11 +193,11 @@ class CmajorInstVisitor : public TextInstVisitor {
               << ", min = " << checkReal(inst->fMin) << ", max = " << checkReal(inst->fMax)
               << ", step = " << checkReal(inst->fStep) << "]";
         EndLine(' ');
-        if (gGlobal->gOutputLang == "cmajor-poly") {
+        if (global::config().gOutputLang == "cmajor-poly") {
             *fOut << "event event_" << replaceCharList(inst->fLabel, gReplace, '_') << " ("
                   << fTypeManager->fTypeDirectTable[itfloat()] << " val) { " << inst->fZone
                   << " = val; fUpdated = true; }";
-        } else if (gGlobal->gOutputLang == "cmajor-hybrid") {
+        } else if (global::config().gOutputLang == "cmajor-hybrid") {
             string cmajor_meta = getCmajorMetadata();
             *fOut << "event " << ((cmajor_meta != "") ? cmajor_meta : replaceCharList(inst->fLabel, gReplace, '_'))
                   << " (" << fTypeManager->fTypeDirectTable[itfloat()] << " val) { "
@@ -392,7 +392,7 @@ class CmajorInstVisitor : public TextInstVisitor {
             name = inst->fName;
         }
 
-        *fOut << gGlobal->getMathFunction(name) << ((inst->fArgs.size() > 0) ? " (" : "(");
+        *fOut << global::config().getMathFunction(name) << ((inst->fArgs.size() > 0) ? " (" : "(");
 
         // Compile parameters
         generateFunCallArgs(inst->fArgs.begin(), inst->fArgs.end(), inst->fArgs.size());

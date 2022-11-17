@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -172,7 +172,7 @@ class CodeContainer : public virtual Garbageable {
         selectedKeys.insert(tree("version"));
 
         dst << "/* ------------------------------------------------------------" << endl;
-        for (const auto& i : gGlobal->gMetaDataSet) {
+        for (const auto& i : global::config().gMetaDataSet) {
             if (selectedKeys.count(i.first)) {
                 dst << *(i.first);
                 const char* sep = ": ";
@@ -186,7 +186,7 @@ class CodeContainer : public virtual Garbageable {
 
         dst << "Code generated with Faust " << FAUSTVERSION << " (https://faust.grame.fr)" << endl;
         dst << "Compilation options: ";
-        dst << gGlobal->printCompilationOptions1();
+        dst << global::config().printCompilationOptions1();
         dst << "\n------------------------------------------------------------ */" << endl;
     }
 
@@ -317,7 +317,7 @@ class CodeContainer : public virtual Garbageable {
     void generateMetaData(JSONUIReal<REAL>* json)
     {
         // Add global metadata
-        for (const auto& i : gGlobal->gMetaDataSet) {
+        for (const auto& i : global::config().gMetaDataSet) {
             if (i.first != tree("author")) {
                 stringstream str1, str2;
                 str1 << *(i.first);
@@ -350,7 +350,7 @@ class CodeContainer : public virtual Garbageable {
     {
         JSONInstVisitor<REAL> visitor;
         generateJSON(&visitor);
-        ofstream xout(subst("$0.json", gGlobal->makeDrawPath()).c_str());
+        ofstream xout(subst("$0.json", global::config().makeDrawPath()).c_str());
         xout << visitor.JSON();
     }
 
@@ -359,9 +359,9 @@ class CodeContainer : public virtual Garbageable {
     {
         // "name", "filename" found in medata
         visitor->init("", "", fNumInputs, fNumOutputs, -1, "", "",
-                      FAUSTVERSION, gGlobal->printCompilationOptions1(),
-                      gGlobal->gReader.listLibraryFiles(),
-                      gGlobal->gImportDirList,
+                      FAUSTVERSION, global::config().printCompilationOptions1(),
+                      global::config().gReader.listLibraryFiles(),
+                      global::config().gImportDirList,
                       -1, std::map<std::string, int>(),
                       fMemoryLayout);
         generateUserInterface(visitor);

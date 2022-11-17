@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -50,7 +50,7 @@ static Tree traced_simplification(Tree sig)
 {
     faustassert(sig);
 #ifdef TRACE
-    cerr << ++gGlobal->TABBER << "Start simplification of : " << ppsig(sig) << endl;
+    cerr << ++global::config().TABBER << "Start simplification of : " << ppsig(sig) << endl;
     /*
     fprintf(stderr, "\nStart simplification of : ");
     printSignal(sig, stderr);
@@ -60,7 +60,7 @@ static Tree traced_simplification(Tree sig)
     Tree r = simplification(sig);
     faustassert(r != 0);
 #ifdef TRACE
-    cerr << --gGlobal->TABBER << "Simplification of : " << ppsig(sig) << " Returns : " << ppsig(r) << endl;
+    cerr << --global::config().TABBER << "Simplification of : " << ppsig(sig) << " Returns : " << ppsig(r) << endl;
     /*
     fprintf(stderr, "Simplification of : ");
     printSignal(sig, stderr);
@@ -74,7 +74,7 @@ static Tree traced_simplification(Tree sig)
 
 Tree simplify(Tree sig)
 {
-    return sigMap(gGlobal->SIMPLIFIED, traced_simplification, sig);
+    return sigMap(global::config().SIMPLIFIED, traced_simplification, sig);
 }
 
 // Implementation
@@ -215,7 +215,7 @@ static Tree sigMap(Tree key, tfun f, Tree t)
         return (isNil(p)) ? t : p;  // trick to avoid loops
 
     } else if (isRec(t, id, body)) {
-        setProperty(t, key, gGlobal->nil);  // avoid infinite loop
+        setProperty(t, key, global::config().nil);  // avoid infinite loop
         return rec(id, sigMap(key, f, body));
 
     } else {
@@ -229,7 +229,7 @@ static Tree sigMap(Tree key, tfun f, Tree t)
 
         Tree r2 = f(r1);
         if (r2 == t) {
-            setProperty(t, key, gGlobal->nil);
+            setProperty(t, key, global::config().nil);
         } else {
             setProperty(t, key, r2);
         }
@@ -275,7 +275,7 @@ static Tree sigMapRename(Tree key, Tree env, tfun f, Tree t)
 
         Tree r2 = f(r1);
         if (r2 == t) {
-            setProperty(t, key, gGlobal->nil);
+            setProperty(t, key, global::config().nil);
         } else {
             setProperty(t, key, r2);
         }
@@ -296,7 +296,7 @@ static void eraseProperties(Tree key, Tree t)
 		t->clearProperties();
         Tree r = rec(id, body);
         faustassert(r==t);
-		setProperty(t, key, gGlobal->nil);	// avoid infinite loop
+		setProperty(t, key, global::config().nil);	// avoid infinite loop
 		eraseProperties(key, body);
 
 	} else {
@@ -324,7 +324,7 @@ static Tree docTableConverter(Tree sig);
 
 Tree docTableConvertion(Tree sig)
 {
-    Tree r = sigMapRename(gGlobal->DOCTABLES, gGlobal->NULLENV, docTableConverter, sig);
+    Tree r = sigMapRename(global::config().DOCTABLES, global::config().NULLENV, docTableConverter, sig);
     return r;
 }
 

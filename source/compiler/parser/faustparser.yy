@@ -901,10 +901,10 @@ primitive:
 
       primitive.type.number.list.member:
           primitive.number {
-            gGlobal->gWaveForm.push_back($[primitive.number]);
+            global::config().gWaveForm.push_back($[primitive.number]);
           }
         | expression.math.scalar {
-            gGlobal->gWaveForm.push_back($[expression.math.scalar]);
+            global::config().gWaveForm.push_back($[expression.math.scalar]);
           }
 
       primitive.type.number.list.start:
@@ -957,9 +957,9 @@ primitive:
         
       primitive.signal.source.waveform:
         WAVEFORM LBRAQ primitive.type.number.list RBRAQ {
-          $$ = boxWaveform(gGlobal->gWaveForm);
-          gGlobal->gWaveForm.clear();
-          /* primitive.type.number.list pushes values onto gGlobal->gWaveForm */
+          $$ = boxWaveform(global::config().gWaveForm);
+          global::config().gWaveForm.clear();
+          /* primitive.type.number.list pushes values onto global::config().gWaveForm */
         }
 
     /******************** Type ********************/

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -32,8 +32,8 @@ DeclareBufferIterators::DeclareBufferIterators(const std::string& name1,
 {
     for (int i = 0; i < channels; i++) {
         std::string chan_name = name1 + std::to_string(i);
-        if (gGlobal->gVarTypeTable.find(chan_name) == gGlobal->gVarTypeTable.end()) {
-            gGlobal->gVarTypeTable[chan_name] = type;
+        if (global::config().gVarTypeTable.find(chan_name) == global::config().gVarTypeTable.end()) {
+            global::config().gVarTypeTable[chan_name] = type;
         } else {
             faustassert(false);
         }

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -50,8 +50,8 @@ dsp_factory_base* createFactory(const char* name, const char* dsp_content, int a
       compiler->_dspContent = dsp_content;
       compiler->_generate = generate;
       compiler->createFactory();
-      error_msg = gGlobal->gErrorMsg;
-      factory   = gGlobal->gDSPFactory;
+      error_msg = global::config().gErrorMsg;
+      factory   = global::config().gDSPFactory;
     } catch (faustexception& e) {
         error_msg = e.Message();
     }
@@ -71,8 +71,8 @@ dsp_factory_base* createFactory(const char* name, tvec signals, int argc, const 
         ::Faust::CLI faust_cli(argc, argv);
         ::Faust::Compiler::Common* compiler = faust_cli.parse();
         compiler->createFactory(name, outputs_nf, counter.fMaxInputs, signals.size());
-        error_msg = gGlobal->gErrorMsg;
-      factory   = gGlobal->gDSPFactory;
+        error_msg = global::config().gErrorMsg;
+      factory   = global::config().gDSPFactory;
     } catch (faustexception& e) {
         error_msg = e.Message();
     }
@@ -94,8 +94,8 @@ string expandDSPInternal(int argc, const char* argv[], const char* name, const c
      2 - parse source files
     *****************************************************************/
     if (dsp_content) {
-        gGlobal->gInputString = dsp_content;
-        gGlobal->gInputFiles.push_back(name);
+        global::config().gInputString = dsp_content;
+        global::config().gInputFiles.push_back(name);
     }
     ::Faust::Controller::initDocumentNames();
 
@@ -105,8 +105,8 @@ string expandDSPInternal(int argc, const char* argv[], const char* name, const c
      3 - evaluate 'process' definition
     *****************************************************************/
     compiler->evaluateBlockDiagramInNewThread();
-    if (!gGlobal->gProcessTree) {
-        throw faustexception(gGlobal->gErrorMessage);
+    if (!global::config().gProcessTree) {
+        throw faustexception(global::config().gErrorMessage);
     }
 
     stringstream out;
@@ -122,10 +122,9 @@ string expandDSP(int argc, const char* argv[], const char* name, const char* dsp
     string res = "";
 
     try {
-        global::allocate();
         res       = expandDSPInternal(argc, argv, name, dsp_content);
         sha_key   = generateSHA1(res);
-        error_msg = gGlobal->gErrorMsg;
+        error_msg = global::config().gErrorMsg;
     } catch (faustexception& e) {
         error_msg = e.Message();
     }

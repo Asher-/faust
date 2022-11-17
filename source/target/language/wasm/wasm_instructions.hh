@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -479,7 +479,7 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, array_typed->fSize, array_typed->getSizeBytes(), array_typed->fType->getType());
                 // Always use biggest size so that int/real access are correctly aligned
-                fStructOffset += (array_typed->fSize * gGlobal->audioSampleSize());
+                fStructOffset += (array_typed->fSize * global::config().audioSampleSize());
             } else {
                 // Local variables declared by [var_num, type] pairs, separated as (local, set_local instruction)
             }
@@ -487,7 +487,7 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, 1, inst->fType->getSizeBytes(), inst->fType->getType());
                 // Always use biggest size so that int/real access are correctly aligned
-                fStructOffset += gGlobal->audioSampleSize();
+                fStructOffset += global::config().audioSampleSize();
             } else {
                 // Local variables declared by [var_num, type] pairs, separated as (local, set_local instruction)
                 faustassert(inst->fValue == nullptr);
@@ -514,10 +514,10 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
                 // Build function type (args type same as return type)
                 Names args;
                 if (desc.fArgs == 1) {
-                    args.push_back(InstBuilder::genNamedTyped(gGlobal->getFreshID("v1"), desc.fTypeIn));
+                    args.push_back(InstBuilder::genNamedTyped(global::config().getFreshID("v1"), desc.fTypeIn));
                 } else if (desc.fArgs == 2) {
-                    args.push_back(InstBuilder::genNamedTyped(gGlobal->getFreshID("v1"), desc.fTypeIn));
-                    args.push_back(InstBuilder::genNamedTyped(gGlobal->getFreshID("v2"), desc.fTypeIn));
+                    args.push_back(InstBuilder::genNamedTyped(global::config().getFreshID("v1"), desc.fTypeIn));
+                    args.push_back(InstBuilder::genNamedTyped(global::config().getFreshID("v2"), desc.fTypeIn));
                 } else {
                     faustassert(false);
                 }
@@ -623,7 +623,7 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
         for (const auto& import : fFunImports) {
             *out << import.second.first;  // module
             // Possibly map fastmath functions, emcc compiled functions are prefixed with '_'
-            *out << ("_" + gGlobal->getMathFunction(import.first));  // base
+            *out << ("_" + global::config().getMathFunction(import.first));  // base
             *out << U32LEB(int32_t(ExternalKind::Function));
             *out << U32LEB(getFunctionTypeIndex(import.first));  // function type index
         }
@@ -848,7 +848,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, array_typed->fSize, array_typed->getSizeBytes(), array_typed->fType->getType());
                 // Always use biggest size so that int/real access are correctly aligned
-                fStructOffset += (array_typed->fSize * gGlobal->audioSampleSize());
+                fStructOffset += (array_typed->fSize * global::config().audioSampleSize());
             } else {
                 // Local variables declared by [var_num, type] pairs, separated as (local, set_local instruction)
             }
@@ -856,7 +856,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             if (is_struct) {
                 fFieldTable[name] = MemoryDesc(-1, fStructOffset, 1, inst->fType->getSizeBytes(), inst->fType->getType());
                 // Always use biggest size so that int/real access are correctly aligned
-                fStructOffset += gGlobal->audioSampleSize();
+                fStructOffset += global::config().audioSampleSize();
             } else {
                 // Local variables declared by [var_num, type] pairs, separated as (local, set_local instruction)
                 faustassert(inst->fValue == nullptr);
@@ -1034,7 +1034,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             *fOut << int8_t(BinaryConsts::LocalGet) << U32LEB(local.fIndex);
             indexed->getIndex()->accept(this);
             // If 'i' loop variable moves in bytes, save index code generation of input/output
-            if (gGlobal->gLoopVarInBytes) {
+            if (global::config().gLoopVarInBytes) {
                 *fOut << int8_t(WasmOp::I32Add);
             } else {
                 *fOut << int8_t(BinaryConsts::I32Const) << S32LEB((fSubContainerType == kInt) ? 2 : offStrNum);

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -222,7 +222,7 @@ class TextInstVisitor : public InstVisitor {
     {
         BinopInst* a = dynamic_cast<BinopInst*>(arg);
         if (a) {
-            if (gGlobal->gFullParentheses || special(gBinOpTable[inst->fOpcode]->fName)) {
+            if (global::config().gFullParentheses || special(gBinOpTable[inst->fOpcode]->fName)) {
                 // to silence warnings we add parentheses to arguments of special binops
                 return true;
             } else {
@@ -249,7 +249,7 @@ class TextInstVisitor : public InstVisitor {
     {
         BinopInst* a = dynamic_cast<BinopInst*>(arg);
         if (a) {
-            if (gGlobal->gFullParentheses || special(gBinOpTable[inst->fOpcode]->fName)) {
+            if (global::config().gFullParentheses || special(gBinOpTable[inst->fOpcode]->fName)) {
                 // to silence warnings we add parentheses to arguments of special binops
                 return true;
             }

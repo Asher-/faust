@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -96,7 +96,7 @@ SVGDev::SVGDev(const char* ficName, double largeur, double hauteur)
     fprintf(fic_repr, "<?xml version=\"1.0\"?>\n");
     // + DTD ...
     // viewBox:
-    if (gGlobal->gScaledSVG) {
+    if (global::config().gScaledSVG) {
         fprintf(fic_repr,
                 "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 "
                 "%f %f\" width=\"100%%\" height=\"100%%\" version=\"1.1\">\n",
@@ -108,7 +108,7 @@ SVGDev::SVGDev(const char* ficName, double largeur, double hauteur)
                 largeur, hauteur, largeur * gScale, hauteur * gScale);
     }
 
-    if (gGlobal->gShadowBlur) {
+    if (global::config().gShadowBlur) {
         fprintf(fic_repr,
                 "<defs>\n"
                 "   <filter id=\"filter\" filterRes=\"18\" x=\"0\" y=\"0\">\n"
@@ -133,7 +133,7 @@ void SVGDev::rect(double x, double y, double l, double h, const char* color, con
         fprintf(fic_repr, "<a xlink:href=\"%s\">\n", xmlcode(link, buf));
     }
     // draw the shadow
-    if (gGlobal->gShadowBlur) {
+    if (global::config().gShadowBlur) {
         fprintf(fic_repr,
                 "<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" rx=\"0.1\" ry=\"0.1\" "
                 "style=\"stroke:none;fill:#aaaaaa;;filter:url(#filter);\"/>\n",

@@ -1,7 +1,7 @@
 /************************************************************************
  ************************************************************************
     FAUST compiler
-    Copyright (C) 2003-2018 GRAME, Centre National de Creation Musicale
+    Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
     ---------------------------------------------------------------------
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published by
@@ -54,7 +54,7 @@ namespace Faust {
           selectedKeys.insert(tree("version"));
 
           dst << "//----------------------------------------------------------" << endl;
-          for (const auto& i : gGlobal->gMetaDataSet) {
+          for (const auto& i : global::config().gMetaDataSet) {
               if (selectedKeys.count(i.first)) {
                   dst << "// " << *(i.first);
                   const char* sep = ": ";
@@ -74,10 +74,10 @@ namespace Faust {
       void generateCode(unique_ptr<ostream>& dst)
       {
           // Check for architecture file
-          if (gGlobal->gArchFile != "") {
-              if ((enrobage = openArchStream(gGlobal->gArchFile.c_str())) == nullptr) {
+          if (global::config().gArchFile != "") {
+              if ((enrobage = openArchStream(global::config().gArchFile.c_str())) == nullptr) {
                   stringstream error;
-                  error << "ERROR : can't open architecture file " << gGlobal->gArchFile << endl;
+                  error << "ERROR : can't open architecture file " << global::config().gArchFile << endl;
                   throw faustexception(error.str());
               }
           }
@@ -90,10 +90,10 @@ namespace Faust {
           this->_instructionCompiler->getClass()->printIncludeFile(*dst.get());
           this->_instructionCompiler->getClass()->printAdditionalCode(*dst.get());
 
-          if (gGlobal->gArchFile != "") {
+          if (global::config().gArchFile != "") {
               streamCopyUntil(*enrobage.get(), *dst.get(), "<<includeIntrinsic>>");
 
-              if (gGlobal->gSchedulerSwitch) {
+              if (global::config().gSchedulerSwitch) {
                   unique_ptr<ifstream> scheduler_include = openArchStream("old-scheduler.cpp");
                   if (scheduler_include) {
                       streamCopyUntilEnd(*scheduler_include, *dst.get());
@@ -116,12 +116,12 @@ namespace Faust {
            9 - generate the task graph file in dot format
            *****************************************************************/
 
-          if (gGlobal->gGraphSwitch) {
-              ofstream dotfile(subst("$0.dot", gGlobal->makeDrawPath()).c_str());
+          if (global::config().gGraphSwitch) {
+              ofstream dotfile(subst("$0.dot", global::config().makeDrawPath()).c_str());
               this->_instructionCompiler->getClass()->printGraphDotFormat(dotfile);
           }
 
-          if (gGlobal->gOutputFile == "") {
+          if (global::config().gOutputFile == "") {
               cout << dynamic_cast<ostringstream*>(dst.get())->str();
           }
       }
@@ -133,15 +133,15 @@ namespace Faust {
               throw faustexception("ERROR : -lang ocpp not supported since old CPP backend is not built\n");
           #endif
 
-          if (gGlobal->gSchedulerSwitch) {
-              this->_instructionCompiler = new SchedulerCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
-          } else if (gGlobal->gVectorSwitch) {
-              this->_instructionCompiler = new VectorCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
+          if (global::config().gSchedulerSwitch) {
+              this->_instructionCompiler = new SchedulerCompiler(global::config().gClassName, global::config().gSuperClassName, numInputs, numOutputs);
+          } else if (global::config().gVectorSwitch) {
+              this->_instructionCompiler = new VectorCompiler(global::config().gClassName, global::config().gSuperClassName, numInputs, numOutputs);
           } else {
-              this->_instructionCompiler = new ScalarCompiler(gGlobal->gClassName, gGlobal->gSuperClassName, numInputs, numOutputs);
+              this->_instructionCompiler = new ScalarCompiler(global::config().gClassName, global::config().gSuperClassName, numInputs, numOutputs);
           }
 
-          if (gGlobal->gPrintXMLSwitch || gGlobal->gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
+          if (global::config().gPrintXMLSwitch || global::config().gPrintDocSwitch) this->_instructionCompiler->setDescription(new Description());
           this->_instructionCompiler->compileMultiSignal(signals);
       }
 
