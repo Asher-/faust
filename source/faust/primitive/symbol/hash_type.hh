@@ -33,7 +33,7 @@ namespace Faust {
       <
         typename StringLike
       >
-      constexpr const HashType hash( const StringLike& string_value )
+      constexpr HashType hash( const StringLike& string_value )
       {
         unsigned int hash_value = 0;
         for ( std::size_t index = 0 ; index < string_value.size() ; ++index ) {

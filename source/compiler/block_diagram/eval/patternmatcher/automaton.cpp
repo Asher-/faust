@@ -70,7 +70,7 @@ namespace PM {
       for (r = 0; r < n; r++) {
           Tree lhs, rhs;
           if (isCons(rules[r], lhs, rhs)) {
-              Tree         pat, rest;
+              Tree         pat;
               int          m = len(lhs), i = m;
               vector<Tree> pats(len(lhs), (Tree)NULL);
               State*      state0 = new State, *state = state0;
@@ -84,8 +84,8 @@ namespace PM {
                   Path p;
                   state = State::make_state(state, r, pats[i], p);
               }
-              Rule rule(r, NULL);
-              state->rules.push_back(rule);
+              Rule new_rule(r, NULL);
+              state->rules.push_back(new_rule);
               State::merge_state(start, state0);
           }
       }

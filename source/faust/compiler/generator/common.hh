@@ -164,7 +164,6 @@ namespace Faust {
           faustassert(description);
           ofstream xout(subst("$0.xml", global::config().makeDrawPath()).c_str());
 
-          MetaDataSet::const_iterator it1;
           set<Tree>::const_iterator   it2;
           for (const auto& it1 : global::config().gMetaDataSet) {
               const string key = tree2str(it1.first);
@@ -741,7 +740,7 @@ namespace Faust {
                   error << "ERROR : file '" << outpath << "' cannot be opened\n";
                   throw faustexception(error.str());
               } else {
-                  dst = move(fdst);
+                  dst = std::move(fdst);
               }
 
           } else {

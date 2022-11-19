@@ -127,8 +127,6 @@ Tree aterm::normalizedTree() const
     // positive terms are stored in P[]
     // negative terms are inverted (made positive) and stored in N[]
     Tree P[4], N[4];
-    bool hasPositiveTerm = false;
-    bool hasNegativeTerm = false;
 
     // prepare
     for (int order = 0; order < 4; order++) P[order] = N[order] = tree(0);
@@ -140,12 +138,10 @@ Tree aterm::normalizedTree() const
             Tree t          = m.normalizedTree(false, true);
             int  order      = getSigOrder(t);
             N[order]        = simplifyingAdd(N[order], t);
-            hasNegativeTerm = true;
         } else {
             Tree t          = m.normalizedTree();
             int  order      = getSigOrder(t);
             P[order]        = simplifyingAdd(P[order], t);
-            hasPositiveTerm = true;
         }
     }
 

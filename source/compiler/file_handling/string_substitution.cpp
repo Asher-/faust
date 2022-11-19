@@ -277,10 +277,20 @@ unique_ptr<ifstream> openArchStream(const char* filename)
     char* old = getcwd(buffer, FAUST_PATH_MAX);
     int   err;
 
-    TRY_OPEN(filename);
+    std::unique_ptr<std::ifstream> f = std::unique_ptr<std::ifstream>(new std::ifstream());
+    f->open(filename, std::ifstream::in);
+    err = chdir(old);
+    if (f->is_open())
+        return f;
+
     for (string dirname : global::config().gArchitectureDirList) {
         if ((err = chdir(dirname.c_str())) == 0) {
-            TRY_OPEN(filename);
+            f = std::unique_ptr<std::ifstream>(new std::ifstream());
+            f->open(filename, std::ifstream::in);
+            err = chdir(old);
+            if (f->is_open())
+                return f;
+
         }
     }
 

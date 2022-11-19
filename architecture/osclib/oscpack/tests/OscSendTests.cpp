@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
 	IpEndpointName host( hostName, port );
 
 	char hostIpAddress[ IpEndpointName::ADDRESS_STRING_LENGTH ];
-	host.AddressAsString( hostIpAddress );
+	host.AddressAsString( hostIpAddress, IpEndpointName::ADDRESS_STRING_LENGTH );
 
     std::cout << "sending test messages to " << hostName 
 		<< " (" << hostIpAddress << ") on port " << port << "...\n\n";

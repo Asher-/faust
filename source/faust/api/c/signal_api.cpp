@@ -40,9 +40,9 @@ LIBFAUST_API bool CisNil(Tree s)
     return isNil(s);
 }
 
-LIBFAUST_API std::string Ctree2str(Tree s)
+LIBFAUST_API const char * Ctree2str(Tree s)
 {
-    return tree2str(s);
+    return tree2str(s).c_str();
 }
 
 LIBFAUST_API int Ctree2int(Tree s)

@@ -37,6 +37,7 @@
 #ifndef INCLUDED_OSCPACK_IPENDPOINTNAME_H
 #define INCLUDED_OSCPACK_IPENDPOINTNAME_H
 
+#include <cstddef>
 
 class IpEndpointName{
     static unsigned long GetHostByName( const char *s );
@@ -64,10 +65,10 @@ public:
     bool IsMulticastAddress() const { return ((address >> 24) & 0xFF) >= 224 && ((address >> 24) & 0xFF) <= 239; }
 
 	enum { ADDRESS_STRING_LENGTH=17 };
-	void AddressAsString( char *s ) const;
+	void AddressAsString( char *s, const std::size_t& buffer_size ) const;
 
 	enum { ADDRESS_AND_PORT_STRING_LENGTH=23};
-	void AddressAndPortAsString( char *s ) const;
+	void AddressAndPortAsString( char *s, std::size_t& buffer_size ) const;
 };
 
 inline bool operator==( const IpEndpointName& lhs, const IpEndpointName& rhs )

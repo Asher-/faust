@@ -34,7 +34,7 @@ namespace Faust {
   namespace Primitive {
     namespace Symbol {
       namespace Internal {
-
+      
         //--------------------------------SYMBOL-------------------------------------
 
         /**
@@ -58,20 +58,7 @@ namespace Faust {
           /********** Static **********/
           
           static constexpr std::string_view Name{NameValue};
-
-          static constexpr bool NameDoesNotContainControlCharacters() {
-            for ( std::size_t index = 0 ; index < Name.size() ; ++index ) {
-              char c = Name[index];
-              if ( (c >= 0) && (c < 32) )
-                return false;
-            }
-            return true;
-          }
-          static_assert(
-            NameDoesNotContainControlCharacters(),
-            "Symbols cannot contain control characters."
-          );
-
+          
           /**
            * Compute the 32-bits hash key of string \p str.
            * \param str the string

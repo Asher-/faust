@@ -55,11 +55,11 @@ namespace PM {
       // number of rules
       int n_rules() { return (int)rhs.size(); }
       // markers of rules still active in state s
-      const list<Rule>& rules(int s) { return state[s]->rules; }
+      const list<Rule>& rules(int state_num ) { return state[state_num]->rules; }
       // transitions in state s
-      const list<Trans>& trans(int s) { return state[s]->trans; }
+      const list<Trans>& trans(int state_num) { return state[state_num]->trans; }
       // is s a final state?
-      bool final(int s) { return trans(s).empty(); }
+      bool final(int state_num) { return trans(state_num).empty(); }
 
       // assign state numbers and build the state table
       int  s;

@@ -210,7 +210,8 @@ class FBCInterpreter : public FBCExecutor<REAL> {
     
     inline REAL checkCastIntOverflow(InstructionIT it, REAL val)
     {
-        if (val > std::numeric_limits<int>::max() || val < std::numeric_limits<int>::min()) {
+        if ( val > static_cast<REAL>(std::numeric_limits<int>::max())
+          || val < static_cast<REAL>(std::numeric_limits<int>::min()) ) {
             
             if (TRACE >= 3) {
                 fRealStats[CAST_INT_OVERFLOW]++;

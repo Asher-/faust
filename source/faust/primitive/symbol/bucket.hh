@@ -112,7 +112,7 @@ namespace Faust {
           return nullptr;
         }
 
-        const AbstractSymbol* const
+        const AbstractSymbol*
         find(
           const HashType& hash,
           bool throw_if_not_found = true

@@ -322,7 +322,6 @@ struct FAUST_API JSONUIDecoderReal : public JSONUIDecoderBase {
         
         int countIn = 0;
         int countOut = 0;
-        int countSound = 0;
         
         for (const auto& it : fUiItems) {
             
@@ -381,8 +380,6 @@ struct FAUST_API JSONUIDecoderReal : public JSONUIDecoderBase {
                 countIn++;
             } else if (isOutput(type)) {
                 countOut++;
-            } else if (isSoundfile(type)) {
-                countSound++;
             }
         }
         

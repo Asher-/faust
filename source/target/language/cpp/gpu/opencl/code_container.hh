@@ -30,8 +30,7 @@
 #include "target/language/cpp/gpu/opencl/visitor/control_instruction.hh"
 #include "target/language/cpp/gpu/opencl/visitor/dsp_instruction.hh"
 
-class CPPOpenCLCodeContainer : public CPPGPUCodeContainer {
-   public:
+struct CPPOpenCLCodeContainer : CPPGPUCodeContainer {
     CPPOpenCLCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out)
         : CPPGPUCodeContainer(name, super, numInputs, numOutputs, out)
     {

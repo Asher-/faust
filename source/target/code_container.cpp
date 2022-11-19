@@ -504,9 +504,9 @@ void CodeContainer::processFIR(void)
                 SearchSubcontainer search_class(it->getClassName());
                 fInitInstructions->accept(&search_class);
                 if (search_class.fFound) {
-                    VariableSizeCounter struct_size(Address::kStruct);
-                    it->generateDeclarations(&struct_size);
-                    fMemoryLayout.push_back(make_tuple(it->getClassName(), int(Typed::kNoType), 0, struct_size.fSizeBytes, 0, 0));
+                    VariableSizeCounter address_struct_size(Address::kStruct);
+                    it->generateDeclarations(&address_struct_size);
+                    fMemoryLayout.push_back(make_tuple(it->getClassName(), int(Typed::kNoType), 0, address_struct_size.fSizeBytes, 0, 0));
                 }
             }
         }

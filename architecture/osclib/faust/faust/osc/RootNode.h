@@ -57,6 +57,15 @@ struct aliastarget
 	aliastarget(const aliastarget& t)
 		: fMinIn(t.fMinIn), fMaxIn(t.fMaxIn), fMinOut(t.fMinOut), fMaxOut(t.fMaxOut), fTarget(t.fTarget) {}
 
+  void operator=(const aliastarget& t )
+  {
+    fMinIn = t.fMinIn;
+    fMaxIn = t.fMaxIn;
+    fMinOut = t.fMinOut;
+    fMaxOut = t.fMaxOut;
+    fTarget = t.fTarget;
+  }
+
 	double scale(double x) const 
     {
         if (fMinIn < fMaxIn) {
