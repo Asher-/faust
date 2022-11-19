@@ -303,7 +303,7 @@ Tree boxAbstr(Tree x, Tree y)
 }
 Tree boxAppl(Tree x, Tree y)
 {
-    return tree(global::config().BOXAPPL, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxAppl"), x, y);
 }
 
 LIBFAUST_API bool isBoxAbstr(Tree t)
@@ -312,7 +312,7 @@ LIBFAUST_API bool isBoxAbstr(Tree t)
 }
 LIBFAUST_API bool isBoxAppl(Tree t)
 {
-    return t->node() == Node(global::config().BOXAPPL);
+    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("BoxAppl"));
 }
 
 LIBFAUST_API bool isBoxAbstr(Tree t, Tree& x, Tree& y)
@@ -321,7 +321,7 @@ LIBFAUST_API bool isBoxAbstr(Tree t, Tree& x, Tree& y)
 }
 LIBFAUST_API bool isBoxAppl(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXAPPL, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxAppl"), x, y);
 }
 
 Tree buildBoxAbstr(Tree largs, Tree body)
@@ -1111,11 +1111,11 @@ LIBFAUST_API bool isBoxCase(Tree s, Tree& rules)
 
 Tree boxPatternVar(Tree id)
 {
-    return tree(global::config().BOXPATVAR, id);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPatVar"), id);
 }
 bool isBoxPatternVar(Tree s, Tree& id)
 {
-    return isTree(s, global::config().BOXPATVAR, id);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPatVar"), id);
 }
 
 Tree boxPatternMatcher(PM::Automaton* a, int state, Tree env, Tree origRules, Tree revParamList)

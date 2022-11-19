@@ -357,92 +357,6 @@ struct global {
     Tree LETRECBODY;
     Node PROPAGATEPROPERTY;
 
-    // Extended math
-    xtended* gAbsPrim;
-    xtended* gAcosPrim;
-    xtended* gTanPrim;
-    xtended* gSqrtPrim;
-    xtended* gSinPrim;
-    xtended* gRintPrim;
-    xtended* gRemainderPrim;
-    xtended* gPowPrim;
-    xtended* gMinPrim;
-    xtended* gMaxPrim;
-    xtended* gLogPrim;
-    xtended* gLog10Prim;
-    xtended* gFmodPrim;
-    xtended* gFloorPrim;
-    xtended* gExpPrim;
-    xtended* gExp10Prim;
-    xtended* gCosPrim;
-    xtended* gCeilPrim;
-    xtended* gAtanPrim;
-    xtended* gAtan2Prim;
-    xtended* gAsinPrim;
-    xtended* gFtzPrim;
-
-    // Signals
-    Sym BOXIDENT;
-    Sym BOXCUT;
-    Sym BOXWAVEFORM;
-    Sym BOXROUTE;
-    Sym BOXWIRE;
-    Sym BOXSLOT;
-    Sym BOXSYMBOLIC;
-    Sym BOXSEQ;
-    Sym BOXPAR;
-    Sym BOXREC;
-    Sym BOXSPLIT;
-    Sym BOXMERGE;
-    Sym BOXIPAR;
-    Sym BOXISEQ;
-    Sym BOXISUM;
-    Sym BOXIPROD;
-    Sym BOXABSTR;
-    Sym BOXAPPL;
-    Sym CLOSURE;
-    Sym BOXERROR;
-    Sym BOXACCESS;
-    Sym BOXWITHLOCALDEF;
-    Sym BOXMODIFLOCALDEF;
-    Sym BOXENVIRONMENT;
-    Sym BOXCOMPONENT;
-    Sym BOXLIBRARY;
-    Sym IMPORTFILE;
-    Sym BOXPRIM0;
-    Sym BOXPRIM1;
-    Sym BOXPRIM2;
-    Sym BOXPRIM3;
-    Sym BOXPRIM4;
-    Sym BOXPRIM5;
-    Sym BOXFFUN;
-    Sym BOXFCONST;
-    Sym BOXFVAR;
-    Sym BOXBUTTON;
-    Sym BOXCHECKBOX;
-    Sym BOXHSLIDER;
-    Sym BOXVSLIDER;
-    Sym BOXNUMENTRY;
-    Sym BOXHGROUP;
-    Sym BOXVGROUP;
-    Sym BOXTGROUP;
-    Sym BOXHBARGRAPH;
-    Sym BOXVBARGRAPH;
-    Sym BOXCASE;
-    Sym BOXPATMATCHER;
-    Sym BOXPATVAR;
-    Sym BOXINPUTS;
-    Sym BOXOUTPUTS;
-    Sym BOXSOUNDFILE;
-    Sym BOXMETADATA;
-    Sym DOCEQN;
-    Sym DOCDGM;
-    Sym DOCNTC;
-    Sym DOCLST;
-    Sym DOCMTD;
-    Sym DOCTXT;
-    Sym BARRIER;
-
     property<bool>* gPureRoutingProperty;
     property<Tree>* gSymbolicBoxProperty;
 
@@ -450,65 +364,6 @@ struct global {
     Node PMPROPERTYNODE;
 
     property<Tree>* gSimplifiedBoxProperty;
-
-    // the property used to memoize the results
-    property<Tree>* gSymListProp;
-
-    // Memoized type contruction
-    property<AudioType*>* gMemoizedTypes;
-
-    // Symbols
-    Sym UIFOLDER;
-    Sym UIWIDGET;
-    Sym PATHROOT;
-    Sym PATHPARENT;
-    Sym PATHCURRENT;
-    Sym FFUN;
-    Sym SIGINPUT;
-    Sym SIGOUTPUT;
-    Sym SIGDELAY1;
-    Sym SIGDELAY;
-    Sym SIGPREFIX;
-    Sym SIGRDTBL;
-    Sym SIGWRTBL;
-    Sym SIGTABLE;
-    Sym SIGGEN;
-    Sym SIGDOCONSTANTTBL;
-    Sym SIGDOCWRITETBL;
-    Sym SIGDOCACCESSTBL;
-    Sym SIGSELECT2;
-    Sym SIGASSERTBOUNDS;
-    Sym SIGHIGHEST;
-    Sym SIGLOWEST;
-    Sym SIGBINOP;
-    Sym SIGFFUN;
-    Sym SIGFCONST;
-    Sym SIGFVAR;
-    Sym SIGPROJ;
-    Sym SIGINTCAST;
-    Sym SIGFLOATCAST;
-    Sym SIGBUTTON;
-    Sym SIGCHECKBOX;
-    Sym SIGWAVEFORM;
-    Sym SIGHSLIDER;
-    Sym SIGVSLIDER;
-    Sym SIGNUMENTRY;
-    Sym SIGHBARGRAPH;
-    Sym SIGVBARGRAPH;
-    Sym SIGATTACH;
-    Sym SIGENABLE;
-    Sym SIGCONTROL;
-    Sym SIGSOUNDFILE;
-    Sym SIGSOUNDFILELENGTH;
-    Sym SIGSOUNDFILERATE;
-    Sym SIGSOUNDFILEBUFFER;
-    Sym SIGTUPLE;
-    Sym SIGTUPLEACCESS;
-    
-    // Types
-    Sym SIMPLETYPE;
-    Sym TABLETYPE;
-    Sym TUPLETTYPE;
 
     // The map of types and associated Structured types
     map<Typed::VarType, DeclareStructTypeInst*> gExternalStructTypes;
@@ -525,16 +380,7 @@ struct global {
     // Empty predefined bit depth
     res RES;
 
-    // Predefined symbols CONS and NIL
-    Sym  CONS;
-    Sym  NIL;
-    Tree nil;
-
-    Sym PROCESS;
-
-    Sym SYMREC;
-    Sym SYMRECREF;
-    Sym SYMLIFTN;
+    property<Tree>* gSymListProp;
 
     // Evaluation overflow
     loopDetector          gLoopDetector;

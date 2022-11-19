@@ -112,7 +112,7 @@ This file contains several extensions to the tree library :
 
 Tree cons(Tree a, Tree b)
 {
-    return tree(global::config().CONS, a, b);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("cons"), a, b);
 }
 Tree list0()
 {
@@ -121,11 +121,11 @@ Tree list0()
 
 LIBFAUST_API bool isNil(Tree l)
 {
-    return (l->node() == Node(global::config().NIL)) && (l->arity() == 0);
+    return (l->node() == Node(::Faust::Primitive::Symbols::internal().symbol("nil"))) && (l->arity() == 0);
 }
 bool isList(Tree l)
 {
-    return (l->node() == Node(global::config().CONS)) && (l->arity() == 2);
+    return (l->node() == Node(::Faust::Primitive::Symbols::internal().symbol("cons"))) && (l->arity() == 2);
 }
 
 //------------------------------------------------------------------------------

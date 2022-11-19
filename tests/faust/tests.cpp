@@ -19,8 +19,12 @@
  ************************************************************************
  ************************************************************************/
 
-#include "faust/primitive/symbol/internal_symbol_test.hh"
-#include "faust/primitive/symbol/runtime_symbol_test.hh"
-#include "faust/primitive/symbols_test.hh"
+/* Symbols */
+//#include "faust/primitive/symbol/internal_symbol_test.hh"
+//#include "faust/primitive/symbol/runtime_symbol_test.hh"
+//#include "faust/primitive/symbols_test.hh"
+
+/* Parser */
+#include "faust/compiler/parser_test.hh"
 
 

@@ -302,14 +302,8 @@ void global::init()
     // Empty predefined bit depth
     RES = res();
 
-    // Predefined symbols CONS and NIL
-    CONS = ::Faust::Primitive::Symbols::internal().symbol("cons");
-    NIL  = ::Faust::Primitive::Symbols::internal().symbol("nil");
-
     // Predefined nil tree
-    nil = tree(NIL);
-
-    PROCESS = ::Faust::Primitive::Symbols::internal().symbol("process");
+    nil = tree(::Faust::Primitive::Symbols::internal().symbol("nil"));
 
     BOXTYPEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("boxTypeProp"));
     NUMERICPROPERTY  = tree(::Faust::Primitive::Symbols::internal().symbol("NUMERICPROPERTY"));
