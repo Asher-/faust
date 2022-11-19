@@ -22,6 +22,8 @@
 #ifndef __FAUST__PRIMITIVE__SYMBOL__RUNTIME__TABLE__HH__
 #define __FAUST__PRIMITIVE__SYMBOL__RUNTIME__TABLE__HH__
 
+#include <vector>
+
 #include "faust/primitive/math/primes.hh"
 #include "faust/primitive/symbol/abstract/table.hh"
 #include "faust/primitive/symbol/runtime/implementation.hh"
@@ -49,7 +51,7 @@ namespace Faust {
           /********** Constants **********/
           
           static constexpr const std::size_t StartingSize = ::Faust::Primitive::Math::firstPrime( 521 );
-          static constexpr const std::size_t RegrowPercent = 0.1;
+          static constexpr const auto RegrowPercent = 0.1;
 
           /********** Constructors **********/
 
@@ -92,10 +94,11 @@ namespace Faust {
             _regrowAt = _buckets.size() * RegrowPercent;
           }
 
+          virtual
           AbstractSymbol*
           insert(
             const std::string& name,
-            bool throw_if_not_found = true
+            bool throw_if_exists = true
           )
           {
             /* If we are 10% away from capacity it's a good time to grow. */
@@ -103,15 +106,40 @@ namespace Faust {
               resize();
               
             unsigned int hash = ::Faust::Primitive::Symbol::hash( name );
+            return insert(
+              name,
+              hash,
+              throw_if_exists
+            );
+          }
+
+          virtual
+          AbstractSymbol*
+          insert(
+            const std::string& name,
+            const HashType& hash,
+            bool throw_if_exists = true
+          )
+          {
             std::size_t index = hash % _buckets.size();
             
             Bucket& bucket{ _buckets[index] };
 
-            AbstractSymbol* symbol = bucket.template insert<RuntimeSymbol>( name, hash );
+            AbstractSymbol* symbol = bucket.template insert<RuntimeSymbol>( name, hash, throw_if_exists );
             ++_symbolCount;
             return symbol;
           }
 
+          virtual
+          AbstractSymbol*
+          unique( const std::string& name )
+          {
+            AbstractSymbol* base_symbol = insert( name, false );
+            std::stringstream unique_name;
+            unique_name << name << "_" << base_symbol->nextUniqueNumber();
+            AbstractSymbol* symbol = insert( unique_name.str(), false );
+            return symbol;
+          }
           /********** Accessors **********/
 
           using AbstractTable::symbol;

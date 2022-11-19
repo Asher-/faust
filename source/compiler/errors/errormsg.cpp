@@ -67,7 +67,7 @@ void yyerror(const char* msg)
     throw faustexception(error.str());
 }
 
-void evalerror(const char* filename, int linenum, const char* msg, Tree exp)
+void evalerror(const std::string_view& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : ERROR : " << msg << " : " << boxpp(exp) << endl;
@@ -75,7 +75,7 @@ void evalerror(const char* filename, int linenum, const char* msg, Tree exp)
     throw faustexception(error.str());
 }
 
-void evalerrorbox(const char* filename, int linenum, const char* msg, Tree exp)
+void evalerrorbox(const std::string_view& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : ERROR : " << msg << " : " << boxpp(exp) << endl;
@@ -83,14 +83,14 @@ void evalerrorbox(const char* filename, int linenum, const char* msg, Tree exp)
     throw faustexception(error.str());
 }
 
-void evalwarning(const char* filename, int linenum, const char* msg, Tree exp)
+void evalwarning(const std::string_view& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : WARNING : " << msg << " : " << boxpp(exp) << endl;
     global::config.gErrorMessage = error.str();
 }
 
-void evalremark(const char* filename, int linenum, const char* msg, Tree exp)
+void evalremark(const std::string_view& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : REMARK : " << msg << " : " << boxpp(exp) << endl;
@@ -108,13 +108,13 @@ bool hasDefProp(Tree sym)
     return getProperty(sym, global::config().DEFLINEPROP, n);
 }
 
-const char* getDefFileProp(Tree sym)
+const std::string_view& getDefFileProp(Tree sym)
 {
     Tree n;
     if (getProperty(sym, global::config().DEFLINEPROP, n)) {
-        return name(hd(n)->node().getSym());
+        return hd(n)->node().getSym()->name();
     } else {
-        return "????";
+        return ::Faust::Primitive::Symbols::internal().symbol("????")->name();
     }
 }
 
@@ -133,13 +133,13 @@ void setUseProp(Tree sym, const char* filename, int lineno)
     setProperty(sym, global::config().USELINEPROP, cons(tree(filename), tree(lineno)));
 }
 
-const char* getUseFileProp(Tree sym)
+const std::string_view& getUseFileProp(Tree sym)
 {
     Tree n;
     if (getProperty(sym, global::config().USELINEPROP, n)) {
-        return name(hd(n)->node().getSym());
+        return hd(n)->node().getSym()->name();
     } else {
-        return "????";
+        return ::Faust::Primitive::Symbols::internal().symbol("????")->name();
     }
 }
 

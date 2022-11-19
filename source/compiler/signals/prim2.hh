@@ -39,7 +39,7 @@ Tree ffsignature(Tree t);
  * @param  t - the signal
  * @return the name
  */
-LIBFAUST_API const char* ffname(Tree t);
+LIBFAUST_API std::string ffname(Tree t);
 
 /**
  *  Return the arity of a foreign function
@@ -51,7 +51,7 @@ LIBFAUST_API int ffarity(Tree t);
 
 int         ffrestype(Tree t);
 int         ffargtype(Tree t, int i);
-const char* ffincfile(Tree t);
-const char* fflibfile(Tree t);
+std::string ffincfile(Tree t);
+std::string fflibfile(Tree t);
 
 #endif

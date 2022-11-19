@@ -12,6 +12,6 @@ set ( SRC ${SRC}
 
 # test source files
 file (GLOB SRC_TEST
-	${ROOT}/tests/parser-tests/*.cpp
+	${ROOT}/tests/faust/*.cpp
 )
 

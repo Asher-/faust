@@ -28,14 +28,17 @@
 
 #include "faust/api/cpp/signal_api.hh"
 
+namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
+using xtended = ::Faust::Primitive::Math::xtended;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 LIBFAUST_API bool CisNil(Tree s);
-LIBFAUST_API const char* Ctree2str(Tree s);
+LIBFAUST_API std::string Ctree2str(Tree s);
 LIBFAUST_API int Ctree2int(Tree s);
-LIBFAUST_API void* CgetUserData(Tree s);
+LIBFAUST_API xtended* CgetUserData(Tree s);
 LIBFAUST_API Tree CsigInt(int n);
 LIBFAUST_API Tree CsigReal(double n);
 LIBFAUST_API Tree CsigInput(int idx);

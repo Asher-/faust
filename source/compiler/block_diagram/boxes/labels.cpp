@@ -40,29 +40,29 @@
 
 Tree pathRoot()
 {
-    return tree(global::config().PATHROOT);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("/"));
 }
 bool isPathRoot(Tree t)
 {
-    return isTree(t, global::config().PATHROOT);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("/"));
 }
 
 Tree pathParent()
 {
-    return tree(global::config().PATHPARENT);
+    return tree(::Faust::Primitive::Symbols::internal().symbol(".."));
 }
 bool isPathParent(Tree t)
 {
-    return isTree(t, global::config().PATHPARENT);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol(".."));
 }
 
 Tree pathCurrent()
 {
-    return tree(global::config().PATHCURRENT);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("."));
 }
 bool isPathCurrent(Tree t)
 {
-    return isTree(t, global::config().PATHCURRENT);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("."));
 }
 
 /**
@@ -93,7 +93,7 @@ static Tree encodeName(char g, const string& name)
  * Analyzes a label and converts it as a path
  */
 
-static Tree label2path(const char* label)
+static Tree label2path(const std::string_view& label)
 {
     if (label[0] == 0) {
         return cons(tree(""), global::config().nil);
@@ -119,7 +119,7 @@ static Tree label2path(const char* label)
         return cons(encodeName(g, s), label2path(&label[i]));
 
     } else {
-        return cons(tree(label), global::config().nil);
+        return cons(tree(std::string(label).c_str()), global::config().nil);
     }
 }
 
@@ -163,7 +163,7 @@ static Tree normalizeLabel(Tree label, Tree path)
         Sym  s      = 0;
         bool is_sym = isSym(label->node(), &s);
         faustassert(is_sym);
-        return concatPath(label2path(name(s)), path);
+        return concatPath(label2path(s->name()), path);
     }
 }
 

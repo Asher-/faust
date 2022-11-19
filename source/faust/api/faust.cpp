@@ -23,7 +23,6 @@
 
 #include "tlib/tree.hh"
 
-#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/cli.hh"
 #include "faust/controller.hh"
@@ -759,16 +758,16 @@ void printDeclareHeader(ostream& dst)
 
 LIBFAUST_API const char* xtendedName(Tree tree)
 {
-    void* userData = getUserData(tree);
+    auto userData = getUserData(tree);
     faustassert(userData != nullptr);
-    return ((::Faust::Primitive::Math::xtended*)userData)->name();
+    return userData->name();
 }
 
 LIBFAUST_API unsigned int xtendedArity(Tree tree)
 {
-    void* userData = getUserData(tree);
+    auto userData = getUserData(tree);
     faustassert(userData != nullptr);
-    return ((::Faust::Primitive::Math::xtended*)userData)->arity();
+    return userData->arity();
 }
 
 LIBFAUST_API Tree DSPToBoxes(

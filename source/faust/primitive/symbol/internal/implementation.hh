@@ -59,13 +59,16 @@ namespace Faust {
           
           static constexpr std::string_view Name{NameValue};
 
-          static constexpr bool NameDoesNotContainControlCharacters = std::none_of(
-            Name.begin(),
-            Name.end(),
-            [](const char& c){ return (c >= 0) && (c < 32); }
-          );
+          static constexpr bool NameDoesNotContainControlCharacters() {
+            for ( std::size_t index = 0 ; index < Name.size() ; ++index ) {
+              char c = Name[index];
+              if ( (c >= 0) && (c < 32) )
+                return false;
+            }
+            return true;
+          }
           static_assert(
-            NameDoesNotContainControlCharacters,
+            NameDoesNotContainControlCharacters(),
             "Symbols cannot contain control characters."
           );
 
@@ -79,7 +82,7 @@ namespace Faust {
 
           /********** Accessors **********/
           
-          constexpr const std::string_view&
+          const std::string_view&
           name()
           const
           override
@@ -87,28 +90,12 @@ namespace Faust {
             return Name;
           }
 
-          constexpr const HashType&
+          const HashType&
           hash()
           const override
           {
             return Implementation::Hash;
           };
-
-          /********** Prefix **********/
-
-          const unsigned int&
-          prefixCount()
-          const override
-          {
-            return _prefixCount;
-          };
-
-  //        AbstractSymbol*
-  //        prefix( const std::string& prefix_string )
-  //        const override
-  //        {
-  //          return _prefixCount;
-  //        };
 
           /********** Comparison **********/
           

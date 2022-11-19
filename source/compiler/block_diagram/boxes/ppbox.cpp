@@ -27,7 +27,6 @@
 #include "tlib/list.hh"
 #include "compiler/signals/prim2.hh"
 #include "compiler/signals/signals.hh"
-#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/primitive/math.hh"
 
@@ -161,7 +160,7 @@ ostream& boxpp::print(ostream& fout) const
         ldef, slot, ident, rules, chan, ins, outs, lroutes;
 
     const char* str;
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(fBox);
+    auto xt = getUserData(fBox);
 
     // Primitive elements
     if (xt)
@@ -405,7 +404,7 @@ ostream& boxppShared::print(ostream& fout) const
         ldef, slot, ident, rules, chan, ins, outs, lroutes;
 
     const char* str;
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(fBox);
+    auto xt = getUserData(fBox);
 
     // Primitive elements
     if (xt)

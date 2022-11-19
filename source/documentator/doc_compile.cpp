@@ -49,7 +49,7 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "simplify.hh"
 #include "tlib/tlib.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 extern bool getSigListNickName(Tree t, Tree& id);
 
@@ -1016,7 +1016,7 @@ string DocCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tree s2, int pr
  */
 string DocCompiler::generateXtended(Tree sig, int priority)
 {
-    ::Faust::Primitive::Math::xtended*       p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto p = getUserData(sig);
     vector<string> args;
     vector<Type>   types;
 

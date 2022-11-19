@@ -28,6 +28,8 @@
 #include "occurrences.hh"
 #include "tlib/compatibility.hh"
 
+#include "faust/primitive/symbols.hh"
+
 /**
  * Count the number of occurrences of each subtree of root
  */
@@ -63,7 +65,7 @@ Tree Occurrences::specificKey(Tree root)
     char keyname[256];
     snprintf(keyname, 256, "OCCURRENCES COUNT IN %p : ", (void*)(CTree*)root);
 
-    return tree(unique(keyname));
+    return tree(::Faust::Primitive::Symbols::runtime().unique(keyname));
 }
 
 /**

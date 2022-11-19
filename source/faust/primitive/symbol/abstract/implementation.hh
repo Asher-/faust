@@ -28,6 +28,7 @@
 #include <array>
 
 #include "faust/primitive/symbol/hash_type.hh"
+#include "faust/primitive/symbol/abstract/data.hh"
 
 namespace Faust {
   namespace Primitive {
@@ -45,6 +46,7 @@ namespace Faust {
           
           using AbstractSymbol = Implementation;
           using HashType = ::Faust::Primitive::Symbol::HashType;
+          using Data = ::Faust::Primitive::Symbol::Abstract::Data;
 
           /********** Constructors **********/
 
@@ -137,17 +139,50 @@ namespace Faust {
           
           virtual const std::string_view& name() const = 0;
           virtual const HashType& hash() const = 0;
-          virtual const unsigned int& prefixCount() const = 0;
-//          virtual AbstractSymbol* prefix( const std::string& ) const = 0;
+
+          virtual const std::size_t& nextUniqueNumber() const
+          {
+            return _nextUniqueNumber;
+          }
+          
+          virtual
+          std::size_t
+          nextUniqueNumber()
+          {
+            return ++_nextUniqueNumber;
+          }
+
+          virtual
+          Data*&
+          data()
+          {
+              return _data;
+          }  ///< Returns user data
+
+          virtual
+          Data* const&
+          data()
+          const
+          {
+              return _data;
+          }  ///< Returns user data
+
+          /********** ostream **********/
+
+          friend std::ostream& operator<<(std::ostream& fout, const AbstractSymbol* symbol)
+          {
+            return fout << symbol->name();
+          }
 
           /********** Variables **********/
           
           ///< Field for user to store additional custom data
-          void* _data = nullptr;
+          Data* _data = nullptr;
           
-          unsigned int _prefixCount = 0;
+          std::size_t _nextUniqueNumber = 0;
 
         };
+
 
       }
     }

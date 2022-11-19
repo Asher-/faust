@@ -29,6 +29,8 @@
 #include "sigprint.hh"
 #include "compiler/signals/sigtyperules.hh"
 
+#include "faust/primitive/symbols.hh"
+
 /*****************************************************************************
                          privatise : compile a list of signals
 *****************************************************************************/
@@ -51,14 +53,14 @@ static Tree makePrivatisationKey(const Tree& t)
 {
     char name[256];
     snprintf(name, 256, "PRIVATISE %p : ", (void*)(CTree*)t);
-    return tree(unique(name));
+    return tree(::Faust::Primitive::Symbols::runtime().unique(name));
 }
 
 static Tree makePrivatisationLabel(const Tree& t)
 {
     char name[256];
     snprintf(name, 256, "OWNER IS %p : ", (void*)(CTree*)t);
-    return tree(unique(name));
+    return tree(::Faust::Primitive::Symbols::runtime().unique(name));
 }
 
 // -- implementation -----------------

@@ -29,11 +29,11 @@
 #include "compiler/type_manager/Text.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/symbols.hh"
 
 using namespace ::Faust::Compiler::Parser;
 
-Sym Implementation::NIL = symbol("nil");
-Tree Implementation::_nil = tree(NIL);
+Tree Implementation::_nil = tree(Faust::Primitive::Symbols::internal().symbol("nil"));
 
 Tree Implementation::checkRulelist(Tree lr)
 {
@@ -142,7 +142,7 @@ void Implementation::declareDefinitionMetadata(Tree id, Tree key, Tree value)
     string fullkey = fullkeystream.str();
     Tree md = cons(tree(fullkey), value);
     //cout << "Creation of a function metadata : " << *md << endl;
-    global::config().gFunMDSet[boxIdent(tree2str(id))].insert(md);
+    global::config().gFunMDSet[boxIdent(tree2str(id).c_str())].insert(md);
 }
 
 /**

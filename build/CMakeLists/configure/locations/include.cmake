@@ -25,6 +25,11 @@ file (GLOB BREW_AND_PORTS_INCLUDES
   /opt/pkg/include
 )
 
+set ( HEADER_INCLUDE_DIRS ${HEADER_INCLUDE_DIRS}
+  ${ROOT}/benchmark
+  ${ROOT}/architecture
+)
+
 set (FAUST_INC ${HEADER_INCLUDE_DIRS} ${SRC_HH} ${EXT_HH}
 	${ROOT}/architecture/faust
 	${ROOT}/benchmark
@@ -37,3 +42,4 @@ set (FAUST_TEST_INC ${FAUST_INC}
 	${ROOT}/tests
 	${ROOT}/tests/parser-tests
 )
+

@@ -38,6 +38,8 @@
 #include "global.hh"
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/symbols.hh"
+
 // Garbageable globals
 bool                    global::gHeapCleanup = false;
 
@@ -67,13 +69,12 @@ So we use a lower value here.
 global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(MAX_STACK_SIZE), gNextFreeColor(1)
 {
     CTree::init();
-    Symbol::init();
     
     // Part of the state that needs to be initialized between consecutive calls to Box/Signal API
     reset();
 
-    EVALPROPERTY   = symbol("EvalProperty");
-    PMPROPERTYNODE = symbol("PMPROPERTY");
+    EVALPROPERTY   = ::Faust::Primitive::Symbols::internal().symbol("EvalProperty");
+    PMPROPERTYNODE = ::Faust::Primitive::Symbols::internal().symbol("PMPROPERTY");
 
     gResult          = nullptr;
     gResult2         = nullptr;
@@ -221,127 +222,6 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
     gFoldingFlag = false;
     gDevSuffix   = nullptr;
 
-    BOXIDENT         = symbol("BoxIdent");
-    BOXCUT           = symbol("BoxCut");
-    BOXWAVEFORM      = symbol("BoxWaveform");
-    BOXROUTE         = symbol("BoxRoute");
-    BOXWIRE          = symbol("BoxWire");
-    BOXSLOT          = symbol("BoxSlot");
-    BOXSYMBOLIC      = symbol("BoxSymbolic");
-    BOXSEQ           = symbol("BoxSeq");
-    BOXPAR           = symbol("BoxPar");
-    BOXREC           = symbol("BoxRec");
-    BOXSPLIT         = symbol("BoxSplit");
-    BOXMERGE         = symbol("BoxMerge");
-    BOXIPAR          = symbol("BoxIPar");
-    BOXISEQ          = symbol("BoxISeq");
-    BOXISUM          = symbol("BoxISum");
-    BOXIPROD         = symbol("BoxIProd");
-    BOXABSTR         = symbol("BoxAbstr");
-    BOXAPPL          = symbol("BoxAppl");
-    CLOSURE          = symbol("Closure");
-    BOXERROR         = symbol("BoxError");
-    BOXACCESS        = symbol("BoxAccess");
-    BOXWITHLOCALDEF  = symbol("BoxWithLocalDef");
-    BOXMODIFLOCALDEF = symbol("BoxModifLocalDef");
-    BOXENVIRONMENT   = symbol("BoxEnvironment");
-    BOXCOMPONENT     = symbol("BoxComponent");
-    BOXLIBRARY       = symbol("BoxLibrary");
-    IMPORTFILE       = symbol("ImportFile");
-    BOXPRIM0         = symbol("BoxPrim0");
-    BOXPRIM1         = symbol("BoxPrim1");
-    BOXPRIM2         = symbol("BoxPrim2");
-    BOXPRIM3         = symbol("BoxPrim3");
-    BOXPRIM4         = symbol("BoxPrim4");
-    BOXPRIM5         = symbol("BoxPrim5");
-    BOXFFUN          = symbol("BoxFFun");
-    BOXFCONST        = symbol("BoxFConst");
-    BOXFVAR          = symbol("BoxFVar");
-    BOXBUTTON        = symbol("BoxButton");
-    BOXCHECKBOX      = symbol("BoxCheckbox");
-    BOXHSLIDER       = symbol("BoxHSlider");
-    BOXVSLIDER       = symbol("BoxVSlider");
-    BOXNUMENTRY      = symbol("BoxNumEntry");
-    BOXHGROUP        = symbol("BoxHGroup");
-    BOXVGROUP        = symbol("BoxVGroup");
-    BOXTGROUP        = symbol("BoxTGroup");
-    BOXHBARGRAPH     = symbol("BoxHBargraph");
-    BOXVBARGRAPH     = symbol("BoxVBargraph");
-    BOXCASE          = symbol("BoxCase");
-    BOXPATMATCHER    = symbol("BoxPatMatcher");
-    BOXPATVAR        = symbol("BoxPatVar");
-    BOXINPUTS        = symbol("BoxInputs");
-    BOXOUTPUTS       = symbol("BoxOutputs");
-    BOXSOUNDFILE     = symbol("boxSoundfile");
-    BOXMETADATA      = symbol("boxMetadata");
-
-    DOCEQN      = symbol("DocEqn");
-    DOCDGM      = symbol("DocDgm");
-    DOCNTC      = symbol("DocNtc");
-    DOCLST      = symbol("DocLst");
-    DOCMTD      = symbol("DocMtd");
-    DOCTXT      = symbol("DocTxt");
-    BARRIER     = symbol("BARRIER");
-    UIFOLDER    = symbol("uiFolder");
-    UIWIDGET    = symbol("uiWidget");
-    PATHROOT    = symbol("/");
-    PATHPARENT  = symbol("..");
-    PATHCURRENT = symbol(".");
-    FFUN        = symbol("ForeignFunction");
-
-    SIGINPUT           = symbol("SigInput");
-    SIGOUTPUT          = symbol("SigOutput");
-    SIGDELAY1          = symbol("SigDelay1");
-    SIGDELAY           = symbol("SigDelay");
-    SIGPREFIX          = symbol("SigPrefix");
-    SIGRDTBL           = symbol("SigRDTbl");
-    SIGWRTBL           = symbol("SigWRTbl");
-    SIGTABLE           = symbol("SigTable");
-    SIGGEN             = symbol("SigGen");
-    SIGDOCONSTANTTBL   = symbol("SigDocConstantTbl");
-    SIGDOCWRITETBL     = symbol("SigDocWriteTbl");
-    SIGDOCACCESSTBL    = symbol("SigDocAccessTbl");
-    SIGSELECT2         = symbol("SigSelect2");
-    SIGASSERTBOUNDS    = symbol("sigAssertBounds");
-    SIGHIGHEST         = symbol("sigHighest");
-    SIGLOWEST          = symbol("sigLowest");
-    SIGBINOP           = symbol("SigBinOp");
-    SIGFFUN            = symbol("SigFFun");
-    SIGFCONST          = symbol("SigFConst");
-    SIGFVAR            = symbol("SigFVar");
-    SIGPROJ            = symbol("SigProj");
-    SIGINTCAST         = symbol("SigIntCast");
-    SIGFLOATCAST       = symbol("SigFloatCast");
-    SIGBUTTON          = symbol("SigButton");
-    SIGCHECKBOX        = symbol("SigCheckbox");
-    SIGWAVEFORM        = symbol("SigWaveform");
-    SIGHSLIDER         = symbol("SigHSlider");
-    SIGVSLIDER         = symbol("SigVSlider");
-    SIGNUMENTRY        = symbol("SigNumEntry");
-    SIGHBARGRAPH       = symbol("SigHBargraph");
-    SIGVBARGRAPH       = symbol("SigVBargraph");
-    SIGATTACH          = symbol("SigAttach");
-    SIGENABLE          = symbol("SigEnable");
-    SIGCONTROL         = symbol("SigControl");
-    SIGSOUNDFILE       = symbol("SigSoundfile");
-    SIGSOUNDFILELENGTH = symbol("SigSoundfileLength");
-    SIGSOUNDFILERATE   = symbol("SigSoundfileRate");
-    SIGSOUNDFILEBUFFER = symbol("SigSoundfileBuffer");
-    SIGTUPLE           = symbol("SigTuple");
-    SIGTUPLEACCESS     = symbol("SigTupleAccess");
-    SIMPLETYPE         = symbol("SimpleType");
-    TABLETYPE          = symbol("TableType");
-    TUPLETTYPE         = symbol("TupletType");
-
-    // recursive trees
-    DEBRUIJN    = symbol("DEBRUIJN");
-    DEBRUIJNREF = symbol("DEBRUIJNREF");
-    SUBSTITUTE  = symbol("SUBSTITUTE");
-
-    SYMREC    = symbol("SYMREC");
-    SYMRECREF = symbol("SYMRECREF");
-    SYMLIFTN  = symbol("LIFTN");
-
     gMachineFloatSize      = sizeof(float);
     gMachineInt32Size      = sizeof(int);
     gMachineInt64Size      = sizeof(long int);
@@ -423,33 +303,34 @@ void global::init()
     RES = res();
 
     // Predefined symbols CONS and NIL
-    CONS = symbol("cons");
-    NIL  = symbol("nil");
+    CONS = ::Faust::Primitive::Symbols::internal().symbol("cons");
+    NIL  = ::Faust::Primitive::Symbols::internal().symbol("nil");
+
     // Predefined nil tree
     nil = tree(NIL);
 
-    PROCESS = symbol("process");
+    PROCESS = ::Faust::Primitive::Symbols::internal().symbol("process");
 
-    BOXTYPEPROP      = tree(symbol("boxTypeProp"));
-    NUMERICPROPERTY  = tree(symbol("NUMERICPROPERTY"));
-    DEFLINEPROP      = tree(symbol("DefLineProp"));
-    USELINEPROP      = tree(symbol("UseLineProp"));
-    SIMPLIFIED       = tree(symbol("sigSimplifiedProp"));
-    DOCTABLES        = tree(symbol("DocTablesProp"));
-    NULLENV          = tree(symbol("NullRenameEnv"));
-    COLORPROPERTY    = tree(symbol("ColorProperty"));
-    ORDERPROP        = tree(symbol("OrderProp"));
-    RECURSIVNESS     = tree(symbol("RecursivnessProp"));
-    NULLTYPEENV      = tree(symbol("NullTypeEnv"));
-    RECDEF           = tree(symbol("RECDEF"));
-    DEBRUIJN2SYM     = tree(symbol("deBruijn2Sym"));
-    NORMALFORM       = tree(symbol("NormalForm"));
-    DEFNAMEPROPERTY  = tree(symbol("DEFNAMEPROPERTY"));
-    NICKNAMEPROPERTY = tree(symbol("NICKNAMEPROPERTY"));
+    BOXTYPEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("boxTypeProp"));
+    NUMERICPROPERTY  = tree(::Faust::Primitive::Symbols::internal().symbol("NUMERICPROPERTY"));
+    DEFLINEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("DefLineProp"));
+    USELINEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("UseLineProp"));
+    SIMPLIFIED       = tree(::Faust::Primitive::Symbols::internal().symbol("sigSimplifiedProp"));
+    DOCTABLES        = tree(::Faust::Primitive::Symbols::internal().symbol("DocTablesProp"));
+    NULLENV          = tree(::Faust::Primitive::Symbols::internal().symbol("NullRenameEnv"));
+    COLORPROPERTY    = tree(::Faust::Primitive::Symbols::internal().symbol("ColorProperty"));
+    ORDERPROP        = tree(::Faust::Primitive::Symbols::internal().symbol("OrderProp"));
+    RECURSIVNESS     = tree(::Faust::Primitive::Symbols::internal().symbol("RecursivnessProp"));
+    NULLTYPEENV      = tree(::Faust::Primitive::Symbols::internal().symbol("NullTypeEnv"));
+    RECDEF           = tree(::Faust::Primitive::Symbols::internal().symbol("RECDEF"));
+    DEBRUIJN2SYM     = tree(::Faust::Primitive::Symbols::internal().symbol("deBruijn2Sym"));
+    NORMALFORM       = tree(::Faust::Primitive::Symbols::internal().symbol("NormalForm"));
+    DEFNAMEPROPERTY  = tree(::Faust::Primitive::Symbols::internal().symbol("DEFNAMEPROPERTY"));
+    NICKNAMEPROPERTY = tree(::Faust::Primitive::Symbols::internal().symbol("NICKNAMEPROPERTY"));
     BCOMPLEXITY      = tree("BCOMPLEXITY");
     LETRECBODY       = boxIdent("RECURSIVEBODY");
 
-    PROPAGATEPROPERTY = symbol("PropagateProperty");
+    PROPAGATEPROPERTY = ::Faust::Primitive::Symbols::internal().symbol("PropagateProperty");
 
     gLatexheaderfilename = "latexheader.tex";
     gDocTextsDefaultFile = "mathdoctexts-default.txt";

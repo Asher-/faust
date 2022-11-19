@@ -24,7 +24,7 @@
 #include <cstdlib>
 
 #include "compiler/signals/signals.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 /********************************************************************
 SignalConstantPropagation::transformation(Tree sig) :
@@ -38,7 +38,7 @@ Tree SignalConstantPropagation::transformation(Tree sig)
     int  opnum, i;
     Tree t1, t2, t3, x, y;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto xt = getUserData(sig);
     // primitive elements
 
     if (xt) {

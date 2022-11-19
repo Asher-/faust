@@ -22,64 +22,93 @@
 #ifndef __FAUST__PRIMITIVE__MATH__HH__
 #define __FAUST__PRIMITIVE__MATH__HH__
 
-#include "compiler/math_primitives/absprim.hh"
-#include "compiler/math_primitives/acosprim.hh"
-#include "compiler/math_primitives/asinprim.hh"
-#include "compiler/math_primitives/atan2prim.hh"
-#include "compiler/math_primitives/atanprim.hh"
-#include "compiler/math_primitives/ceilprim.hh"
-#include "compiler/math_primitives/cosprim.hh"
-#include "compiler/math_primitives/exp10prim.hh"
-#include "compiler/math_primitives/expprim.hh"
-#include "compiler/math_primitives/floorprim.hh"
-#include "compiler/math_primitives/fmodprim.hh"
-#include "compiler/math_primitives/ftzprim.hh"
-#include "compiler/math_primitives/log10prim.hh"
-#include "compiler/math_primitives/logprim.hh"
-#include "compiler/math_primitives/maxprim.hh"
-#include "compiler/math_primitives/minprim.hh"
-#include "compiler/math_primitives/powprim.hh"
-#include "compiler/math_primitives/remainderprim.hh"
-#include "compiler/math_primitives/rintprim.hh"
-#include "compiler/math_primitives/sinprim.hh"
-#include "compiler/math_primitives/sqrtprim.hh"
-#include "compiler/math_primitives/tanprim.hh"
+#include "faust/primitive/math/functions/absprim.hh"
+#include "faust/primitive/math/functions/acosprim.hh"
+#include "faust/primitive/math/functions/asinprim.hh"
+#include "faust/primitive/math/functions/atan2prim.hh"
+#include "faust/primitive/math/functions/atanprim.hh"
+#include "faust/primitive/math/functions/ceilprim.hh"
+#include "faust/primitive/math/functions/cosprim.hh"
+#include "faust/primitive/math/functions/exp10prim.hh"
+#include "faust/primitive/math/functions/expprim.hh"
+#include "faust/primitive/math/functions/floorprim.hh"
+#include "faust/primitive/math/functions/fmodprim.hh"
+#include "faust/primitive/math/functions/ftzprim.hh"
+#include "faust/primitive/math/functions/log10prim.hh"
+#include "faust/primitive/math/functions/logprim.hh"
+#include "faust/primitive/math/functions/maxprim.hh"
+#include "faust/primitive/math/functions/minprim.hh"
+#include "faust/primitive/math/functions/powprim.hh"
+#include "faust/primitive/math/functions/remainderprim.hh"
+#include "faust/primitive/math/functions/rintprim.hh"
+#include "faust/primitive/math/functions/sinprim.hh"
+#include "faust/primitive/math/functions/sqrtprim.hh"
+#include "faust/primitive/math/functions/tanprim.hh"
 
 namespace Faust {
   namespace Primitive {
     namespace Math {
-    
-      extern bool needManualPow;         // If manual pow(x, y) generation when y is an integer is needed
-      extern bool hasExp10;              // If the 'exp10' math function is available
 
-      extern bool exceptions;  // whether to check math functions domains
-      extern bool approx;            // Simpler/faster versions of 'floor/fmod/remainder' functions
-      extern int  FTZMode;
-      extern int  floatSize; // 0 for 'float', 1 for 'double', 2 for 'quad', 3 for 'fixed-point'
+      extern int   floatSize;            // 0 for 'float', 1 for 'double', 2 for 'quad', 3 for 'fixed-point'
+      extern bool  exceptions;    // whether to check math functions domains
 
-      extern Abs abs;
-      extern Acos acos;
-      extern Tan tan;
-      extern Sqrt sqrt;
-      extern Sin sin;
-      extern Rint rint;
-      extern Remainder remainder;
-      extern Pow pow;
-      extern Min min;
-      extern Max max;
-      extern Log log;
-      extern Log10 log10;
-      extern Fmod fmod;
-      extern Floor floor;
-      extern Exp exp;
-      extern Exp10 exp10;
-      extern Cos cos;
-      extern Ceil ceil;
-      extern Atan atan;
-      extern Atan2 atan2;
-      extern Asin asin;
-      extern Ftz ftz;
+      extern bool  needManualPow; // If manual pow(x, y) generation when y is an integer is needed
+      extern bool  hasExp10;     // If the 'exp10' math function is available
 
+      extern bool  approx;       // Simpler/faster versions of 'floor/fmod/remainder' functions
+      extern int   FTZMode;
+
+      struct Functions {
+
+        Abs abs;
+
+        Acos acos;
+
+        Tan tan;
+
+        Sqrt sqrt;
+
+        Sin sin;
+
+        Rint rint;
+
+        Remainder remainder;
+
+        Pow pow;
+
+        Min min;
+
+        Max max;
+
+        Log log;
+
+        Log10 log10;
+
+        Fmod fmod;
+
+        Floor floor;
+
+        Exp exp;
+
+        Exp10 exp10;
+
+        Cos cos;
+
+        Ceil ceil;
+
+        Atan atan;
+
+        Atan2 atan2;
+
+        Asin asin;
+
+        Ftz ftz;
+
+
+      };
+      
+      Functions& functions();
+ 
     };
   };
 };

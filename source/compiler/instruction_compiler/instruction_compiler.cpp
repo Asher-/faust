@@ -41,6 +41,8 @@
 
 #include "compiler/signals/sigtyperules.hh"
 #include "global.hh"
+#include "compiler/signals/ppsig.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 using namespace std;
 
@@ -1934,7 +1936,7 @@ ValueInst* InstructionsCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tr
 
 ValueInst* InstructionsCompiler::generateXtended(Tree sig)
 {
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto p = getUserData(sig);
     Values args;
     vector<::Type> types;
 

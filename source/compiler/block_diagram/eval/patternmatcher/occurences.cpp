@@ -29,6 +29,8 @@
 #include "recursivness.hh"
 #include "compiler/signals/sigtyperules.hh"
 
+#include "faust/primitive/symbols.hh"
+
 using namespace std;
 
 /**
@@ -95,7 +97,7 @@ int Occurences::getMaxDelay() const
 void OccMarkup::mark(Tree root)
 {
     fRootTree = root;
-    fPropKey  = tree(unique("OCCURRENCES"));
+    fPropKey  = tree(::Faust::Primitive::Symbols::runtime().unique("OCCURRENCES"));
 
     if (isList(root)) {
         while (isList(root)) {

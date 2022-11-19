@@ -32,7 +32,7 @@
 #include "compiler/signals/signals.hh"
 #include "compiler/signals/sigtype.hh"
 #include "compiler/signals/sigtyperules.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 using namespace std;
 
@@ -180,7 +180,7 @@ static string sigLabel(Tree sig)
     double r;
     Tree   x, y, z, c, type, name, file, ff, largs, id, le, sel, var, label;
 
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto p = getUserData(sig);
 
     stringstream fout;
 

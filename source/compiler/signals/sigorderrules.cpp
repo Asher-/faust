@@ -44,7 +44,7 @@
 #include "sigprint.hh"
 #include "compiler/signals/sigtype.hh"
 #include "tlib/tlib.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 static int infereSigOrder(Tree sig);
 
@@ -84,7 +84,7 @@ static int infereSigOrder(Tree sig)
     double r;
     Tree   sel, s1, s2, s3, s4, ff, id, ls, l, x, y, z, var, body, type, name, file, sf;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto xt = getUserData(sig);
     // primitive elements
     if (xt) {
         vector<int> args;

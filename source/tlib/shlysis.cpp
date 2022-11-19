@@ -60,6 +60,8 @@ unique to each sharing analysis must be generated.
 #include "tlib/compatibility.hh"
 #include "shlysis.hh"
 
+#include "faust/primitive/symbols.hh"
+
 /**
  * Create a specific property key for the sharing count of subtrees of t
  */
@@ -68,7 +70,7 @@ Tree shprkey(Tree t)
 {
     char name[256];
     snprintf(name, 256, "SHARED IN %p : ", (void*)(CTree*)t);
-    return tree(unique(name));
+    return tree(::Faust::Primitive::Symbols::runtime().unique(name));
 }
 
 /**

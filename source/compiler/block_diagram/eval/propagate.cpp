@@ -30,7 +30,6 @@
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/prim2.hh"
 #include "simplify.hh"
-#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/primitive/math.hh"
 
@@ -261,7 +260,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, slot, body, chan;
     tvec wf;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
+    auto xt = getUserData(box);
 
     // Extended Primitives
 

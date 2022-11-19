@@ -59,7 +59,9 @@
 #include "tlib/property.hh"
 #include "routeSchema.h"
 #include "schema.h"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
+
+#include "faust/primitive/symbols.hh"
 
 #if 0
 #define linkcolor "#b3d1dc"
@@ -240,7 +242,7 @@ static void writeSchemaFile(Tree bd)
     // faustassert(hasname);
     if (!hasname) {
         // create an arbitrary name
-        id = tree(Node(unique("diagram_")));
+        id = tree(Node(::Faust::Primitive::Symbols::runtime().unique("diagram_")));
     }
 
     // generate legal file name for the schema
@@ -285,7 +287,7 @@ static char* legalFileName(Tree t, int n, char* dst)
     Tree id;
     int  i = 0;
     if (getDefNameProperty(t, id)) {
-        const char* src = tree2str(id);
+        std::string src = tree2str(id);
         for (i = 0; isalnum(src[i]) && i < 16; i++) {
             dst[i] = src[i];
         }
@@ -395,10 +397,10 @@ static schema* generateInsideSchema(Tree t)
     prim4  p4;
     prim5  p5;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(t);
+    auto xt = getUserData(t);
 
     if (xt) {
-        return makeBlockSchema(xt->arity(), 1, xt->name(), normalcolor, "");
+        return makeBlockSchema(xt->arity(), 1, std::string(xt->name()), normalcolor, "");
     }
 
     else if (isInverter(t)) {

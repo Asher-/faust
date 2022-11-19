@@ -46,7 +46,7 @@
 #include "compiler/signals/sigtype.hh"
 #include "normalform.hh"
 #include "timing.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 #include "global.hh"
 
 using namespace std;
@@ -1225,7 +1225,7 @@ string ScalarCompiler::generateSelect2(Tree sig, Tree sel, Tree s1, Tree s2)
 
 string ScalarCompiler::generateXtended(Tree sig)
 {
-    ::Faust::Primitive::Math::xtended*       p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto       p = getUserData(sig);
     vector<std::string> args;
     vector<Type>   types;
 

@@ -383,7 +383,7 @@ static Tree codeSimpleType(SimpleType* st)
 
     elems.push_back(tree(st->getRes().valid));
     elems.push_back(tree(st->getRes().index));
-    return CTree::make(global::config().SIMPLETYPE, elems);
+    return CTree::make(::Faust::Primitive::Symbols::internal().symbol("SimpleType"), elems);
 }
 
 AudioType* makeSimpleType(int n, int v, int c, int vec, int b, const interval& i)
@@ -427,7 +427,7 @@ static Tree codeTableType(TableType* tt)
     elems.push_back(tree(tt->getRes().valid));
     elems.push_back(tree(tt->getRes().index));
 
-    return CTree::make(global::config().TABLETYPE, elems);
+    return CTree::make(::Faust::Primitive::Symbols::internal().symbol("TableType"), elems);
 }
 
 AudioType* makeTableType(const Type& ct)
@@ -473,7 +473,7 @@ static Tree codeTupletType(TupletType* nt)
     for (int i = 0; i < nt->arity(); i++) {
         elems.push_back(codeAudioType((*nt)[i]));
     }
-    return CTree::make(global::config().TUPLETTYPE, elems);
+    return CTree::make(::Faust::Primitive::Symbols::internal().symbol("TupletType"), elems);
 }
 
 AudioType* makeTupletType(ConstTypes vt)

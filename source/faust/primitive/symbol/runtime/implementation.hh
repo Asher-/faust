@@ -75,29 +75,13 @@ namespace Faust {
             _hash(hash)
           {}
 
-          /********** Prefix **********/
-
-          const unsigned int&
-          prefixCount()
-          const override
-          {
-            return _prefixCount;
-          };
-
-  //        AbstractSymbol*
-  //        prefix( const std::string& prefix_string )
-  //        const override
-  //        {
-  //          return _prefixCount;
-  //        };
-
           /********** Comparison **********/
           
           using AbstractImplementation::operator ==;
           
           /********** Accessors **********/
           
-          constexpr const std::string_view&
+          const std::string_view&
           name()
           const
           override
@@ -105,7 +89,7 @@ namespace Faust {
             return _name;
           }
 
-          constexpr const HashType&
+          const HashType&
           hash()
           const override
           {

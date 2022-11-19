@@ -54,6 +54,9 @@ enum SOperator { kAdd, kSub, kMul, kDiv, kRem, kLsh, kARsh, kLRsh, kGT, kLT, kGE
 #ifndef LIBFAUSTSIGNAL_C_H
 #define LIBFAUSTSIGNAL_C_H
 
+namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
+using xtended = ::Faust::Primitive::Math::xtended;
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -94,7 +97,7 @@ extern "C"
      *
      * @return a pointer to xtended type if it exists, otherwise nullptr.
      */
-    LIBFAUST_API void* CgetUserData(Signal s);
+    LIBFAUST_API xtended* CgetUserData(Signal s);
     
     /**
      * Constant integer : for all t, x(t) = n.

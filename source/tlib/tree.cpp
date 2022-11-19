@@ -82,6 +82,7 @@ storage of trees.
 
 #include "compiler/errors/exception.hh"
 #include "tlib/tree.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 #ifdef WIN32
 #pragma warning(disable : 4800)
@@ -91,6 +92,9 @@ storage of trees.
     {                            \
         throw faustexception(s); \
     }
+
+namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
+using xtended = ::Faust::Primitive::Math::xtended;
 
 Tree         CTree::gHashTable[kHashTableSize];
 bool         CTree::gDetails       = false;
@@ -283,7 +287,7 @@ double tree2double(Tree t)
 }
 
 // if t has a node of type symbol, return its name otherwise error
-LIBFAUST_API const char* tree2str(Tree t)
+LIBFAUST_API std::string tree2str(Tree t)
 {
     Sym s;
     if (!isSym(t->node(), &s)) {
@@ -292,7 +296,7 @@ LIBFAUST_API const char* tree2str(Tree t)
             "symbol)\n",
             t);
     }
-    return name(s);
+    return std::string(s->name());
 }
 
 string tree2quotedstr(Tree t)
@@ -387,11 +391,15 @@ bool isTree(const Tree& t, const Node& n, Tree& a, Tree& b, Tree& c, Tree& d, Tr
 }
 
 // Support for symbol user data
-LIBFAUST_API void* getUserData(Tree t)
+LIBFAUST_API xtended* getUserData(Tree t)
 {
     Sym s;
     if (isSym(t->node(), &s)) {
-        return getUserData(s);
+        if ( xtended* xtended_data = dynamic_cast<xtended*>( s->data() ) )
+          return xtended_data;
+        else {
+          throw "Symbol data was not xtended*!";
+        }
     } else {
         return 0;
     }

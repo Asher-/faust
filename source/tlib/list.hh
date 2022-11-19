@@ -104,7 +104,7 @@ This file contains several extensions to the tree library :
 #define __LIST__
 
 #include <stdio.h>
-#include "tlib/symbol.hh"
+#include "faust/primitive/symbols.hh"
 #include "tlib/tree.hh"
 
 // Basic List Operations implemented on trees

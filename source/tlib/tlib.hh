@@ -46,7 +46,7 @@ five elements : symbols, nodes, smartpointers, trees and lists :
     1) Symbols :
     ------------
     Sym q = symbol("abcd");   : returns a symbol q of name "abcd"
-    const char* s = name(q);  : returns the name of symbol q
+    string_view s = s->name();  : returns the name of symbol q
 
     2) Nodes :
     ----------
@@ -163,7 +163,7 @@ five elements : symbols, nodes, smartpointers, trees and lists :
 #include "tlib/node.hh"
 #include "num.hh"
 #include "shlysis.hh"
-#include "tlib/symbol.hh"
+#include "faust/primitive/symbols.hh"
 #include "tlib/tree.hh"
 
 #endif

@@ -30,7 +30,7 @@ namespace Faust {
 
         using Runtime = ::Faust::Primitive::Symbol::Runtime::Table;
 
-        Runtime runtime;
+        Runtime& runtime();
 
     };
   };

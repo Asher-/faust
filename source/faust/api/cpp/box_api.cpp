@@ -25,7 +25,6 @@
 #include "boxes/ppbox.hh"
 #include "propagate.hh"
 #include "normalform.hh"
-#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/api/c/signal_api.hh"
 
@@ -214,87 +213,87 @@ LIBFAUST_API Tree boxXOR()
 
 LIBFAUST_API Tree boxAbs()
 {
-    return ::Faust::Primitive::Math::abs.box();
+    return ::Faust::Primitive::Math::functions().abs.box();
 }
 LIBFAUST_API Tree boxAcos()
 {
-    return ::Faust::Primitive::Math::acos.box();
+    return ::Faust::Primitive::Math::functions().acos.box();
 }
 LIBFAUST_API Tree boxTan()
 {
-    return ::Faust::Primitive::Math::tan.box();
+    return ::Faust::Primitive::Math::functions().tan.box();
 }
 LIBFAUST_API Tree boxSqrt()
 {
-    return ::Faust::Primitive::Math::sqrt.box();
+    return ::Faust::Primitive::Math::functions().sqrt.box();
 }
 LIBFAUST_API Tree boxSin()
 {
-    return ::Faust::Primitive::Math::sin.box();
+    return ::Faust::Primitive::Math::functions().sin.box();
 }
 LIBFAUST_API Tree boxRint()
 {
-    return ::Faust::Primitive::Math::rint.box();
+    return ::Faust::Primitive::Math::functions().rint.box();
 }
 LIBFAUST_API Tree boxRemainder()
 {
-    return ::Faust::Primitive::Math::remainder.box();
+    return ::Faust::Primitive::Math::functions().remainder.box();
 }
 LIBFAUST_API Tree boxPow()
 {
-    return ::Faust::Primitive::Math::pow.box();
+    return ::Faust::Primitive::Math::functions().pow.box();
 }
 LIBFAUST_API Tree boxMin()
 {
-    return ::Faust::Primitive::Math::min.box();
+    return ::Faust::Primitive::Math::functions().min.box();
 }
 LIBFAUST_API Tree boxMax()
 {
-    return ::Faust::Primitive::Math::max.box();
+    return ::Faust::Primitive::Math::functions().max.box();
 }
 LIBFAUST_API Tree boxLog()
 {
-    return ::Faust::Primitive::Math::log.box();
+    return ::Faust::Primitive::Math::functions().log.box();
 }
 LIBFAUST_API Tree boxLog10()
 {
-    return ::Faust::Primitive::Math::log10.box();
+    return ::Faust::Primitive::Math::functions().log10.box();
 }
 LIBFAUST_API Tree boxFmod()
 {
-    return ::Faust::Primitive::Math::abs.box();
+    return ::Faust::Primitive::Math::functions().abs.box();
 }
 LIBFAUST_API Tree boxFloor()
 {
-    return ::Faust::Primitive::Math::floor.box();
+    return ::Faust::Primitive::Math::functions().floor.box();
 }
 LIBFAUST_API Tree boxExp()
 {
-    return ::Faust::Primitive::Math::exp.box();
+    return ::Faust::Primitive::Math::functions().exp.box();
 }
 LIBFAUST_API Tree boxExp10()
 {
-    return ::Faust::Primitive::Math::exp10.box();
+    return ::Faust::Primitive::Math::functions().exp10.box();
 }
 LIBFAUST_API Tree boxCos()
 {
-    return ::Faust::Primitive::Math::abs.box();
+    return ::Faust::Primitive::Math::functions().abs.box();
 }
 LIBFAUST_API Tree boxCeil()
 {
-    return ::Faust::Primitive::Math::ceil.box();
+    return ::Faust::Primitive::Math::functions().ceil.box();
 }
 LIBFAUST_API Tree boxAtan()
 {
-    return ::Faust::Primitive::Math::atan.box();
+    return ::Faust::Primitive::Math::functions().atan.box();
 }
 LIBFAUST_API Tree boxAtan2()
 {
-    return ::Faust::Primitive::Math::atan2.box();
+    return ::Faust::Primitive::Math::functions().atan2.box();
 }
 LIBFAUST_API Tree boxAsin()
 {
-    return ::Faust::Primitive::Math::asin.box();
+    return ::Faust::Primitive::Math::functions().asin.box();
 }
 
 // User Interface

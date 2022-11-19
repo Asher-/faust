@@ -36,13 +36,10 @@ namespace Faust {
       constexpr const HashType hash( const StringLike& string_value )
       {
         unsigned int hash_value = 0;
-        std::for_each(
-          string_value.begin(),
-          string_value.end(),
-          [&hash_value](const char& c){
-            hash_value = (hash_value << 1) ^ (hash_value >> 20) ^ c;
-          }
-        );
+        for ( std::size_t index = 0 ; index < string_value.size() ; ++index ) {
+          const char& c = string_value[index];
+          hash_value = (hash_value << 1) ^ (hash_value >> 20) ^ c;
+        }
         return hash_value;
       }
 

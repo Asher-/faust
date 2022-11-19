@@ -42,7 +42,7 @@ namespace Faust {
           ) = 0;
           
           virtual
-          const AbstractSymbol* const
+          const AbstractSymbol*
           symbol(
             const HashType& hash,
             bool throw_if_not_found = true
@@ -66,7 +66,7 @@ namespace Faust {
           }
 
           virtual
-          const AbstractSymbol* const
+          const AbstractSymbol* 
           symbol(
             const std::string& name,
             bool throw_if_not_found = true
@@ -76,6 +76,7 @@ namespace Faust {
             const HashType hash = ::Faust::Primitive::Symbol::hash( name );
             return symbol( hash, throw_if_not_found );
           }
+
         };
         
       };

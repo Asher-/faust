@@ -43,7 +43,8 @@
 #include "global.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
-#include "compiler/math_primitives/xtended.hh"
+
+#include "faust/primitive/symbols.hh"
 
 /*****************************************************************************
                                     Identifiers
@@ -51,18 +52,18 @@
 
 Tree boxIdent(const char* name)
 {
-    return tree(global::config().BOXIDENT, tree(symbol(name)));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxIdent"), tree(::Faust::Primitive::Symbols::runtime().insert(name, false)));
 }
 LIBFAUST_API bool isBoxIdent(Tree t)
 {
-    return t->node() == Node(global::config().BOXIDENT);
+    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("BoxIdent"));
 }
 LIBFAUST_API bool isBoxIdent(Tree t0, const char** str)
 {
     Tree t1;
     Sym  s = nullptr;
-    if (isTree(t0, global::config().BOXIDENT, t1) && isSym(t1->node(), &s)) {
-        *str = name(s);
+    if (isTree(t0, ::Faust::Primitive::Symbols::internal().symbol("BoxIdent"), t1) && isSym(t1->node(), &s)) {
+        *str = std::string(s->name()).c_str();
         return true;
     } else {
         return false;
@@ -106,12 +107,12 @@ LIBFAUST_API bool isBoxReal(Tree t, double* r)
 
 LIBFAUST_API Tree boxWaveform(const tvec& br)
 {
-    return tree(global::config().BOXWAVEFORM, br);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxWaveform"), br);
 }
 
 LIBFAUST_API bool isBoxWaveform(Tree s)
 {
-    return isTree(s, global::config().BOXWAVEFORM);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxWaveform"));
 }
 
 /*****************************************************************************
@@ -120,12 +121,12 @@ LIBFAUST_API bool isBoxWaveform(Tree s)
 
 LIBFAUST_API Tree boxRoute(Tree n, Tree m, Tree r)
 {
-    return tree(global::config().BOXROUTE, n, m, r);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxRoute"), n, m, r);
 }
 
 LIBFAUST_API bool isBoxRoute(Tree s, Tree& n, Tree& m, Tree& r)
 {
-    return isTree(s, global::config().BOXROUTE, n, m, r);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxRoute"), n, m, r);
 }
 
 /*****************************************************************************
@@ -134,20 +135,20 @@ LIBFAUST_API bool isBoxRoute(Tree s, Tree& n, Tree& m, Tree& r)
 
 LIBFAUST_API Tree boxCut()
 {
-    return tree(global::config().BOXCUT);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxCut"));
 }
 LIBFAUST_API bool isBoxCut(Tree t)
 {
-    return isTree(t, global::config().BOXCUT);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxCut"));
 }
 
 LIBFAUST_API Tree boxWire()
 {
-    return tree(global::config().BOXWIRE);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxWire"));
 }
 LIBFAUST_API bool isBoxWire(Tree t)
 {
-    return isTree(t, global::config().BOXWIRE);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxWire"));
 }
 
 /*****************************************************************************
@@ -156,31 +157,31 @@ LIBFAUST_API bool isBoxWire(Tree t)
 
 Tree boxSlot(int id)
 {
-    return tree(global::config().BOXSLOT, tree(id));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxSlot"), tree(id));
 }
 LIBFAUST_API bool isBoxSlot(Tree t)
 {
     Tree w;
-    return isTree(t, global::config().BOXSLOT, w);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxSlot"), w);
 }
 LIBFAUST_API bool isBoxSlot(Tree t, int* id)
 {
     Tree w;
-    return isTree(t, global::config().BOXSLOT, w) && isInt(w->node(), id);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxSlot"), w) && isInt(w->node(), id);
 }
 
 Tree boxSymbolic(Tree slot, Tree body)
 {
-    return tree(global::config().BOXSYMBOLIC, slot, body);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxSymbolic"), slot, body);
 }
 LIBFAUST_API bool isBoxSymbolic(Tree t)
 {
     Tree slot, body;
-    return isTree(t, global::config().BOXSYMBOLIC, slot, body);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxSymbolic"), slot, body);
 }
 LIBFAUST_API bool isBoxSymbolic(Tree t, Tree& slot, Tree& body)
 {
-    return isTree(t, global::config().BOXSYMBOLIC, slot, body);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxSymbolic"), slot, body);
 }
 
 /*****************************************************************************
@@ -189,47 +190,47 @@ LIBFAUST_API bool isBoxSymbolic(Tree t, Tree& slot, Tree& body)
 
 LIBFAUST_API Tree boxSeq(Tree x, Tree y)
 {
-    return tree(global::config().BOXSEQ, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxSeq"), x, y);
 }
 LIBFAUST_API bool isBoxSeq(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXSEQ, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxSeq"), x, y);
 }
 
 LIBFAUST_API Tree boxPar(Tree x, Tree y)
 {
-    return tree(global::config().BOXPAR, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPar"), x, y);
 }
 LIBFAUST_API bool isBoxPar(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXPAR, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxPar"), x, y);
 }
 
 LIBFAUST_API Tree boxRec(Tree x, Tree y)
 {
-    return tree(global::config().BOXREC, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxRec"), x, y);
 }
 LIBFAUST_API bool isBoxRec(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXREC, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxRec"), x, y);
 }
 
 LIBFAUST_API Tree boxSplit(Tree x, Tree y)
 {
-    return tree(global::config().BOXSPLIT, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxSplit"), x, y);
 }
 LIBFAUST_API bool isBoxSplit(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXSPLIT, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxSplit"), x, y);
 }
 
 LIBFAUST_API Tree boxMerge(Tree x, Tree y)
 {
-    return tree(global::config().BOXMERGE, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxMerge"), x, y);
 }
 LIBFAUST_API bool isBoxMerge(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXMERGE, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxMerge"), x, y);
 }
 
 /*****************************************************************************
@@ -238,36 +239,36 @@ LIBFAUST_API bool isBoxMerge(Tree t, Tree& x, Tree& y)
 
 Tree boxIPar(Tree x, Tree y, Tree z)
 {
-    return tree(global::config().BOXIPAR, x, y, z);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxIPar"), x, y, z);
 }
 Tree boxISeq(Tree x, Tree y, Tree z)
 {
-    return tree(global::config().BOXISEQ, x, y, z);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxISeq"), x, y, z);
 }
 Tree boxISum(Tree x, Tree y, Tree z)
 {
-    return tree(global::config().BOXISUM, x, y, z);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxISum"), x, y, z);
 }
 Tree boxIProd(Tree x, Tree y, Tree z)
 {
-    return tree(global::config().BOXIPROD, x, y, z);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxIProd"), x, y, z);
 }
 
 LIBFAUST_API bool isBoxIPar(Tree t, Tree& x, Tree& y, Tree& z)
 {
-    return isTree(t, global::config().BOXIPAR, x, y, z);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxIPar"), x, y, z);
 }
 LIBFAUST_API bool isBoxISeq(Tree t, Tree& x, Tree& y, Tree& z)
 {
-    return isTree(t, global::config().BOXISEQ, x, y, z);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxISeq"), x, y, z);
 }
 LIBFAUST_API bool isBoxISum(Tree t, Tree& x, Tree& y, Tree& z)
 {
-    return isTree(t, global::config().BOXISUM, x, y, z);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxISum"), x, y, z);
 }
 LIBFAUST_API bool isBoxIProd(Tree t, Tree& x, Tree& y, Tree& z)
 {
-    return isTree(t, global::config().BOXIPROD, x, y, z);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxIProd"), x, y, z);
 }
 
 /*****************************************************************************
@@ -276,20 +277,20 @@ LIBFAUST_API bool isBoxIProd(Tree t, Tree& x, Tree& y, Tree& z)
 
 Tree boxInputs(Tree x)
 {
-    return tree(global::config().BOXINPUTS, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxInputs"), x);
 }
 Tree boxOutputs(Tree x)
 {
-    return tree(global::config().BOXOUTPUTS, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxOutputs"), x);
 }
 
 LIBFAUST_API bool isBoxInputs(Tree t, Tree& x)
 {
-    return isTree(t, global::config().BOXINPUTS, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxInputs"), x);
 }
 LIBFAUST_API bool isBoxOutputs(Tree t, Tree& x)
 {
-    return isTree(t, global::config().BOXOUTPUTS, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxOutputs"), x);
 }
 
 /*****************************************************************************
@@ -298,7 +299,7 @@ LIBFAUST_API bool isBoxOutputs(Tree t, Tree& x)
 
 Tree boxAbstr(Tree x, Tree y)
 {
-    return tree(global::config().BOXABSTR, x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxAbstr"), x, y);
 }
 Tree boxAppl(Tree x, Tree y)
 {
@@ -307,7 +308,7 @@ Tree boxAppl(Tree x, Tree y)
 
 LIBFAUST_API bool isBoxAbstr(Tree t)
 {
-    return t->node() == Node(global::config().BOXABSTR);
+    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("BoxAbstr"));
 }
 LIBFAUST_API bool isBoxAppl(Tree t)
 {
@@ -316,7 +317,7 @@ LIBFAUST_API bool isBoxAppl(Tree t)
 
 LIBFAUST_API bool isBoxAbstr(Tree t, Tree& x, Tree& y)
 {
-    return isTree(t, global::config().BOXABSTR, x, y);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxAbstr"), x, y);
 }
 LIBFAUST_API bool isBoxAppl(Tree t, Tree& x, Tree& y)
 {
@@ -355,31 +356,31 @@ Tree buildBoxAppl(Tree fun, Tree revarglist)
 
 Tree closure(Tree abstr, Tree genv, Tree vis, Tree lenv)
 {
-    return tree(global::config().CLOSURE, abstr, genv, vis, lenv);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("Closure"), abstr, genv, vis, lenv);
 }
 
 bool isClosure(Tree t, Tree& abstr, Tree& genv, Tree& vis, Tree& lenv)
 {
-    return isTree(t, global::config().CLOSURE, abstr, genv, vis, lenv);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("Closure"), abstr, genv, vis, lenv);
 }
 
 Tree boxError()
 {
-    return tree(global::config().BOXERROR);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxError"));
 }
 
 LIBFAUST_API bool isBoxError(Tree t)
 {
-    return isTree(t, global::config().BOXERROR);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxError"));
 }
 
 Tree boxAccess(Tree exp, Tree id)
 {
-    return tree(global::config().BOXACCESS, exp, id);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxAccess"), exp, id);
 }
 LIBFAUST_API bool isBoxAccess(Tree t, Tree& exp, Tree& id)
 {
-    return isTree(t, global::config().BOXACCESS, exp, id);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxAccess"), exp, id);
 }
 
 /*****************************************************************************
@@ -388,11 +389,11 @@ LIBFAUST_API bool isBoxAccess(Tree t, Tree& exp, Tree& id)
 
 Tree boxWithLocalDef(Tree body, Tree ldef)
 {
-    return tree(global::config().BOXWITHLOCALDEF, body, ldef);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxWithLocalDef"), body, ldef);
 }
 LIBFAUST_API bool isBoxWithLocalDef(Tree t, Tree& body, Tree& ldef)
 {
-    return isTree(t, global::config().BOXWITHLOCALDEF, body, ldef);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxWithLocalDef"), body, ldef);
 }
 
 /*****************************************************************************
@@ -511,11 +512,11 @@ Tree boxWithRecDef(Tree body, Tree ldef, Tree ldef2)
 
 Tree boxModifLocalDef(Tree body, Tree ldef)
 {
-    return tree(global::config().BOXMODIFLOCALDEF, body, ldef);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxModifLocalDef"), body, ldef);
 }
 bool isBoxModifLocalDef(Tree t, Tree& body, Tree& ldef)
 {
-    return isTree(t, global::config().BOXMODIFLOCALDEF, body, ldef);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("BoxModifLocalDef"), body, ldef);
 }
 
 /*****************************************************************************
@@ -524,38 +525,38 @@ bool isBoxModifLocalDef(Tree t, Tree& body, Tree& ldef)
 
 Tree boxEnvironment()
 {
-    return tree(global::config().BOXENVIRONMENT);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxEnvironment"));
 }
 LIBFAUST_API bool isBoxEnvironment(Tree s)
 {
-    return isTree(s, global::config().BOXENVIRONMENT);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxEnvironment"));
 }
 
 Tree boxComponent(Tree filename)
 {
-    return tree(global::config().BOXCOMPONENT, filename);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxComponent"), filename);
 }
 LIBFAUST_API bool isBoxComponent(Tree s, Tree& filename)
 {
-    return isTree(s, global::config().BOXCOMPONENT, filename);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxComponent"), filename);
 }
 
 Tree boxLibrary(Tree filename)
 {
-    return tree(global::config().BOXLIBRARY, filename);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxLibrary"), filename);
 }
 LIBFAUST_API bool isBoxLibrary(Tree s, Tree& filename)
 {
-    return isTree(s, global::config().BOXLIBRARY, filename);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxLibrary"), filename);
 }
 
 Tree importFile(Tree filename)
 {
-    return tree(global::config().IMPORTFILE, filename );
+    return tree(::Faust::Primitive::Symbols::internal().symbol("ImportFile"), filename );
 }
 bool isImportFile(Tree s, Tree& filename)
 {
-    return isTree(s, global::config().IMPORTFILE, filename);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("ImportFile"), filename);
 }
 
 /*****************************************************************************
@@ -564,92 +565,92 @@ bool isImportFile(Tree s, Tree& filename)
 
 LIBFAUST_API Tree boxPrim0(prim0 foo)
 {
-    return tree(global::config().BOXPRIM0, tree((void*)foo));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPrim0"), tree((void*)foo));
 }
 LIBFAUST_API bool isBoxPrim0(Tree s)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM0, t);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim0"), t);
 }
 LIBFAUST_API bool isBoxPrim0(Tree s, prim0* p)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM0, t) && isPointer(t->node(), (void**)p);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim0"), t) && isPointer(t->node(), (void**)p);
 }
 
 LIBFAUST_API Tree boxPrim1(prim1 foo)
 {
-    return tree(global::config().BOXPRIM1, tree((void*)foo));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPrim1"), tree((void*)foo));
 }
 LIBFAUST_API bool isBoxPrim1(Tree s)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM1, t);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim1"), t);
 }
 LIBFAUST_API bool isBoxPrim1(Tree s, prim1* p)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM1, t) && isPointer(t->node(), (void**)p);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim1"), t) && isPointer(t->node(), (void**)p);
 }
 
 LIBFAUST_API Tree boxPrim2(prim2 foo)
 {
-    return tree(global::config().BOXPRIM2, tree((void*)foo));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPrim2"), tree((void*)foo));
 }
 LIBFAUST_API bool isBoxPrim2(Tree s)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM2, t);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim2"), t);
 }
 LIBFAUST_API bool isBoxPrim2(Tree s, prim2* p)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM2, t) && isPointer(t->node(), (void**)p);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim2"), t) && isPointer(t->node(), (void**)p);
 }
  
 LIBFAUST_API Tree boxPrim3(prim3 foo)
 {
-    return tree(global::config().BOXPRIM3, tree((void*)foo));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPrim3"), tree((void*)foo));
 }
 LIBFAUST_API bool isBoxPrim3(Tree s)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM3, t);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim3"), t);
 }
 LIBFAUST_API bool isBoxPrim3(Tree s, prim3* p)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM3, t) && isPointer(t->node(), (void**)p);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim3"), t) && isPointer(t->node(), (void**)p);
 }
 
 LIBFAUST_API Tree boxPrim4(prim4 foo)
 {
-    return tree(global::config().BOXPRIM4, tree((void*)foo));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPrim4"), tree((void*)foo));
 }
 LIBFAUST_API bool isBoxPrim4(Tree s)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM4, t);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim4"), t);
 }
 LIBFAUST_API bool isBoxPrim4(Tree s, prim4* p)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM4, t) && isPointer(t->node(), (void**)p);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim4"), t) && isPointer(t->node(), (void**)p);
 }
 
 LIBFAUST_API Tree boxPrim5(prim5 foo)
 {
-    return tree(global::config().BOXPRIM5, tree((void*)foo));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPrim5"), tree((void*)foo));
 }
 LIBFAUST_API bool isBoxPrim5(Tree s)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM5, t);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim5"), t);
 }
 LIBFAUST_API bool isBoxPrim5(Tree s, prim5* p)
 {
     Tree t;
-    return isTree(s, global::config().BOXPRIM5, t) && isPointer(t->node(), (void**)p);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPrim5"), t) && isPointer(t->node(), (void**)p);
 }
 
 /*****************************************************************************
@@ -658,44 +659,44 @@ LIBFAUST_API bool isBoxPrim5(Tree s, prim5* p)
 
 LIBFAUST_API Tree boxFFun(Tree ff)
 {
-    return tree(global::config().BOXFFUN, ff);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxFFun"), ff);
 }
 LIBFAUST_API bool isBoxFFun(Tree s)
 {
     Tree ff;
-    return isTree(s, global::config().BOXFFUN, ff);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxFFun"), ff);
 }
 LIBFAUST_API bool isBoxFFun(Tree s, Tree& ff)
 {
-    return isTree(s, global::config().BOXFFUN, ff);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxFFun"), ff);
 }
 
 LIBFAUST_API Tree boxFConst(Tree type, Tree name, Tree file)
 {
-    return tree(global::config().BOXFCONST, type, name, file);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxFConst"), type, name, file);
 }
 LIBFAUST_API bool isBoxFConst(Tree s)
 {
     Tree t, n, f;
-    return isTree(s, global::config().BOXFCONST, t, n, f);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxFConst"), t, n, f);
 }
 LIBFAUST_API bool isBoxFConst(Tree s, Tree& type, Tree& name, Tree& file)
 {
-    return isTree(s, global::config().BOXFCONST, type, name, file);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxFConst"), type, name, file);
 }
 
 LIBFAUST_API Tree boxFVar(Tree type, Tree name, Tree file)
 {
-    return tree(global::config().BOXFVAR, type, name, file);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxFVar"), type, name, file);
 }
 LIBFAUST_API bool isBoxFVar(Tree s)
 {
     Tree t, n, f;
-    return isTree(s, global::config().BOXFVAR, t, n, f);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxFVar"), t, n, f);
 }
 LIBFAUST_API bool isBoxFVar(Tree s, Tree& type, Tree& name, Tree& file)
 {
-    return isTree(s, global::config().BOXFVAR, type, name, file);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxFVar"), type, name, file);
 }
 
 /*****************************************************************************
@@ -704,46 +705,46 @@ LIBFAUST_API bool isBoxFVar(Tree s, Tree& type, Tree& name, Tree& file)
 
 LIBFAUST_API Tree boxButton(Tree lbl)
 {
-    return tree(global::config().BOXBUTTON, lbl);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxButton"), lbl);
 }
 LIBFAUST_API bool isBoxButton(Tree s)
 {
     Tree lbl;
-    return isTree(s, global::config().BOXBUTTON, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxButton"), lbl);
 }
 LIBFAUST_API bool isBoxButton(Tree s, Tree& lbl)
 {
-    return isTree(s, global::config().BOXBUTTON, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxButton"), lbl);
 }
 
 LIBFAUST_API Tree boxCheckbox(Tree lbl)
 {
-    return tree(global::config().BOXCHECKBOX, lbl);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxCheckbox"), lbl);
 }
 LIBFAUST_API bool isBoxCheckbox(Tree s)
 {
     Tree lbl;
-    return isTree(s, global::config().BOXCHECKBOX, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxCheckbox"), lbl);
 }
 LIBFAUST_API bool isBoxCheckbox(Tree s, Tree& lbl)
 {
-    return isTree(s, global::config().BOXCHECKBOX, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxCheckbox"), lbl);
 }
 
 LIBFAUST_API Tree boxHSlider(Tree lbl, Tree cur, Tree min, Tree max, Tree step)
 {
-    return tree(global::config().BOXHSLIDER, lbl, list4(cur, min, max, step));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxHSlider"), lbl, list4(cur, min, max, step));
 }
 LIBFAUST_API bool isBoxHSlider(Tree s)
 {
     Tree lbl, params;
-    return isTree(s, global::config().BOXHSLIDER, lbl, params);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxHSlider"), lbl, params);
 }
 
 LIBFAUST_API bool isBoxHSlider(Tree s, Tree& lbl, Tree& cur, Tree& min, Tree& max, Tree& step)
 {
     Tree params;
-    if (isTree(s, global::config().BOXHSLIDER, lbl, params)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxHSlider"), lbl, params)) {
         cur  = nth(params, 0);
         min  = nth(params, 1);
         max  = nth(params, 2);
@@ -756,18 +757,18 @@ LIBFAUST_API bool isBoxHSlider(Tree s, Tree& lbl, Tree& cur, Tree& min, Tree& ma
 
 LIBFAUST_API Tree boxVSlider(Tree lbl, Tree cur, Tree min, Tree max, Tree step)
 {
-    return tree(global::config().BOXVSLIDER, lbl, list4(cur, min, max, step));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxVSlider"), lbl, list4(cur, min, max, step));
 }
 LIBFAUST_API bool isBoxVSlider(Tree s)
 {
     Tree lbl, params;
-    return isTree(s, global::config().BOXVSLIDER, lbl, params);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxVSlider"), lbl, params);
 }
 
 LIBFAUST_API bool isBoxVSlider(Tree s, Tree& lbl, Tree& cur, Tree& min, Tree& max, Tree& step)
 {
     Tree params;
-    if (isTree(s, global::config().BOXVSLIDER, lbl, params)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxVSlider"), lbl, params)) {
         cur  = nth(params, 0);
         min  = nth(params, 1);
         max  = nth(params, 2);
@@ -780,18 +781,18 @@ LIBFAUST_API bool isBoxVSlider(Tree s, Tree& lbl, Tree& cur, Tree& min, Tree& ma
 
 LIBFAUST_API Tree boxNumEntry(Tree lbl, Tree cur, Tree min, Tree max, Tree step)
 {
-    return tree(global::config().BOXNUMENTRY, lbl, list4(cur, min, max, step));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxNumEntry"), lbl, list4(cur, min, max, step));
 }
 LIBFAUST_API bool isBoxNumEntry(Tree s)
 {
     Tree lbl, params;
-    return isTree(s, global::config().BOXNUMENTRY, lbl, params);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxNumEntry"), lbl, params);
 }
 
 LIBFAUST_API bool isBoxNumEntry(Tree s, Tree& lbl, Tree& cur, Tree& min, Tree& max, Tree& step)
 {
     Tree params;
-    if (isTree(s, global::config().BOXNUMENTRY, lbl, params)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxNumEntry"), lbl, params)) {
         cur  = nth(params, 0);
         min  = nth(params, 1);
         max  = nth(params, 2);
@@ -804,89 +805,89 @@ LIBFAUST_API bool isBoxNumEntry(Tree s, Tree& lbl, Tree& cur, Tree& min, Tree& m
 
 Tree boxHGroup(Tree lbl, Tree x)
 {
-    return tree(global::config().BOXHGROUP, lbl, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxHGroup"), lbl, x);
 }
 LIBFAUST_API bool isBoxHGroup(Tree s)
 {
     Tree lbl, x;
-    return isTree(s, global::config().BOXHGROUP, lbl, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxHGroup"), lbl, x);
 }
 LIBFAUST_API bool isBoxHGroup(Tree s, Tree& lbl, Tree& x)
 {
-    return isTree(s, global::config().BOXHGROUP, lbl, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxHGroup"), lbl, x);
 }
 
 Tree boxVGroup(Tree lbl, Tree x)
 {
-    return tree(global::config().BOXVGROUP, lbl, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxVGroup"), lbl, x);
 }
 LIBFAUST_API bool isBoxVGroup(Tree s)
 {
     Tree lbl, x;
-    return isTree(s, global::config().BOXVGROUP, lbl, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxVGroup"), lbl, x);
 }
 LIBFAUST_API bool isBoxVGroup(Tree s, Tree& lbl, Tree& x)
 {
-    return isTree(s, global::config().BOXVGROUP, lbl, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxVGroup"), lbl, x);
 }
 
 Tree boxTGroup(Tree lbl, Tree x)
 {
-    return tree(global::config().BOXTGROUP, lbl, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxTGroup"), lbl, x);
 }
 LIBFAUST_API bool isBoxTGroup(Tree s)
 {
     Tree lbl, x;
-    return isTree(s, global::config().BOXTGROUP, lbl, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxTGroup"), lbl, x);
 }
 LIBFAUST_API bool isBoxTGroup(Tree s, Tree& lbl, Tree& x)
 {
-    return isTree(s, global::config().BOXTGROUP, lbl, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxTGroup"), lbl, x);
 }
 
 LIBFAUST_API Tree boxHBargraph(Tree lbl, Tree min, Tree max)
 {
-    return tree(global::config().BOXHBARGRAPH, lbl, min, max);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxHBargraph"), lbl, min, max);
 }
 LIBFAUST_API bool isBoxHBargraph(Tree s)
 {
     Tree lbl, min, max;
-    return isTree(s, global::config().BOXHBARGRAPH, lbl, min, max);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxHBargraph"), lbl, min, max);
 }
 LIBFAUST_API bool isBoxHBargraph(Tree s, Tree& lbl, Tree& min, Tree& max)
 {
-    return isTree(s, global::config().BOXHBARGRAPH, lbl, min, max);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxHBargraph"), lbl, min, max);
 }
 
 LIBFAUST_API Tree boxVBargraph(Tree lbl, Tree min, Tree max)
 {
-    return tree(global::config().BOXVBARGRAPH, lbl, min, max);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxVBargraph"), lbl, min, max);
 }
 LIBFAUST_API bool isBoxVBargraph(Tree s)
 {
     Tree lbl, min, max;
-    return isTree(s, global::config().BOXVBARGRAPH, lbl, min, max);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxVBargraph"), lbl, min, max);
 }
 LIBFAUST_API bool isBoxVBargraph(Tree s, Tree& lbl, Tree& min, Tree& max)
 {
-    return isTree(s, global::config().BOXVBARGRAPH, lbl, min, max);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxVBargraph"), lbl, min, max);
 }
 
 LIBFAUST_API Tree boxSoundfile(Tree lbl, Tree chan)
 {
-    return tree(global::config().BOXSOUNDFILE, lbl, chan);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("boxSoundfile"), lbl, chan);
 }
 
 LIBFAUST_API bool isBoxSoundfile(Tree s)
 {
     Tree label;
     Tree chan;
-    return isTree(s, global::config().BOXSOUNDFILE, label, chan);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("boxSoundfile"), label, chan);
 }
 
 LIBFAUST_API bool isBoxSoundfile(Tree s, Tree& label, Tree& chan)
 {
-    return isTree(s, global::config().BOXSOUNDFILE, label, chan);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("boxSoundfile"), label, chan);
 }
 
 /*****************************************************************************
@@ -894,12 +895,12 @@ LIBFAUST_API bool isBoxSoundfile(Tree s, Tree& label, Tree& chan)
 *****************************************************************************/
 Tree boxMetadata(Tree exp, Tree mdlist)
 {
-    return tree(global::config().BOXMETADATA, exp, mdlist);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("boxMetadata"), exp, mdlist);
 }
 
 LIBFAUST_API bool isBoxMetadata(Tree s, Tree& exp, Tree& mdlist)
 {
-    return isTree(s, global::config().BOXMETADATA, exp, mdlist);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("boxMetadata"), exp, mdlist);
 }
 
 /*****************************************************************************
@@ -931,7 +932,7 @@ static Tree preparePattern(Tree box)
 
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, arg, body, fun, args, ldef, slot, ident, rules;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
+    auto xt = getUserData(box);
 
     // Primitive elements
     if (xt)
@@ -1091,7 +1092,7 @@ static Tree prepareRules(Tree rules)
 
 Tree boxCaseInternal(Tree rules)
 {
-    return tree(global::config().BOXCASE, rules);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxCase"), rules);
 }
 Tree boxCase(Tree rules)
 {
@@ -1101,11 +1102,11 @@ Tree boxCase(Tree rules)
 LIBFAUST_API bool isBoxCase(Tree s)
 {
     Tree rules;
-    return isTree(s, global::config().BOXCASE, rules);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxCase"), rules);
 }
 LIBFAUST_API bool isBoxCase(Tree s, Tree& rules)
 {
-    return isTree(s, global::config().BOXCASE, rules);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxCase"), rules);
 }
 
 Tree boxPatternVar(Tree id)
@@ -1119,19 +1120,19 @@ bool isBoxPatternVar(Tree s, Tree& id)
 
 Tree boxPatternMatcher(PM::Automaton* a, int state, Tree env, Tree origRules, Tree revParamList)
 {
-    return tree(global::config().BOXPATMATCHER, tree((void*)a), tree(state), env, origRules, revParamList);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BoxPatMatcher"), tree((void*)a), tree(state), env, origRules, revParamList);
 }
 
 bool isBoxPatternMatcher(Tree s)
 {
     Tree ta, ts, env, orig, rpl;
-    return isTree(s, global::config().BOXPATMATCHER, ta, ts, env, orig, rpl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPatMatcher"), ta, ts, env, orig, rpl);
 }
 
 bool isBoxPatternMatcher(Tree s, PM::Automaton*& a, int& state, Tree& env, Tree& origRules, Tree& revParamList)
 {
     Tree ta, ts;
-    if (isTree(s, global::config().BOXPATMATCHER, ta, ts, env, origRules, revParamList)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("BoxPatMatcher"), ta, ts, env, origRules, revParamList)) {
         a     = (PM::Automaton*)tree2ptr(ta);
         state = tree2int(ts);
         return true;

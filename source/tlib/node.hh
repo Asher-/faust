@@ -55,7 +55,7 @@
 #include <iostream>
 
 #include "compiler/type_manager/garbageable.hh"
-#include "tlib/symbol.hh"
+#include "faust/primitive/symbols.hh"
 
 using namespace std;
 
@@ -90,12 +90,12 @@ class Node : public virtual Garbageable {
     Node(const char* name) : fType(kSymNode)
     {
         fData.f = 0;
-        fData.s = symbol(name);
+        fData.s = ::Faust::Primitive::symbols().symbol(name);
     }
     Node(const string& name) : fType(kSymNode)
     {
         fData.f = 0;
-        fData.s = symbol(name);
+        fData.s = ::Faust::Primitive::symbols().symbol(name);
     }
     Node(Sym x) : fType(kSymNode)
     {

@@ -108,6 +108,8 @@ This file contains several extensions to the tree library :
 #include "global.hh"
 #include "tlib/property.hh"
 
+#include "faust/primitive/symbols.hh"
+
 Tree cons(Tree a, Tree b)
 {
     return tree(global::config().CONS, a, b);
@@ -173,8 +175,9 @@ void print(Tree t, FILE* out)
         fprintf(out, "%d", i);
     else if (isDouble(n, &f))
         fprintf(out, "%f", f);
-    else if (isSym(n, &s))
-        fprintf(out, "%s", name(s));
+    else if (isSym(n, &s)) {
+        fprintf(out, "%.*s", static_cast<int>(s->name().length()), s->name().data());
+    }
     else if (isPointer(n, &p))
         fprintf(out, "#%p", p);
 
@@ -502,7 +505,7 @@ static Tree substkey(Tree t, Tree id, Tree val)
 {
     char name[256];
     snprintf(name, 255, "SUBST<%p,%p,%p> : ", (void*)(CTree*)t, (void*)(CTree*)id, (void*)(CTree*)val);
-    return tree(unique(name));
+    return tree(::Faust::Primitive::Symbols::runtime().unique(name));
 }
 
 // realise la substitution proprement dite tout en mettant a jour la propriete

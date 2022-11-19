@@ -28,7 +28,7 @@ namespace Faust {
   namespace Primitive {
     namespace Math {
 
-      constexpr std::array<const std::size_t, 1000> Primes{
+      constexpr std::array<std::size_t, 1000> Primes{
         2,   3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61,
         67,  71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
         139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211,
@@ -112,22 +112,20 @@ namespace Faust {
         7823, 7829, 7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919
       };
       
-      constexpr const std::size_t
+      constexpr const std::size_t&
       firstPrime( const std::size_t& gte_starting_value )
       {
         constexpr const auto largest_prime = Primes.at( Primes.size() - 1 );
         if ( gte_starting_value > largest_prime )  {
           throw "Number requested was larger than largest available prime.";
         }
-        auto iterator = std::find_if(
-          ::Faust::Primitive::Math::Primes.begin(),
-          ::Faust::Primitive::Math::Primes.end(),
-          [&gte_starting_value](const std::size_t& prime) {
-            return prime >= gte_starting_value;
-          }
-        );
-        auto first_prime = *iterator;
-        return first_prime;
+        for ( std::size_t index = 0 ; index < Primes.size() ; ++index ) {
+          const std::size_t& this_prime = Primes[index];
+          if ( this_prime >= gte_starting_value )
+            return this_prime;
+        }
+        /* We should never get here */
+        return Primes[Primes.size()-1];
       }
 
     };

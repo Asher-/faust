@@ -24,7 +24,6 @@
 #include "global.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/signals.hh"
-#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/primitive/math.hh"
 
@@ -114,8 +113,8 @@ int mterm::complexity() const
 static bool isSigPow(Tree sig, Tree& x, int& n)
 {
     // cerr << "isSigPow("<< *sig << ')' << endl;
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
-    if (p == (::Faust::Primitive::Math::xtended*)&::Faust::Primitive::Math::pow) {
+    auto p = getUserData(sig);
+    if ( dynamic_cast<::Faust::Primitive::Math::Pow*>(p) ) {
         if (isSigInt(sig->branch(1), &n)) {
             x = sig->branch(0);
             // cerr << "factor of isSigPow " << *x << endl;
@@ -130,7 +129,7 @@ static bool isSigPow(Tree sig, Tree& x, int& n)
  */
 static Tree sigPow(Tree x, int p)
 {
-    return tree(::Faust::Primitive::Math::pow.symbol(), x, sigInt(p));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("pow"), x, sigInt(p));
 }
 
 /**

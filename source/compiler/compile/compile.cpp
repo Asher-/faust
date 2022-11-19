@@ -175,14 +175,14 @@ void Compiler::generateUserInterfaceTree(Tree t, bool root)
         const int orient = tree2int(left(label));
         // Empty labels will be renamed with a 0xABCD (address) kind of name that is ignored and not displayed by UI
         // architectures
-        const char* str = tree2str(right(label));
+        std::string str = tree2str(right(label));
         const char* model = nullptr;
 
         // extract metadata from group label str resulting in a simplifiedLabel
         // and metadata declarations for fictive zone at address 0
         string                    simplifiedLabel;
         map<std::string, set<std::string> > metadata;
-        extractMetadata(str, simplifiedLabel, metadata);
+        extractMetadata(str.c_str(), simplifiedLabel, metadata);
 
         // add metadata if any
         for (map<std::string, set<std::string> >::iterator i = metadata.begin(); i != metadata.end(); i++) {

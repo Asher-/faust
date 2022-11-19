@@ -27,7 +27,7 @@
 #include "global.hh"
 #include "compiler/signals/prim2.hh"
 #include "recursivness.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 ppsig::ppsig(Tree s) : fSig(s), fEnv(global::config().nil), fPriority(0), fHideRecursion(false)
 {
@@ -163,7 +163,7 @@ ostream& ppsig::printrec(ostream& fout, Tree lexp, bool hide) const
 ostream& ppsig::printextended(ostream& fout, Tree sig1) const
 {
     string   sep = "";
-    ::Faust::Primitive::Math::xtended* p   = (::Faust::Primitive::Math::xtended*)getUserData(fSig);
+    auto p   = getUserData(fSig);
 
     fout << p->name() << '(';
     for (int i = 0; i < sig1->arity(); i++) {
@@ -422,7 +422,7 @@ ostream& ppsigShared::printrec(ostream& fout, Tree lexp, bool hide) const
 ostream& ppsigShared::printextended(ostream& fout, Tree sig1) const
 {
     string   sep = "";
-    ::Faust::Primitive::Math::xtended* p   = (::Faust::Primitive::Math::xtended*)getUserData(fSig);
+    auto p   = getUserData(fSig);
 
     fout << p->name() << '(';
     for (int i = 0; i < sig1->arity(); i++) {

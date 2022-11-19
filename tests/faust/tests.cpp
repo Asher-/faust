@@ -19,8 +19,8 @@
  ************************************************************************
  ************************************************************************/
 
-#include "tests/faust/primitive/symbol/internal_symbol_test.cpp"
-#include "tests/faust/primitive/symbol/runtime_symbol_test.cpp"
-#include "tests/faust/primitive/symbol/combined_symbol_test.cpp"
+#include "faust/primitive/symbol/internal_symbol_test.hh"
+#include "faust/primitive/symbol/runtime_symbol_test.hh"
+#include "faust/primitive/symbols_test.hh"
 
 

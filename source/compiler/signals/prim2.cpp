@@ -28,12 +28,12 @@
 
 Tree ffunction(Tree signature, Tree incfile, Tree libfile)
 {
-    return tree(global::config().FFUN, signature, incfile, libfile);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("ForeignFunction"), signature, incfile, libfile);
 }
 
 bool isffunction(Tree t)
 {
-    return t->node() == Node(global::config().FFUN);
+    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("ForeignFunction"));
 }
 
 Tree ffsignature(Tree ff)
@@ -41,12 +41,12 @@ Tree ffsignature(Tree ff)
     return ff->branch(0);
 }
 
-const char* ffincfile(Tree ff)
+std::string ffincfile(Tree ff)
 {
     return tree2str(ff->branch(1));
 }
 
-const char* fflibfile(Tree ff)
+std::string fflibfile(Tree ff)
 {
     return tree2str(ff->branch(2));
 }
@@ -56,7 +56,7 @@ int ffrestype(Tree t)
     return tree2int(hd(ffsignature(t)));
 }
 
-const char* ffname(Tree t)
+std::string ffname(Tree t)
 {
     Tree namelist = nth(ffsignature(t), 1);
     return tree2str(nth(namelist, ::Faust::Primitive::Math::floatSize - 1));

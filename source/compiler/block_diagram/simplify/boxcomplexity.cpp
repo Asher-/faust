@@ -29,7 +29,6 @@
 #include <ostream>
 #include "compiler/errors/exception.hh"
 #include "global.hh"
-#include "compiler/math_primitives/xtended.hh"
 
 using namespace std;
 
@@ -91,7 +90,7 @@ int computeBoxComplexity(Tree box)
 
     Tree t1, t2, t3, ff, label, cur, min, max, step, type, name, file, chan;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
+    auto xt = getUserData(box);
 
     // simple elements
     if (xt)

@@ -151,7 +151,8 @@ namespace Faust {
         AbstractSymbol*
         insert(
           const std::string& name,
-          const HashType& hash
+          const HashType& hash,
+          bool  throw_if_exists = true
         )
         {
           if ( ! _symbol ) {
@@ -164,6 +165,11 @@ namespace Faust {
             Bucket* this_bucket = this;
             do {
               if ( this_bucket->symbol()->name() == name ) {
+                if ( throw_if_exists ) {
+                  std::stringstream error;
+                  error << "Symbol :" << name << " already in runtime table!";
+                  throw error;
+                }
                 return this_bucket->symbol();
               }
             } while (this_bucket->_next && (this_bucket = this_bucket->_next));
@@ -175,8 +181,10 @@ namespace Faust {
 
         template <typename RuntimeSymbolType>
         AbstractSymbol*
-        insert( AbstractSymbol* const& symbol )
-        {
+        insert(
+          AbstractSymbol* const& symbol,
+          bool  throw_if_exists = true
+        ) {
           if ( ! _symbol ) {
             /* Bucket is empty - insert symbol. */
             _symbol = symbol;
@@ -187,8 +195,11 @@ namespace Faust {
             Bucket* this_bucket = _next;
             do {
               if ( this_bucket->symbol()->name() == symbol->name() ) {
-                std::stringstream error;
-                error << "Symbol :" << symbol->name() << " already in table!";
+                if ( throw_if_exists ) {
+                  std::stringstream error;
+                  error << "Symbol :" << symbol->name() << " already in runtime table!";
+                  throw error;
+                }
                 return this_bucket->symbol();
               }
             } while (this_bucket->_next && (this_bucket = this_bucket->_next));

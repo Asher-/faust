@@ -25,6 +25,7 @@
 
 #include "signal2vhdlVisitor.hh"
 #include "compiler/signals/sigtyperules.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 //-------------------------Signal2VHDLVisitor-------------------------------
 // An identity transformation on signals. Can be used to test
@@ -97,20 +98,20 @@ void Signal2VHDLVisitor::visit(Tree sig)
     vector<Tree> subsig;
     Tree   c, sel, x, y, z, u, v, var, le, label, id, ff, largs, type, name, file, sf;
 
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*) getUserData(sig);
+    auto p = getUserData(sig);
     int nature = getCertifiedSigType(sig)->nature();
     string suffixe = getObjectSuffix(nature);
 
     if (p) {
-        if (strcmp(p->name(), "fmod") == 0) {
+        if (p->name() == "fmod") {
             getSubSignals(sig, subsig);
             bin_op("FMOD" + suffixe, "mod", sig, subsig[0], subsig[1]);
             self(subsig[0]);
             self(subsig[1]);
-        } else if (strcmp(p->name(), "sin") == 0) {
+        } else if (p->name() == "sin") {
             getSubSignals(sig, subsig);
             sincos_op("SIN", sig, subsig[0], nature);
-        } else if (strcmp(p->name(), "cos") == 0) {
+        } else if (p->name() == "cos") {
             getSubSignals(sig, subsig);
             sincos_op("COS", sig, subsig[0],nature);
         } else {

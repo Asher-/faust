@@ -25,6 +25,8 @@
 #include "compiler/type_manager/garbageable.hh"
 #include "tlib/tree.hh"
 
+#include "faust/primitive/symbols.hh"
+
 template <class P>
 class property : public virtual Garbageable {
     Tree fKey;
@@ -36,7 +38,7 @@ class property : public virtual Garbageable {
     }
 
    public:
-    property() : fKey(tree(Node(unique("property_")))) {}
+    property() : fKey(tree(Node(::Faust::Primitive::Symbols::runtime().unique("property_")))) {}
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
@@ -76,7 +78,7 @@ class property<Tree> : public virtual Garbageable {
     Tree fKey;
 
    public:
-    property() : fKey(tree(Node(unique("property_")))) {}
+    property() : fKey(tree(Node(::Faust::Primitive::Symbols::runtime().unique("property_")))) {}
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
@@ -101,7 +103,7 @@ class property<int> : public virtual Garbageable {
     Tree fKey;
 
    public:
-    property() : fKey(tree(Node(unique("property_")))) {}
+    property() : fKey(tree(Node(::Faust::Primitive::Symbols::runtime().unique("property_")))) {}
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 
@@ -126,7 +128,7 @@ class property<double> : public virtual Garbageable {
     Tree fKey;
 
    public:
-    property() : fKey(tree(Node(unique("property_")))) {}
+    property() : fKey(tree(Node(::Faust::Primitive::Symbols::runtime().unique("property_")))) {}
 
     property(const char* keyname) : fKey(tree(Node(keyname))) {}
 

@@ -27,7 +27,7 @@
 #include "tlib/tree.hh"
 #include "compiler/compile/xml_description.hh"
 
-LIBFAUST_API const char* xtendedName(Tree tree);
+LIBFAUST_API std::string xtendedName(Tree tree);
 LIBFAUST_API unsigned int xtendedArity(Tree tree);
 LIBFAUST_API Tree DSPToBoxes(const std::string& name_app, const std::string& dsp_content, int argc, const char* argv[], int* inputs, int* outputs, std::string& error_msg);
 

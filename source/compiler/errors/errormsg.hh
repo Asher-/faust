@@ -28,12 +28,12 @@
 void setDefProp(Tree sym, const char* filename, int lineno);
 bool hasDefProp(Tree sym);
 
-const char* getDefFileProp(Tree sym);
+const std::string_view& getDefFileProp(Tree sym);
 int         getDefLineProp(Tree sym);
 
 // associate and retrieve file and line properties to a symbol usage
 void        setUseProp(Tree sym, const char* filename, int lineno);
-const char* getUseFileProp(Tree sym);
+const std::string_view& getUseFileProp(Tree sym);
 int         getUseLineProp(Tree sym);
 
 // Parsing error
@@ -41,9 +41,9 @@ void lexerror(const char* msg);
 void yyerror(const char* msg);
 
 // three levels or errors, warnings and remarks are provided during evaluation
-void evalerror(const char* filename, int linenum, const char* msg, Tree exp);
-void evalerrorbox(const char* filename, int linenum, const char* msg, Tree exp);
-void evalwarning(const char* filename, int linenum, const char* msg, Tree exp);
-void evalremark(const char* filename, int linenum, const char* msg, Tree exp);
+void evalerror(const std::string_view& filename, int linenum, const char* msg, Tree exp);
+void evalerrorbox(const std::string_view& filename, int linenum, const char* msg, Tree exp);
+void evalwarning(const std::string_view& filename, int linenum, const char* msg, Tree exp);
+void evalremark(const std::string_view& filename, int linenum, const char* msg, Tree exp);
 
 #endif

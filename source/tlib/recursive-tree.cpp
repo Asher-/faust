@@ -28,6 +28,8 @@
 #include "tlib/tlib.hh"
 #include "faust/export.h"
 
+#include "faust/primitive/symbols.hh"
+
 // Declaration of implementation
 static Tree calcDeBruijn2Sym(Tree t);
 static Tree substitute(Tree t, int n, Tree id);
@@ -44,25 +46,25 @@ static Tree calcliftn(Tree t, int threshold);
 // de Bruijn declaration of a recursive tree
 Tree rec(Tree body)
 {
-    return tree(global::config().DEBRUIJN, body);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DEBRUIJN"), body);
 }
 
 bool isRec(Tree t, Tree& body)
 {
-    return isTree(t, global::config().DEBRUIJN, body);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DEBRUIJN"), body);
 }
 
 Tree ref(int level)
 {
     faustassert(level > 0);
-    return tree(global::config().DEBRUIJNREF, tree(level));  // reference to enclosing recursive tree starting from 1
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DEBRUIJNREF"), tree(level));  // reference to enclosing recursive tree starting from 1
 }
 
 bool isRef(Tree t, int& level)
 {
     Tree u;
 
-    if (isTree(t, global::config().DEBRUIJNREF, u)) {
+    if (isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DEBRUIJNREF"), u)) {
         return isInt(u->node(), &level);
     } else {
         return false;
@@ -76,14 +78,14 @@ bool isRef(Tree t, int& level)
 // declaration of a recursive tree using a symbolic variable
 Tree rec(Tree var, Tree body)
 {
-    Tree t = tree(global::config().SYMREC, var);
+    Tree t = tree(::Faust::Primitive::Symbols::internal().symbol("SYMREC"), var);
     t->setProperty(global::config().RECDEF, body);
     return t;
 }
 
 bool LIBFAUST_API isRec(Tree t, Tree& var, Tree& body)
 {
-    if (isTree(t, global::config().SYMREC, var)) {
+    if (isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SYMREC"), var)) {
         body = t->getProperty(global::config().RECDEF);
         return true;
     } else {
@@ -93,12 +95,12 @@ bool LIBFAUST_API isRec(Tree t, Tree& var, Tree& body)
 
 Tree ref(Tree id)
 {
-    return tree(global::config().SYMREC, id);  // reference to a symbolic id
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SYMREC"), id);  // reference to a symbolic id
 }
 
 bool isRef(Tree t, Tree& v)
 {
-    return isTree(t, global::config().SYMREC, v);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SYMREC"), v);
 }
 
 //-----------------------------------------------------------------------------------------
@@ -109,7 +111,7 @@ bool isRef(Tree t, Tree& v)
 int CTree::calcTreeAperture(const Node& n, const tvec& br)
 {
     int x;
-    if (n == global::config().DEBRUIJNREF) {
+    if (n == ::Faust::Primitive::Symbols::internal().symbol("DEBRUIJNREF")) {
         faustassert(br[0]);
         if (isInt(br[0]->node(), &x)) {
             return x;
@@ -117,7 +119,7 @@ int CTree::calcTreeAperture(const Node& n, const tvec& br)
             return 0;
         }
 
-    } else if (n == global::config().DEBRUIJN) {
+    } else if (n == ::Faust::Primitive::Symbols::internal().symbol("DEBRUIJN")) {
         faustassert(br[0]);
         return br[0]->fAperture - 1;
 
@@ -158,7 +160,7 @@ Tree liftn(Tree t, int threshold)
 
 Tree liftn(Tree t, int threshold)
 {
-    Tree L  = tree(Node(global::config().SYMLIFTN), tree(Node(threshold)));
+    Tree L  = tree(Node(::Faust::Primitive::Symbols::internal().symbol("LIFTN")), tree(Node(threshold)));
     Tree t2 = t->getProperty(L);
 
     if (!t2) {
@@ -222,7 +224,7 @@ static Tree calcDeBruijn2Sym(Tree t)
     int  i;
 
     if (isRec(t, body)) {
-        var = tree(unique("W"));
+        var = tree(::Faust::Primitive::Symbols::runtime().unique("W"));
         return rec(var, deBruijn2Sym(substitute(body, 1, ref(var))));
 
     } else if (isRef(t, var)) {
@@ -248,7 +250,7 @@ static Tree calcDeBruijn2Sym(Tree t)
 
 static Tree substitute(Tree t, int level, Tree id)
 {
-    Tree S  = tree(Node(global::config().SUBSTITUTE), tree(Node(level)), id);
+    Tree S  = tree(Node(::Faust::Primitive::Symbols::internal().symbol("SUBSTITUTE")), tree(Node(level)), id);
     Tree t2 = t->getProperty(S);
 
     if (!t2) {

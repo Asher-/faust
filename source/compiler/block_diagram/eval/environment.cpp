@@ -27,6 +27,8 @@
 #include "compiler/util/names.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 
+#include "faust/primitive/symbols.hh"
+
 //----------------------- New environment management --------------------------
 //
 // The environment is made of layers. Each layer contains a set of definitions
@@ -45,7 +47,7 @@
  */
 static Tree pushNewLayer(Tree lenv)
 {
-    return tree(unique("ENV_LAYER"), lenv);
+    return tree(::Faust::Primitive::Symbols::runtime().unique("ENV_LAYER"), lenv);
 }
 
 /**
@@ -58,7 +60,7 @@ static Tree pushNewLayer(Tree lenv)
  */
 Tree pushEnvBarrier(Tree lenv)
 {
-    return tree(global::config().BARRIER, lenv);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("BARRIER"), lenv);
 }
 
 /**
@@ -70,7 +72,7 @@ Tree pushEnvBarrier(Tree lenv)
  */
 bool isEnvBarrier(Tree lenv)
 {
-    return isNil(lenv) || (lenv->node() == Node(global::config().BARRIER));
+    return isNil(lenv) || (lenv->node() == Node(::Faust::Primitive::Symbols::internal().symbol("BARRIER")));
 }
 
 /**

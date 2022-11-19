@@ -45,6 +45,8 @@
 
 #include "compiler/parser/implementation.hh"
 
+#include "faust/primitive/symbols.hh"
+
 namespace Faust {
   namespace Compiler {
     struct Common;
@@ -54,10 +56,6 @@ namespace Faust {
 class CTree;
 typedef CTree* Tree;
 
-class Symbol;
-typedef Symbol* Sym;
-
-class xtended;
 class AudioType;
 
 class Garbageable;
@@ -78,7 +76,7 @@ struct BasicTyped;
 struct dsp_factory_base;
 
 struct comp_str {
-    bool operator()(Tree s1, Tree s2) const { return (strcmp(tree2str(s1), tree2str(s2)) < 0); }
+    bool operator()(Tree s1, Tree s2) const { return tree2str(s1) == tree2str(s2); }
 };
 
 typedef map<Tree, set<Tree>, comp_str>  MetaDataSet;
@@ -533,10 +531,6 @@ struct global {
     Tree nil;
 
     Sym PROCESS;
-
-    Sym DEBRUIJN;
-    Sym DEBRUIJNREF;
-    Sym SUBSTITUTE;
 
     Sym SYMREC;
     Sym SYMRECREF;

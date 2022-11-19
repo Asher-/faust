@@ -143,18 +143,18 @@ static bool     doesFileBeginWithCode(const string& faustfile);
 
 Tree docTxt(const char* name)
 {
-    return tree(global::config().DOCTXT, tree(symbol(name)));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DocTxt"), tree(::Faust::Primitive::Symbols::runtime().insert(name, false)));
 }
 bool isDocTxt(Tree t)
 {
-    return t->node() == Node(global::config().DOCTXT);
+    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("DocTxt"));
 }
 bool isDocTxt(Tree t0, const char** str)
 {
     Tree t1;
     Sym  s;
-    if (isTree(t0, global::config().DOCTXT, t1) && isSym(t1->node(), &s)) {
-        *str = name(s);
+    if (isTree(t0, ::Faust::Primitive::Symbols::internal().symbol("DocTxt"), t1) && isSym(t1->node(), &s)) {
+        *str = std::string(s->name()).c_str();
         return true;
     } else {
         return false;
@@ -163,47 +163,47 @@ bool isDocTxt(Tree t0, const char** str)
 
 Tree docEqn(Tree x)
 {
-    return tree(global::config().DOCEQN, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DocEqn"), x);
 }
 bool isDocEqn(Tree t, Tree& x)
 {
-    return isTree(t, global::config().DOCEQN, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocEqn"), x);
 }
 
 Tree docDgm(Tree x)
 {
-    return tree(global::config().DOCDGM, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DocDgm"), x);
 }
 bool isDocDgm(Tree t, Tree& x)
 {
-    return isTree(t, global::config().DOCDGM, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocDgm"), x);
 }
 
 Tree docNtc()
 {
-    return tree(global::config().DOCNTC);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DocNtc"));
 }
 bool isDocNtc(Tree t)
 {
-    return isTree(t, global::config().DOCNTC);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocNtc"));
 }
 
 Tree docLst()
 {
-    return tree(global::config().DOCLST);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DocLst"));
 }
 bool isDocLst(Tree t)
 {
-    return isTree(t, global::config().DOCLST);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocLst"));
 }
 
 Tree docMtd(Tree x)
 {
-    return tree(global::config().DOCMTD, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("DocMtd"), x);
 }
 bool isDocMtd(Tree t, Tree& x)
 {
-    return isTree(t, global::config().DOCMTD, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocMtd"), x);
 }
 
 /*****************************************************************************
@@ -416,11 +416,11 @@ static void printFaustdocStamp(const string& faustversion, ostream& docout)
  *
  * First loop on global::config().global::config().gDocVector, which contains the faust <mdoc> trees.
  * Second loop for each of these <mdoc> trees, which contain parsed input expressions of 3 types :
- * global::config().DOCEQN for <equation> tags, global::config().DOCDGM for <diagram> tags, and global::config().DOCTXT for direct LaTeX text
+ * ::Faust::Primitive::Symbols::internal().symbol("DocEqn") for <equation> tags, ::Faust::Primitive::Symbols::internal().symbol("DocDgm") for <diagram> tags, and ::Faust::Primitive::Symbols::internal().symbol("DocTxt") for direct LaTeX text
  *(no tag).
- * - global::config().DOCTXT expressions printing is trivial.
- * - global::config().DOCDGM expressions printing calls 'printDocDgm' to generate SVG files and print LaTeX "figure" code.
- * - global::config().DOCEQN expressions printing calls 'printDocEqn' after an important preparing work
+ * - ::Faust::Primitive::Symbols::internal().symbol("DocTxt") expressions printing is trivial.
+ * - ::Faust::Primitive::Symbols::internal().symbol("DocDgm") expressions printing calls 'printDocDgm' to generate SVG files and print LaTeX "figure" code.
+ * - ::Faust::Primitive::Symbols::internal().symbol("DocEqn") expressions printing calls 'printDocEqn' after an important preparing work
  *   has been done by 'prepareDocEqns'.
  *
  * @param[in]	projname		Basename of the new doc directory ("*-math").
@@ -835,7 +835,7 @@ static void printDocDgm(const Tree expr, const char* svgTopDir, ostream& docout,
      * Warning : pdflatex can't directly include SVG files !
      */
     char dgmid[MAXIDCHARS + 1];
-    sprintf(dgmid, "%02d", i);
+    snprintf(dgmid, MAXIDCHARS, "%02d", i);
     string thisdgmdir = subst("$0/svg-$1", svgTopDir, dgmid);
     // cerr << "Documentator : printDocDgm : drawSchema in '" << gCurrentDir << "/" << thisdgmdir << "'" << endl;
 
@@ -978,7 +978,7 @@ static char* legalFileName(const Tree t, int n, char* dst)
     Tree id;
     int  i = 0;
     if (getDefNameProperty(t, id)) {
-        const char* src = tree2str(id);
+        std::string src = tree2str(id);
         for (i = 0; isalnum(src[i]) && i < 16; i++) {
             dst[i] = src[i];
         }
@@ -998,7 +998,7 @@ static char* legalFileName(const Tree t, int n, char* dst)
 static string calcNumberedName(const char* base, int i)
 {
     char nb[MAXIDCHARS + 1];
-    sprintf(nb, "%03d", i);
+    snprintf(nb, MAXIDCHARS, "%03d", i);
     return subst("$0$1", base, nb);
 }
 

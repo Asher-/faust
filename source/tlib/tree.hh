@@ -75,7 +75,10 @@
 #include "compiler/errors/exception.hh"
 #include "compiler/type_manager/garbageable.hh"
 #include "tlib/node.hh"
-#include "tlib/symbol.hh"
+#include "faust/primitive/symbols.hh"
+
+namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
+using xtended = ::Faust::Primitive::Math::xtended;
 
 //---------------------------------API---------------------------------------
 
@@ -226,10 +229,10 @@ inline Tree tree(const Node& n, const tvec& br)
 LIBFAUST_API int tree2int(Tree t); ///< if t has a node of type int, return it otherwise error
 double      tree2float(Tree t);   ///< if t has a node of type float, return it otherwise error
 double      tree2double(Tree t);  ///< if t has a node of type float, return it otherwise error
-LIBFAUST_API const char* tree2str(Tree t);     ///< if t has a node of type symbol, return its name otherwise error
+LIBFAUST_API std::string tree2str(Tree t);     ///< if t has a node of type symbol, return its name otherwise error
 string      tree2quotedstr(Tree t);
 void*       tree2ptr(Tree t);     ///< if t has a node of type ptr, return it otherwise error
-LIBFAUST_API void* getUserData(Tree t);  ///< if t has a node of type symbol, return the associated user data
+LIBFAUST_API xtended* getUserData(Tree t);  ///< if t has a node of type symbol, return the associated user data
 
 // pattern matching
 bool isTree(const Tree& t, const Node& n);

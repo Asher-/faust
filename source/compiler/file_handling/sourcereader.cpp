@@ -499,10 +499,10 @@ Tree SourceReader::expandRec(Tree ldef, set<string>& visited, Tree lresult)
 		if (isNil(d)) {
 			// skill null definitions produced by declarations
 		} else if (isImportFile(d, fname)) {
-			const char* f = tree2str(fname);
-			if (visited.find(f) == visited.end()) {
-				visited.insert(f);
-				lresult = expandRec(getList(f), visited, lresult);
+			std::string f = tree2str(fname);
+			if (visited.find(f.c_str()) == visited.end()) {
+				visited.insert(f.c_str());
+				lresult = expandRec(getList(f.c_str()), visited, lresult);
 			}
 		} else {
 			lresult = cons(d, lresult);

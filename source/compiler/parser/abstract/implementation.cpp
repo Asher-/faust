@@ -43,7 +43,6 @@
 #include <iostream>
 
 #include "tlib/tree.hh"
-#include "compiler/math_primitives/xtended.hh"
 #include "compiler/block_diagram/boxes/boxes.hh"
 #include "compiler/signals/prim2.hh"
 #include "compiler/signals/signals.hh"
@@ -2325,7 +2324,7 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 72: // expression.infix.math.algebra: expression.infix POWOP expression.infix
                                                         {
-        yylhs.value.as < Tree > () = boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::Faust::Primitive::Math::pow.box());
+        yylhs.value.as < Tree > () = boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::Faust::Primitive::Math::functions().pow.box());
       }
     break;
 
@@ -2543,23 +2542,23 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 118: // expression.math.rounding: ABS
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::abs.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().abs.box(); }
     break;
 
   case 119: // expression.math.rounding: MIN
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::min.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().min.box(); }
     break;
 
   case 120: // expression.math.rounding: MAX
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::max.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().max.box(); }
     break;
 
   case 121: // expression.math.rounding: FLOOR
-                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::floor.box(); }
+                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().floor.box(); }
     break;
 
   case 122: // expression.math.rounding: CEIL
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::ceil.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().ceil.box(); }
     break;
 
   case 123: // expression.math.rounding: ASSERTBOUNDS
@@ -2575,7 +2574,7 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 126: // expression.math.rounding: RINT
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::rint.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().rint.box(); }
     break;
 
   case 127: // expression.math.signal: expression.math.signal.algebra
@@ -2611,11 +2610,11 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 135: // expression.math.signal.algebra: FMOD
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::fmod.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().fmod.box(); }
     break;
 
   case 136: // expression.math.signal.algebra: REMAINDER
-                    { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::remainder.box(); }
+                    { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().remainder.box(); }
     break;
 
   case 137: // expression.math.signal.algebra: SUB statement.identifier.box
@@ -2631,27 +2630,27 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 140: // expression.math.signal.power: EXP
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::exp.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().exp.box(); }
     break;
 
   case 141: // expression.math.signal.power: LOG
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::log.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().log.box(); }
     break;
 
   case 142: // expression.math.signal.power: LOG10
-                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::log10.box(); }
+                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().log10.box(); }
     break;
 
   case 143: // expression.math.signal.power: POWOP
-                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::pow.box(); }
+                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().pow.box(); }
     break;
 
   case 144: // expression.math.signal.power: POWFUN
-                 { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::pow.box(); }
+                 { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().pow.box(); }
     break;
 
   case 145: // expression.math.signal.power: SQRT
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::sqrt.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().sqrt.box(); }
     break;
 
   case 146: // expression.math.scalar: ADD INT
@@ -2671,31 +2670,31 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 150: // expression.math.trigonometry: ACOS
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::acos.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().acos.box(); }
     break;
 
   case 151: // expression.math.trigonometry: ASIN
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::asin.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().asin.box(); }
     break;
 
   case 152: // expression.math.trigonometry: ATAN
-               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::atan.box(); }
+               { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().atan.box(); }
     break;
 
   case 153: // expression.math.trigonometry: ATAN2
-                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::atan2.box(); }
+                { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().atan2.box(); }
     break;
 
   case 154: // expression.math.trigonometry: COS
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::cos.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().cos.box(); }
     break;
 
   case 155: // expression.math.trigonometry: SIN
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::sin.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().sin.box(); }
     break;
 
   case 156: // expression.math.trigonometry: TAN
-              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::tan.box(); }
+              { yylhs.value.as < Tree > () = ::Faust::Primitive::Math::functions().tan.box(); }
     break;
 
   case 157: // expression.parenthesis: LPAR expression RPAR

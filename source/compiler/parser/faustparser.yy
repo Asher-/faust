@@ -49,7 +49,6 @@
 #include <iostream>
 
 #include "tlib/tree.hh"
-#include "compiler/math_primitives/xtended.hh"
 #include "compiler/block_diagram/boxes/boxes.hh"
 #include "compiler/signals/prim2.hh"
 #include "compiler/signals/signals.hh"
@@ -599,7 +598,7 @@ expression:
     | expression.infix[lhs] DIV   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigDiv)); }
     | expression.infix[lhs] MOD   expression.infix[rhs] { $$ = boxSeq(boxPar($lhs,$rhs),boxPrim2(sigRem)); }
     | expression.infix[lhs] POWOP expression.infix[rhs] {
-        $$ = boxSeq(boxPar($lhs,$rhs),::Faust::Primitive::Math::pow.box());
+        $$ = boxSeq(boxPar($lhs,$rhs),::Faust::Primitive::Math::functions().pow.box());
       }
 
   expression.infix.math.comparison:
@@ -738,15 +737,15 @@ expression:
       | NE { $$ = boxPrim2(sigNE); }
 
       expression.math.rounding:
-          ABS { $$ = ::Faust::Primitive::Math::abs.box(); }
-        | MIN { $$ = ::Faust::Primitive::Math::min.box(); }
-        | MAX { $$ = ::Faust::Primitive::Math::max.box(); }
-        | FLOOR { $$ = ::Faust::Primitive::Math::floor.box(); }
-        | CEIL { $$ = ::Faust::Primitive::Math::ceil.box(); }
+          ABS { $$ = ::Faust::Primitive::Math::functions().abs.box(); }
+        | MIN { $$ = ::Faust::Primitive::Math::functions().min.box(); }
+        | MAX { $$ = ::Faust::Primitive::Math::functions().max.box(); }
+        | FLOOR { $$ = ::Faust::Primitive::Math::functions().floor.box(); }
+        | CEIL { $$ = ::Faust::Primitive::Math::functions().ceil.box(); }
         | ASSERTBOUNDS { $$ = boxPrim3(sigAssertBounds);}
         | LOWEST { $$ = boxPrim1(sigLowest);}
         | HIGHEST { $$ = boxPrim1(sigHighest);}
-        | RINT { $$ = ::Faust::Primitive::Math::rint.box(); }
+        | RINT { $$ = ::Faust::Primitive::Math::functions().rint.box(); }
 
     expression.math.signal:
         expression.math.signal.algebra
@@ -759,8 +758,8 @@ expression:
         | MUL { $$ = boxPrim2(sigMul); }
         | DIV { $$ = boxPrim2(sigDiv); }
         | MOD { $$ = boxPrim2(sigRem); }
-        | FMOD { $$ = ::Faust::Primitive::Math::fmod.box(); }
-        | REMAINDER { $$ = ::Faust::Primitive::Math::remainder.box(); }
+        | FMOD { $$ = ::Faust::Primitive::Math::functions().fmod.box(); }
+        | REMAINDER { $$ = ::Faust::Primitive::Math::functions().remainder.box(); }
         | SUB statement.identifier.box { $$ = boxSeq(boxPar(boxInt(0),$[statement.identifier.box]),boxPrim2(sigSub)); }
 
       expression.math.signal.shift:
@@ -768,12 +767,12 @@ expression:
         | RSH { $$ = boxPrim2(sigARightShift); }
 
       expression.math.signal.power:
-          EXP { $$ = ::Faust::Primitive::Math::exp.box(); }
-        | LOG { $$ = ::Faust::Primitive::Math::log.box(); }
-        | LOG10 { $$ = ::Faust::Primitive::Math::log10.box(); }
-        | POWOP { $$ = ::Faust::Primitive::Math::pow.box(); }
-        | POWFUN { $$ = ::Faust::Primitive::Math::pow.box(); }
-        | SQRT { $$ = ::Faust::Primitive::Math::sqrt.box(); }
+          EXP { $$ = ::Faust::Primitive::Math::functions().exp.box(); }
+        | LOG { $$ = ::Faust::Primitive::Math::functions().log.box(); }
+        | LOG10 { $$ = ::Faust::Primitive::Math::functions().log10.box(); }
+        | POWOP { $$ = ::Faust::Primitive::Math::functions().pow.box(); }
+        | POWFUN { $$ = ::Faust::Primitive::Math::functions().pow.box(); }
+        | SQRT { $$ = ::Faust::Primitive::Math::functions().sqrt.box(); }
 
       expression.math.scalar:
           ADD INT { $$ = boxInt(std::stoi(self._lexer->YYText())); }
@@ -782,13 +781,13 @@ expression:
         | SUB FLOAT { $$ = boxReal( -$FLOAT ); }
 
       expression.math.trigonometry:
-          ACOS { $$ = ::Faust::Primitive::Math::acos.box(); }
-        | ASIN { $$ = ::Faust::Primitive::Math::asin.box(); }
-        | ATAN { $$ = ::Faust::Primitive::Math::atan.box(); }
-        | ATAN2 { $$ = ::Faust::Primitive::Math::atan2.box(); }
-        | COS { $$ = ::Faust::Primitive::Math::cos.box(); }
-        | SIN { $$ = ::Faust::Primitive::Math::sin.box(); }
-        | TAN { $$ = ::Faust::Primitive::Math::tan.box(); }
+          ACOS { $$ = ::Faust::Primitive::Math::functions().acos.box(); }
+        | ASIN { $$ = ::Faust::Primitive::Math::functions().asin.box(); }
+        | ATAN { $$ = ::Faust::Primitive::Math::functions().atan.box(); }
+        | ATAN2 { $$ = ::Faust::Primitive::Math::functions().atan2.box(); }
+        | COS { $$ = ::Faust::Primitive::Math::functions().cos.box(); }
+        | SIN { $$ = ::Faust::Primitive::Math::functions().sin.box(); }
+        | TAN { $$ = ::Faust::Primitive::Math::functions().tan.box(); }
 
   /******************** Parenthesis ********************/
 

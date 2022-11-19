@@ -45,7 +45,7 @@
 #include "compiler/util/names.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 
 static bool infereBoxType(Tree box, int* inum, int* onum);
 
@@ -180,7 +180,7 @@ static bool infereBoxType(Tree t, int* inum, int* onum)
     Tree a, b, ff, l, s, c, ins, outs, lroutes;
     // Tree abstr, genv, vis, lenv;
 
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(t);
+    auto p = getUserData(t);
 
     if (p) {
         *inum = p->arity();

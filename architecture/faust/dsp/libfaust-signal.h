@@ -60,6 +60,9 @@ LIBFAUST_API const char* prim3name(prim3);
 LIBFAUST_API const char* prim4name(prim4);
 LIBFAUST_API const char* prim5name(prim5);
 
+namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
+using xtended = ::Faust::Primitive::Math::xtended;
+
 /**
  *  Return the name parameter of a foreign function.
  *
@@ -150,7 +153,7 @@ LIBFAUST_API const char* tree2str(Signal s);
  *
  * @return a pointer to xtended type if it exists, otherwise nullptr.
  */
-LIBFAUST_API void* getUserData(Signal s);
+LIBFAUST_API xtended* getUserData(Signal s);
 
 /**
  * Return the arity of the xtended signal.

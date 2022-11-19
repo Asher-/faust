@@ -36,8 +36,9 @@
 #include "compiler/signals/sigtype.hh"
 #include "compiler/signals/sigtyperules.hh"
 #include "simplify.hh"
-#include "compiler/math_primitives/xtended.hh"
 #include "faust/primitive/math.hh"
+
+#include "faust/primitive/symbols.hh"
 
 #undef TRACE
 
@@ -85,7 +86,7 @@ static Tree simplification(Tree sig)
     int  opnum;
     Tree t1, t2, t3;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto xt = getUserData(sig);
     // primitive elements
     if (xt) {
         vector<Tree> args;
@@ -94,7 +95,7 @@ static Tree simplification(Tree sig)
         }
 
         // to avoid negative power to further normalization
-        if (xt != ::Faust::Primitive::Math::Pow::self) {
+        if (xt->symbol() != ::Faust::Primitive::Symbols::internal().symbol("pow")) {
             return xt->computeSigOutput(args);
         } else {
             return normalizeAddTerm(xt->computeSigOutput(args));
@@ -259,7 +260,7 @@ static Tree sigMapRename(Tree key, Tree env, tfun f, Tree t)
             return ref(id2);
         } else {
             // first visit of this recursion
-            id2        = tree(Node(unique("renamed")));
+            id2        = tree(Node(::Faust::Primitive::Symbols::runtime().unique("renamed")));
             Tree body2 = sigMapRename(key, pushEnv(id, id2, env), f, body);
             return rec(id2, body2);
         }
@@ -310,7 +311,7 @@ static void eraseProperties(Tree key, Tree t)
 static void eraseAllProperties(Tree t)
 {
     cerr << "begin eraseAllProperties" << endl;
-	eraseProperties(tree(Node(unique("erase_"))), t);
+	eraseProperties(tree(Node(::Faust::Primitive::Symbols::runtime().unique("erase_"))), t);
     cerr << "end eraseAllProperties" << endl;
 }
 #endif

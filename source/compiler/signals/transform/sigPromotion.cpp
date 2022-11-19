@@ -26,7 +26,6 @@
 #include "compiler/signals/signals.hh"
 #include "compiler/signals/prim2.hh"
 #include "global.hh"
-#include "compiler/math_primitives/xtended.hh"
 #include "compiler/signals/sigtyperules.hh"
 
 #include "faust/primitive/math.hh"
@@ -37,7 +36,7 @@ void SignalTreeChecker::visit(Tree sig)
     Tree id, x, y, sel, sf, ff, largs, chan, part, idx, tb, ws, label, min, max, t0;
 
     // Extended
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto p = getUserData(sig);
     if (p) {
         vector<Type> vt;
         for (Tree b : sig->branches()) {
@@ -173,7 +172,7 @@ Tree SignalPromotion::transformation(Tree sig)
     Tree id, sel, x, y, ff, largs, sf, chan, part, tb, idx, ws, min, max, label, t0;
 
     // Extended
-    ::Faust::Primitive::Math::xtended* p = (::Faust::Primitive::Math::xtended*)getUserData(sig);
+    auto p = getUserData(sig);
     if (p) {
         vector<Type> vt;
         for (Tree b : sig->branches()) {
@@ -224,7 +223,7 @@ Tree SignalPromotion::transformation(Tree sig)
                 } else {
                     // float promotion needed, rem (%) replaced by fmod
                     vector<Tree> lsig = {smartFloatCast(tx, self(x)), smartFloatCast(ty, self(y))};
-                    return ::Faust::Primitive::Math::fmod.computeSigOutput(lsig);
+                    return ::Faust::Primitive::Math::functions().fmod.computeSigOutput(lsig);
                 }
 
             case kDiv: {

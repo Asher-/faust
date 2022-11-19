@@ -44,7 +44,7 @@
 #include "propagate.hh"
 #include "tlib/property.hh"
 #include "simplify.hh"
-#include "compiler/math_primitives/xtended.hh"
+#include "faust/primitive/math/functions/xtended.hh"
 #include "patternmatcher/automaton.hh"
 
 // History
@@ -353,7 +353,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
     // cerr << "EVAL " << *exp << " (visited : " << *visited << ")" << endl;
     // cerr << "REALEVAL of " << *exp << endl;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(exp);
+    auto xt = getUserData(exp);
 
     // constants
     //-----------
@@ -384,7 +384,7 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         Tree a2 = eval(e2, visited, localValEnv);
         Tree re = boxSeq(a1, a2);
 
-        ::Faust::Primitive::Math::xtended* xxt = (::Faust::Primitive::Math::xtended*)getUserData(a2);
+        auto xxt = getUserData(a2);
         siglist  lsig;
         // try a numerical simplification of expressions of type 2,3:+
         if ( isNumericalTuple(a1, lsig)
@@ -449,8 +449,8 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         ///////////////////////////////////////////////////////////////////
 
     } else if (isBoxComponent(exp, label)) {
-        const char* fname = tree2str(label);
-        Tree        eqlst = global::config().gReader.expandList(global::config().gReader.getList(fname));
+        std::string fname = tree2str(label);
+        Tree        eqlst = global::config().gReader.expandList(global::config().gReader.getList(fname.c_str()));
         Tree        res   = closure(boxIdent("process"), global::config().nil, global::config().nil,
                                     pushMultiClosureDefs(eqlst, global::config().nil, global::config().nil));
         setDefNameProperty(res, label);
@@ -458,8 +458,8 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         return res;
 
     } else if (isBoxLibrary(exp, label)) {
-        const char* fname = tree2str(label);
-        Tree        eqlst = global::config().gReader.expandList(global::config().gReader.getList(fname));
+        std::string fname = tree2str(label);
+        Tree        eqlst = global::config().gReader.expandList(global::config().gReader.getList(fname.c_str()));
         Tree        res   = closure(boxEnvironment(), global::config().nil, global::config().nil,
                                     pushMultiClosureDefs(eqlst, global::config().nil, global::config().nil));
         setDefNameProperty(res, label);
@@ -470,61 +470,61 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         //------------------------
 
     } else if (isBoxButton(exp, label)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         // cout << "button label : " << l1 << " become " << l2 << endl;
         return boxButton(tree(l2.c_str()));
 
     } else if (isBoxCheckbox(exp, label)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         // cout << "check box label : " << l1 << " become " << l2 << endl;
         return boxCheckbox(tree(l2.c_str()));
 
     } else if (isBoxVSlider(exp, label, cur, lo, hi, step)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return (boxVSlider(tree(l2.c_str()), tree(eval2double(cur, visited, localValEnv)),
                            tree(eval2double(lo, visited, localValEnv)), tree(eval2double(hi, visited, localValEnv)),
                            tree(eval2double(step, visited, localValEnv))));
 
     } else if (isBoxHSlider(exp, label, cur, lo, hi, step)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return (boxHSlider(tree(l2.c_str()), tree(eval2double(cur, visited, localValEnv)),
                            tree(eval2double(lo, visited, localValEnv)), tree(eval2double(hi, visited, localValEnv)),
                            tree(eval2double(step, visited, localValEnv))));
 
     } else if (isBoxNumEntry(exp, label, cur, lo, hi, step)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return (boxNumEntry(tree(l2.c_str()), tree(eval2double(cur, visited, localValEnv)),
                             tree(eval2double(lo, visited, localValEnv)), tree(eval2double(hi, visited, localValEnv)),
                             tree(eval2double(step, visited, localValEnv))));
 
     } else if (isBoxSoundfile(exp, label, chan)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return boxSoundfile(tree(l2.c_str()), tree(eval2int(chan, visited, localValEnv)));
 
     } else if (isBoxVGroup(exp, label, arg)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return boxVGroup(tree(l2.c_str()), eval(arg, visited, localValEnv));
 
     } else if (isBoxHGroup(exp, label, arg)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return boxHGroup(tree(l2.c_str()), eval(arg, visited, localValEnv));
 
     } else if (isBoxTGroup(exp, label, arg)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return boxTGroup(tree(l2.c_str()), eval(arg, visited, localValEnv));
 
     } else if (isBoxHBargraph(exp, label, lo, hi)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return boxHBargraph(tree(l2.c_str()), tree(eval2double(lo, visited, localValEnv)),
                             tree(eval2double(hi, visited, localValEnv)));
 
@@ -533,8 +533,8 @@ static Tree realeval(Tree exp, Tree visited, Tree localValEnv)
         return eval(e1, visited, localValEnv);
 
     } else if (isBoxVBargraph(exp, label, lo, hi)) {
-        const char* l1 = tree2str(label);
-        string      l2 = evalLabel(l1, visited, localValEnv);
+        std::string l1 = tree2str(label);
+        string      l2 = evalLabel(l1.c_str(), visited, localValEnv);
         return boxVBargraph(tree(l2.c_str()), tree(eval2double(lo, visited, localValEnv)),
                             tree(eval2double(hi, visited, localValEnv)));
 
@@ -1202,7 +1202,7 @@ static Tree applyList(Tree fun, Tree larg)
         }
 
         if ((outs == 1) && ((isBoxPrim2(fun, &p2) && (p2 != sigPrefix)) ||
-                            (getUserData(fun) && ((::Faust::Primitive::Math::xtended*)getUserData(fun))->isSpecialInfix()))) {
+                            (getUserData(fun) && (getUserData(fun))->isSpecialInfix()))) {
             // special case : /(3) ==> _,3 : /
             Tree larg2 = concat(nwires(ins - outs), larg);
             return boxSeq(larg2par(larg2), fun);
@@ -1544,7 +1544,7 @@ static Tree insideBoxSimplification(Tree box)
 
     Tree t1, t2, ff, label, cur, min, max, step, type, name, file, slot, body;
 
-    ::Faust::Primitive::Math::xtended* xt = (::Faust::Primitive::Math::xtended*)getUserData(box);
+    auto xt = getUserData(box);
 
     // Extended Primitives
 

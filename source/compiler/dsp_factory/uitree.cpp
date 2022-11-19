@@ -89,8 +89,8 @@ static bool isBefore(Tree k1, Tree k2)
         FAUST_ERROR("the node of the tree is not a symbol", k2);
     }
 
-    // fprintf (stderr, "strcmp(\"%s\", \"%s\") = %d\n", name(s1), name(s2), strcmp(name(s1), name(s2)));
-    return strcmp(name(s1), name(s2)) < 0;
+    // fprintf (stderr, "strcmp(\"%s\", \"%s\") = %d\n", s1->name(), s2->name(), (s1->name() == s2->name()));
+    return s1->name() < s2->name();
 }
 
 static bool findKey(Tree pl, Tree key, Tree& val)
@@ -139,24 +139,24 @@ static Tree removeKey(Tree pl, Tree key)
 
 Tree uiFolder(Tree label, Tree elements)
 {
-    return tree(global::config().UIFOLDER, label, elements);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("uiFolder"), label, elements);
 }
 bool isUiFolder(Tree t)
 {
-    return isTree(t, global::config().UIFOLDER);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("uiFolder"));
 }
 bool isUiFolder(Tree t, Tree& label, Tree& elements)
 {
-    return isTree(t, global::config().UIFOLDER, label, elements);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("uiFolder"), label, elements);
 }
 
 Tree uiWidget(Tree label, Tree varname, Tree sig)
 {
-    return tree(global::config().UIWIDGET, label, varname, sig);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("uiWidget"), label, varname, sig);
 }
 bool isUiWidget(Tree t, Tree& label, Tree& varname, Tree& sig)
 {
-    return isTree(t, global::config().UIWIDGET, label, varname, sig);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("uiWidget"), label, varname, sig);
 }
 
 // places an item in a folder. Eventually replaces the element of the same name.

@@ -28,7 +28,7 @@
 #include <list>
 
 #include "tlib/tree.hh"
-#include "tlib/symbol.hh"
+#include "faust/primitive/symbols.hh"
 
 #include "compiler/parser/lexer/implementation.hh"
 #include "compiler/parser/abstract/implementation.hh"
@@ -209,7 +209,7 @@ namespace Faust {
     
         // From gGlobal - for now we simply mirror
 
-        using Sym = Symbol*;
+        using Sym = ::Faust::Primitive::Symbol::Abstract::Implementation*;
 
         static Sym NIL;
         static Tree _nil;

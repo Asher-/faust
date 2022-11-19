@@ -30,7 +30,6 @@
 #include "global.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/signals.hh"
-#include "compiler/math_primitives/xtended.hh"
 
 #include "faust/primitive/math.hh"
 
@@ -89,23 +88,23 @@ LIBFAUST_API bool isSigReal(Tree t, double* r)
 
 LIBFAUST_API Tree sigInput(int i)
 {
-    return tree(global::config().SIGINPUT, tree(i));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigInput"), tree(i));
 }
 
 LIBFAUST_API bool isSigInput(Tree t, int* i)
 {
     Tree x;
-    return isTree(t, global::config().SIGINPUT, x) && isInt(x->node(), i);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigInput"), x) && isInt(x->node(), i);
 }
 
 Tree sigOutput(int i, Tree t0)
 {
-    return tree(global::config().SIGOUTPUT, tree(i), t0);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigOutput"), tree(i), t0);
 }
 LIBFAUST_API bool isSigOutput(Tree t, int* i, Tree& t0)
 {
     Tree x;
-    return isTree(t, global::config().SIGOUTPUT, x, t0) && isInt(x->node(), i);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigOutput"), x, t0) && isInt(x->node(), i);
 }
 
 Tree sigDelay0(Tree t0)
@@ -115,113 +114,113 @@ Tree sigDelay0(Tree t0)
 
 Tree sigDelay1(Tree t0)
 {
-    return tree(global::config().SIGDELAY1, t0);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigDelay1"), t0);
 }
 LIBFAUST_API bool isSigDelay1(Tree t, Tree& t0)
 {
-    return isTree(t, global::config().SIGDELAY1, t0);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigDelay1"), t0);
 }
 
 LIBFAUST_API Tree sigDelay(Tree t0, Tree t1)
 {
-    return tree(global::config().SIGDELAY, t0, t1);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigDelay"), t0, t1);
 }
 LIBFAUST_API bool isSigDelay(Tree t, Tree& t0, Tree& t1)
 {
-    return isTree(t, global::config().SIGDELAY, t0, t1);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigDelay"), t0, t1);
 }
 
 Tree sigPrefix(Tree t0, Tree t1)
 {
-    return tree(global::config().SIGPREFIX, t0, t1);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigPrefix"), t0, t1);
 }
 LIBFAUST_API bool isSigPrefix(Tree t, Tree& t0, Tree& t1)
 {
-    return isTree(t, global::config().SIGPREFIX, t0, t1);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigPrefix"), t0, t1);
 }
 
 // Read only and read write tables
 
 Tree sigRDTbl(Tree tb, Tree ri)
 {
-    return tree(global::config().SIGRDTBL, tb, ri);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigRDTbl"), tb, ri);
 }
 LIBFAUST_API bool isSigRDTbl(Tree s, Tree& tb, Tree& ri)
 {
-    return isTree(s, global::config().SIGRDTBL, tb, ri);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigRDTbl"), tb, ri);
 }
 
 Tree sigWRTbl(Tree id, Tree tb, Tree wi, Tree ws)
 {
-    return tree(global::config().SIGWRTBL, id, tb, wi, ws);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigWRTbl"), id, tb, wi, ws);
 }
 LIBFAUST_API bool isSigWRTbl(Tree u, Tree& id, Tree& tb, Tree& wi, Tree& ws)
 {
-    return isTree(u, global::config().SIGWRTBL, id, tb, wi, ws);
+    return isTree(u, ::Faust::Primitive::Symbols::internal().symbol("SigWRTbl"), id, tb, wi, ws);
 }
 
 Tree sigTable(Tree id, Tree n, Tree sig)
 {
-    return tree(global::config().SIGTABLE, id, n, sig);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigTable"), id, n, sig);
 }
 LIBFAUST_API bool isSigTable(Tree t, Tree& id, Tree& n, Tree& sig)
 {
-    return isTree(t, global::config().SIGTABLE, id, n, sig);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigTable"), id, n, sig);
 }
 
 // Signal used to generate the initial content of a table
 
 Tree sigGen(Tree s)
 {
-    return tree(global::config().SIGGEN, s);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigGen"), s);
 }
 LIBFAUST_API bool isSigGen(Tree t, Tree& x)
 {
-    return isTree(t, global::config().SIGGEN, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigGen"), x);
 }
 bool isSigGen(Tree t)
 {
-    return t->node() == Node(global::config().SIGGEN);
+    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("SigGen"));
 }
 
 // Documentator Tables : special version of tables only for documentation purposes
 
 Tree sigDocConstantTbl(Tree n, Tree sig)
 {
-    return tree(global::config().SIGDOCONSTANTTBL, n, sig);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigDocConstantTbl"), n, sig);
 }
 LIBFAUST_API bool isSigDocConstantTbl(Tree t, Tree& n, Tree& sig)
 {
-    return isTree(t, global::config().SIGDOCONSTANTTBL, n, sig);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigDocConstantTbl"), n, sig);
 }
 
 Tree sigDocWriteTbl(Tree n, Tree sig, Tree widx, Tree wsig)
 {
-    return tree(global::config().SIGDOCWRITETBL, n, sig, widx, wsig);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigDocWriteTbl"), n, sig, widx, wsig);
 }
 LIBFAUST_API bool isSigDocWriteTbl(Tree t, Tree& n, Tree& sig, Tree& widx, Tree& wsig)
 {
-    return isTree(t, global::config().SIGDOCWRITETBL, n, sig, widx, wsig);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigDocWriteTbl"), n, sig, widx, wsig);
 }
 
 Tree sigDocAccessTbl(Tree tbl, Tree ridx)
 {
-    return tree(global::config().SIGDOCACCESSTBL, tbl, ridx);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigDocAccessTbl"), tbl, ridx);
 }
 LIBFAUST_API bool isSigDocAccessTbl(Tree t, Tree& tbl, Tree& ridx)
 {
-    return isTree(t, global::config().SIGDOCACCESSTBL, tbl, ridx);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigDocAccessTbl"), tbl, ridx);
 }
 
 // Select on signal among severals
 
 LIBFAUST_API Tree sigSelect2(Tree selector, Tree s1, Tree s2)
 {
-    return tree(global::config().SIGSELECT2, selector, s1, s2);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigSelect2"), selector, s1, s2);
 }
 LIBFAUST_API bool isSigSelect2(Tree t, Tree& selector, Tree& s1, Tree& s2)
 {
-    return isTree(t, global::config().SIGSELECT2, selector, s1, s2);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigSelect2"), selector, s1, s2);
 }
 
 //  "select3" expressed with "select2"
@@ -232,32 +231,32 @@ LIBFAUST_API Tree sigSelect3(Tree selector, Tree s1, Tree s2, Tree s3)
 
 Tree sigAssertBounds(Tree s1, Tree s2, Tree s3)
 {
-    return tree(global::config().SIGASSERTBOUNDS, s1, s2, s3);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("sigAssertBounds"), s1, s2, s3);
 }
 
 LIBFAUST_API bool isSigAssertBounds(Tree t, Tree& s1, Tree& s2, Tree& s3)
 {
-    return isTree(t, global::config().SIGASSERTBOUNDS, s1, s2, s3);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("sigAssertBounds"), s1, s2, s3);
 }
 
 Tree sigHighest(Tree s)
 {
-    return tree(global::config().SIGHIGHEST, s);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("sigHighest"), s);
 }
 
 LIBFAUST_API bool isSigHighest(Tree t, Tree& s)
 {
-    return isTree(t, global::config().SIGHIGHEST, s);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("sigHighest"), s);
 }
 
 Tree sigLowest(Tree s)
 {
-    return tree(global::config().SIGLOWEST, s);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("sigLowest"), s);
 }
 
 LIBFAUST_API bool isSigLowest(Tree t, Tree& s)
 {
-    return isTree(t, global::config().SIGLOWEST, s);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("sigLowest"), s);
 }
 
 // Arithmetical operations
@@ -269,64 +268,64 @@ LIBFAUST_API Tree sigBinOp(SOperator op, Tree x, Tree y)
 
 LIBFAUST_API Tree sigBinOp(int op, Tree x, Tree y)
 {
-    return tree(global::config().SIGBINOP, tree(op), x, y);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigBinOp"), tree(op), x, y);
 }
 
 LIBFAUST_API bool isSigBinOp(Tree s, int* op, Tree& x, Tree& y)
 {
     Tree t;
-    return isTree(s, global::config().SIGBINOP, t, x, y) && isInt(t->node(), op);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigBinOp"), t, x, y) && isInt(t->node(), op);
 }
 
 // Foreign Functions
 
 Tree sigFFun(Tree ff, Tree largs)
 {
-    return tree(global::config().SIGFFUN, ff, largs);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigFFun"), ff, largs);
 }
 LIBFAUST_API bool isSigFFun(Tree s, Tree& ff, Tree& largs)
 {
-    return isTree(s, global::config().SIGFFUN, ff, largs);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigFFun"), ff, largs);
 }
 
 LIBFAUST_API Tree sigFConst(Tree type, Tree name, Tree file)
 {
-    return tree(global::config().SIGFCONST, type, name, file);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigFConst"), type, name, file);
 }
 bool isSigFConst(Tree s)
 {
     Tree t, n, f;
-    return isTree(s, global::config().SIGFCONST, t, n, f);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigFConst"), t, n, f);
 }
 LIBFAUST_API bool isSigFConst(Tree s, Tree& type, Tree& name, Tree& file)
 {
-    return isTree(s, global::config().SIGFCONST, type, name, file);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigFConst"), type, name, file);
 }
 
 LIBFAUST_API Tree sigFVar(Tree type, Tree name, Tree file)
 {
-    return tree(global::config().SIGFVAR, type, name, file);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigFVar"), type, name, file);
 }
 bool isSigFVar(Tree s)
 {
     Tree t, n, f;
-    return isTree(s, global::config().SIGFVAR, t, n, f);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigFVar"), t, n, f);
 }
 LIBFAUST_API bool isSigFVar(Tree s, Tree& type, Tree& name, Tree& file)
 {
-    return isTree(s, global::config().SIGFVAR, type, name, file);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigFVar"), type, name, file);
 }
 
 // New version using rec and ref
 
 Tree sigProj(int i, Tree rgroup)
 {
-    return tree(global::config().SIGPROJ, tree(i), rgroup);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigProj"), tree(i), rgroup);
 }
 LIBFAUST_API bool isProj(Tree t, int* i, Tree& rgroup)
 {
     Tree x;
-    return isTree(t, global::config().SIGPROJ, x, rgroup) && isInt(x->node(), i);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigProj"), x, rgroup) && isInt(x->node(), i);
 }
 
 // Int and Float casting
@@ -340,7 +339,7 @@ LIBFAUST_API Tree sigIntCast(Tree t)
     if (isInt(n, &i)) return t;
     if (isDouble(n, &x)) return tree(int(x));
 
-    return tree(global::config().SIGINTCAST, t);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigIntCast"), t);
 }
 
 LIBFAUST_API Tree sigFloatCast(Tree t)
@@ -352,27 +351,27 @@ LIBFAUST_API Tree sigFloatCast(Tree t)
     if (isInt(n, &i)) return tree(double(i));
     if (isDouble(n, &x)) return t;
 
-    return tree(global::config().SIGFLOATCAST, t);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigFloatCast"), t);
 }
 
 bool isSigIntCast(Tree t)
 {
     Tree x;
-    return isTree(t, global::config().SIGINTCAST, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigIntCast"), x);
 }
 LIBFAUST_API bool isSigIntCast(Tree t, Tree& x)
 {
-    return isTree(t, global::config().SIGINTCAST, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigIntCast"), x);
 }
 
 bool isSigFloatCast(Tree t)
 {
     Tree x;
-    return isTree(t, global::config().SIGFLOATCAST, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigFloatCast"), x);
 }
 LIBFAUST_API bool isSigFloatCast(Tree t, Tree& x)
 {
-    return isTree(t, global::config().SIGFLOATCAST, x);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigFloatCast"), x);
 }
 
 // Emulation of all fonctions
@@ -450,55 +449,55 @@ LIBFAUST_API Tree sigNE(Tree x, Tree y)
 
 LIBFAUST_API Tree sigButton(Tree lbl)
 {
-    return tree(global::config().SIGBUTTON, lbl);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigButton"), lbl);
 }
 bool isSigButton(Tree s)
 {
     Tree lbl;
-    return isTree(s, global::config().SIGBUTTON, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigButton"), lbl);
 }
 LIBFAUST_API bool isSigButton(Tree s, Tree& lbl)
 {
-    return isTree(s, global::config().SIGBUTTON, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigButton"), lbl);
 }
 
 LIBFAUST_API Tree sigCheckbox(Tree lbl)
 {
-    return tree(global::config().SIGCHECKBOX, lbl);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigCheckbox"), lbl);
 }
 bool isSigCheckbox(Tree s)
 {
     Tree lbl;
-    return isTree(s, global::config().SIGCHECKBOX, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigCheckbox"), lbl);
 }
 LIBFAUST_API bool isSigCheckbox(Tree s, Tree& lbl)
 {
-    return isTree(s, global::config().SIGCHECKBOX, lbl);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigCheckbox"), lbl);
 }
 
 LIBFAUST_API Tree sigWaveform(const tvec& wf)
 {
-    return tree(global::config().SIGWAVEFORM, wf);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigWaveform"), wf);
 }
 LIBFAUST_API bool isSigWaveform(Tree s)
 {
-    return isTree(s, global::config().SIGWAVEFORM);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigWaveform"));
 }
 
 LIBFAUST_API Tree sigHSlider(Tree lbl, Tree init, Tree min, Tree max, Tree step)
 {
-    return tree(global::config().SIGHSLIDER, lbl, list4(init, min, max, step));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigHSlider"), lbl, list4(init, min, max, step));
 }
 bool isSigHSlider(Tree s)
 {
     Tree lbl, params;
-    return isTree(s, global::config().SIGHSLIDER, lbl, params);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigHSlider"), lbl, params);
 }
 
 LIBFAUST_API bool isSigHSlider(Tree s, Tree& lbl, Tree& init, Tree& min, Tree& max, Tree& step)
 {
     Tree params;
-    if (isTree(s, global::config().SIGHSLIDER, lbl, params)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigHSlider"), lbl, params)) {
         init = nth(params, 0);
         min  = nth(params, 1);
         max  = nth(params, 2);
@@ -511,18 +510,18 @@ LIBFAUST_API bool isSigHSlider(Tree s, Tree& lbl, Tree& init, Tree& min, Tree& m
 
 LIBFAUST_API Tree sigVSlider(Tree lbl, Tree init, Tree min, Tree max, Tree step)
 {
-    return tree(global::config().SIGVSLIDER, lbl, list4(init, min, max, step));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigVSlider"), lbl, list4(init, min, max, step));
 }
 bool isSigVSlider(Tree s)
 {
     Tree lbl, params;
-    return isTree(s, global::config().SIGVSLIDER, lbl, params);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigVSlider"), lbl, params);
 }
 
 LIBFAUST_API bool isSigVSlider(Tree s, Tree& lbl, Tree& init, Tree& min, Tree& max, Tree& step)
 {
     Tree params;
-    if (isTree(s, global::config().SIGVSLIDER, lbl, params)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigVSlider"), lbl, params)) {
         init = nth(params, 0);
         min  = nth(params, 1);
         max  = nth(params, 2);
@@ -535,18 +534,18 @@ LIBFAUST_API bool isSigVSlider(Tree s, Tree& lbl, Tree& init, Tree& min, Tree& m
 
 LIBFAUST_API Tree sigNumEntry(Tree lbl, Tree init, Tree min, Tree max, Tree step)
 {
-    return tree(global::config().SIGNUMENTRY, lbl, list4(init, min, max, step));
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigNumEntry"), lbl, list4(init, min, max, step));
 }
 bool isSigNumEntry(Tree s)
 {
     Tree lbl, params;
-    return isTree(s, global::config().SIGNUMENTRY, lbl, params);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigNumEntry"), lbl, params);
 }
 
 LIBFAUST_API bool isSigNumEntry(Tree s, Tree& lbl, Tree& init, Tree& min, Tree& max, Tree& step)
 {
     Tree params;
-    if (isTree(s, global::config().SIGNUMENTRY, lbl, params)) {
+    if (isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigNumEntry"), lbl, params)) {
         init = nth(params, 0);
         min  = nth(params, 1);
         max  = nth(params, 2);
@@ -561,57 +560,57 @@ LIBFAUST_API bool isSigNumEntry(Tree s, Tree& lbl, Tree& init, Tree& min, Tree& 
 
 LIBFAUST_API Tree sigHBargraph(Tree lbl, Tree min, Tree max, Tree x)
 {
-    return tree(global::config().SIGHBARGRAPH, lbl, min, max, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigHBargraph"), lbl, min, max, x);
 }
 bool isSigHBargraph(Tree s)
 {
     Tree lbl, min, max, x;
-    return isTree(s, global::config().SIGHBARGRAPH, lbl, min, max, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigHBargraph"), lbl, min, max, x);
 }
 LIBFAUST_API bool isSigHBargraph(Tree s, Tree& lbl, Tree& min, Tree& max, Tree& x)
 {
-    return isTree(s, global::config().SIGHBARGRAPH, lbl, min, max, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigHBargraph"), lbl, min, max, x);
 }
 
 LIBFAUST_API Tree sigVBargraph(Tree lbl, Tree min, Tree max, Tree x)
 {
-    return tree(global::config().SIGVBARGRAPH, lbl, min, max, x);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigVBargraph"), lbl, min, max, x);
 }
 bool isSigVBargraph(Tree s)
 {
     Tree lbl, min, max, x;
-    return isTree(s, global::config().SIGVBARGRAPH, lbl, min, max, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigVBargraph"), lbl, min, max, x);
 }
 LIBFAUST_API bool isSigVBargraph(Tree s, Tree& lbl, Tree& min, Tree& max, Tree& x)
 {
-    return isTree(s, global::config().SIGVBARGRAPH, lbl, min, max, x);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigVBargraph"), lbl, min, max, x);
 }
 
 Tree sigAttach(Tree t0, Tree t1)
 {
-    return tree(global::config().SIGATTACH, t0, t1);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigAttach"), t0, t1);
 }
 LIBFAUST_API bool isSigAttach(Tree t, Tree& t0, Tree& t1)
 {
-    return isTree(t, global::config().SIGATTACH, t0, t1);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigAttach"), t0, t1);
 }
 
 Tree sigEnable(Tree t0, Tree t1)
 {
-    return tree(global::config().SIGENABLE, t0, t1);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigEnable"), t0, t1);
 }
 LIBFAUST_API bool isSigEnable(Tree t, Tree& t0, Tree& t1)
 {
-    return isTree(t, global::config().SIGENABLE, t0, t1);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigEnable"), t0, t1);
 }
 
 Tree sigControl(Tree t0, Tree t1)
 {
-    return tree(global::config().SIGCONTROL, t0, t1);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigControl"), t0, t1);
 }
 LIBFAUST_API bool isSigControl(Tree t, Tree& t0, Tree& t1)
 {
-    return isTree(t, global::config().SIGCONTROL, t0, t1);
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SigControl"), t0, t1);
 }
 
 // Extended math functions
@@ -619,7 +618,7 @@ static Tree sigExtended1(Tree sig, Tree x)
 {
     tvec args;
     args.push_back(x);
-    return ((::Faust::Primitive::Math::xtended*)getUserData(sig))->computeSigOutput(args);
+    return (getUserData(sig))->computeSigOutput(args);
 }
 
 static Tree sigExtended2(Tree sig, Tree x, Tree y)
@@ -627,112 +626,112 @@ static Tree sigExtended2(Tree sig, Tree x, Tree y)
     tvec args;
     args.push_back(x);
     args.push_back(y);
-    return ((::Faust::Primitive::Math::xtended*)getUserData(sig))->computeSigOutput(args);
+    return (getUserData(sig))->computeSigOutput(args);
 }
 
 LIBFAUST_API Tree sigAbs(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::abs.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().abs.box(), x);
 }
 
 LIBFAUST_API Tree sigAcos(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::acos.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().acos.box(), x);
 }
 
 LIBFAUST_API Tree sigTan(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::tan.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().tan.box(), x);
 }
 
 LIBFAUST_API Tree sigSqrt(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::sqrt.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().sqrt.box(), x);
 }
 
 LIBFAUST_API Tree sigSin(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::sin.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().sin.box(), x);
 }
 
 LIBFAUST_API Tree sigRint(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::rint.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().rint.box(), x);
 }
 
 LIBFAUST_API Tree sigRemainder(Tree x, Tree y)
 {
-    return sigExtended2(::Faust::Primitive::Math::remainder.box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::functions().remainder.box(), x, y);
 }
 
 LIBFAUST_API Tree sigPow(Tree x, Tree y)
 {
-    return sigExtended2(::Faust::Primitive::Math::pow.box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::functions().pow.box(), x, y);
 }
 
 LIBFAUST_API Tree sigMin(Tree x, Tree y)
 {
-    return sigExtended2(::Faust::Primitive::Math::min.box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::functions().min.box(), x, y);
 }
 
 LIBFAUST_API Tree sigMax(Tree x, Tree y)
 {
-    return sigExtended2(::Faust::Primitive::Math::max.box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::functions().max.box(), x, y);
 }
 
 LIBFAUST_API Tree sigLog(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::log.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().log.box(), x);
 }
 
 LIBFAUST_API Tree sigLog10(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::log10.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().log10.box(), x);
 }
 
 LIBFAUST_API Tree sigFmod(Tree x, Tree y)
 {
-    return sigExtended2(::Faust::Primitive::Math::fmod.box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::functions().fmod.box(), x, y);
 }
 
 LIBFAUST_API Tree sigFloor(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::floor.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().floor.box(), x);
 }
 
 LIBFAUST_API Tree sigExp(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::exp.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().exp.box(), x);
 }
 
 LIBFAUST_API Tree sigExp10(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::exp10.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().exp10.box(), x);
 }
 
 LIBFAUST_API Tree sigCos(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::cos.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().cos.box(), x);
 }
 
 LIBFAUST_API Tree sigCeil(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::ceil.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().ceil.box(), x);
 }
 
 LIBFAUST_API Tree sigAtan(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::atan.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().atan.box(), x);
 }
 
 LIBFAUST_API Tree sigAtan2(Tree x, Tree y)
 {
-    return sigExtended2(::Faust::Primitive::Math::atan2.box(), x, y);
+    return sigExtended2(::Faust::Primitive::Math::functions().atan2.box(), x, y);
 }
 
 LIBFAUST_API Tree sigAsin(Tree x)
 {
-    return sigExtended1(::Faust::Primitive::Math::asin.box(), x);
+    return sigExtended1(::Faust::Primitive::Math::functions().asin.box(), x);
 }
 
 bool sameMagnitude(Tree a, Tree b)
@@ -825,36 +824,36 @@ bool isSigDiv(Tree a, Tree& x, Tree& y)
 */
 LIBFAUST_API Tree sigSoundfile(Tree label)
 {
-    return tree(global::config().SIGSOUNDFILE, label);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigSoundfile"), label);
 }
 LIBFAUST_API Tree sigSoundfileLength(Tree sf, Tree part)
 {
-    return tree(global::config().SIGSOUNDFILELENGTH, sf, part);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigSoundfileLength"), sf, part);
 }
 LIBFAUST_API Tree sigSoundfileRate(Tree sf, Tree part)
 {
-    return tree(global::config().SIGSOUNDFILERATE, sf, part);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigSoundfileRate"), sf, part);
 }
 LIBFAUST_API Tree sigSoundfileBuffer(Tree sf, Tree chan, Tree part, Tree ridx)
 {
-    return tree(global::config().SIGSOUNDFILEBUFFER, sf, chan, part, ridx);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigSoundfileBuffer"), sf, chan, part, ridx);
 }
 
 LIBFAUST_API bool isSigSoundfile(Tree s, Tree& label)
 {
-    return isTree(s, global::config().SIGSOUNDFILE, label);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigSoundfile"), label);
 }
 LIBFAUST_API bool isSigSoundfileLength(Tree s, Tree& sf, Tree& part)
 {
-    return isTree(s, global::config().SIGSOUNDFILELENGTH, sf, part);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigSoundfileLength"), sf, part);
 }
 LIBFAUST_API bool isSigSoundfileRate(Tree s, Tree& sf, Tree& part)
 {
-    return isTree(s, global::config().SIGSOUNDFILERATE, sf, part);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigSoundfileRate"), sf, part);
 }
 LIBFAUST_API bool isSigSoundfileBuffer(Tree s, Tree& sf, Tree& chan, Tree& part, Tree& ridx)
 {
-    return isTree(s, global::config().SIGSOUNDFILEBUFFER, sf, chan, part, ridx);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigSoundfileBuffer"), sf, chan, part, ridx);
 }
 /*****************************************************************************
                              matrix extension
@@ -864,23 +863,23 @@ LIBFAUST_API bool isSigSoundfileBuffer(Tree s, Tree& sf, Tree& chan, Tree& part,
 // mode = 0 means normal, mode = 1 means blocked
 Tree sigTuple(int mode, Tree ls)
 {
-    return tree(global::config().SIGTUPLE, tree(mode), ls);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigTuple"), tree(mode), ls);
 }
 bool isSigTuple(Tree s, int* mode, Tree& ls)
 {
     Tree m;
-    return isTree(s, global::config().SIGTUPLE, m, ls) && isInt(m->node(), mode);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigTuple"), m, ls) && isInt(m->node(), mode);
 }
 
 // Access the components of a tuple.
 // ts is tuple of signals, idx is a scalar signal between 0..n
 Tree sigTupleAccess(Tree ts, Tree idx)
 {
-    return tree(global::config().SIGTUPLEACCESS, ts, idx);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("SigTupleAccess"), ts, idx);
 }
 bool isSigTupleAccess(Tree s, Tree& ts, Tree& idx)
 {
-    return isTree(s, global::config().SIGTUPLEACCESS, ts, idx);
+    return isTree(s, ::Faust::Primitive::Symbols::internal().symbol("SigTupleAccess"), ts, idx);
 }
 
 // create a tuple of signals
@@ -928,7 +927,7 @@ bool verySimple(Tree exp)
 
 Tree sigFTZ(Tree s)
 {
-    return tree(::Faust::Primitive::Math::ftz.symbol(), s);
+    return tree(::Faust::Primitive::Symbols::internal().symbol("ftz"), s);
 }
 
 /*****************************************************************************
