@@ -25,7 +25,7 @@
 
 // Function types (return type) are kept in the global name <===> type table
 DeclareFunInst::DeclareFunInst(const std::string& name, FunTyped* type, BlockInst* code)
-    : fName(name), fType(type), fCode(code)
+    : fName(name), fType(type), _code(code)
 {
     if (global::config().gVarTypeTable.find(name) == global::config().gVarTypeTable.end()) {
         global::config().gVarTypeTable[name] = type;

@@ -652,7 +652,7 @@ struct InterpreterInstVisitor : public DispatchVisitor {
         fCurrentBlock                              = loop_body_block;
 
         // Compile loop code
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
 
         // Compile increment
         inst->fIncrement->accept(this);

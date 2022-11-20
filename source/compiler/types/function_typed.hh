@@ -32,17 +32,17 @@ struct FunTyped : public Typed {
     enum FunAttribute { kDefault = 0x1, kLocal = 0x2, kVirtual = 0x4, kStatic = 0x8, kStaticConstExpr = 0x10, kInline = 0x20 };
 
     Names         fArgsTypes;
-    BasicTyped*   fResult;
+    BasicTyped*   _resolutionult;
     FunAttribute  fAttribute;
 
     FunTyped(const Names& args, BasicTyped* result, FunAttribute attribute = kDefault)
-        : fArgsTypes(args), fResult(result), fAttribute(attribute)
+        : fArgsTypes(args), _resolutionult(result), fAttribute(attribute)
     {
     }
 
-    VarType getType() const { return fResult->getType(); }
+    VarType getType() const { return _resolutionult->getType(); }
 
-    Typed* getTyped() { return fResult; }
+    Typed* getTyped() { return _resolutionult; }
 
     // Arguments type encoded as a string
     std::string getPrototype()

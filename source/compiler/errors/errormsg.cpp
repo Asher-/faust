@@ -49,7 +49,7 @@ void faustassertaux(bool cond, const string& file, int line)
 #ifndef EMCC
         stacktrace(str, 20);
 #endif
-        throw faustexception(str.str());
+         throw faustexception(str.str());
     }
 }
 

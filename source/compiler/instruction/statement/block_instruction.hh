@@ -34,10 +34,10 @@
 // ====================
 
 struct BlockInst : public StatementInst {
-    std::list<StatementInst*> fCode;
+    std::list<StatementInst*> _code;
     bool                 fIndent;
 
-    BlockInst(std::list<StatementInst*> code) : fCode(code), fIndent(false) {}
+    BlockInst(std::list<StatementInst*> code) : _code(code), fIndent(false) {}
 
     BlockInst() : fIndent(false) {}
 
@@ -50,18 +50,18 @@ struct BlockInst : public StatementInst {
 
     StatementInst* clone(CloneVisitor* cloner) { return cloner->visit(this); }
 
-    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode.push_front(inst); }
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); _code.push_front(inst); }
 
-    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode.push_back(inst); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); _code.push_back(inst); }
 
     void merge(BlockInst* inst)
     {
-        for (const auto& it : inst->fCode) {
-            fCode.push_back(it);
+        for (const auto& it : inst->_code) {
+            _code.push_back(it);
         }
     }
 
-    int size() const { return int(fCode.size()); }
+    int size() const { return int(_code.size()); }
 
     bool hasReturn() const;
     ValueInst* getReturnValue();

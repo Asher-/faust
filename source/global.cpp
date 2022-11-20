@@ -40,6 +40,18 @@
 
 #include "faust/primitive/symbols.hh"
 
+#include "faust/primitive/type/availability.hh"
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+#include "faust/primitive/type/value.hh"
+#include "faust/primitive/type/vectorability.hh"
+
+using Availability = ::Faust::Primitive::Type::Availability;
+using Precision = ::Faust::Primitive::Type::Precision;
+using Priority = ::Faust::Primitive::Type::Priority;
+using Value = ::Faust::Primitive::Type::Value;
+using Vectorability = ::Faust::Primitive::Type::Vectorability;
+
 // Garbageable globals
 bool                    global::gHeapCleanup = false;
 
@@ -297,7 +309,7 @@ void global::init()
    
     TREC = makeSimpleType(kInt, kSamp, kInit, kScal, kNum, interval(0, 0));
     // !!! TRECMAX Maximal only in the last component of the type lattice
-    TRECMAX = makeSimpleType(kInt, kSamp, kInit, kScal, kNum, interval(-HUGE_VAL, HUGE_VAL));
+    TRECMAX = makeSimpleType(Precision::Int, Priority::Samp, Availability::Init, Vectorability::Scal, Value::Num, interval(-HUGE_VAL, HUGE_VAL));
 
     // Empty predefined bit depth
     RES = res();

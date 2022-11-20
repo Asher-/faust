@@ -37,14 +37,14 @@ using namespace std;
 
 class RustCodeContainer : public virtual CodeContainer {
    protected:
-    RustInstVisitor fCodeProducer;
+    RustInstVisitor _codeProducer;
     std::ostream*   fOut;
 
     void produceMetadata(int tabs);
 
    public:
     RustCodeContainer(const string& name, int numInputs, int numOutputs, std::ostream* out)
-        : fCodeProducer(out, name), fOut(out)
+        : _codeProducer(out, name), fOut(out)
     {
         initialize(numInputs, numOutputs);
         fKlassName = name;
@@ -58,7 +58,7 @@ class RustCodeContainer : public virtual CodeContainer {
     virtual void              produceInfoFunctions(int tabs, const string& classname, const string& obj, bool ismethod, FunTyped::FunAttribute funtype,TextInstVisitor* producer);
     virtual void              produceParameterGetterSetter(int tabs, map<string, int> parameterLookup);
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const string& name, int numInputs, int numOutputs,
                                           ostream* dst = new stringstream());
@@ -68,7 +68,7 @@ class RustScalarCodeContainer : public RustCodeContainer {
    protected:
    public:
     RustScalarCodeContainer(const string& name, int numInputs, int numOutputs, std::ostream* out,
-                            int sub_container_type);
+                            const Precision& precision);
     virtual ~RustScalarCodeContainer()
     {}
 

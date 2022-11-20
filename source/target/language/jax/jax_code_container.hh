@@ -52,12 +52,12 @@ class JAXCodeContainer : public virtual CodeContainer {
 
     virtual ~JAXCodeContainer()
     {
-        // fCodeProducer is a 'Garbageable'
+        // _codeProducer is a 'Garbageable'
     }
 
     virtual dsp_factory_base* produceFactory();
 
-    CodeContainer* createScalarContainer(const std::string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const std::string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const std::string& name, int numInputs, int numOutputs,
                                           std::ostream* dst = new std::stringstream());
@@ -75,7 +75,7 @@ class JAXScalarCodeContainer : public JAXCodeContainer {
                          int numInputs,
                          int numOutputs,
                          std::ostream* out,
-                         int sub_container_type);
+                         const Precision& precision);
     virtual ~JAXScalarCodeContainer()
     {}
 

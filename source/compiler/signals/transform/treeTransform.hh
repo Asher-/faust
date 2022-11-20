@@ -38,7 +38,7 @@
 
 class TreeTransform : public Garbageable {
    protected:
-    property<Tree> fResult;  // cache previously computed transformations
+    property<Tree> _resolutionult;  // cache previously computed transformations
     // used when tracing
     bool   fTrace;      // trace transformations when true
     int    fIndent;     // current indentation during trace

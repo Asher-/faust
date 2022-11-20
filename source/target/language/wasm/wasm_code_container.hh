@@ -86,8 +86,8 @@ class WASMCodeContainer : public virtual CodeContainer {
     void                      produceInternal() {}
     virtual dsp_factory_base* produceFactory();
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type, bool internal_memory = true);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision, bool internal_memory = true);
 
     static CodeContainer* createContainer(const string& name, int numInputs, int numOutputs, std::ostream* dst,
                                           bool internal_memory);
@@ -97,7 +97,7 @@ class WASMScalarCodeContainer : public WASMCodeContainer {
    protected:
    public:
     WASMScalarCodeContainer(const string& name, int numInputs, int numOutputs, std::ostream* out,
-                            int sub_container_type, bool internal_memory);
+                            const Precision& precision, bool internal_memory);
     virtual ~WASMScalarCodeContainer() {}
 
     void generateCompute();

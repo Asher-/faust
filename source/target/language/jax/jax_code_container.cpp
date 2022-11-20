@@ -29,6 +29,10 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -81,9 +85,9 @@ JAXCodeContainer::JAXCodeContainer(const std::string& name, int numInputs, int n
     }
 }
 
-CodeContainer* JAXCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* JAXCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new JAXScalarCodeContainer(name, 0, 1, fOut, sub_container_type);
+    return new JAXScalarCodeContainer(name, 0, 1, fOut, precision);
 }
 
 CodeContainer* JAXCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
@@ -105,7 +109,7 @@ CodeContainer* JAXCodeContainer::createContainer(const string& name, int numInpu
     } else if (global::config().gVectorSwitch) {
         throw faustexception("ERROR : Vector not supported for JAX\n");
     } else {
-        container = new JAXScalarCodeContainer(name, numInputs, numOutputs, dst, kInt);
+        container = new JAXScalarCodeContainer(name, numInputs, numOutputs, dst, Precision::Int);
     }
 
     return container;
@@ -198,7 +202,7 @@ void JAXCodeContainer::produceClass()
         JAXInitFieldsVisitor initializer(fOut, n + 2);
         generateDeclarations(&initializer);
         // Generate global variables initialisation
-        for (const auto& it : fGlobalDeclarationInstructions->fCode) {
+        for (const auto& it : fGlobalDeclarationInstructions->_code) {
             if (dynamic_cast<DeclareVarInst*>(it)) {
                 it->accept(&initializer);
             }
@@ -324,8 +328,8 @@ BlockInst* JAXCodeContainer::inlineSubcontainersFunCalls(BlockInst* block)
 
 // Scalar
 JAXScalarCodeContainer::JAXScalarCodeContainer(const string& name, int numInputs, int numOutputs, std::ostream* out,
-                                                   int sub_container_type)
+                                                   const Precision& precision)
     : JAXCodeContainer(name, numInputs, numOutputs, out)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }

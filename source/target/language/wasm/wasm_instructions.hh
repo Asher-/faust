@@ -32,6 +32,8 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 using namespace std;
 
 //
@@ -41,6 +43,9 @@ using namespace std;
 //
 class BufferWithRandomAccess : public std::vector<uint8_t> {
    private:
+
+    using Precision = ::Faust::Primitive::Type::Precision;
+
     bool debug;
 
    public:
@@ -333,8 +338,8 @@ struct LocalVariableCounter : public DispatchVisitor {
             fLocalVarTable[argType->fName] = LocalVarDesc(fFunArgIndex++, argType->fType->getType(), Address::kFunArgs);
         }
 
-        if (inst->fCode) {
-            inst->fCode->accept(this);
+        if (inst->_code) {
+            inst->_code->accept(this);
         }
     }
 
@@ -593,11 +598,11 @@ struct FunAndTypeCounter : public DispatchVisitor, public WASInst {
             for (auto param : type->fArgsTypes) {
                 *out << type2Binary(param->getType());
             }
-            if (type->fResult->getType() == Typed::kVoid) {
+            if (type->_resolutionult->getType() == Typed::kVoid) {
                 *out << U32LEB(0);
             } else {
                 *out << U32LEB(1);
-                *out << type2Binary(type->fResult->getType());
+                *out << type2Binary(type->_resolutionult->getType());
             }
         }
 
@@ -866,8 +871,8 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
 
     virtual void visit(RetInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
             *fOut << int8_t(BinaryConsts::Return);
         }
     }
@@ -893,7 +898,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         // local_counter.dump();
         setLocalVarTable(local_counter.fLocalVarTable);
 
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
 
         // Generate end
         *fOut << int8_t(BinaryConsts::End);
@@ -1037,7 +1042,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
             if (global::config().gLoopVarInBytes) {
                 *fOut << int8_t(WasmOp::I32Add);
             } else {
-                *fOut << int8_t(BinaryConsts::I32Const) << S32LEB((fSubContainerType == kInt) ? 2 : offStrNum);
+                *fOut << int8_t(BinaryConsts::I32Const) << S32LEB((fSubContainerType == Precision::Int) ? 2 : offStrNum);
                 *fOut << int8_t(WasmOp::I32Shl);
                 *fOut << int8_t(WasmOp::I32Add);
             }
@@ -1182,7 +1187,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         if (isRealType(type1)) {
             visitAuxReal(inst, type1);
         } else {
-            // type1 is kInt
+            // type1 is Precision::Int
             Typed::VarType type2 = TypingVisitor::getType(inst->fInst2);
             if (isRealType(type2)) {
                 visitAuxReal(inst, type2);
@@ -1367,7 +1372,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         }
         *fOut << int8_t(BinaryConsts::If) << S32LEB(BinaryConsts::Empty);
         inst->fThen->accept(this);
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             *fOut << int8_t(BinaryConsts::Else);
             inst->fElse->accept(this);
         }
@@ -1379,7 +1384,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         // Init loop counter
         inst->fInit->accept(this);
@@ -1391,7 +1396,7 @@ class WASMInstVisitor : public DispatchVisitor, public WASInst {
         *fOut << int8_t(BinaryConsts::Block) << S32LEB(BinaryConsts::Empty);
 
         // Loop code code
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
 
         // Loop counter increment
         inst->fIncrement->accept(this);

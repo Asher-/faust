@@ -37,6 +37,8 @@
 #include "faust/primitive/symbols.hh"
 #include "faust/primitive/symbol/abstract/data.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 class CodeContainer;
 
 namespace Faust {
@@ -47,13 +49,15 @@ namespace Faust {
       /*
        Base class for math primitives:
        - most of them have same args and result type, except 'pow' which can have different value and exponent types
-       - max/min, abs/fabs have polymorphic kInt/kReal versions
+       - max/min, abs/fabs have polymorphic Precision::Int/Precision::Real versions
        - some of them have optimized versions for specific arguments (like 'pow') or with ::Faust::Primitive::Math::approx (experimental)
        */
 
       class xtended : public ::Faust::Primitive::Symbol::Abstract::Data {
          private:
-         
+
+          using Precision = ::Faust::Primitive::Type::Precision;
+
           Sym _symbol;  ///< the symbol the xtended is attached to
 
           public:
@@ -115,22 +119,34 @@ namespace Faust {
       }
 
       // Casting operations
-      inline ValueInst* promote2real(int type, ValueInst* val)
+      inline ValueInst* promote2real(
+        const Type::Precision& type,
+        ValueInst* val
+      )
       {
-          return (type == kReal) ? val : InstBuilder::genCastRealInst(val);
+          return (type == Type::Precision::Real) ? val : InstBuilder::genCastRealInst(val);
       }
-      inline ValueInst* promote2int(int type, ValueInst* val)
+      inline ValueInst* promote2int(
+        const Type::Precision& type,
+        ValueInst* val
+      )
       {
-          return (type == kInt) ? val : InstBuilder::genCastInt32Inst(val);
+          return (type == Type::Precision::Int) ? val : InstBuilder::genCastInt32Inst(val);
       }
 
-      inline ValueInst* cast2real(int type, ValueInst* val)
+      inline ValueInst* cast2real(
+        const Type::Precision& type,
+        ValueInst* val
+      )
       {
-          return (type == kReal) ? InstBuilder::genCastRealInst(val) : val;
+          return (type == Type::Precision::Real) ? InstBuilder::genCastRealInst(val) : val;
       }
-      inline ValueInst* cast2int(int type, ValueInst* val)
+      inline ValueInst* cast2int(
+        const Type::Precision& type,
+        ValueInst* val
+      )
       {
-          return (type == kInt) ? InstBuilder::genCastInt32Inst(val) : val;
+          return (type == Type::Precision::Int) ? InstBuilder::genCastInt32Inst(val) : val;
       }
 
     }

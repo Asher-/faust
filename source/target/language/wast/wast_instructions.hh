@@ -29,11 +29,16 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 #define realStr ((::Faust::Primitive::Math::floatSize == 1) ? "f32" : ((::Faust::Primitive::Math::floatSize == 2) ? "f64" : ""))
 #define offStr ((::Faust::Primitive::Math::floatSize == 1) ? "2" : ((::Faust::Primitive::Math::floatSize == 2) ? "3" : ""))
 
 class WASTInstVisitor : public TextInstVisitor, public WASInst {
    private:
+
+    using Precision = ::Faust::Primitive::Type::Precision;
+
     string type2String(Typed::VarType type)
     {
         if (isIntOrPtrType(type) || isBoolType(type)) {
@@ -145,9 +150,9 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
 
     virtual void visitAux(RetInst* inst, bool gen_empty)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             *fOut << "(return ";
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             *fOut << ")";
         } else if (gen_empty) {
             *fOut << "(return)";
@@ -170,7 +175,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
     {
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
     }
 
@@ -212,7 +217,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         }
 
         // Complete function
-        if (inst->fCode->fCode.size() != 0) {
+        if (inst->_code->_code.size() != 0) {
             tab(fTab, *fOut);
             *fOut << "(func $" << generateFunName(inst->fName) << " ";
             generateFunDefArgs(inst);
@@ -359,7 +364,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
                 *fOut << "(i32.add (local.get $" << indexed->getName() << ") (i32.shl ";
                 indexed->getIndex()->accept(this);
                 // Force "output" access to be coherent with fSubContainerType (integer or real)
-                if (fSubContainerType == kInt) {
+                if (fSubContainerType == Precision::Int) {
                     *fOut << " (i32.const 2)))";
                 } else {
                     *fOut << " (i32.const " << offStr << ")))";
@@ -499,7 +504,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         if (isRealType(type1)) {
             visitAuxReal(inst, type1);
         } else {
-            // type1 is kInt
+            // type1 is Precision::Int
             Typed::VarType type2 = TypingVisitor::getType(inst->fInst2);
             if (isRealType(type2)) {
                 visitAuxReal(inst, type2);
@@ -700,7 +705,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         *fOut << "(block ";
         inst->fThen->accept(this);
         *fOut << ")";
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             tab(fTab, *fOut);
             *fOut << "(block ";
             inst->fElse->accept(this);
@@ -716,7 +721,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         // Local variables declaration including the loop counter have been moved outside of the loop
         string name = inst->getName();
@@ -732,7 +737,7 @@ class WASTInstVisitor : public TextInstVisitor, public WASInst {
         // Loop code
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
 
         // Loop counter increment
         inst->fIncrement->accept(this);

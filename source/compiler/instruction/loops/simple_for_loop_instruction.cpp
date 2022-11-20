@@ -24,7 +24,7 @@
 #include "compiler/instruction_compiler/instruction_builder.hh"
 
 SimpleForLoopInst::SimpleForLoopInst(const std::string& name, ValueInst* upperBound, ValueInst* lowerBound, bool reverse, BlockInst* code)
-: fUpperBound(upperBound), fLowerBound(lowerBound), fName(name), fReverse(reverse), fCode(code)
+: fUpperBound(upperBound), fLowerBound(lowerBound), fName(name), fReverse(reverse), _code(code)
 {
     // Define the loop variable in order to have it correctly typed when checking in FIRChecker
     fInit = InstBuilder::genDecLoopVar(name, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(0));

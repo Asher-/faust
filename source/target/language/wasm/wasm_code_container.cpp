@@ -30,6 +30,10 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -78,15 +82,15 @@ WASMCodeContainer::WASMCodeContainer(const string& name, int numInputs, int numO
     }
 }
 
-CodeContainer* WASMCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* WASMCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new WASMScalarCodeContainer(name, 0, 1, fOut, sub_container_type, true);
+    return new WASMScalarCodeContainer(name, 0, 1, fOut, precision, true);
 }
 
-CodeContainer* WASMCodeContainer::createScalarContainer(const string& name, int sub_container_type,
+CodeContainer* WASMCodeContainer::createScalarContainer(const string& name, const Precision& precision,
                                                         bool internal_memory)
 {
-    return new WASMScalarCodeContainer(name, 0, 1, fOut, sub_container_type, internal_memory);
+    return new WASMScalarCodeContainer(name, 0, 1, fOut, precision, internal_memory);
 }
 
 CodeContainer* WASMCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst,
@@ -115,7 +119,7 @@ CodeContainer* WASMCodeContainer::createContainer(const string& name, int numInp
         }
         container = new WASMVectorCodeContainer(name, numInputs, numOutputs, dst, internal_memory);
     } else {
-        container = new WASMScalarCodeContainer(name, numInputs, numOutputs, dst, kInt, internal_memory);
+        container = new WASMScalarCodeContainer(name, numInputs, numOutputs, dst, Precision::Int, internal_memory);
     }
 
     return container;
@@ -180,7 +184,7 @@ DeclareFunInst* WASMCodeContainer::generateInstanceResetUserInterface(const stri
     }
 
     // Rename 'sig' in 'dsp' and remove 'dsp' allocation
-    BlockInst* renamed = DspRenamer().getCode(fResetUserInterfaceInstructions);
+    BlockInst* renamed = DspRenamer().getCode(_resolutionetUserInterfaceInstructions);
     BlockInst* block   = MoveVariablesInFront3().getCode(renamed);
 
     // Creates function
@@ -190,10 +194,10 @@ DeclareFunInst* WASMCodeContainer::generateInstanceResetUserInterface(const stri
 
 // Scalar
 WASMScalarCodeContainer::WASMScalarCodeContainer(const string& name, int numInputs, int numOutputs, ostream* out,
-                                                 int sub_container_type, bool internal_memory)
+                                                 const Precision& precision, bool internal_memory)
     : WASMCodeContainer(name, numInputs, numOutputs, out, internal_memory)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }
 
 // Special version that uses MoveVariablesInFront3 to inline waveforms...
@@ -210,7 +214,7 @@ DeclareFunInst* WASMCodeContainer::generateInstanceInitFun(const string& name, c
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fStaticInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fPostInitInstructions));
-    init_block->pushBackInst(MoveVariablesInFront3().getCode(fResetUserInterfaceInstructions));
+    init_block->pushBackInst(MoveVariablesInFront3().getCode(_resolutionetUserInterfaceInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fClearInstructions));
 
     init_block->pushBackInst(InstBuilder::genRetInst());

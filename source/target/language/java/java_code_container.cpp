@@ -26,6 +26,10 @@
 #include "global.hh"
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 map<string, bool>   JAVAInstVisitor::gFunctionSymbolTable;
@@ -38,9 +42,9 @@ dsp_factory_base* JAVACodeContainer::produceFactory()
         ((dynamic_cast<ostringstream*>(fOut)) ? dynamic_cast<ostringstream*>(fOut)->str() : ""), "");
 }
 
-CodeContainer* JAVACodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* JAVACodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new JAVAScalarCodeContainer(name, "", 0, 1, fOut, sub_container_type);
+    return new JAVAScalarCodeContainer(name, "", 0, 1, fOut, precision);
 }
 
 CodeContainer* JAVACodeContainer::createContainer(const string& name, const string& super, int numInputs,
@@ -65,7 +69,7 @@ CodeContainer* JAVACodeContainer::createContainer(const string& name, const stri
     } else if (global::config().gVectorSwitch) {
         throw faustexception("ERROR : Vector mode not supported for Java\n");
     } else {
-        container = new JAVAScalarCodeContainer(name, super, numInputs, numOutputs, dst, kInt);
+        container = new JAVAScalarCodeContainer(name, super, numInputs, numOutputs, dst, Precision::Int);
     }
 
     return container;
@@ -73,10 +77,10 @@ CodeContainer* JAVACodeContainer::createContainer(const string& name, const stri
 
 // Scalar
 JAVAScalarCodeContainer::JAVAScalarCodeContainer(const string& name, const string& super, int numInputs, int numOutputs,
-                                                 std::ostream* out, int sub_container_type)
+                                                 std::ostream* out, const Precision& precision)
     : JAVACodeContainer(name, super, numInputs, numOutputs, out)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }
 
 JAVAScalarCodeContainer::~JAVAScalarCodeContainer()
@@ -89,8 +93,8 @@ void JAVACodeContainer::produceInternal()
 
     // Global declarations
     tab(n, *fOut);
-    fCodeProducer.Tab(n);
-    // generateGlobalDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n);
+    // generateGlobalDeclarations(&_codeProducer);
 
     tab(n, *fOut);
     *fOut << "final class " << fKlassName << " {";
@@ -99,30 +103,30 @@ void JAVACodeContainer::produceInternal()
     tab(n + 1, *fOut);
 
     // Fields
-    fCodeProducer.Tab(n + 1);
-    generateDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n + 1);
+    generateDeclarations(&_codeProducer);
 
     tab(n + 1, *fOut);
     // fKlassName used in method naming for subclasses
-    produceInfoFunctions(n + 1, fKlassName, "dsp", true, FunTyped::kDefault, &fCodeProducer);
+    produceInfoFunctions(n + 1, fKlassName, "dsp", true, FunTyped::kDefault, &_codeProducer);
 
     // TODO
-    // generateInstanceInitFun("instanceInit" + fKlassName, true, false)->accept(&fCodeProducer);
+    // generateInstanceInitFun("instanceInit" + fKlassName, true, false)->accept(&_codeProducer);
 
     // Inits
     tab(n + 1, *fOut);
     *fOut << "void instanceInit" << fKlassName << "(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateInit(&fCodeProducer);
-    generateResetUserInterface(&fCodeProducer);
-    generateClear(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateInit(&_codeProducer);
+    generateResetUserInterface(&_codeProducer);
+    generateClear(&_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
     // Fill
     string counter = "count";
-    if (fSubContainerType == kInt) {
+    if (fSubContainerType == Precision::Int) {
         tab(n + 1, *fOut);
         *fOut << "void fill" << fKlassName << subst("(int $0, int[] output) {", counter);
     } else {
@@ -130,10 +134,10 @@ void JAVACodeContainer::produceInternal()
         *fOut << "void fill" << fKlassName << subst("(int $0, $1[] output) {", counter, ifloat());
     }
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateComputeBlock(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateComputeBlock(&_codeProducer);
     ForLoopInst* loop = fCurLoop->generateScalarLoop(counter);
-    loop->accept(&fCodeProducer);
+    loop->accept(&_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -164,34 +168,34 @@ void JAVACodeContainer::produceClass()
     // Global declarations
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
-    generateGlobalDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n + 1);
+    generateGlobalDeclarations(&_codeProducer);
 
     // Generate gub containers
     generateSubContainers();
 
     // Fields
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
-    generateDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n + 1);
+    generateDeclarations(&_codeProducer);
 
-    if (fAllocateInstructions->fCode.size() > 0) {
+    if (fAllocateInstructions->_code.size() > 0) {
         tab(n + 1, *fOut);
         *fOut << "void allocate() {";
         tab(n + 2, *fOut);
-        fCodeProducer.Tab(n + 2);
-        generateAllocate(&fCodeProducer);
+        _codeProducer.Tab(n + 2);
+        generateAllocate(&_codeProducer);
         tab(n + 1, *fOut);
         *fOut << "}";
         tab(n + 1, *fOut);
     }
 
-    if (fDestroyInstructions->fCode.size() > 0) {
+    if (fDestroyInstructions->_code.size() > 0) {
         tab(n + 1, *fOut);
         *fOut << "void destroy() {";
         tab(n + 2, *fOut);
-        fCodeProducer.Tab(n + 2);
-        generateDestroy(&fCodeProducer);
+        _codeProducer.Tab(n + 2);
+        generateDestroy(&_codeProducer);
         tab(n + 1, *fOut);
         *fOut << "}";
         tab(n + 1, *fOut);
@@ -225,21 +229,21 @@ void JAVACodeContainer::produceClass()
 
     tab(n + 1, *fOut);
     // No class name for main class
-    produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kVirtual, &fCodeProducer);
+    produceInfoFunctions(n + 1, "", "dsp", true, FunTyped::kVirtual, &_codeProducer);
 
     // Inits
 
     // TODO
     /*
-    generateStaticInitFun("classInit", false)->accept(&fCodeProducer);
-    generateInstanceInitFun("instanceInit", true, true)->accept(&fCodeProducer);
+    generateStaticInitFun("classInit", false)->accept(&_codeProducer);
+    generateInstanceInitFun("instanceInit", true, true)->accept(&_codeProducer);
     */
 
     tab(n + 1, *fOut);
     *fOut << "public void classInit(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateStaticInit(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateStaticInit(&_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -247,8 +251,8 @@ void JAVACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "public void instanceConstants(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateInit(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateInit(&_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -256,8 +260,8 @@ void JAVACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "public void instanceResetUserInterface() {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateResetUserInterface(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateResetUserInterface(&_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -265,8 +269,8 @@ void JAVACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "public void instanceClear() {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateClear(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateClear(&_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -297,8 +301,8 @@ void JAVACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "public void buildUserInterface(UI ui_interface) {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateUserInterface(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateUserInterface(&_codeProducer);
     printlines(n + 2, fUICode, *fOut);
     tab(n + 1, *fOut);
     *fOut << "}";
@@ -307,9 +311,9 @@ void JAVACodeContainer::produceClass()
     generateCompute(n);
 
     // Possibly generate separated functions
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
     tab(n + 1, *fOut);
-    generateComputeFunctions(&fCodeProducer);
+    generateComputeFunctions(&_codeProducer);
 
     tab(n, *fOut);
     *fOut << "};\n" << endl;
@@ -321,14 +325,14 @@ void JAVAScalarCodeContainer::generateCompute(int n)
     tab(n + 1, *fOut);
     *fOut << subst("public void compute(int $0, $1[][] inputs, $1[][] outputs) {", fFullCount, ifloat());
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
 
     // Generates local variables declaration and setup
-    generateComputeBlock(&fCodeProducer);
+    generateComputeBlock(&_codeProducer);
 
     // Generates one single scalar loop
     ForLoopInst* loop = fCurLoop->generateScalarLoop(fFullCount);
-    loop->accept(&fCodeProducer);
+    loop->accept(&_codeProducer);
 
     tab(n + 1, *fOut);
     *fOut << "}";

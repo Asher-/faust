@@ -239,7 +239,7 @@ struct FIRCodeChecker : public DispatchVisitor {
         }
 
         // Internal will start a new scope of variables
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
     }
 
     virtual void visit(ForLoopInst* inst)
@@ -257,7 +257,7 @@ struct FIRCodeChecker : public DispatchVisitor {
         inst->fEnd->accept(this);
 
         // And block is a new scope...
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
 
         // Restore old variable state
         fCurVarScope = fStackVarsTable.back();
@@ -274,7 +274,7 @@ struct FIRCodeChecker : public DispatchVisitor {
         fCurVarScope.clear();
 
         list<StatementInst*>::const_iterator it;
-        for (it = inst->fCode.begin(); it != inst->fCode.end(); it++) {
+        for (it = inst->_code.begin(); it != inst->_code.end(); it++) {
             (*it)->accept(this);
         }
 
@@ -308,7 +308,7 @@ struct StructVarAnalyser : public DispatchVisitor {
 };
 
 struct ControlSpecializer : public DispatchVisitor {
-    StatementInst* fResultCode;
+    StatementInst* _resolutionultCode;
 
     // Mark all simple kStruct variables
     struct VariableMarker : public DispatchVisitor {
@@ -377,7 +377,7 @@ struct ControlSpecializer : public DispatchVisitor {
 
         // Clone the code with specialized value
         VariableSpecializer specializer(valuetable);
-        fResultCode = code->clone(&specializer);
+        _resolutionultCode = code->clone(&specializer);
     }
 };
 

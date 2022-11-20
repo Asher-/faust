@@ -304,14 +304,14 @@ class CSharpInstVisitor : public TextInstVisitor {
         }
 
         // Prototype
-        *fOut << fTypeManager->generateType(inst->fType->fResult, generateFunName(inst->fName));
+        *fOut << fTypeManager->generateType(inst->fType->_resolutionult, generateFunName(inst->fName));
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }
 
     virtual void generateFunDefBody(DeclareFunInst* inst)
     {
-        if (inst->fCode->fCode.size() == 0) {
+        if (inst->_code->_code.size() == 0) {
             *fOut << ");" << endl;  // Pure prototype
         } else {
             // Function body
@@ -320,7 +320,7 @@ class CSharpInstVisitor : public TextInstVisitor {
             *fOut << "{";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             *fOut << "}";

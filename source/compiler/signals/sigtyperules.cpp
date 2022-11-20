@@ -36,6 +36,20 @@
 #include "tlib/tlib.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/availability.hh"
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+#include "faust/primitive/type/value.hh"
+#include "faust/primitive/type/vectorability.hh"
+
+#include "faust/primitive/type/cast.hh"
+
+using Availability = ::Faust::Primitive::Type::Availability;
+using Precision = ::Faust::Primitive::Type::Precision;
+using Priority = ::Faust::Primitive::Type::Priority;
+using Value = ::Faust::Primitive::Type::Value;
+using Vectorability = ::Faust::Primitive::Type::Vectorability;
+
 //--------------------------------------------------------------------------
 // prototypes
 //--------------------------------------------------------------------------
@@ -54,7 +68,11 @@ static Type infereFVarType(Tree type);
 static Type infereRecType(Tree var, Tree body, Tree env);
 static Type infereReadTableType(Type tbl, Type ri);
 static Type infereWriteTableType(Type tbl, Type wi, Type wd);
-static Type infereProjType(Type t, int i, int vec);
+static Type infereProjType(
+  Type t,
+  const int& i,
+  const ::Faust::Primitive::Type::Vectorability& vec
+);
 static Type infereXType(Tree sig, Tree env);
 static Type infereDocConstantTblType(Type size, Type init);
 static Type infereDocWriteTblType(Type size, Type init, Type widx, Type wsig);
@@ -69,12 +87,12 @@ static Type infereWaveformType(Tree lv, Tree env);
 static double constSig2double(Tree sig)
 {
     Type ty = getSigType(sig);
-    if (ty->variability() != kKonst) {
+    if (ty->priority() != Priority::Konst) {
         throw faustexception(
             "ERROR : constSig2double, the parameter must be a constant value"
             " known at compile time\n");
     }
-    interval bds = ty->getInterval();
+    interval bds = ty->interval();
     if (bds.lo != bds.hi) {
         throw faustexception(
             "ERROR : constSig2double, constant value with non-singleton interval, don't know what"
@@ -200,8 +218,8 @@ void updateRecTypes(vector<Tree>& vrec, const vector<Tree>& vdef, const vector<i
 
         for (int j = 0; j < vdefSizes[i]; j++) {
             newTuplet.push_back(newRecType[j]);
-            newI = newRecType[j]->getInterval();
-            oldI = oldRecType[j]->getInterval();
+            newI = newRecType[j]->interval();
+            oldI = oldRecType[j]->interval();
 
             newI         = inter ? intersection(newI, oldI) : reunion(newI, oldI);
             newTuplet[j] = newTuplet[j]->promoteInterval(newI);
@@ -297,8 +315,8 @@ void typeAnnotation(Tree sig, bool causality)
                 oldRecType = derefRecCert(getSigType(vrec[i]));
                 for (int j = 0; j < vdefSizes[i]; j++) {
                     newTuplet.push_back(newRecType[j]);
-                    newI = newRecType[j]->getInterval();
-                    oldI = oldRecType[j]->getInterval();
+                    newI = newRecType[j]->interval();
+                    oldI = oldRecType[j]->interval();
 
                     TRACE(cerr << global::config().TABBER << "inspecting " << newTuplet[j] << endl;)
                     if (newI.lo != oldI.lo) {
@@ -306,7 +324,7 @@ void typeAnnotation(Tree sig, bool causality)
                         vAgeMin[i][j]++;
                         if (vAgeMin[i][j] > global::config().gWideningLimit) {
                             TRACE(cerr << global::config().TABBER << "low widening of " << newTuplet[j] << endl;)
-                            newI.lo = vUp[i][j]->getInterval().lo;
+                            newI.lo = vUp[i][j]->interval().lo;
                         }
                     }
 
@@ -315,7 +333,7 @@ void typeAnnotation(Tree sig, bool causality)
                         vAgeMax[i][j]++;
                         if (vAgeMax[i][j] > global::config().gWideningLimit) {
                             TRACE(cerr << global::config().TABBER << "up widening of " << newTuplet[j] << endl;)
-                            newI.hi = vUp[i][j]->getInterval().hi;
+                            newI.hi = vUp[i][j]->interval().hi;
                         }
                     }
 
@@ -426,7 +444,7 @@ static Type T(Tree term, Tree ignoreenv)
 
 static void CheckPartInterval(Tree s, Type t)
 {
-    interval i = t->getInterval();
+    interval i = t->interval();
     if (!i.valid || (i.lo < 0) || (i.hi >= MAX_SOUNDFILE_PARTS)) {
         stringstream error;
         error << "ERROR : out of range soundfile part number (" << i << " instead of interval(0,"
@@ -454,12 +472,12 @@ static Type infereSigType(Tree sig, Tree env)
         return infereXType(sig, env);
 
     else if (isSigInt(sig, &i)) {
-        Type t = makeSimpleType(kInt, kKonst, kComp, kVect, kNum, interval(i));
+        Type t = makeSimpleType(Precision::Int, Priority::Konst, Availability::Comp, Vectorability::Vect, Value::Num, interval(i));
         /*sig->setType(t);*/ return t;
     }
 
     else if (isSigReal(sig, &r)) {
-        Type t = makeSimpleType(kReal, kKonst, kComp, kVect, kNum, interval(r));
+        Type t = makeSimpleType(Precision::Real, Priority::Konst, Availability::Comp, Vectorability::Vect, Value::Num, interval(r));
         /*sig->setType(t);*/ return t;
     }
 
@@ -472,24 +490,31 @@ static Type infereSigType(Tree sig, Tree env)
     }
 
     else if (isSigOutput(sig, &i, s1))
-        return sampCast(T(s1, env));
+        return ::Faust::Primitive::Type::sampCast(T(s1, env));
 
     else if (isSigDelay1(sig, s1)) {
         Type t = T(s1, env);
-        return castInterval(sampCast(t), reunion(t->getInterval(), interval(0, 0)));
+        return ::Faust::Primitive::Type::castInterval(
+          ::Faust::Primitive::Type::sampCast(t),
+          reunion(t->interval(),
+          interval(0, 0))
+        );
     }
 
     else if (isSigPrefix(sig, s1, s2)) {
         Type t1 = T(s1, env);
         Type t2 = T(s2, env);
         checkInit(t1);
-        return castInterval(sampCast(t1 | t2), reunion(t1->getInterval(), t2->getInterval()));
+        return ::Faust::Primitive::Type::castInterval(
+          ::Faust::Primitive::Type::sampCast(t1 | t2),
+          reunion(t1->interval(), t2->interval())
+        );
     }
 
     else if (isSigDelay(sig, s1, s2)) {
         Type     t1 = T(s1, env);
         Type     t2 = T(s2, env);
-        interval i1 = t2->getInterval();
+        interval i1 = t2->interval();
 
         //        cerr << "for sig fix delay : s1 = "
         //				<< t1 << ':' << ppsig(s1) << ", s2 = "
@@ -510,32 +535,36 @@ static Type infereSigType(Tree sig, Tree env)
             }
         }
 
-        return castInterval(sampCast(t1), reunion(t1->getInterval(), interval(0, 0)));
+        return ::Faust::Primitive::Type::castInterval(
+          ::Faust::Primitive::Type::sampCast(t1),
+          reunion(t1->interval(),
+          interval(0, 0))
+        );
     }
 
     else if (isSigBinOp(sig, &i, s1, s2)) {
         // Type t = T(s1,env)|T(s2,env);
         Type t1 = T(s1, env);
         Type t2 = T(s2, env);
-        Type t3 = castInterval(t1 | t2, arithmetic(i, t1->getInterval(), t2->getInterval()));
+        Type t3 = ::Faust::Primitive::Type::castInterval(t1 | t2, arithmetic(i, t1->interval(), t2->interval()));
         // cerr <<"type rule for : " << ppsig(sig) << " -> " << *t3 << endl;
 
         if (i == kDiv) {
-            return floatCast(t3);  // division always result in a float even with int arguments
+            return ::Faust::Primitive::Type::floatCast(t3);  // division always result in a float even with int arguments
         } else if ((i >= kGT) && (i <= kNE)) {
-            return boolCast(t3);  // comparison always result in a boolean int
+            return ::Faust::Primitive::Type::boolCast(t3);  // comparison always result in a boolean int
         } else if (((i >= kLsh) && (i <= kLRsh)) || ((i >= kAND) && (i <= kXOR))) {
-            return intCast(t3);  // boolean and logical operators always result in an int
+            return ::Faust::Primitive::Type::intCast(t3);  // boolean and logical operators always result in an int
         } else {
             return t3;  //  otherwise most general of t1 and t2
         }
     }
 
     else if (isSigIntCast(sig, s1))
-        return intCast(T(s1, env));
+        return ::Faust::Primitive::Type::intCast(T(s1, env));
 
     else if (isSigFloatCast(sig, s1))
-        return floatCast(T(s1, env));
+        return ::Faust::Primitive::Type::floatCast(T(s1, env));
 
     else if (isSigFFun(sig, ff, ls))
         return infereFFType(ff, ls, env);
@@ -559,7 +588,7 @@ static Type infereSigType(Tree sig, Tree env)
         Type t2 = T(min, env);
         Type t3 = T(max, env);
         Type t4 = T(step, env);
-        return castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
+        return ::Faust::Primitive::Type::castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
     }
 
     else if (isSigHSlider(sig, label, cur, min, max, step)) {
@@ -567,7 +596,7 @@ static Type infereSigType(Tree sig, Tree env)
         Type t2 = T(min, env);
         Type t3 = T(max, env);
         Type t4 = T(step, env);
-        return castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
+        return ::Faust::Primitive::Type::castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
     }
 
     else if (isSigNumEntry(sig, label, cur, min, max, step)) {
@@ -575,39 +604,53 @@ static Type infereSigType(Tree sig, Tree env)
         Type t2 = T(min, env);
         Type t3 = T(max, env);
         Type t4 = T(step, env);
-        return castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
+        return ::Faust::Primitive::Type::castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
     }
 
     else if (isSigHBargraph(sig, l, x, y, s1)) {
         Type t1 = T(x, env);
         Type t2 = T(y, env);
-        return T(s1, env)->promoteVariability(kBlock);
+        return T(s1, env)->promotePriority(Priority::Block);
     }
 
     else if (isSigVBargraph(sig, l, x, y, s1)) {
         Type t1 = T(x, env);
         Type t2 = T(y, env);
-        return T(s1, env)->promoteVariability(kBlock);
+        return T(s1, env)->promotePriority(Priority::Block);
     }
 
     else if (isSigSoundfile(sig, l)) {
-        return makeSimpleType(kInt, kBlock, kExec, kVect, kNum, interval(0, 0x7FFFFFFF));
+        return makeSimpleType(Precision::Int, Priority::Block, Availability::Exec, Vectorability::Vect, Value::Num, interval(0, 0x7FFFFFFF));
     }
 
     else if (isSigSoundfileLength(sig, sf, part)) {
         Type t1 = T(sf, env);
         Type t2 = T(part, env);
         CheckPartInterval(sig, t2);
-        int c = std::max(int(kBlock), t2->variability());
-        return makeSimpleType(kInt, c, kExec, kVect, kNum, interval(0, 0x7FFFFFFF));  // A REVOIR (YO)
+        Priority priority = Priority(std::max(static_cast<int>(Priority::Block), static_cast<int>(t2->priority())));
+        return makeSimpleType(
+          Precision::Int,
+          priority,
+          Availability::Exec,
+          Vectorability::Vect,
+          Value::Num,
+          interval(0, 0x7FFFFFFF)
+        );  // A REVOIR (YO)
     }
 
     else if (isSigSoundfileRate(sig, sf, part)) {
         Type t1 = T(sf, env);
         Type t2 = T(part, env);
         CheckPartInterval(sig, t2);
-        int c = std::max(int(kBlock), t2->variability());
-        return makeSimpleType(kInt, c, kExec, kVect, kNum, interval(0, 0x7FFFFFFF));
+        Priority priority = Priority(std::max(static_cast<int>(Priority::Block), static_cast<int>(t2->priority())));
+        return makeSimpleType(
+          Precision::Int,
+          priority,
+          Availability::Exec,
+          Vectorability::Vect,
+          Value::Num,
+          interval(0, 0x7FFFFFFF)
+        );
     }
 
     else if (isSigSoundfileBuffer(sig, sf, x, part, z)) {
@@ -617,7 +660,7 @@ static Type infereSigType(Tree sig, Tree env)
         T(z, env);
 
         CheckPartInterval(sig, tp);
-        return makeSimpleType(kReal, kSamp, kExec, kVect, kNum, interval());
+        return makeSimpleType(Precision::Real, Priority::Samp, Availability::Exec, Vectorability::Vect, Value::Num, interval());
     }
 
     else if (isSigAttach(sig, s1, s2)) {
@@ -639,7 +682,11 @@ static Type infereSigType(Tree sig, Tree env)
         return infereRecType(sig, body, env);
 
     else if (isProj(sig, &i, s1))
-        return infereProjType(T(s1, env), i, kScal);
+        return infereProjType(
+          T(s1, env),
+          i,
+          Vectorability::Scal
+        );
 
     else if (isSigTable(sig, id, s1, s2)) {
         checkInt(checkInit(T(s1, env)));
@@ -669,11 +716,22 @@ static Type infereSigType(Tree sig, Tree env)
         st2   = isSimpleType(T(s2, env));
         stsel = isSimpleType(T(sel, env));
 
-        return makeSimpleType(st1->nature() | st2->nature(),
-                              st1->variability() | st2->variability() | stsel->variability(),
-                              st1->computability() | st2->computability() | stsel->computability(),
-                              st1->vectorability() | st2->vectorability() | stsel->vectorability(),
-                              st1->boolean() | st2->boolean(), reunion(st1->getInterval(), st2->getInterval()));
+        return makeSimpleType(
+          Precision(static_cast<int>( st1->precision() )
+         | static_cast<int>( st2->precision() )),
+         Priority (static_cast<int>( st1->priority() )
+         | static_cast<int>( st2->priority() )
+         | static_cast<int>( stsel->priority() )),
+          Availability(static_cast<int>( st1->availability() )
+         | static_cast<int>( st2->availability() )
+         | static_cast<int>( stsel->availability() )),
+          Vectorability(static_cast<int>( st1->vectorability() )
+         | static_cast<int>( st2->vectorability() )
+         | static_cast<int>( stsel->vectorability() )),
+          Value(static_cast<int>( st1->valueType() )
+         | static_cast<int>( st2->valueType() )),
+          reunion(st1->interval(), st2->interval())
+        );
     }
 
     else if (isNil(sig)) {
@@ -689,7 +747,7 @@ static Type infereSigType(Tree sig, Tree env)
         Type     t1 = T(min, env);
         Type     t2 = T(max, env);
         Type     t3 = T(cur, env);
-        interval i3 = t3->getInterval();
+        interval i3 = t3->interval();
         interval iEnd;
         constSig2double(min);
         if (i3.valid) {
@@ -701,14 +759,14 @@ static Type infereSigType(Tree sig, Tree env)
     }
 
     else if (isSigLowest(sig, s1)) {
-        interval i1 = T(s1, env)->getInterval();
-        return makeSimpleType(kReal, kKonst, kComp, kVect, kNum, interval(i1.lo));
+        interval i1 = T(s1, env)->interval();
+        return makeSimpleType(Precision::Real, Priority::Konst, Availability::Comp, Vectorability::Vect, Value::Num, interval(i1.lo));
         // change this part   ^^^^^ once there are interval bounds depending on signal type
     }
 
     else if (isSigHighest(sig, s1)) {
-        interval i1 = T(s1, env)->getInterval();
-        return makeSimpleType(kReal, kKonst, kComp, kVect, kNum, interval(i1.hi));
+        interval i1 = T(s1, env)->interval();
+        return makeSimpleType(Precision::Real, Priority::Konst, Availability::Comp, Vectorability::Vect, Value::Num, interval(i1.hi));
         // change this part   ^^^^^ once there are interval bounds depending on signal type
     }
 
@@ -720,7 +778,11 @@ static Type infereSigType(Tree sig, Tree env)
 /**
  *	Infere the type of a projection (selection) of a tuplet element
  */
-static Type infereProjType(Type t, int i, int vec)
+static Type infereProjType(
+  Type t,
+  const int& i,
+  const ::Faust::Primitive::Type::Vectorability& vec
+)
 {
     TupletType* tt = isTupletType(t);
     if (tt == nullptr) {
@@ -728,15 +790,15 @@ static Type infereProjType(Type t, int i, int vec)
         error << "ERROR : inferring projection type, not a tuplet type : " << t << endl;
         throw faustexception(error.str());
     }
-    // return (*tt)[i]	->promoteVariability(t->variability())
-    //		->promoteComputability(t->computability());
+    // return (*tt)[i]	->promotePriority(t->priority())
+    //		->promoteAvailability(t->availability());
     Type temp = (*tt)[i]
-                    ->promoteVariability(t->variability())
-                    ->promoteComputability(t->computability())
+                    ->promotePriority(t->priority())
+                    ->promoteAvailability(t->availability())
                     ->promoteVectorability(vec /*t->vectorability()*/);
-    //->promoteBooleanity(t->boolean());
+    //->promoteValueTypeity(t->valueType());
 
-    if (vec == kVect) temp = vecCast(temp);
+    if (vec == Vectorability::Vect) temp = ::Faust::Primitive::Type::vecCast(temp);
     // cerr << "infereProjType(" << t << ',' << i << ',' << vec << ")" << " -> " << temp << endl;
 
     return temp;
@@ -762,22 +824,37 @@ static Type infereWriteTableType(Type tbl, Type wi, Type ws)
     TRACE(cerr << global::config().TABBER << "infering write table type : wi type = " << wi << endl);
     TRACE(cerr << global::config().TABBER << "infering write table type : wd type = " << ws << endl);
 
-    int      n   = ws->nature();
-    int      b   = ws->boolean();
-    int      v   = wi->variability() | ws->variability();
-    int      c   = wi->computability() | ws->computability();
-    int      vec = wi->vectorability() | ws->vectorability();
-    interval i   = ws->getInterval();
-    // return dst << "NR"[nature()] << "KB?S"[variability()] << "CI?E"[computability()] << "VS?TS"[vectorability()]
-    //            << "N?B"[boolean()] << " " << fInterval;
+    const Precision& precision   = ws->precision();
+    const Value&     value   = ws->valueType();
+    const Priority   priority   = Priority(
+      static_cast<int>( wi->priority() )
+    | static_cast<int>( ws->priority()) );
+    const Availability  availability  = Availability(
+      static_cast<int>( wi->availability() )
+    | static_cast<int>( ws->availability()) );
+    const Vectorability vectorability = Vectorability(
+      static_cast<int>( wi->vectorability() )
+    | static_cast<int>( ws->vectorability()) );
+    interval i   = ws->interval();
+    // return dst << "NR"[precision()] << "KB?S"[priority()] << "CI?E"[availability()] << "VS?TS"[vectorability()]
+    //            << "N?B"[valueType()] << " " << _interval;
 
     TRACE(cerr << global::config().TABBER << "infering write table type : n="
-               << "NR"[n] << ", v="
-               << "KB?S"[v] << ", c="
-               << "CI?E"[c] << ", vec="
-               << "VS?TS"[vec] << ", b="
-               << "N?B"[b] << ", i=" << i << endl);
-    Type tbltype = makeTableType(tt->content(), n, v, c, vec, b, i);
+               << "NR"[static_cast<int>(precision)]
+               << ", v=" << "KB?S"[static_cast<int>(value)]
+               << ", c=" << "CI?E"[static_cast<int>(availability)]
+               << ", vec=" << "VS?TS"[static_cast<int>(vectorability)]
+               << ", b=" << "N?B"[static_cast<int>(value)]
+               << ", i=" << i << endl);
+    Type tbltype = makeTableType(
+      tt->content(),
+      precision,
+      priority,
+      availability,
+      vectorability,
+      value,
+      i
+    );
     TRACE(cerr << global::config().TABBER << "infering write table type : result=" << tbltype << endl);
     return tbltype;
 }
@@ -799,11 +876,21 @@ static Type infereReadTableType(Type tbl, Type ri)
         error << "ERROR : inferring read table type, no read index type : " << ri << endl;
         throw faustexception(error.str());
     }
-    // Type temp = makeSimpleType(tbl->nature(), ri->variability(), kInit | ri->computability(), ri->vectorability(),
-    //                            tbl->boolean(), tbl->getInterval());
-    Type temp = makeSimpleType(tbl->nature(), tbl->variability() | ri->variability(),
-                               tbl->computability() | ri->computability(), tbl->vectorability() | ri->vectorability(),
-                               tbl->boolean(), tbl->getInterval());
+    // Type temp = makeSimpleType(tbl->precision(), ri->priority(), Availability::Init | ri->availability(), ri->vectorability(),
+    //                            tbl->valueType(), tbl->interval());
+    Type temp = makeSimpleType(
+      tbl->precision(),
+      Priority(
+        static_cast<int>(tbl->priority())
+      | static_cast<int>(ri->priority()) ),
+      Availability(
+        static_cast<int>(tbl->availability())
+      | static_cast<int>(ri->availability()) ),
+      Vectorability(
+        static_cast<int>(tbl->vectorability())
+      | static_cast<int>(ri->vectorability()) ),
+      tbl->valueType(),
+      tbl->interval());
 
     return temp;
 }
@@ -819,18 +906,22 @@ static Type infereDocWriteTblType(Type size, Type init, Type widx, Type wsig)
 {
     checkKonst(checkInt(checkInit(size)));
 
-    Type temp = init->promoteVariability(kSamp)  // difficult to tell, therefore kSamp to be safe
-                    ->promoteComputability(widx->computability() | wsig->computability())
-                    ->promoteVectorability(kScal)       // difficult to tell, therefore kScal to be safe
-                    ->promoteNature(wsig->nature())     // nature of the initial and written signal
-                    ->promoteBoolean(wsig->boolean());  // booleanity of the initial and written signal
+    Type temp = init->promotePriority(Priority::Samp)  // difficult to tell, therefore Priority::Samp to be safe
+                    ->promoteAvailability(
+                      Availability(
+                        static_cast<int>(widx->availability())
+                      | static_cast<int>(wsig->availability()) )
+                    )
+                    ->promoteVectorability(Vectorability::Scal)       // difficult to tell, therefore Vectorability::Scal to be safe
+                    ->promotePrecision(wsig->precision())     // nature of the initial and written signal
+                    ->promoteValueType(wsig->valueType());  // booleanity of the initial and written signal
     return temp;
 }
 
 static Type infereDocAccessTblType(Type tbl, Type ridx)
 {
-    Type temp = tbl->promoteVariability(ridx->variability())
-                    ->promoteComputability(ridx->computability())
+    Type temp = tbl->promotePriority(ridx->priority())
+                    ->promoteAvailability(ridx->availability())
                     ->promoteVectorability(ridx->vectorability());
     return temp;
 }
@@ -877,18 +968,38 @@ static Type infereFFType(Tree ff, Tree ls, Tree env)
 
     if (ffarity(ff) == 0) {
         // case of functions like rand()
-        return makeSimpleType(ffrestype(ff), kSamp, kInit, kVect, kNum, interval());
+        return makeSimpleType(
+          Precision(ffrestype(ff)),
+          Priority::Samp,
+          Availability::Init,
+          Vectorability::Vect,
+          Value::Num,
+          interval()
+        );
     } else {
         // otherwise variability and computability depends
         // arguments (OR of all arg types)
-        Type t = makeSimpleType(kInt, kKonst, kInit, kVect, kNum, interval());
+        Type t = makeSimpleType(
+          Precision::Int,
+          Priority::Konst,
+          Availability::Init,
+          Vectorability::Vect,
+          Value::Num,
+          interval()
+        );
         while (isList(ls)) {
             t  = t | T(hd(ls), env);
             ls = tl(ls);
         }
         // but the result type is defined by the function
-        return makeSimpleType(ffrestype(ff), t->variability(), t->computability(), t->vectorability(), t->boolean(),
-                              interval());
+        return makeSimpleType(
+          Precision(ffrestype(ff)),
+          t->priority(),
+          t->availability(),
+          t->vectorability(),
+          t->valueType(),
+          interval()
+        );
     }
 }
 
@@ -899,7 +1010,14 @@ static Type infereFConstType(Tree type)
 {
     // An external constant cannot be calculated at the earliest possible time the initialization.
     // It is constant, in which case it is considered a rand() i.e. the result varies at each call.
-    return makeSimpleType(tree2int(type), kKonst, kInit, kVect, kNum, interval());
+    return makeSimpleType(
+      Precision(tree2int(type)),
+      Priority::Konst,
+      Availability::Init,
+      Vectorability::Vect,
+      Value::Num,
+      interval()
+    );
 }
 
 /**
@@ -909,7 +1027,14 @@ static Type infereFVarType(Tree type)
 {
     // An external variable cannot be calculated as soon as it is executed.
     // It varies by blocks like the user interface elements.
-    return makeSimpleType(tree2int(type), kBlock, kExec, kVect, kNum, interval());
+    return makeSimpleType(
+      Precision(tree2int(type)),
+      Priority::Block,
+      Availability::Exec,
+      Vectorability::Vect,
+      Value::Num,
+      interval()
+    );
 }
 
 /**
@@ -943,7 +1068,7 @@ static Type infereWaveformType(Tree wfsig, Tree env)
         iflag &= isInt(v->node());
     }
 
-    return makeSimpleType((iflag) ? kInt : kReal, kSamp, kComp, kScal, kNum, interval(lo, hi));
+    return makeSimpleType((iflag) ? Precision::Int : Precision::Real, Priority::Samp, Availability::Comp, Vectorability::Scal, Value::Num, interval(lo, hi));
 }
 
 /**

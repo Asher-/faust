@@ -228,7 +228,7 @@ StatementInst* ControlExpander::visit(BlockInst* inst)
 
     fIfBlockStack.push(IfBlock());
 
-    for (const auto& it : inst->fCode) {
+    for (const auto& it : inst->_code) {
         if (dynamic_cast<ControlInst*>(it)) {
             // ControlInst will progressively fill the current block by side effect
             it->clone(this);

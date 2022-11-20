@@ -47,10 +47,10 @@ void jsongroup::print(std::ostream& out, jsonendl& eol) const
     }
 	out << eol << "\"items\": ["; eol++;
 	const char* sep = "";
-	for (unsigned int i=0; i< fContent.size(); i++) {
+	for (unsigned int i=0; i< _content.size(); i++) {
 		out << sep;
 		sep = ",";
-		fContent[i]->print(out, eol);
+		_content[i]->print(out, eol);
 	}
 	out << --eol << "]";
 	out << --eol << "}";

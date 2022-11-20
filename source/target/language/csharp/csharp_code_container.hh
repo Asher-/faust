@@ -31,13 +31,13 @@ using namespace std;
 
 class CSharpCodeContainer : public virtual CodeContainer {
    protected:
-    CSharpInstVisitor fCodeProducer;
+    CSharpInstVisitor _codeProducer;
     std::ostream*   fOut;
     string          fSuperKlassName;
 
    public:
     CSharpCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out)
-        : fCodeProducer(out), fOut(out), fSuperKlassName(super)
+        : _codeProducer(out), fOut(out), fSuperKlassName(super)
     {
         initialize(numInputs, numOutputs);
         fKlassName = name;
@@ -54,7 +54,7 @@ class CSharpCodeContainer : public virtual CodeContainer {
 
     virtual void printHeader() { CodeContainer::printHeader(*fOut); }
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const string& name, const string& super, int numInputs, int numOutputs,
                                           ostream* dst = new stringstream());
@@ -64,7 +64,7 @@ class CSharpScalarCodeContainer : public CSharpCodeContainer {
    protected:
    public:
     CSharpScalarCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out,
-                            int sub_container_type);
+                            const Precision& precision);
     virtual ~CSharpScalarCodeContainer();
 
     void generateCompute(int tab);

@@ -38,7 +38,7 @@ class LLVMCodeContainer : public virtual CodeContainer {
     using CodeContainer::generateInstanceInitFun;
 
     IRBuilder<>*      fBuilder;
-    LLVMInstVisitor*  fCodeProducer;
+    LLVMInstVisitor*  _codeProducer;
     StructInstVisitor fStructVisitor;
 
     Module*      fModule;
@@ -81,7 +81,7 @@ class LLVMCodeContainer : public virtual CodeContainer {
         generateMetaData(&json_visitor_2);
 
         BasicBlock* return_block = BasicBlock::Create(*fContext, "return_block", getJSON);
-        ReturnInst::Create(*fContext, fCodeProducer->genStringConstant(json_visitor_2.JSON(true)), return_block);
+        ReturnInst::Create(*fContext, _codeProducer->genStringConstant(json_visitor_2.JSON(true)), return_block);
 
         verifyFunction(*getJSON);
         fBuilder->ClearInsertionPoint();
@@ -97,7 +97,7 @@ class LLVMCodeContainer : public virtual CodeContainer {
     virtual dsp_factory_base* produceFactory();
     void                      produceInternal();
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const string& name, int numInputs, int numOutputs);
 };
@@ -110,7 +110,7 @@ class LLVMScalarCodeContainer : public LLVMCodeContainer {
    public:
     LLVMScalarCodeContainer(const string& name, int numInputs, int numOutputs);
     LLVMScalarCodeContainer(const string& name, int numInputs, int numOutputs, Module* module, LLVMContext* context,
-                            int sub_container_type);
+                            const Precision& precision);
     virtual ~LLVMScalarCodeContainer();
 };
 

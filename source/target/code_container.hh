@@ -37,6 +37,9 @@
 #include "tlib/tlib.hh"
 #include "global.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -77,6 +80,9 @@ typedef vector<tuple<std::string, int, int, int, int, int>> MemoryLayoutType;
 
 class CodeContainer : public virtual Garbageable {
    protected:
+    
+    using Precision = ::Faust::Primitive::Type::Precision;
+
     list<CodeContainer*> fSubContainers;
     CodeContainer* fParentContainer;  ///< Container in which this Container is embedded, null if toplevel Container
 
@@ -86,7 +92,7 @@ class CodeContainer : public virtual Garbageable {
     int fNumActives;   ///< number of active controls in the UI (sliders, buttons, etc.)
     int fNumPassives;  ///< number of passive widgets in the UI (bargraphs, etc.)
 
-    int  fSubContainerType;
+    Precision  fSubContainerType;
     bool fGeneratedSR;
 
     MemoryLayoutType fMemoryLayout;
@@ -100,7 +106,7 @@ class CodeContainer : public virtual Garbageable {
 
     // Init method
     BlockInst* fInitInstructions;
-    BlockInst* fResetUserInterfaceInstructions;
+    BlockInst* _resolutionetUserInterfaceInstructions;
     BlockInst* fClearInstructions;
     BlockInst* fPostInitInstructions;
 
@@ -419,106 +425,106 @@ class CodeContainer : public virtual Garbageable {
 
     void generateExtGlobalDeclarations(InstVisitor* visitor)
     {
-        if (fExtGlobalDeclarationInstructions->fCode.size() > 0) {
+        if (fExtGlobalDeclarationInstructions->_code.size() > 0) {
             fExtGlobalDeclarationInstructions->accept(visitor);
         }
     }
 
     void generateGlobalDeclarations(InstVisitor* visitor)
     {
-        if (fGlobalDeclarationInstructions->fCode.size() > 0) {
+        if (fGlobalDeclarationInstructions->_code.size() > 0) {
             fGlobalDeclarationInstructions->accept(visitor);
         }
     }
 
     void generateDeclarations(InstVisitor* visitor)
     {
-        if (fDeclarationInstructions->fCode.size() > 0) {
+        if (fDeclarationInstructions->_code.size() > 0) {
             fDeclarationInstructions->accept(visitor);
         }
     }
 
     void generateInit(InstVisitor* visitor)
     {
-        if (fInitInstructions->fCode.size() > 0) {
+        if (fInitInstructions->_code.size() > 0) {
             fInitInstructions->accept(visitor);
         }
 
-        if (fPostInitInstructions->fCode.size() > 0) {
+        if (fPostInitInstructions->_code.size() > 0) {
             fPostInitInstructions->accept(visitor);
         }
     }
 
     void generateResetUserInterface(InstVisitor* visitor)
     {
-        if (fResetUserInterfaceInstructions->fCode.size() > 0) {
-            fResetUserInterfaceInstructions->accept(visitor);
+        if (_resolutionetUserInterfaceInstructions->_code.size() > 0) {
+            _resolutionetUserInterfaceInstructions->accept(visitor);
         }
     }
 
     void generateClear(InstVisitor* visitor)
     {
-        if (fClearInstructions->fCode.size() > 0) {
+        if (fClearInstructions->_code.size() > 0) {
             fClearInstructions->accept(visitor);
         }
     }
 
     void generateStaticInit(InstVisitor* visitor)
     {
-        if (fStaticInitInstructions->fCode.size() > 0) {
+        if (fStaticInitInstructions->_code.size() > 0) {
             fStaticInitInstructions->accept(visitor);
         }
 
-        if (fPostStaticInitInstructions->fCode.size() > 0) {
+        if (fPostStaticInitInstructions->_code.size() > 0) {
             fPostStaticInitInstructions->accept(visitor);
         }
     }
 
     void generateStaticDestroy(InstVisitor* visitor)
     {
-        if (fStaticDestroyInstructions->fCode.size() > 0) {
+        if (fStaticDestroyInstructions->_code.size() > 0) {
             fStaticDestroyInstructions->accept(visitor);
         }
     }
 
     void generateUserInterface(InstVisitor* visitor)
     {
-        if (fUserInterfaceInstructions->fCode.size() > 0) {
+        if (fUserInterfaceInstructions->_code.size() > 0) {
             fUserInterfaceInstructions->accept(visitor);
         }
     }
 
     void generateComputeFunctions(InstVisitor* visitor)
     {
-        if (fComputeFunctions->fCode.size() > 0) {
+        if (fComputeFunctions->_code.size() > 0) {
             fComputeFunctions->accept(visitor);
         }
     }
 
     void generateComputeBlock(InstVisitor* visitor)
     {
-        if (fComputeBlockInstructions->fCode.size() > 0) {
+        if (fComputeBlockInstructions->_code.size() > 0) {
             fComputeBlockInstructions->accept(visitor);
         }
     }
 
     void generatePostComputeBlock(InstVisitor* visitor)
     {
-        if (fPostComputeBlockInstructions->fCode.size() > 0) {
+        if (fPostComputeBlockInstructions->_code.size() > 0) {
             fPostComputeBlockInstructions->accept(visitor);
         }
     }
 
     void generateAllocate(InstVisitor* visitor)
     {
-        if (fAllocateInstructions->fCode.size() > 0) {
+        if (fAllocateInstructions->_code.size() > 0) {
             fAllocateInstructions->accept(visitor);
         }
     }
 
     void generateDestroy(InstVisitor* visitor)
     {
-        if (fDestroyInstructions->fCode.size() > 0) {
+        if (fDestroyInstructions->_code.size() > 0) {
             fDestroyInstructions->accept(visitor);
         }
     }
@@ -538,7 +544,7 @@ class CodeContainer : public virtual Garbageable {
     StatementInst* pushResetUIInstructions(StatementInst* inst)
     {
         faustassert(inst);
-        fResetUserInterfaceInstructions->pushBackInst(inst);
+        _resolutionetUserInterfaceInstructions->pushBackInst(inst);
         return inst;
     }
     StatementInst* pushPostInitMethod(StatementInst* inst)
@@ -633,9 +639,9 @@ class CodeContainer : public virtual Garbageable {
             fGlobalDeclarationInstructions->merge(it->fGlobalDeclarationInstructions);
             fDeclarationInstructions->merge(it->fDeclarationInstructions);
             // Then clear it
-            it->fGlobalDeclarationInstructions->fCode.clear();
-            it->fExtGlobalDeclarationInstructions->fCode.clear();
-            it->fDeclarationInstructions->fCode.clear();
+            it->fGlobalDeclarationInstructions->_code.clear();
+            it->fExtGlobalDeclarationInstructions->_code.clear();
+            it->fDeclarationInstructions->_code.clear();
         }
     }
 
@@ -651,7 +657,7 @@ class CodeContainer : public virtual Garbageable {
     void addUIMacroPassives(const std::string& str) { fUIMacroPassives.push_back(str); }
     void addUICode(const std::string& str) { fUICode.push_back(str); }
 
-    virtual CodeContainer* createScalarContainer(const std::string& name, int sub_container_type) = 0;
+    virtual CodeContainer* createScalarContainer(const std::string& name, const Precision& precision) = 0;
 
     virtual void produceInternal() = 0;
 

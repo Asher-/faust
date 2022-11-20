@@ -197,8 +197,8 @@ faustgen_factory::faustgen_factory(const string& name)
     assert(res);
     
     // Built the complete resource path
-    fResourcePath = string((const char*)bundle_path) + string(FAUST_LIBRARY_PATH);
-    fLibraryPath.insert(fResourcePath);
+    _resolutionourcePath = string((const char*)bundle_path) + string(FAUST_LIBRARY_PATH);
+    fLibraryPath.insert(_resolutionourcePath);
     
     // Draw path in temporary folder
     fDrawPath = string(FAUST_DRAW_PATH);
@@ -213,8 +213,8 @@ faustgen_factory::faustgen_factory(const string& name)
         string str_name = string(name);
         str_name = str_name.substr(0, str_name.find_last_of("\\"));
         // Built the complete resource path
-        fResourcePath = string(str_name) + string(FAUST_LIBRARY_PATH);
-        fLibraryPath.insert(fResourcePath);
+        _resolutionourcePath = string(str_name) + string(FAUST_LIBRARY_PATH);
+        fLibraryPath.insert(_resolutionourcePath);
         // Draw path in temporary folder
         TCHAR lpTempPathBuffer[MAX_PATH];
         // Gets the temp path env string (no guarantee it's a valid path).
@@ -902,8 +902,8 @@ void faustgen_factory::librarypath(long inlet, t_symbol* s)
 {
     if (s == gensym("")) {
         fLibraryPath.clear();
-        // fResourcePath has to stay
-        fLibraryPath.insert(fResourcePath);
+        // _resolutionourcePath has to stay
+        fLibraryPath.insert(_resolutionourcePath);
     } else {
         add_library_path(getFolderFromPath(s->s_name));
     }

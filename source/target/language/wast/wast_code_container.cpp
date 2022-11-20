@@ -29,6 +29,10 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -75,15 +79,15 @@ WASTCodeContainer::WASTCodeContainer(const string& name, int numInputs, int numO
     }
 }
 
-CodeContainer* WASTCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* WASTCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new WASTScalarCodeContainer(name, 0, 1, &fOutAux, sub_container_type, true);
+    return new WASTScalarCodeContainer(name, 0, 1, &fOutAux, precision, true);
 }
 
-CodeContainer* WASTCodeContainer::createScalarContainer(const string& name, int sub_container_type,
+CodeContainer* WASTCodeContainer::createScalarContainer(const string& name, const Precision& precision,
                                                         bool internal_memory)
 {
-    return new WASTScalarCodeContainer(name, 0, 1, &fOutAux, sub_container_type, internal_memory);
+    return new WASTScalarCodeContainer(name, 0, 1, &fOutAux, precision, internal_memory);
 }
 
 CodeContainer* WASTCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst,
@@ -112,7 +116,7 @@ CodeContainer* WASTCodeContainer::createContainer(const string& name, int numInp
         }
         container = new WASTVectorCodeContainer(name, numInputs, numOutputs, dst, internal_memory);
     } else {
-        container = new WASTScalarCodeContainer(name, numInputs, numOutputs, dst, kInt, internal_memory);
+        container = new WASTScalarCodeContainer(name, numInputs, numOutputs, dst, Precision::Int, internal_memory);
     }
 
     return container;
@@ -120,10 +124,10 @@ CodeContainer* WASTCodeContainer::createContainer(const string& name, int numInp
 
 // Scalar
 WASTScalarCodeContainer::WASTScalarCodeContainer(const string& name, int numInputs, int numOutputs, ostream* out,
-                                                 int sub_container_type, bool internal_memory)
+                                                 const Precision& precision, bool internal_memory)
     : WASTCodeContainer(name, numInputs, numOutputs, out, internal_memory)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }
 
 // Special version that uses MoveVariablesInFront3 to inline waveforms...
@@ -140,7 +144,7 @@ DeclareFunInst* WASTCodeContainer::generateInstanceInitFun(const string& name, c
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fStaticInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fInitInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fPostInitInstructions));
-    init_block->pushBackInst(MoveVariablesInFront3().getCode(fResetUserInterfaceInstructions));
+    init_block->pushBackInst(MoveVariablesInFront3().getCode(_resolutionetUserInterfaceInstructions));
     init_block->pushBackInst(MoveVariablesInFront3().getCode(fClearInstructions));
 
     init_block->pushBackInst(InstBuilder::genRetInst());
@@ -242,7 +246,7 @@ void WASTCodeContainer::produceClass()
     this->_visitor->Tab(n + 2);
     {
         // Rename 'sig' in 'dsp' and remove 'dsp' allocation
-        generateWASTBlock(DspRenamer().getCode(fResetUserInterfaceInstructions));
+        generateWASTBlock(DspRenamer().getCode(_resolutionetUserInterfaceInstructions));
     }
     back(1, fOutAux);
     fOutAux << ")";

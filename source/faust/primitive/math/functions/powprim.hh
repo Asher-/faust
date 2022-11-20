@@ -32,6 +32,10 @@
 
 #include "faust/primitive/symbols.hh"
 
+#include "faust/primitive/type/availability.hh"
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -40,14 +44,20 @@ namespace Faust {
       extern bool hasExp10;              // If the 'exp10' math function is available
 
       /*
-       When argument is kInt and exponent is kInt (or kReal without decimal part),
+       When argument is Precision::Int and exponent is Precision::Int (or Precision::Real without decimal part),
        an explicit mydsp_faustpowerXX_i(..) is generated.
-       When argument is kReal and exponent is kInt (or kReal without decimal part),
+       When argument is Precision::Real and exponent is Precision::Int (or Precision::Real without decimal part),
        an explicit mydsp_faustpowerXX_f(..) is generated.
        Otherwise pow[f||l](argument,exponent) is generated.
        */
 
       class Pow : public ::Faust::Primitive::Math::xtended {
+          protected:
+
+            using Availability = ::Faust::Primitive::Type::Availability;
+            using Precision = ::Faust::Primitive::Type::Precision;
+            using Priority = ::Faust::Primitive::Type::Priority;
+
           public:
           Pow() : ::Faust::Primitive::Math::xtended("pow") {}
 
@@ -59,9 +69,9 @@ namespace Faust {
           {
               faustassert(args.size() == arity());
 
-              interval i = args[0]->getInterval();
-              interval j = args[1]->getInterval();
-              return castInterval(args[0] | args[1], pow(i, j));
+              interval i = args[0]->interval();
+              interval j = args[1]->interval();
+              return Type::castInterval(args[0] | args[1], pow(i, j));
           }
 
           virtual int infereSigOrder(const vector<int>& args)
@@ -124,7 +134,7 @@ namespace Faust {
           // Check that power argument is an integer or possibly represents an integer, up to 32
           bool isIntPowArg(::Type ty, ValueInst* val, int& pow_arg)
           {
-              if (ty->nature() == kInt) {
+              if (ty->precision() == Precision::Int) {
                   Int32NumInst* int_val = dynamic_cast<Int32NumInst*>(val);
                   if (int_val) {
                       pow_arg = int_val->fNum;
@@ -158,13 +168,13 @@ namespace Faust {
               int pow_arg = 0;
 
               if (isIntPowArg(types[1], *it, pow_arg)
-                  && (types[1]->variability() == kKonst)
-                  && (types[1]->computability() == kComp)
+                  && (types[1]->priority() == Priority::Konst)
+                  && (types[1]->availability() == Availability::Comp)
                   && (::Faust::Primitive::Math::needManualPow)) {
 
-                  Typed::VarType t0 = convert2FIRType(types[0]->nature());
+                  Typed::VarType t0 = convert2FIRType(types[0]->precision());
                   vector<Typed::VarType> atypes = { t0, Typed::kInt32};
-                  Typed::VarType rtype = convert2FIRType(result->nature());
+                  Typed::VarType rtype = convert2FIRType(result->precision());
 
                   // Expand the pow depending of the exposant argument
                   BlockInst* block = InstBuilder::genBlockInst();
@@ -201,10 +211,10 @@ namespace Faust {
                   vector<::Type>::const_iterator it1;
 
                   for (it1 = types.begin(); it1 != types.end(); it1++, it2++) {
-                      cargs.push_back(promote2real((*it1)->nature(), (*it2)));
+                      cargs.push_back(promote2real((*it1)->precision(), (*it2)));
                   }
 
-                  return cast2int(result->nature(), container->pushFunction(subst("pow$0", isuffix()), itfloat(), atypes, cargs));
+                  return cast2int(result->precision(), container->pushFunction(subst("pow$0", isuffix()), itfloat(), atypes, cargs));
               }
           }
 
@@ -213,8 +223,8 @@ namespace Faust {
               faustassert(args.size() == arity());
               faustassert(types.size() == arity());
 
-              if ((types[1]->nature() == kInt) && (types[1]->variability() == kKonst) &&
-                  (types[1]->computability() == kComp)) {
+              if ((types[1]->precision() == Precision::Int) && (types[1]->priority() == Priority::Konst) &&
+                  (types[1]->availability() == Availability::Comp)) {
                   klass->rememberNeedPowerDef();
                   return subst("faustpower<$1>($0)", args[0], args[1]);
               } else {

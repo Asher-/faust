@@ -30,30 +30,42 @@
 
 #include "faust/primitive/symbols.hh"
 
+#include "faust/primitive/type/priority.hh"
+
+using Priority = ::Faust::Primitive::Type::Priority;
+
 using namespace std;
 
 /**
  * Extended Variability with recursiveness indication
  */
-static int xVariability(int v, int r)
-{
+static Priority xVariability(
+  const Priority& priority,
+  int recursiveness
+) {
     // cerr << "xVariability (" << v << ", " <<  r << ")" << endl;
-    // faustassert(v < 3);				// kKonst=0, kBlock=1, kSamp=2
+    // faustassert(v < 3);				// Priority::Konst=0, Priority::Block=1, Priority::Samp=2
     // faustassert(r==0 | v==2);
-    if (r > 1) r = 1;
-    return std::min<int>(3, v + r);
+    if (recursiveness > 1)
+      recursiveness = 1;
+    return Priority(std::min<int>(3, static_cast<unsigned int>(priority) + recursiveness));
 }
 
 //-------------------------------------------------
 //	Occurences methods
 //-------------------------------------------------
 
-int old_Occurences::getOccurence(int variability) const
+int old_Occurences::getOccurence( const Priority& priority) const
 {
-    return fOccurences[variability];
+    return fOccurences[static_cast<unsigned int>(priority)];
 }
 
-old_Occurences::old_Occurences(int v, int r, Tree xc) : fXVariability(xVariability(v, r))
+old_Occurences::old_Occurences(
+  const Priority& priority,
+  const int& recursiveness,
+  Tree xc
+) :
+  fXVariability(xVariability(priority, recursiveness))
 {
     for (int i = 0; i < 4; i++) fOccurences[i] = 0;
     fMultiOcc      = false;
@@ -63,19 +75,23 @@ old_Occurences::old_Occurences(int v, int r, Tree xc) : fXVariability(xVariabili
     fExecCondition = xc;
 }
 
-old_Occurences* old_Occurences::incOccurences(int v, int r, int d, Tree xc)
-{
-    int ctxt = xVariability(v, r);
+old_Occurences* old_Occurences::incOccurences(
+  const Priority& priority,
+  const int& recursiveness,
+  const int& delay,
+  Tree xc
+) {
+    const Priority ctxt = xVariability(priority, recursiveness);
     // assert (ctxt >= fXVariability);
-    fOccurences[ctxt] += 1;
-    fMultiOcc = fMultiOcc | (ctxt > fXVariability) | (fOccurences[ctxt] > 1);
-    if (d == 0) {
+    fOccurences[static_cast<unsigned int>(ctxt)] += 1;
+    fMultiOcc = fMultiOcc | (ctxt > fXVariability) | (fOccurences[static_cast<unsigned int>(ctxt)] > 1);
+    if (delay == 0) {
         // cerr << "Occurence outside a delay " << endl;
         fOutDelayOcc = true;
     }
-    if (d > fMaxDelay) {
+    if (delay > fMaxDelay) {
         // cerr << "Max delay : " << fMaxDelay << " <- " << d << endl;
-        fMaxDelay = d;
+        fMaxDelay = delay;
     }
 
     // check if used in different execution conditions
@@ -116,14 +132,14 @@ void old_OccMarkup::mark(Tree root)
 
     if (isList(root)) {
         while (isList(root)) {
-            // incOcc(kSamp, 1, hd(root));
-            incOcc(global::config().nil, kSamp, 0, 0, global::config().nil, hd(root));
+            // incOcc(Priority::Samp, 1, hd(root));
+            incOcc(global::config().nil, Priority::Samp, 0, 0, global::config().nil, hd(root));
             root = tl(root);
         }
         // cerr << "END OF LIST IS " << *root << endl;
     } else {
-        // incOcc(kSamp, 1, root);
-        incOcc(global::config().nil, kSamp, 0, 0, global::config().nil, root);
+        // incOcc(Priority::Samp, 1, root);
+        incOcc(global::config().nil, Priority::Samp, 0, 0, global::config().nil, root);
     }
 }
 
@@ -137,15 +153,20 @@ old_Occurences* old_OccMarkup::retrieve(Tree t)
 // xc : exec condition expression
 //------------------------------------------------------------------------------
 
-void old_OccMarkup::incOcc(Tree env, int v, int r, int d, Tree xc, Tree t)
-{
+void old_OccMarkup::incOcc(
+  Tree env,
+  const Priority& priority,
+  const int& recursiveness,
+  const int& delay,
+  Tree xc, Tree t
+) {
     // Check if we have already visited this tree
     old_Occurences* occ = getOcc(t);
 
     if (occ == 0) {
         // 1) We build initial occurence information
         Type ty = getCertifiedSigType(t);
-        int  v0 = ty->variability();
+        const Priority&  v0 = ty->priority();
         int  r0 = getRecursivness(t);
         // fConditions may have been initialized empty
         Tree c0 = (fConditions.find(t) == fConditions.end()) ? global::config().nil : fConditions[t];        
@@ -172,7 +193,12 @@ void old_OccMarkup::incOcc(Tree env, int v, int r, int d, Tree xc, Tree t)
         }
     }
 
-    occ->incOccurences(v, r, d, xc);
+    occ->incOccurences(
+      priority,
+      recursiveness,
+      delay,
+      xc
+    );
 }
 
 old_Occurences* old_OccMarkup::getOcc(Tree t)

@@ -70,7 +70,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
     FIRUserInterfaceBlockInstruction<REAL>* fUserInterfaceBlock;
     FBCBlockInstruction<REAL>*              fStaticInitBlock;
     FBCBlockInstruction<REAL>*              fInitBlock;
-    FBCBlockInstruction<REAL>*              fResetUIBlock;
+    FBCBlockInstruction<REAL>*              _resolutionetUIBlock;
     FBCBlockInstruction<REAL>*              fClearBlock;
     FBCBlockInstruction<REAL>*              fComputeBlock;
     FBCBlockInstruction<REAL>*              fComputeDSPBlock;
@@ -98,7 +98,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
           fUserInterfaceBlock(firinterface),
           fStaticInitBlock(static_init),
           fInitBlock(init),
-          fResetUIBlock(resetui),
+          _resolutionetUIBlock(resetui),
           fClearBlock(clear),
           fComputeBlock(compute_control),
           fComputeDSPBlock(compute_dsp)
@@ -116,7 +116,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
         delete fUserInterfaceBlock;
         delete fStaticInitBlock;
         delete fInitBlock;
-        delete fResetUIBlock;
+        delete _resolutionetUIBlock;
         delete fClearBlock;
         delete fComputeBlock;
         delete fComputeDSPBlock;
@@ -153,7 +153,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
             fInitBlock->write(out, small);
 
             *out << "c" << std::endl;
-            fResetUIBlock->write(out, small);
+            _resolutionetUIBlock->write(out, small);
 
             *out << "c" << std::endl;
             fClearBlock->write(out, small);
@@ -191,7 +191,7 @@ struct interpreter_dsp_factory_aux : public dsp_factory_imp {
             fInitBlock->write(out, small);
 
             *out << "reset_ui" << std::endl;
-            fResetUIBlock->write(out, small);
+            _resolutionetUIBlock->write(out, small);
 
             *out << "clear_block" << std::endl;
             fClearBlock->write(out, small);
@@ -601,7 +601,7 @@ class interpreter_dsp_aux : public interpreter_dsp_base {
 
         try {
             // Execute reset UI instructions
-            fFBCExecutor->ExecuteBlock(fFactory->fResetUIBlock);
+            fFBCExecutor->ExecuteBlock(fFactory->_resolutionetUIBlock);
         } catch (faustexception& e) {
             std::cerr << e.Message();
             exit(1);

@@ -471,7 +471,7 @@ void WSSCodeContainer::processFIR(void)
     }
 
     // Sort arrays to be at the begining
-    // fComputeBlockInstructions->fCode.sort(sortArrayDeclarations);
+    // fComputeBlockInstructions->_code.sort(sortArrayDeclarations);
 
     /*
     // Verify code

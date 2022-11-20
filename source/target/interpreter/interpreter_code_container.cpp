@@ -29,6 +29,10 @@
 #include "compiler/visitor/interpreter_instruction_visitor.hh"
 #include "target/fir/visitor/loop_variable_renamer.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -86,9 +90,9 @@ InterpreterCodeContainer<REAL>::InterpreterCodeContainer(const string& name, int
 }
 
 template <class REAL>
-CodeContainer* InterpreterCodeContainer<REAL>::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* InterpreterCodeContainer<REAL>::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new InterpreterScalarCodeContainer<REAL>(name, 0, 1, sub_container_type);
+    return new InterpreterScalarCodeContainer<REAL>(name, 0, 1, precision);
 }
 
 template <class REAL>
@@ -114,7 +118,7 @@ CodeContainer* InterpreterCodeContainer<REAL>::createContainer(const string& nam
         }
         container = new InterpreterVectorCodeContainer<REAL>(name, numInputs, numOutputs);
     } else {
-        container = new InterpreterScalarCodeContainer<REAL>(name, numInputs, numOutputs, kInt);
+        container = new InterpreterScalarCodeContainer<REAL>(name, numInputs, numOutputs, Precision::Int);
     }
 
     return container;
@@ -123,10 +127,10 @@ CodeContainer* InterpreterCodeContainer<REAL>::createContainer(const string& nam
 // Scalar
 template <class REAL>
 InterpreterScalarCodeContainer<REAL>::InterpreterScalarCodeContainer(const string& name, int numInputs, int numOutputs,
-                                                                  int sub_container_type)
+                                                                  const Precision& precision)
     : InterpreterCodeContainer<REAL>(name, numInputs, numOutputs)
 {
-    this->fSubContainerType = sub_container_type;
+    this->fSubContainerType = precision;
 }
 
 template <class REAL>

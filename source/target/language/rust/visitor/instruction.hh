@@ -301,15 +301,15 @@ class RustInstVisitor : public TextInstVisitor {
 
     virtual void generateFunDefBody(DeclareFunInst* inst)
     {
-        *fOut << ") -> " << fTypeManager->generateType(inst->fType->fResult);
-        if (inst->fCode->fCode.size() == 0) {
+        *fOut << ") -> " << fTypeManager->generateType(inst->fType->_resolutionult);
+        if (inst->_code->_code.size() == 0) {
             *fOut << ";" << endl;  // Pure prototype
         } else {
             // Function body
             *fOut << " {";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             *fOut << "}";
@@ -319,8 +319,8 @@ class RustInstVisitor : public TextInstVisitor {
 
     virtual void visit(RetInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
         } else {
             *fOut << "return";
             EndLine();
@@ -545,7 +545,7 @@ class RustInstVisitor : public TextInstVisitor {
         inst->fThen->accept(this);
         fTab--;
         back(1, *fOut);
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             *fOut << "} else {";
             fTab++;
             tab(fTab, *fOut);
@@ -562,13 +562,13 @@ class RustInstVisitor : public TextInstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         inst->fInit->accept(this);
         *fOut << "loop {";
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         inst->fIncrement->accept(this);
         *fOut << "if ";
         inst->fEnd->accept(this);
@@ -582,7 +582,7 @@ class RustInstVisitor : public TextInstVisitor {
     virtual void visit(SimpleForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         *fOut << "for " << inst->getName() << " in ";
         if (inst->fReverse) {
@@ -599,7 +599,7 @@ class RustInstVisitor : public TextInstVisitor {
         *fOut << " {";
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "}";
@@ -609,7 +609,7 @@ class RustInstVisitor : public TextInstVisitor {
     virtual void visit(IteratorForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         *fOut << "let zipped_iterators = ";
         for (std::size_t i = 0; i < inst->fIterators.size(); ++i) {
@@ -635,7 +635,7 @@ class RustInstVisitor : public TextInstVisitor {
         *fOut << " in zipped_iterators {";
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "}";
@@ -649,7 +649,7 @@ class RustInstVisitor : public TextInstVisitor {
         *fOut << ") {";
         fTab++;
         tab(fTab, *fOut);
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             if (it.first == -1) {  // -1 used to code "default" case
                 *fOut << "_ => {";
             } else {
@@ -697,7 +697,7 @@ class UserInterfaceParameterMapping : public InstVisitor {
     {
         // BlockInst visitor is unimplemented in base class, so we need a trivial implementation
         // to actually visit the user interface statements in the BlockInst.
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             it->accept(this);
         }
     }

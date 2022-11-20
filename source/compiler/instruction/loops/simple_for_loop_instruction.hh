@@ -38,7 +38,7 @@ struct SimpleForLoopInst : public StatementInst {
     ValueInst*   fLowerBound;
     const std::string fName;
     const bool   fReverse;
-    BlockInst* fCode;
+    BlockInst* _code;
 
     SimpleForLoopInst(const std::string& name, ValueInst* upperBound, ValueInst* lowerBound, bool reverse, BlockInst* code);
 
@@ -46,9 +46,9 @@ struct SimpleForLoopInst : public StatementInst {
 
     virtual ~SimpleForLoopInst() {}
 
-    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode->pushFrontInst(inst); }
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); _code->pushFrontInst(inst); }
 
-    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode->pushBackInst(inst); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); _code->pushBackInst(inst); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 

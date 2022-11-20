@@ -39,7 +39,7 @@
 
 class CCodeContainer : public virtual CodeContainer {
    protected:
-    CInstVisitor* fCodeProducer;
+    CInstVisitor* _codeProducer;
     std::ostream* fOut;
 
     virtual void produceClass();
@@ -52,8 +52,8 @@ class CCodeContainer : public virtual CodeContainer {
     {
         // Possibly generate separated functions
         tab(n, *fOut);
-        fCodeProducer->Tab(n);
-        generateComputeFunctions(fCodeProducer);
+        _codeProducer->Tab(n);
+        generateComputeFunctions(_codeProducer);
 
         char* archs = getenv("FAUST_ARCHS");
         if (archs) {
@@ -94,12 +94,12 @@ class CCodeContainer : public virtual CodeContainer {
         // For int64_t type
         addIncludeFile("<stdint.h>");
 
-        fCodeProducer = new CInstVisitor(out, name);
+        _codeProducer = new CInstVisitor(out, name);
     }
 
     virtual ~CCodeContainer()
     {
-        // fCodeProducer is a 'Garbageable'
+        // _codeProducer is a 'Garbageable'
     }
 
     virtual dsp_factory_base* produceFactory();
@@ -122,8 +122,8 @@ class CCodeContainer : public virtual CodeContainer {
         *fOut << "#endif" << std::endl;
     }
 
-    CodeContainer* createScalarContainer(const std::string& name, int sub_container_type);
-    static CodeContainer* createScalarContainer(const std::string& name, int numInputs, int numOutputs, ostream* dst, int sub_container_type);
+    CodeContainer* createScalarContainer(const std::string& name, const Precision& precision);
+    static CodeContainer* createScalarContainer(const std::string& name, int numInputs, int numOutputs, ostream* dst, const Precision& precision);
 
     static CodeContainer* createContainer(const std::string& name, int numInputs, int numOutputs,
                                           std::ostream* dst = new std::stringstream());
@@ -143,7 +143,7 @@ class CScalarCodeContainer : public CCodeContainer {
                          int numInputs,
                          int numOutputs,
                          std::ostream* out,
-                         int sub_container_type);
+                         const Precision& precision);
     virtual ~CScalarCodeContainer()
     {}
 
@@ -162,7 +162,7 @@ class CScalarOneSampleCodeContainer1 : public CScalarCodeContainer {
                                   int numInputs,
                                   int numOutputs,
                                   std::ostream* out,
-                                  int sub_container_type)
+                                  const Precision& precision)
     {
         initialize(numInputs, numOutputs);
         fKlassName = name;
@@ -181,8 +181,8 @@ class CScalarOneSampleCodeContainer1 : public CScalarCodeContainer {
         // For int64_t type
         addIncludeFile("<stdint.h>");
 
-        fSubContainerType = sub_container_type;
-        fCodeProducer = new CInstVisitor(out, name);
+        fSubContainerType = precision;
+        _codeProducer = new CInstVisitor(out, name);
     }
 
     virtual ~CScalarOneSampleCodeContainer1()
@@ -205,7 +205,7 @@ class CScalarOneSampleCodeContainer2 : public CScalarCodeContainer {
                                       int numInputs,
                                       int numOutputs,
                                       std::ostream* out,
-                                      int sub_container_type)
+                                      const Precision& precision)
         {
             initialize(numInputs, numOutputs);
             fKlassName = name;
@@ -224,8 +224,8 @@ class CScalarOneSampleCodeContainer2 : public CScalarCodeContainer {
             // For int64_t type
             addIncludeFile("<stdint.h>");
 
-            fSubContainerType = sub_container_type;
-            fCodeProducer = new CInstVisitor1(out, name);
+            fSubContainerType = precision;
+            _codeProducer = new CInstVisitor1(out, name);
         }
 
         virtual ~CScalarOneSampleCodeContainer2()
@@ -246,7 +246,7 @@ class CScalarOneSampleCodeContainer3 : public CScalarOneSampleCodeContainer2 {
                                        int numInputs,
                                        int numOutputs,
                                        std::ostream* out,
-                                       int sub_container_type)
+                                       const Precision& precision)
         {
             initialize(numInputs, numOutputs);
             fKlassName = name;
@@ -265,10 +265,10 @@ class CScalarOneSampleCodeContainer3 : public CScalarOneSampleCodeContainer2 {
             // For int64_t type
             addIncludeFile("<stdint.h>");
 
-            fSubContainerType = sub_container_type;
+            fSubContainerType = precision;
 
             // Setup in produceClass
-            fCodeProducer = nullptr;
+            _codeProducer = nullptr;
         }
 
         virtual ~CScalarOneSampleCodeContainer3()
@@ -288,8 +288,8 @@ class CScalarOneSampleCodeContainer4 : public CScalarOneSampleCodeContainer3 {
                                        int numInputs,
                                        int numOutputs,
                                        std::ostream* out,
-                                       int sub_container_type)
-        :CScalarOneSampleCodeContainer3(name, numInputs, numOutputs, out, sub_container_type)
+                                       const Precision& precision)
+        :CScalarOneSampleCodeContainer3(name, numInputs, numOutputs, out, precision)
         {}
 
         virtual ~CScalarOneSampleCodeContainer4()

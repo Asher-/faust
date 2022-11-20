@@ -118,7 +118,7 @@ class BasicCloneVisitor : public CloneVisitor {
     {
         // To be sure args are evaluated in order
         FunTyped* cloned_fun = static_cast<FunTyped*>(inst->fType->clone(this));
-        return new DeclareFunInst(inst->fName, cloned_fun, static_cast<BlockInst*>(inst->fCode->clone(this)));
+        return new DeclareFunInst(inst->fName, cloned_fun, static_cast<BlockInst*>(inst->_code->clone(this)));
     }
     virtual StatementInst* visit(DeclareStructTypeInst* inst)
     {
@@ -212,12 +212,12 @@ class BasicCloneVisitor : public CloneVisitor {
 
     virtual StatementInst* visit(RetInst* inst)
     {
-        return new RetInst((inst->fResult) ? inst->fResult->clone(this) : nullptr);
+        return new RetInst((inst->_resolutionult) ? inst->_resolutionult->clone(this) : nullptr);
     }
 
     virtual StatementInst* visit(DropInst* inst)
     {
-        return new DropInst((inst->fResult) ? inst->fResult->clone(this) : nullptr);
+        return new DropInst((inst->_resolutionult) ? inst->_resolutionult->clone(this) : nullptr);
     }
 
     // Conditional
@@ -249,7 +249,7 @@ class BasicCloneVisitor : public CloneVisitor {
     virtual StatementInst* visit(SwitchInst* inst)
     {
         SwitchInst* cloned = new SwitchInst(inst->fCond->clone(this));
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             cloned->addCase(it.first, static_cast<BlockInst*>((it.second)->clone(this)));
         }
         return cloned;
@@ -263,7 +263,7 @@ class BasicCloneVisitor : public CloneVisitor {
         ValueInst* cloned_end = inst->fEnd->clone(this);
         StatementInst* cloned_increment = inst->fIncrement->clone(this);
         return new ForLoopInst(cloned_init, cloned_end, cloned_increment,
-                               static_cast<BlockInst*>(inst->fCode->clone(this)), inst->fIsRecursive);
+                               static_cast<BlockInst*>(inst->_code->clone(this)), inst->fIsRecursive);
     }
 
     virtual StatementInst* visit(SimpleForLoopInst* inst)
@@ -272,7 +272,7 @@ class BasicCloneVisitor : public CloneVisitor {
         ValueInst* cloned_upper = inst->fUpperBound->clone(this);
         ValueInst* cloned_lower = inst->fLowerBound->clone(this);
         return new SimpleForLoopInst(inst->fName, cloned_upper, cloned_lower,
-                                     inst->fReverse, static_cast<BlockInst*>(inst->fCode->clone(this)));
+                                     inst->fReverse, static_cast<BlockInst*>(inst->_code->clone(this)));
     }
 
     virtual StatementInst* visit(IteratorForLoopInst* inst)
@@ -281,14 +281,14 @@ class BasicCloneVisitor : public CloneVisitor {
         for (const auto& it : inst->fIterators) {
             iterators.push_back(static_cast<NamedAddress*>(it->clone(this)));
         }
-        return new IteratorForLoopInst(iterators, inst->fReverse, static_cast<BlockInst*>(inst->fCode->clone(this)));
+        return new IteratorForLoopInst(iterators, inst->fReverse, static_cast<BlockInst*>(inst->_code->clone(this)));
     }
 
     virtual StatementInst* visit(WhileLoopInst* inst)
     {
         // To be sure args are evaluated in order
         ValueInst* cloned_cond = inst->fCond->clone(this);
-        BlockInst* cloned_code = static_cast<BlockInst*>(inst->fCode->clone(this));
+        BlockInst* cloned_code = static_cast<BlockInst*>(inst->_code->clone(this));
         return new WhileLoopInst(cloned_cond, cloned_code);
     }
 
@@ -298,7 +298,7 @@ class BasicCloneVisitor : public CloneVisitor {
         // fBlockStack is used when inlining functions
         BlockInst* cloned = new BlockInst();
         fBlockStack.push(cloned);
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             cloned->pushBackInst(it->clone(this));
         }
         fBlockStack.pop();
@@ -340,7 +340,7 @@ class BasicCloneVisitor : public CloneVisitor {
         for (const auto& it : typed->fArgsTypes) {
             cloned.push_back(static_cast<NamedTyped*>(it->clone(this)));
         }
-        return new FunTyped(cloned, static_cast<BasicTyped*>(typed->fResult->clone(this)), typed->fAttribute);
+        return new FunTyped(cloned, static_cast<BasicTyped*>(typed->_resolutionult->clone(this)), typed->fAttribute);
     }
     virtual Typed* visit(ArrayTyped* typed)
     {

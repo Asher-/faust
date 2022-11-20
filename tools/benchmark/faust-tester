@@ -56,10 +56,10 @@ for p in $FILES; do
 
     # generate and run 'impulse' test
     if [ $IMP == true ]; then
-    	cat > $TMP/imp.dsp << EndOfCode
+    	cat > $TMP/imp.dsp << EndO_code
     	test = 1 - 1';
     	process = test <: library("$SRCDIR/$f").process;
-EndOfCode
+EndO_code
 
         faust2plot $TMP/imp.dsp || echo "ERROR in faust2plot"
         ./$TMP/imp -n $DISPLAY > $TMP/imp.plot
@@ -68,11 +68,11 @@ EndOfCode
 
     # generate and run 'pulse' test
  	if [ $PULSE == true ]; then
-    	cat > $TMP/pulse.dsp << EndOfCode
+    	cat > $TMP/pulse.dsp << EndO_code
     	import("stdfaust.lib");
     	test = ba.pulsen(30, $PERIOD);
     	process = test <: library("$SRCDIR/$f").process;
-EndOfCode
+EndO_code
 
         faust2plot $TMP/pulse.dsp || echo "ERROR in faust2plot"
         ./$TMP/pulse -n $DISPLAY > $TMP/pulse.plot

@@ -28,6 +28,10 @@
 #include "compiler/visitor/instruction_visitor.hh"
 #include "compiler/visitor/clone_visitor.hh"
 
+#include "faust/primitive/type/value.hh"
+
+using Value = ::Faust::Primitive::Type::Value;
+
 struct Typed : public Printable {
     enum VarType {
         kInt32,

@@ -27,10 +27,10 @@
 class SOULScalarCodeContainer : public SOULCodeContainer {
    private:
    public:
-    SOULScalarCodeContainer(const string& name, int numInputs, int numOutputs, int sub_container_type, ostream* dst)
+    SOULScalarCodeContainer(const string& name, int numInputs, int numOutputs, const Precision& precision, ostream* dst)
         : SOULCodeContainer(name, numInputs, numOutputs, dst)
     {
-        fSubContainerType = sub_container_type;
+        fSubContainerType = precision;
     }
 
     void generateCompute(int tab);

@@ -905,7 +905,7 @@ class FBCCPPGenerator : public FBCInterpreter<T, 0> {
         out << "virtual void instanceResetUserInterface()";
         {
             FBCCPPCompiler<T> compiler;
-            compiler.CompileBlock(this->fFactory->fResetUIBlock, tabs + 1, out);
+            compiler.CompileBlock(this->fFactory->_resolutionetUIBlock, tabs + 1, out);
         }
 
         tab(tabs + 1, out);

@@ -279,7 +279,7 @@ class CInstVisitor : public TextInstVisitor {
             *fOut << "static ";
         }
 
-        *fOut << fTypeManager->generateType(inst->fType->fResult, inst->fName);
+        *fOut << fTypeManager->generateType(inst->fType->_resolutionult, inst->fName);
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }
@@ -397,7 +397,7 @@ class CInstVisitor : public TextInstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         DeclareVarInst* c99_declare_inst = dynamic_cast<DeclareVarInst*>(inst->fInit);
         StoreVarInst*   c99_init_inst    = nullptr;
@@ -437,7 +437,7 @@ class CInstVisitor : public TextInstVisitor {
         *fOut << ") {";
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "}";

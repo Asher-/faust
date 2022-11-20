@@ -27,8 +27,13 @@
 #include "compiler/type_manager/garbageable.hh"
 #include "tlib/tlib.hh"
 
+#include "faust/primitive/type/priority.hh"
+
 class old_Occurences : public virtual Garbageable {
-    const int fXVariability;   ///< Extended Variability of the expression
+
+    using Priority = ::Faust::Primitive::Type::Priority;
+
+    const Priority fXVariability;   ///< Extended Variability of the expression
     int       fOccurences[4];  ///< Occurences count according to Contexts
     bool      fMultiOcc;       ///< True when exp has multiple occ. or occ. in higher ctxt
     bool      fOutDelayOcc;    ///< True when exp has at least one occ. outside a delay
@@ -37,15 +42,24 @@ class old_Occurences : public virtual Garbageable {
     Tree      fExecCondition;  ///< When this expression must be computed
 
    public:
-    old_Occurences(int v, int r, Tree xc);
-    old_Occurences* incOccurences(int v, int r, int d, Tree xc);  ///< inc occurences in context v,r,d,xc
+    old_Occurences(
+      const Priority& priority,
+      const int& r,
+      Tree xc
+    );
+    old_Occurences* incOccurences(
+      const Priority& priority,
+      const int& r,
+      const int& delay,
+      Tree xc
+    );  ///< inc occurences in context v,r,d,xc
 
     bool hasMultiOccurences() const;     ///< true if multiple occurences or occ. in higher ctxt
     bool hasOutDelayOccurences() const;  ///< true if has occurences outside a a delay
     int  getMaxDelay() const;            ///< return the maximal delay collected
     int  getMinDelay() const;            ///< return the minimal delay collected
     Tree getExecCondition() const;       ///< return the exec condition
-    int getOccurence(int variability) const; ///< return the number of occurence by variability
+    int getOccurence(const Priority& priority) const; ///< return the number of occurence by variability
 };
 
 /**
@@ -53,11 +67,21 @@ class old_Occurences : public virtual Garbageable {
  * second om.mark(root) then om.retrieve(subtree)
  */
 class old_OccMarkup : public virtual Garbageable {
+
+    using Priority = ::Faust::Primitive::Type::Priority;
+
     Tree            fRootTree;    ///< occurences computed within this tree
     Tree            fPropKey;     ///< key used to store occurences property
     map<Tree, Tree> fConditions;  ///< condition associated to each tree
 
-    void            incOcc(Tree env, int v, int r, int d, Tree xc, Tree t);  ///< inc the occurence of t in context v,r
+    void            incOcc(
+      Tree env,
+      const Priority& priority,
+      const int& recursiveness,
+      const int& delay,
+      Tree xc,
+      Tree t
+    );  ///< inc the occurence of t in context v,r
     old_Occurences* getOcc(Tree t);                                          ///< get Occurences property of t or null
     void            setOcc(Tree t, old_Occurences* occ);                     ///< set Occurences property of t
 

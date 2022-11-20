@@ -28,6 +28,8 @@
 #include "compiler/types/floats.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/cast.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -47,13 +49,13 @@ namespace Faust {
           {
               faustassert(args.size() == arity());
           
-              interval i = args[0]->getInterval();
-              interval j = args[1]->getInterval();
+              interval i = args[0]->interval();
+              interval j = args[1]->interval();
               if (j.valid && ::Faust::Primitive::Math::exceptions && j.haszero()) {
                   cerr << "WARNING : potential division by zero in fmod(" << i << ", " << j << ")" << endl;
               }
 
-              return castInterval(floatCast(args[0] | args[1]), fmod(i, j));
+              return Type::castInterval(Type::floatCast(args[0] | args[1]), fmod(i, j));
           }
 
           virtual int infereSigOrder(const vector<int>& args)

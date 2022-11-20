@@ -264,7 +264,7 @@ class JAVAInstVisitor : public TextInstVisitor {
         }
 
         // Prototype
-        *fOut << fTypeManager->generateType(inst->fType->fResult, generateFunName(inst->fName));
+        *fOut << fTypeManager->generateType(inst->fType->_resolutionult, generateFunName(inst->fName));
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }

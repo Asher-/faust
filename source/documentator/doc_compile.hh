@@ -36,6 +36,8 @@
 #include "compiler/signals/signals.hh"
 #include "compiler/signals/sigtyperules.hh"
 
+#include "faust/primitive/type/priority.hh"
+
 ///////////////////////////////////////////////////////////////////////
 /**
  * Compile a list of FAUST signals into a list of LaTeX formulas.
@@ -44,6 +46,9 @@
 
 class DocCompiler : public virtual Garbageable {
    protected:
+
+    using Priority = ::Faust::Primitive::Type::Priority;
+
     property<string> fCompileProperty;
     property<string> fVectorProperty;
 
@@ -87,7 +92,7 @@ class DocCompiler : public virtual Garbageable {
     int  getSharingCount(Tree t);
     void setSharingCount(Tree t, int count);
     void sharingAnalysis(Tree t);
-    void sharingAnnotation(int vctxt, Tree t);
+    void sharingAnnotation(const Priority& priority, Tree t);
 
     bool isShortEnough(string& s, unsigned int max);
 

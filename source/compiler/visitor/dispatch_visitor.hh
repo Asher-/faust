@@ -100,8 +100,8 @@ struct DispatchVisitor : public InstVisitor {
 
     virtual void visit(DeclareFunInst* inst)
     {
-        if (inst->fCode) {
-            inst->fCode->accept(this);
+        if (inst->_code) {
+            inst->_code->accept(this);
         }
     }
 
@@ -147,15 +147,15 @@ struct DispatchVisitor : public InstVisitor {
 
     virtual void visit(RetInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
         }
     }
 
     virtual void visit(DropInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
         }
     }
 
@@ -184,7 +184,7 @@ struct DispatchVisitor : public InstVisitor {
         inst->fInit->accept(this);
         inst->fEnd->accept(this);
         inst->fIncrement->accept(this);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
     }
 
     virtual void visit(SimpleForLoopInst* inst)
@@ -192,7 +192,7 @@ struct DispatchVisitor : public InstVisitor {
         inst->fInit->accept(this);
         inst->fUpperBound->accept(this);
         inst->fLowerBound->accept(this);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
     }
 
     virtual void visit(IteratorForLoopInst* inst)
@@ -200,26 +200,26 @@ struct DispatchVisitor : public InstVisitor {
         for (const auto& it : inst->fIterators) {
             it->accept(this);
         }
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
     }
 
     virtual void visit(WhileLoopInst* inst)
     {
         inst->fCond->accept(this);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
     }
 
     virtual void visit(SwitchInst* inst)
     {
         inst->fCond->accept(this);
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             (it.second)->accept(this);
         }
     }
 
     virtual void visit(BlockInst* inst)
     {
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             it->accept(this);
         }
     }
@@ -227,7 +227,7 @@ struct DispatchVisitor : public InstVisitor {
     // Typed
     virtual void visit(FunTyped* typed)
     {
-        typed->fResult->accept(this);
+        typed->_resolutionult->accept(this);
         for (const auto& it : typed->fArgsTypes) {
             it->accept(this);
         }

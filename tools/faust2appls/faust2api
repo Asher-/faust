@@ -237,14 +237,14 @@ fi
 if [ "$NVOICES" -gt "0" ]; then
 if [ "$EFFECT" = "auto" ]; then
     EFFECT="$APIFOLDER/autoeffect.dsp"
-    cat > "$EFFECT" << EndOfCode
+    cat > "$EFFECT" << EndO_code
     adapt(1,1) = _;
     adapt(2,2) = _,_;
     adapt(1,2) = _ <: _,_;
     adapt(2,1) = _,_ :> _;
     adaptor(F,G) = adapt(outputs(F),inputs(G));
     process = adaptor(library("$FILE").process, library("$FILE").effect) : library("$FILE").effect;
-EndOfCode
+EndO_code
     # We check this is a faust valid code. No error if it is not.
     faust $EFFECT -o /dev/null 2> /dev/null || POLY2="0" EFFECT=""
 fi

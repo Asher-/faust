@@ -31,7 +31,7 @@ class interpreter_dsp_aux_pe : public interpreter_dsp_aux<REAL, TRACE> {
     protected:
         FBCBlockInstruction<REAL>* fStaticInitBlock;
         FBCBlockInstruction<REAL>* fInitBlock;
-        FBCBlockInstruction<REAL>* fResetUIBlock;
+        FBCBlockInstruction<REAL>* _resolutionetUIBlock;
         FBCBlockInstruction<REAL>* fClearBlock;
         FBCBlockInstruction<REAL>* fComputeBlock;
         FBCBlockInstruction<REAL>* fComputeDSPBlock;
@@ -56,7 +56,7 @@ class interpreter_dsp_aux_pe : public interpreter_dsp_aux<REAL, TRACE> {
             /*
              fFactory->fStaticInitBlock->write(&std::cout, false);
              fFactory->fInitBlock->write(&std::cout, false);
-             fFactory->fResetUIBlock->write(&std::cout, false);
+             fFactory->_resolutionetUIBlock->write(&std::cout, false);
              fFactory->fClearBlock->write(&std::cout, false);
              fFactory->fComputeBlock->write(&std::cout, false);
              fFactory->fComputeDSPBlock->write(&std::cout, false);
@@ -68,7 +68,7 @@ class interpreter_dsp_aux_pe : public interpreter_dsp_aux<REAL, TRACE> {
             
             fStaticInitBlock = nullptr;
             fInitBlock       = nullptr;
-            fResetUIBlock    = nullptr;
+            _resolutionetUIBlock    = nullptr;
             fClearBlock      = nullptr;
             fComputeBlock    = nullptr;
             fComputeDSPBlock = nullptr;
@@ -88,7 +88,7 @@ class interpreter_dsp_aux_pe : public interpreter_dsp_aux<REAL, TRACE> {
             
             delete this->fStaticInitBlock;
             delete this->fInitBlock;
-            delete this->fResetUIBlock;
+            delete this->_resolutionetUIBlock;
             delete this->fClearBlock;
             delete this->fComputeBlock;
             delete this->fComputeDSPBlock;
@@ -124,8 +124,8 @@ class interpreter_dsp_aux_pe : public interpreter_dsp_aux<REAL, TRACE> {
             FBCInstructionOptimizer<T>::specialize2Heap(this->fFactory->fStaticInitBlock->copy(), fIntMap, fRealMap);
             this->fInitBlock =
             FBCInstructionOptimizer<T>::specialize2Heap(this->fFactory->fInitBlock->copy(), fIntMap, fRealMap);
-            this->fResetUIBlock =
-            FBCInstructionOptimizer<T>::specialize2Heap(this->fFactory->fResetUIBlock->copy(), fIntMap, fRealMap);
+            this->_resolutionetUIBlock =
+            FBCInstructionOptimizer<T>::specialize2Heap(this->fFactory->_resolutionetUIBlock->copy(), fIntMap, fRealMap);
             this->fClearBlock =
             FBCInstructionOptimizer<T>::specialize2Heap(this->fFactory->fClearBlock->copy(), fIntMap, fRealMap);
             
@@ -174,7 +174,7 @@ class interpreter_dsp_aux_pe : public interpreter_dsp_aux<REAL, TRACE> {
             /*
              this->fStaticInitBlock->write(&std::cout, false);
              this->fInitBlock->write(&std::cout, false);
-             this->fResetUIBlock->write(&std::cout, false);
+             this->_resolutionetUIBlock->write(&std::cout, false);
              this->fClearBlock->write(&std::cout, false);
              this->fComputeBlock->write(&std::cout, false);
              this->fComputeDSPBlock->write(&std::cout, false);

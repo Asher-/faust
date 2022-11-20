@@ -26,9 +26,9 @@
 #include "compiler/instruction/declarations.hh"
 
 struct RetInst : public StatementInst {
-    ValueInst* fResult;
+    ValueInst* _resolutionult;
 
-    RetInst(ValueInst* result = nullptr) : fResult(result) {}
+    RetInst(ValueInst* result = nullptr) : _resolutionult(result) {}
 
     virtual ~RetInst() {}
 

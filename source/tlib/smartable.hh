@@ -39,13 +39,13 @@ class smartable {
     //! gives the reference count of the object
     unsigned refs() const { return refCount; }
     //! addReference increments the ref count and checks for refCount overflow
-    void addReference()
+    virtual void addReference()
     {
         refCount++;
         faustassert(refCount != 0);
     }
     //! removeReference delete the object when refCount is zero
-    void removeReference()
+    virtual void removeReference()
     {
         if (--refCount == 0) delete this;
     }
@@ -54,7 +54,9 @@ class smartable {
     smartable() : refCount(0) {}
     smartable(const smartable&) : refCount(0) {}
     //! destructor checks for non-zero refCount
-    virtual ~smartable() { faustassert(refCount == 0); }
+    virtual ~smartable() {
+      faustassert(refCount == 0);
+    }
     smartable& operator=(const smartable&) { return *this; }
 };
 

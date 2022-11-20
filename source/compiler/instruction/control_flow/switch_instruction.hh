@@ -29,15 +29,15 @@
 
 struct SwitchInst : public StatementInst {
     ValueInst*                   fCond;
-    std::list<std::pair<int, BlockInst*> > fCode;
+    std::list<std::pair<int, BlockInst*> > _code;
 
-    SwitchInst(ValueInst* cond, const std::list<std::pair<int, BlockInst*> >& code) : fCond(cond), fCode(code) {}
+    SwitchInst(ValueInst* cond, const std::list<std::pair<int, BlockInst*> >& code) : fCond(cond), _code(code) {}
 
     SwitchInst(ValueInst* cond) : fCond(cond) {}
 
     virtual ~SwitchInst() {}
 
-    void addCase(int value, BlockInst* block) { fCode.push_back(std::make_pair(value, block)); }
+    void addCase(int value, BlockInst* block) { _code.push_back(std::make_pair(value, block)); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 

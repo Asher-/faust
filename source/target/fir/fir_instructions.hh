@@ -291,9 +291,9 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
 
     virtual void visit(RetInst* inst)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             *fOut << "RetInst(";
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             *fOut << ")";
             EndLine();
         }
@@ -301,9 +301,9 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
 
     virtual void visit(DropInst* inst)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             *fOut << "DropInst(";
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             *fOut << ")";
             EndLine();
         }
@@ -329,7 +329,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         // Prototype
         *fOut << "DeclareFunInst(";
         size_t size = inst->fType->fArgsTypes.size(), i = 0;
-        *fOut << generateType(inst->fType->fResult, "\"" + fun_name + "\"");
+        *fOut << generateType(inst->fType->_resolutionult, "\"" + fun_name + "\"");
         if (size > 0) {  // Has more arguments...
             *fOut << ", ";
         }
@@ -338,7 +338,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
             if (i++ < size - 1) *fOut << ", ";
         }
 
-        if (inst->fCode->fCode.size() == 0) {
+        if (inst->_code->_code.size() == 0) {
             *fOut << ")";  // Pure prototype
             tab(fTab, *fOut);
         } else {
@@ -346,7 +346,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
             *fOut << ")";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             *fOut << "EndDeclare";
@@ -542,7 +542,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         tab(fTab, *fOut);
         inst->fThen->accept(this);
         fTab--;
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             fTab++;
             tab(fTab, *fOut);
             inst->fElse->accept(this);
@@ -580,7 +580,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         inst->fIncrement->accept(this);
         fFinishLine = true;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "EndForLoopInst";
@@ -598,7 +598,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         tab(fTab, *fOut);
         inst->fUpperBound->accept(this);
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "EndSimpleForLoopInst";
@@ -614,7 +614,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
             it->accept(this);
             tab(fTab, *fOut);
         }
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "EndIteratorForLoopInst";
@@ -627,7 +627,7 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         inst->fCond->accept(this);
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "EndWhileLoopInst";
@@ -637,10 +637,10 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
     virtual void visit(BlockInst* inst)
     {
         *fOut << "BlockInst ";
-        if (inst->fCode.size() > 0) {
+        if (inst->_code.size() > 0) {
             fTab++;
             tab(fTab, *fOut);
-            for (const auto& it : inst->fCode) {
+            for (const auto& it : inst->_code) {
                 it->accept(this);
             }
             fTab--;
@@ -658,8 +658,8 @@ class FIRInstVisitor : public InstVisitor, public CStringTypeManager {
         inst->fCond->accept(this);
         fTab++;
         tab(fTab, *fOut);
-        if (inst->fCode.size() > 0) {
-            for (const auto& it : inst->fCode) {
+        if (inst->_code.size() > 0) {
+            for (const auto& it : inst->_code) {
                 if (it.first == -1) {  // -1 used to code "default" case
                     *fOut << "Default ";
                 } else {

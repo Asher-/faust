@@ -87,7 +87,7 @@ class CodeLoop : public virtual Garbageable {
     void pushBlock(BlockInst* block, BlockInst* loop)
     {
         list<StatementInst*>::const_iterator it;
-        for (it = block->fCode.begin(); it != block->fCode.end(); it++) {
+        for (it = block->_code.begin(); it != block->_code.end(); it++) {
             loop->pushBackInst((*it));
         }
     }

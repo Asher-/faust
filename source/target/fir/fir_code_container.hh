@@ -58,7 +58,7 @@ class FIRCodeContainer : public virtual CodeContainer {
         initialize(numInputs, numOutputs);
     }
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
     void           produceInternal();
     void           produceClass();
 
@@ -76,11 +76,11 @@ class FIRScalarCodeContainer : public FIRCodeContainer {
     virtual void dumpCompute(FIRInstVisitor& firvisitor, ostream* dst);
 
    public:
-    FIRScalarCodeContainer(const string& name, int numInputs, int numOutputs, int sub_container_type, ostream* dst,
+    FIRScalarCodeContainer(const string& name, int numInputs, int numOutputs, const Precision& precision, ostream* dst,
                            bool top_level)
         : FIRCodeContainer(name, numInputs, numOutputs, dst, top_level)
     {
-        fSubContainerType = sub_container_type;
+        fSubContainerType = precision;
     }
 };
 

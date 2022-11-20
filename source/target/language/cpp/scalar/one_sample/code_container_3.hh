@@ -33,7 +33,7 @@ class CPPScalarOneSampleCodeContainer3 : public CPPScalarOneSampleCodeContainer2
         virtual void produceClass();
     public:
         CPPScalarOneSampleCodeContainer3(const std::string& name, const std::string& super, int numInputs, int numOutputs, std::ostream* out,
-                                         int sub_container_type)
+                                         const Precision& precision)
         {
             initialize(numInputs, numOutputs);
             fKlassName = name;
@@ -51,7 +51,7 @@ class CPPScalarOneSampleCodeContainer3 : public CPPScalarOneSampleCodeContainer2
             }
 
             // Setup in produceClass
-            fCodeProducer = nullptr;
+            _codeProducer = nullptr;
         }
         virtual ~CPPScalarOneSampleCodeContainer3()
         {}

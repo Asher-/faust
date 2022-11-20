@@ -44,18 +44,26 @@
 #include "compiler/signals/ppsig.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+
+using Priority = ::Faust::Primitive::Type::Priority;
+
 using namespace std;
+
+using Precision = ::Faust::Primitive::Type::Precision;
+using Priority = ::Faust::Primitive::Type::Priority;
 
 ostream* Printable::fOut = &cout;
 
-static inline BasicTyped* genBasicFIRTyped(int sig_type)
+static inline BasicTyped* genBasicFIRTyped(const Precision& precision)
 {
-    return InstBuilder::genBasicTyped(convert2FIRType(sig_type));
+    return InstBuilder::genBasicTyped(convert2FIRType(precision));
 }
 
-ValueInst* InstructionsCompiler::genCastedOutput(int type, ValueInst* value)
+ValueInst* InstructionsCompiler::genCastedOutput(const Precision& precision, ValueInst* value)
 {
-    bool need_cast = (type == kInt) || !global::config().gFAUSTFLOAT2Internal;
+    bool need_cast = (precision == Precision::Int) || !global::config().gFAUSTFLOAT2Internal;
     return (need_cast) ? InstBuilder::genCastFloatMacroInst(value) : value;
 }
 
@@ -96,16 +104,18 @@ void InstructionsCompiler::sharingAnalysis(Tree t)
     fSharingKey = shprkey(t);
     if (isList(t)) {
         while (isList(t)) {
-            sharingAnnotation(kSamp, hd(t));
+            sharingAnnotation(Priority::Samp, hd(t));
             t = tl(t);
         }
     } else {
-        sharingAnnotation(kSamp, t);
+        sharingAnnotation(Priority::Samp, t);
     }
 }
 
-void InstructionsCompiler::sharingAnnotation(int vctxt, Tree sig)
-{
+void InstructionsCompiler::sharingAnnotation(
+  const Priority& priority,
+  Tree sig
+) {
     // cerr << "START sharing annotation of " << *sig << endl;
     int count = getSharingCount(sig);
 
@@ -116,9 +126,8 @@ void InstructionsCompiler::sharingAnnotation(int vctxt, Tree sig)
     } else {
         // it is our first visit,
         int v = getCertifiedSigType(sig)->variability();
-       
         // check "time sharing" cases
-        if (v < vctxt) {
+        if (static_cast<unsigned int>(priority_visit) < static_cast<unsigned int>(priority)) {
             setSharingCount(sig, 2);  // time sharing occurence : slower expression in faster context
         } else {
             setSharingCount(sig, 1);  // regular occurence
@@ -128,7 +137,7 @@ void InstructionsCompiler::sharingAnnotation(int vctxt, Tree sig)
         vector<Tree> subsig;
         int          n = getSubSignals(sig, subsig);
         if (n > 0 && !isSigGen(sig)) {
-            for (int i = 0; i < n; i++) sharingAnnotation(v, subsig[i]);
+            for (int i = 0; i < n; i++) sharingAnnotation(priority_visit, subsig[i]);
         }
     }
     // cerr << "END sharing annotation of " << *sig << endl;
@@ -398,7 +407,7 @@ CodeContainer* InstructionsCompiler::signal2Container(const std::string& name, T
 {
     ::Type t = getCertifiedSigType(sig);
 
-    CodeContainer* container = fContainer->createScalarContainer(name, t->nature());
+    CodeContainer* container = fContainer->createScalarContainer(name, t->precision());
 
     if (global::config().gOutputLang == "rust" || global::config().gOutputLang == "julia") {
         InstructionsCompiler1 C(container);
@@ -591,7 +600,7 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
         Tree sig = hd(L);
 
         // Possibly cast to external float
-        ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->nature(), CS(sig));
+        ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->precision(), CS(sig));
 
         // HACK for Rust backend
         std::string name;
@@ -881,12 +890,12 @@ ValueInst* InstructionsCompiler::generateFConst(Tree sig, Tree type, const std::
     }
 
     // Special case for 'fSampleRate' parameter of the class
-    int sig_type = getCertifiedSigType(sig)->nature();
+    const Precision precision = getCertifiedSigType(sig)->precision();
     if (name == "fSampleRate") {
-        pushDeclare(InstBuilder::genDecStructVar(name, genBasicFIRTyped(sig_type)));
+        pushDeclare(InstBuilder::genDecStructVar(name, genBasicFIRTyped(precision)));
         return InstBuilder::genLoadStructVar(name);
     } else {
-        pushExtGlobalDeclare(InstBuilder::genDecGlobalVar(name, genBasicFIRTyped(sig_type)));
+        pushExtGlobalDeclare(InstBuilder::genDecGlobalVar(name, genBasicFIRTyped(precision)));
         return InstBuilder::genLoadGlobalVar(name);
     }
 }
@@ -912,8 +921,8 @@ ValueInst* InstructionsCompiler::generateFVar(Tree sig, Tree type, const std::st
     if (name == fFullCount) {
         return generateCacheCode(sig, InstBuilder::genLoadFunArgsVar(name));
     } else {
-        int sig_type = getCertifiedSigType(sig)->nature();
-        pushExtGlobalDeclare(InstBuilder::genDecGlobalVar(name, genBasicFIRTyped(sig_type)));
+        const Precision precision = getCertifiedSigType(sig)->precision();
+        pushExtGlobalDeclare(InstBuilder::genDecGlobalVar(name, genBasicFIRTyped(precision)));
         return generateCacheCode(sig, InstBuilder::genLoadGlobalVar(name));
     }
 }
@@ -977,13 +986,13 @@ ValueInst* InstructionsCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
         int len = ffarity(ff) - 1;
         for (int i = 0; i < ffarity(ff); i++) {
             // Reversed...
-            BasicTyped* argtype = genBasicFIRTyped(ffargtype(ff, len - i));
+            BasicTyped* argtype = genBasicFIRTyped(Precision(ffargtype(ff, len - i)));
             args_types.push_back(InstBuilder::genNamedTyped("dummy" + to_string(i), argtype));
             args_value.push_back(CS(nth(largs, i)));
         }
 
         // Add function declaration
-        FunTyped* fun_type = InstBuilder::genFunTyped(args_types, genBasicFIRTyped(ffrestype(ff)));
+        FunTyped* fun_type = InstBuilder::genFunTyped(args_types, genBasicFIRTyped(Precision(ffrestype(ff))));
         pushExtGlobalDeclare(InstBuilder::genDeclareFunInst(funname, fun_type));
         return generateCacheCode(sig, InstBuilder::genFunCallInst(funname, args_value));
     } else {
@@ -1000,7 +1009,7 @@ ValueInst* InstructionsCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
 
 void InstructionsCompiler::getTypedNames(::Type t, const std::string& prefix, Typed::VarType& ctype, std::string& vname)
 {
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         ctype = Typed::kInt32;
         vname = subst("i$0", global::config().getFreshID(prefix));
     } else {
@@ -1079,11 +1088,11 @@ ValueInst* InstructionsCompiler::generateVariableStore(Tree sig, ValueInst* exp)
     old_Occurences* o = fOccMarkup->retrieve(sig);
     faustassert(o);
 
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             getTypedNames(t, "Const", ctype, vname);
-            // The variable is used in compute (kBlock or kSamp), so define is as a field in the DSP struct
-            if (o->getOccurence(kBlock) || o->getOccurence(kSamp)) {
+            // The variable is used in compute (Priority::Block or Priority::Samp), so define is as a field in the DSP struct
+            if (o->getOccurence(Priority::Block) || o->getOccurence(Priority::Samp)) {
                 pushDeclare(InstBuilder::genDecStructVar(vname, InstBuilder::genBasicTyped(ctype)));
                 pushInitMethod(InstBuilder::genStoreStructVar(vname, exp));
                 return InstBuilder::genLoadStructVar(vname);
@@ -1093,11 +1102,11 @@ ValueInst* InstructionsCompiler::generateVariableStore(Tree sig, ValueInst* exp)
                 return InstBuilder::genLoadStackVar(vname);
             }
 
-        case kBlock:
+        case Priority::Block:
             if (global::config().gOneSample >= 0 || global::config().gOneSampleControl) {
 
                 if (global::config().gOneSample == 3) {
-                    if (t->nature() == kInt) {
+                    if (t->precision() == Precision::Int) {
                         pushComputeBlockMethod(InstBuilder::genStoreArrayStructVar(
                             "iControl", InstBuilder::genInt32NumInst(fContainer->fInt32ControlNum), exp));
                         ValueInst* res = InstBuilder::genLoadArrayStructVar(
@@ -1113,7 +1122,7 @@ ValueInst* InstructionsCompiler::generateVariableStore(Tree sig, ValueInst* exp)
                         return res;
                     }
                 } else {
-                    if (t->nature() == kInt) {
+                    if (t->precision() == Precision::Int) {
                         pushComputeBlockMethod(InstBuilder::genStoreArrayFunArgsVar(
                             "iControl", InstBuilder::genInt32NumInst(fContainer->fInt32ControlNum), exp));
                         ValueInst* res = InstBuilder::genLoadArrayFunArgsVar(
@@ -1135,7 +1144,7 @@ ValueInst* InstructionsCompiler::generateVariableStore(Tree sig, ValueInst* exp)
                 return InstBuilder::genLoadStackVar(vname);
             }
 
-        case kSamp:
+        case Priority::Samp:
             getTypedNames(t, "Temp", ctype, vname);
 
             // Only generated for the DSP loop
@@ -1266,16 +1275,16 @@ ValueInst* InstructionsCompiler::generateBargraphAux(Tree sig, Tree path, Tree m
     ValueInst* val = (global::config().gFAUSTFLOAT2Internal) ? exp : InstBuilder::genCastFloatMacroInst(exp);
     StoreVarInst* res = InstBuilder::genStoreStructVar(varname, val);
 
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             pushResetUIInstructions(res);
             break;
 
-        case kBlock:
+        case Priority::Block:
             pushComputeBlockMethod(res);
             break;
 
-        case kSamp:
+        case Priority::Samp:
             pushComputeDSPMethod(InstBuilder::genControlInst(getConditionCode(sig), res));
             break;
     }
@@ -1633,14 +1642,14 @@ ValueInst* InstructionsCompiler::generateWRTbl(Tree sig, Tree tbl, Tree idx, Tre
 
     Type t2 = getCertifiedSigType(idx);
     Type t3 = getCertifiedSigType(data);
-    // TODO : for a bug in type caching, t->variability() is not correct.
+    // TODO : for a bug in type caching, t->priority() is not correct.
     // Therefore in the meantime we compute it manually. (YO 2020/03/30)
-    int var = t2->variability() | t3->variability();
-    switch (var) {
-        case kKonst:
+    const Priority priority = Priority( static_cast<unsigned int>(t2->priority()) | static_cast<unsigned int>(t3->priority()) );
+    switch (priority) {
+        case Priority::Konst:
             pushInitMethod(InstBuilder::genStoreArrayStructVar(vname, CS(idx), cdata));
             break;
-        case kBlock:
+        case Priority::Block:
             pushComputeBlockMethod(InstBuilder::genStoreArrayStructVar(vname, CS(idx), cdata));
             break;
         default:
@@ -1830,7 +1839,7 @@ ValueInst* InstructionsCompiler::generatePrefix(Tree sig, Tree x, Tree e)
 {
     std::string         vperm = global::config().getFreshID("pfPerm");
     std::string         vtemp = global::config().getFreshID("pfTemp");
-    Typed::VarType type  = convert2FIRType(getCertifiedSigType(sig)->nature());
+    Typed::VarType type  = convert2FIRType(getCertifiedSigType(sig)->precision());
 
     // Variable declaration
     pushDeclare(InstBuilder::genDecStructVar(vperm, InstBuilder::genBasicTyped(type)));

@@ -164,7 +164,7 @@ class OpenCLInstVisitor : public TextInstVisitor {
             *fOut << "inline ";
         }
 
-        *fOut << fTypeManager->generateType(inst->fType->fResult, inst->fName);
+        *fOut << fTypeManager->generateType(inst->fType->_resolutionult, inst->fName);
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }

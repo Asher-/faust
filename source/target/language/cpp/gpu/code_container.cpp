@@ -40,7 +40,7 @@ static void tab1(int n, ostream& fout)
 void CPPGPUCodeContainer::prepareFIR(void)
 {
     // Sort arrays to be at the begining
-    fDeclarationInstructions->fCode.sort(sortArrayDeclarations);
+    fDeclarationInstructions->_code.sort(sortArrayDeclarations);
 }
 
 void CPPOpenCLCodeContainer::produceInternal()
@@ -50,9 +50,9 @@ void CPPOpenCLCodeContainer::produceInternal()
     // Global declarations
     /*
     tab(n, *fOut);
-    if (fGlobalDeclarationInstructions->fCode.size() > 0) {
-        fCodeProducer->Tab(n);
-        fGlobalDeclarationInstructions->accept(fCodeProducer);
+    if (fGlobalDeclarationInstructions->_code.size() > 0) {
+        _codeProducer->Tab(n);
+        fGlobalDeclarationInstructions->accept(_codeProducer);
     }
     */
 
@@ -72,8 +72,8 @@ void CPPOpenCLCodeContainer::produceInternal()
     tab(n + 1, *fOut);
 
     // Fields
-    fCodeProducer->Tab(n + 1);
-    generateDeclarations(fCodeProducer);
+    _codeProducer->Tab(n + 1);
+    generateDeclarations(_codeProducer);
 
     tab(n, *fOut);
     *fOut << "  public:";
@@ -81,15 +81,15 @@ void CPPOpenCLCodeContainer::produceInternal()
     // Input method
     tab(n + 1, *fOut);
     // TO CHECK
-    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kDefault, fCodeProducer);
+    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kDefault, _codeProducer);
 
     // Inits
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << "void instanceInit" << fKlassName << "(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateInit(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateInit(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -99,10 +99,10 @@ void CPPOpenCLCodeContainer::produceInternal()
     tab(n + 1, *fOut);
     *fOut << "void fill" << fKlassName << subst("(int $0, $1* output) {", counter, ifloat());
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateComputeBlock(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateComputeBlock(_codeProducer);
     ForLoopInst* loop = fCurLoop->generateScalarLoop(counter);
-    loop->accept(fCodeProducer);
+    loop->accept(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -146,8 +146,8 @@ void CPPOpenCLCodeContainer::produceClass()
 
     // Functions
     tab(n, *fOut);
-    fCodeProducer->Tab(n);
-    generateGlobalDeclarations(fCodeProducer);
+    _codeProducer->Tab(n);
+    generateGlobalDeclarations(_codeProducer);
 
     // Compile OpenCL kernel string
     *fGPUOut << "const char* KernelSource = \"";
@@ -184,7 +184,7 @@ void CPPOpenCLCodeContainer::produceClass()
     tab1(n, *fGPUOut);
 
     // Generate instanceInit kernel
-    if (fInitInstructions->fCode.size() > 0) {
+    if (fInitInstructions->_code.size() > 0) {
         *fGPUOut << "__kernel void instanceInitKernel(__global faustdsp* dsp, __global faustcontrol* control, __global "
                     "int sample_rate) {";
         tab1(n + 1, *fGPUOut);
@@ -217,8 +217,8 @@ void CPPOpenCLCodeContainer::produceClass()
     tab(n + 1, *fOut);
 
     // Fields
-    if (fDeclarationInstructions->fCode.size() > 0) {
-        fCodeProducer->Tab(n + 1);
+    if (fDeclarationInstructions->_code.size() > 0) {
+        _codeProducer->Tab(n + 1);
 
         // Separate control and non-controls fields in 2 structures
         tab(n + 1, *fOut);
@@ -843,32 +843,32 @@ void CPPOpenCLCodeContainer::produceClass()
 
     tab(n + 1, *fOut);
     *fOut << "void destroy() {";
-    if (fDestroyInstructions->fCode.size() > 0) {
+    if (fDestroyInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
-        fCodeProducer->Tab(n + 2);
-        fDestroyInstructions->accept(fCodeProducer);
+        _codeProducer->Tab(n + 2);
+        fDestroyInstructions->accept(_codeProducer);
     }
     tab(n + 1, *fOut);
     *fOut << "}";
     tab(n + 1, *fOut);
 
     // TO CHECK
-    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kVirtual, fCodeProducer);
+    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kVirtual, _codeProducer);
 
     // Inits
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << "static void classInit(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateStaticInit(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateStaticInit(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << "virtual void instanceInit(int sample_rate) {";
-    if (fInitInstructions->fCode.size() > 0) {
+    if (fInitInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
         *fOut << "fSampleRate = sample_rate;";
 
@@ -916,9 +916,9 @@ void CPPOpenCLCodeContainer::produceClass()
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << "virtual void buildUserInterface(UI* interface) {";
-    if (fUserInterfaceInstructions->fCode.size() > 0) {
+    if (fUserInterfaceInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
-        fCodeProducer->Tab(n + 2);
+        _codeProducer->Tab(n + 2);
         UIInstVisitor ui_visitor(fOut, n + 2);
         fUserInterfaceInstructions->accept(&ui_visitor);
     }
@@ -930,9 +930,9 @@ void CPPOpenCLCodeContainer::produceClass()
     tab(n, *fOut);
 
     // Possibly generate separated functions
-    fCodeProducer->Tab(n + 1);
+    _codeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateComputeFunctions(fCodeProducer);
+    generateComputeFunctions(_codeProducer);
 
     tab(n, *fOut);
     *fOut << "};" << endl;
@@ -947,7 +947,7 @@ void CPPOpenCLCodeContainer::generateCompute(int n)
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << subst("virtual void compute(int count, $0** inputs, $0** outputs) {", xfloat());
-    fCodeProducer->Tab(n + 2);
+    _codeProducer->Tab(n + 2);
 
     tab(n + 2, *fOut);
     *fOut << "fCount = count;";
@@ -1118,9 +1118,9 @@ void CPPCUDACodeContainer::produceInternal()
     // Global declarations
     /*
     tab(n, *fOut);
-    if (fGlobalDeclarationInstructions->fCode.size() > 0) {
-        fCodeProducer->Tab(n);
-        fGlobalDeclarationInstructions->accept(fCodeProducer);
+    if (fGlobalDeclarationInstructions->_code.size() > 0) {
+        _codeProducer->Tab(n);
+        fGlobalDeclarationInstructions->accept(_codeProducer);
     }
     */
 
@@ -1140,23 +1140,23 @@ void CPPCUDACodeContainer::produceInternal()
     tab(n + 1, *fOut);
 
     // Fields
-    fCodeProducer->Tab(n + 1);
-    generateDeclarations(fCodeProducer);
+    _codeProducer->Tab(n + 1);
+    generateDeclarations(_codeProducer);
 
     tab(n, *fOut);
     *fOut << "  public:";
 
     tab(n + 1, *fOut);
     // TO CHECK
-    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kDefault, fCodeProducer);
+    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kDefault, _codeProducer);
 
     // Inits
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << "void instanceInit" << fKlassName << "(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateInit(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateInit(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -1166,10 +1166,10 @@ void CPPCUDACodeContainer::produceInternal()
     tab(n + 1, *fOut);
     *fOut << "void fill" << fKlassName << subst("(int $0, $1* output) {", counter, ifloat());
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateComputeBlock(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateComputeBlock(_codeProducer);
     ForLoopInst* loop = fCurLoop->generateScalarLoop(counter);
-    loop->accept(fCodeProducer);
+    loop->accept(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
@@ -1271,8 +1271,8 @@ void CPPCUDACodeContainer::produceClass()
 
     // Functions
     tab(n, *fOut);
-    fCodeProducer->Tab(n);
-    generateGlobalDeclarations(fCodeProducer);
+    _codeProducer->Tab(n);
+    generateGlobalDeclarations(_codeProducer);
 
     // Macro definition
     tab(n, *fGPUOut);
@@ -1307,7 +1307,7 @@ void CPPCUDACodeContainer::produceClass()
     tab(n, *fGPUOut);
 
     // Generate instanceInit kernel
-    if (fInitInstructions->fCode.size() > 0) {
+    if (fInitInstructions->_code.size() > 0) {
         *fGPUOut << "__global__ void instanceInitKernel(faustdsp* dsp, faustcontrol* control, int sample_rate) {";
         tab(n + 1, *fGPUOut);
         fKernelCodeProducer->Tab(n + 1);
@@ -1379,8 +1379,8 @@ void CPPCUDACodeContainer::produceClass()
         *fOut << "  private:";
     }
 
-    if (fDeclarationInstructions->fCode.size() > 0) {
-        fCodeProducer->Tab(n + 1);
+    if (fDeclarationInstructions->_code.size() > 0) {
+        _codeProducer->Tab(n + 1);
 
         tab(n + 1, *fOut);
         tab(n + 1, *fOut);
@@ -1794,28 +1794,28 @@ void CPPCUDACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "void destroy() {";
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateDestroy(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateDestroy(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
     tab(n + 1, *fOut);
 
     // TO CHECK
-    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kVirtual, fCodeProducer);
+    produceInfoFunctions(n + 1, fKlassName, "dsp", false, FunTyped::kVirtual, _codeProducer);
 
     // Inits
     tab(n + 1, *fOut);
     *fOut << "static void classInit(int sample_rate) {";
     tab(n + 2, *fOut);
-    fCodeProducer->Tab(n + 2);
-    generateStaticInit(fCodeProducer);
+    _codeProducer->Tab(n + 2);
+    generateStaticInit(_codeProducer);
     tab(n + 1, *fOut);
     *fOut << "}";
 
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << "virtual void instanceInit(int sample_rate) {";
-    if (fInitInstructions->fCode.size() > 0) {
+    if (fInitInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
         *fOut << "fSampleRate = sample_rate;";
         tab(n + 2, *fOut);
@@ -1837,9 +1837,9 @@ void CPPCUDACodeContainer::produceClass()
     *fOut << "virtual void buildUserInterface(UI* interface) {";
     tab(n + 2, *fOut);
     *fOut << "faustassert(fHostControl);";
-    if (fUserInterfaceInstructions->fCode.size() > 0) {
+    if (fUserInterfaceInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
-        fCodeProducer->Tab(n + 2);
+        _codeProducer->Tab(n + 2);
         UIInstVisitor ui_visitor(fOut, n + 2);
         fUserInterfaceInstructions->accept(&ui_visitor);
     }
@@ -1851,9 +1851,9 @@ void CPPCUDACodeContainer::produceClass()
     tab(n, *fOut);
 
     // Possibly generate separated functions
-    fCodeProducer->Tab(n + 1);
+    _codeProducer->Tab(n + 1);
     tab(n + 1, *fOut);
-    generateComputeFunctions(fCodeProducer);
+    generateComputeFunctions(_codeProducer);
 
     tab(n, *fOut);
     *fOut << "};" << endl;
@@ -1883,7 +1883,7 @@ void CPPCUDACodeContainer::generateCompute(int n)
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
     *fOut << subst("virtual void compute(int count, $0** inputs, $0** outputs) {", xfloat());
-    fCodeProducer->Tab(n + 2);
+    _codeProducer->Tab(n + 2);
 
     tab(n + 2, *fOut);
     *fOut << "fCount = count;";

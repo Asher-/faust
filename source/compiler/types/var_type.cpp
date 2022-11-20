@@ -23,5 +23,12 @@
 #include "compiler/types/floats.hh"
 #include "compiler/signals/sigtype.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 // Tools for types
-Typed::VarType convert2FIRType(int type) { return (type == kInt) ? Typed::kInt32 : itfloat(); }
+Typed::VarType convert2FIRType(const Precision& precision)
+{
+  return (precision == Precision::Int) ? Typed::kInt32 : itfloat();
+}

@@ -41,6 +41,10 @@ Compile a list of FAUST signals into a LaTeX equation.
 #include "compiler/signals/sigtype.hh"
 #include "compiler/signals/sigtyperules.hh"
 
+#include "faust/primitive/type/priority.hh"
+
+using Priority = ::Faust::Primitive::Type::Priority;
+
 /*****************************************************************************
 ******************************************************************************
 
@@ -77,11 +81,11 @@ void DocCompiler::sharingAnalysis(Tree t)
     fSharingKey = shprkey(t);
     if (isList(t)) {
         while (isList(t)) {
-            sharingAnnotation(kSamp, hd(t));
+            sharingAnnotation(Priority::Samp, hd(t));
             t = tl(t);
         }
     } else {
-        sharingAnnotation(kSamp, t);
+        sharingAnnotation(Priority::Samp, t);
     }
 }
 
@@ -89,7 +93,7 @@ void DocCompiler::sharingAnalysis(Tree t)
 // Create a specific property key for the sharing count of subtrees of t
 //------------------------------------------------------------------------------
 
-void DocCompiler::sharingAnnotation(int vctxt, Tree sig)
+void DocCompiler::sharingAnnotation(const Priority& priority, Tree sig)
 {
     // cerr << "START sharing annotation of " << *sig << endl;
     int count = getSharingCount(sig);
@@ -100,10 +104,10 @@ void DocCompiler::sharingAnnotation(int vctxt, Tree sig)
 
     } else {
         // it is our first visit,
-        int v = getCertifiedSigType(sig)->variability();
+        const Priority& priority_visitor = getCertifiedSigType(sig)->priority();
 
         // check "time sharing" cases
-        if (v < vctxt) {
+        if (priority_visitor < priority) {
             setSharingCount(sig, 2);  // time sharing occurence : slower expression in faster context
         } else {
             setSharingCount(sig, 1);  // regular occurence
@@ -113,7 +117,11 @@ void DocCompiler::sharingAnnotation(int vctxt, Tree sig)
         vector<Tree> subsig;
         int          n = getSubSignals(sig, subsig);
         if (n > 0 && !isSigGen(sig)) {
-            for (int i = 0; i < n; i++) sharingAnnotation(v, subsig[i]);
+            for (int i = 0; i < n; i++)
+              sharingAnnotation(
+                priority_visitor,
+                subsig[i]
+              );
         }
     }
     // cerr << "END sharing annotation of " << *sig << endl;

@@ -25,6 +25,10 @@
 #include "compiler/visitor/instructions_complexity.hh"
 #include "compiler/visitor/struct_instruction_visitor.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 dsp_factory_base* FIRCodeContainer::produceFactory()
@@ -33,9 +37,9 @@ dsp_factory_base* FIRCodeContainer::produceFactory()
         fKlassName, "", "", ((static_cast<ostringstream*>(fOut)) ? static_cast<ostringstream*>(fOut)->str() : ""), "");
 }
 
-CodeContainer* FIRCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* FIRCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new FIRScalarCodeContainer(name, 0, 1, sub_container_type, fOut, false);
+    return new FIRScalarCodeContainer(name, 0, 1, precision, fOut, false);
 }
 
 CodeContainer* FIRCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst,
@@ -50,7 +54,7 @@ CodeContainer* FIRCodeContainer::createContainer(const string& name, int numInpu
     } else if (global::config().gVectorSwitch) {
         container = new FIRVectorCodeContainer(name, numInputs, numOutputs, dst, top_level);
     } else {
-        container = new FIRScalarCodeContainer(name, numInputs, numOutputs, kInt, dst, top_level);
+        container = new FIRScalarCodeContainer(name, numInputs, numOutputs, Precision::Int, dst, top_level);
     }
 
     return container;
@@ -59,7 +63,7 @@ CodeContainer* FIRCodeContainer::createContainer(const string& name, int numInpu
 void FIRCodeContainer::dumpUserInterface(FIRInstVisitor& firvisitor, ostream* dst)
 {
     // User Interface
-    if (fUserInterfaceInstructions->fCode.size() > 0) {
+    if (fUserInterfaceInstructions->_code.size() > 0) {
         *dst << "======= User Interface begin ==========" << endl << endl;
         fUserInterfaceInstructions->accept(&firvisitor);
         *dst << endl << "======= User Interface end ==========" << endl << endl;
@@ -78,19 +82,19 @@ void FIRCodeContainer::dumpSubContainers(FIRInstVisitor& firvisitor, ostream* ds
 
 void FIRCodeContainer::dumpGlobalsAndInit(FIRInstVisitor& firvisitor, ostream* dst)
 {
-    if (fExtGlobalDeclarationInstructions->fCode.size() > 0) {
+    if (fExtGlobalDeclarationInstructions->_code.size() > 0) {
         *dst << "======= Global external declarations begin ==========" << endl << endl;
         fExtGlobalDeclarationInstructions->accept(&firvisitor);
         *dst << endl << "======= Global external declarations end ==========" << endl << endl;
     }
 
-    if (fGlobalDeclarationInstructions->fCode.size() > 0) {
+    if (fGlobalDeclarationInstructions->_code.size() > 0) {
         *dst << "======= Global declarations begin ==========" << endl << endl;
         fGlobalDeclarationInstructions->accept(&firvisitor);
         *dst << endl << "======= Global declarations end ==========" << endl << endl;
     }
 
-    if (fDeclarationInstructions->fCode.size() > 0) {
+    if (fDeclarationInstructions->_code.size() > 0) {
         *dst << "======= DSP struct begin ==========" << endl << endl;
         StructInstVisitor visitor;
         fDeclarationInstructions->accept(&visitor);
@@ -103,40 +107,40 @@ void FIRCodeContainer::dumpGlobalsAndInit(FIRInstVisitor& firvisitor, ostream* d
     generateGetOutputs(subst("$0::getNumOutputs", fKlassName), "dsp", true, FunTyped::kDefault)->accept(&firvisitor);
     *dst << endl;
 
-    if (fStaticInitInstructions->fCode.size() > 0) {
+    if (fStaticInitInstructions->_code.size() > 0) {
         *dst << "======= Static Init begin ==========" << endl << endl;
         fStaticInitInstructions->accept(&firvisitor);
-        if (fPostStaticInitInstructions->fCode.size() > 0) {
+        if (fPostStaticInitInstructions->_code.size() > 0) {
             fPostStaticInitInstructions->accept(&firvisitor);
         }
         *dst << endl << "======= Static Init end ==========" << endl << endl;
     }
 
-    if (fInitInstructions->fCode.size() > 0) {
+    if (fInitInstructions->_code.size() > 0) {
         *dst << "======= Init begin ==========" << endl << endl;
         fInitInstructions->accept(&firvisitor);
         *dst << endl << "======= Init end ==========" << endl << endl;
     }
 
-    if (fResetUserInterfaceInstructions->fCode.size() > 0) {
+    if (_resolutionetUserInterfaceInstructions->_code.size() > 0) {
         *dst << "======= ResetUI begin ==========" << endl << endl;
-        fResetUserInterfaceInstructions->accept(&firvisitor);
+        _resolutionetUserInterfaceInstructions->accept(&firvisitor);
         *dst << endl << "======= ResetUI end ==========" << endl << endl;
     }
 
-    if (fClearInstructions->fCode.size() > 0) {
+    if (fClearInstructions->_code.size() > 0) {
         *dst << "======= Clear begin ==========" << endl << endl;
         fClearInstructions->accept(&firvisitor);
         *dst << endl << "======= Clear end ==========" << endl << endl;
     }
 
-    if (fDestroyInstructions->fCode.size() > 0) {
+    if (fDestroyInstructions->_code.size() > 0) {
         *dst << "======= Destroy begin ==========" << endl << endl;
         fDestroyInstructions->accept(&firvisitor);
         *dst << endl << "======= Destroy end ==========" << endl << endl;
     }
 
-    if (fAllocateInstructions->fCode.size() > 0) {
+    if (fAllocateInstructions->_code.size() > 0) {
         *dst << "======= Allocate begin ==========" << endl << endl;
         fAllocateInstructions->accept(&firvisitor);
         *dst << endl << "======= Allocate end ==========" << endl << endl;
@@ -153,7 +157,7 @@ static void dumpCost(StatementInst* inst, ostream* dst)
 
 void FIRCodeContainer::dumpComputeBlock(FIRInstVisitor& firvisitor, ostream* dst)
 {
-    if (fComputeBlockInstructions->fCode.size() > 0) {
+    if (fComputeBlockInstructions->_code.size() > 0) {
         *dst << "======= Compute control begin ==========" << endl << endl;
         // Complexity estimation
         dumpCost(fComputeBlockInstructions, dst);
@@ -300,7 +304,7 @@ void FIRVectorCodeContainer::dumpCompute(FIRInstVisitor& firvisitor, ostream* ds
     *dst << endl << "======= Compute DSP end ==========" << endl << endl;
 
     // Possibly generate separated functions
-    if (fComputeFunctions->fCode.size() > 0) {
+    if (fComputeFunctions->_code.size() > 0) {
         *dst << "======= Separated functions begin ==========" << endl;
         *dst << endl;
         // Complexity estimation
@@ -320,7 +324,7 @@ void FIROpenMPCodeContainer::dumpCompute(FIRInstVisitor& firvisitor, ostream* ds
     *dst << endl << "======= Compute DSP end ==========" << endl << endl;
 
     // Possibly generate separated functions
-    if (fComputeFunctions->fCode.size() > 0) {
+    if (fComputeFunctions->_code.size() > 0) {
         *dst << "======= Separated functions begin ==========" << endl;
         *dst << endl;
         // Complexity estimation
@@ -333,7 +337,7 @@ void FIROpenMPCodeContainer::dumpCompute(FIRInstVisitor& firvisitor, ostream* ds
 void FIRWorkStealingCodeContainer::dumpCompute(FIRInstVisitor& firvisitor, ostream* dst)
 {
     // Possibly generate separated functions
-    if (fComputeFunctions->fCode.size() > 0) {
+    if (fComputeFunctions->_code.size() > 0) {
         *dst << "======= Separated functions begin ==========" << endl;
         *dst << endl;
         // Complexity estimation

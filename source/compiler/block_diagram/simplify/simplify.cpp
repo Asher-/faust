@@ -192,11 +192,11 @@ static Tree simplification(Tree sig)
 	
     } else if (isSigLowest(sig, t1)){
         Type ty = getCertifiedSigType(t1);
-        return sigReal(ty->getInterval().lo);
+        return sigReal(ty->interval().lo);
         
     } else if (isSigHighest(sig, t1)){
         Type ty = getCertifiedSigType(t1);
-        return sigReal(ty->getInterval().hi);
+        return sigReal(ty->interval().hi);
         
     } else {
         return sig;

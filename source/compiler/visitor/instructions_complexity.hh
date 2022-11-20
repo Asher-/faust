@@ -35,6 +35,8 @@ using namespace std;
 #include "compiler/errors/exception.hh"
 #include "compiler/instruction/instructions.hh"
 
+#include "faust/primitive/type/cast.hh"
+
 class InstComplexityVisitor : public DispatchVisitor {
    private:
     int fLoad;

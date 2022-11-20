@@ -25,7 +25,7 @@
 
 bool BlockInst::hasReturn() const
 {
-    std::list<StatementInst*>::const_iterator it = fCode.end();
+    std::list<StatementInst*>::const_iterator it = _code.end();
     it--;
     return dynamic_cast<RetInst*>(*it);
 }
@@ -33,12 +33,12 @@ bool BlockInst::hasReturn() const
 // Return the block value (if is has one) and remove it from the block
 ValueInst* BlockInst::getReturnValue()
 {
-    std::list<StatementInst*>::const_iterator it = fCode.end();
+    std::list<StatementInst*>::const_iterator it = _code.end();
     it--;
     RetInst* ret = dynamic_cast<RetInst*>(*it);
     if (ret) {
-        fCode.pop_back();
-        return ret->fResult;
+        _code.pop_back();
+        return ret->_resolutionult;
     } else {
         return InstBuilder::genNullValueInst();
     }

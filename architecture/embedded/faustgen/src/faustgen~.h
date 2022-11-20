@@ -111,7 +111,7 @@ class faustgen_factory {
         char** fBitCode;                // Bitcode string
         
         set<string> fLibraryPath;       // Path towards the Faust libraries
-        string fResourcePath;           // Path of the resource folder
+        string _resolutionourcePath;           // Path of the resource folder
         string fDrawPath;               // Path where to put SVG files
         
         vector<string> fOptions;        // Options set in the 'compileoptions' message

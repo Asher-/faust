@@ -36,8 +36,8 @@ class CPPScalarOneSampleCodeContainer4 : public CPPScalarOneSampleCodeContainer3
         CPPScalarOneSampleCodeContainer4(const std::string& name, const std::string& super,
                                          int numInputs, int numOutputs,
                                          std::ostream* out,
-                                         int sub_container_type)
-        :CPPScalarOneSampleCodeContainer3(name, super, numInputs, numOutputs, out, sub_container_type)
+                                         const Precision& precision)
+        :CPPScalarOneSampleCodeContainer3(name, super, numInputs, numOutputs, out, precision)
         {}
 
     virtual ~CPPScalarOneSampleCodeContainer4()

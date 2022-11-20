@@ -34,12 +34,13 @@
 #include <unistd.h>
 #endif
 
+#include "tlib/occurrences.hh"
+#include "tlib/property.hh"
+
 #include "compiler/errors/exception.hh"
 #include "compiler/types/typed.hh"
 #include "compiler/block_diagram/parallelize/loopDetector.hh"
 #include "compiler/block_diagram/eval/stackOverflowDetector.hh"
-#include "tlib/occurrences.hh"
-#include "tlib/property.hh"
 #include "compiler/signals/sigtype.hh"
 #include "compiler/file_handling/sourcereader.hh"
 
@@ -374,7 +375,7 @@ struct global {
     Type TGUI01;
  
     // Trying to accelerate type convergence
-    Type TREC;  // kVect ou kScal ?
+    Type TREC;  // Vectorability::Vect ou Vectorability::Scal ?
     Type TRECMAX;
 
     // Empty predefined bit depth

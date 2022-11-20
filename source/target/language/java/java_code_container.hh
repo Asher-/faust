@@ -30,13 +30,13 @@ using namespace std;
 
 class JAVACodeContainer : public virtual CodeContainer {
    protected:
-    JAVAInstVisitor fCodeProducer;
+    JAVAInstVisitor _codeProducer;
     std::ostream*   fOut;
     string          fSuperKlassName;
 
    public:
     JAVACodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out)
-        : fCodeProducer(out), fOut(out), fSuperKlassName(super)
+        : _codeProducer(out), fOut(out), fSuperKlassName(super)
     {
         initialize(numInputs, numOutputs);
         fKlassName = name;
@@ -51,7 +51,7 @@ class JAVACodeContainer : public virtual CodeContainer {
 
     virtual void printHeader() { CodeContainer::printHeader(*fOut); }
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const string& name, const string& super, int numInputs, int numOutputs,
                                           ostream* dst = new stringstream());
@@ -61,7 +61,7 @@ class JAVAScalarCodeContainer : public JAVACodeContainer {
    protected:
    public:
     JAVAScalarCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out,
-                            int sub_container_type);
+                            const Precision& precision);
     virtual ~JAVAScalarCodeContainer();
 
     void generateCompute(int tab);

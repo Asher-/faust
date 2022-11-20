@@ -57,7 +57,7 @@ class CmajorCodeContainer : public virtual CodeContainer {
         }
     }
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
     void           produceInternal();
     void           produceClass();
     virtual void   generateCompute(int tab) = 0;

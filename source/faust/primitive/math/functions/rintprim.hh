@@ -29,6 +29,8 @@
 #include "compiler/types/floats.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/cast.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -44,11 +46,11 @@ namespace Faust {
           virtual ::Type infereSigType(ConstTypes args)
           {
               faustassert(args.size() == arity());
-              interval i = args[0]->getInterval();
+              interval i = args[0]->interval();
               if (i.valid) {
-                  return castInterval(floatCast(args[0]), interval(rint(i.lo), rint(i.hi)));
+                  return Type::castInterval(Type::floatCast(args[0]), interval(rint(i.lo), rint(i.hi)));
               } else {
-                  return floatCast(args[0]);
+                  return Type::floatCast(args[0]);
               }
           }
 

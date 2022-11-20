@@ -483,9 +483,9 @@ class JuliaInstVisitor : public TextInstVisitor {
 
     virtual void visitAux(RetInst* inst, bool gen_empty)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             *fOut << "return ";
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             EndLine(' ');
         } else if (gen_empty) {
             *fOut << "return";
@@ -495,8 +495,8 @@ class JuliaInstVisitor : public TextInstVisitor {
 
     virtual void visit(DropInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
             EndLine(' ');
         }
     }
@@ -528,14 +528,14 @@ class JuliaInstVisitor : public TextInstVisitor {
 
     virtual void generateFunDefBody(DeclareFunInst* inst)
     {
-        if (inst->fCode->fCode.size() == 0) {
+        if (inst->_code->_code.size() == 0) {
             *fOut << ") where {T}" << endl;  // Pure prototype
         } else {
             // Function body
             *fOut << ") where {T}";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             *fOut << "end";
@@ -631,7 +631,7 @@ class JuliaInstVisitor : public TextInstVisitor {
         inst->fThen->accept(this);
         fTab--;
         back(1, *fOut);
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             *fOut << "elseif";
             fTab++;
             tab(fTab, *fOut);
@@ -648,7 +648,7 @@ class JuliaInstVisitor : public TextInstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         *fOut << "for ";
         fFinishLine = false;
@@ -660,7 +660,7 @@ class JuliaInstVisitor : public TextInstVisitor {
         fFinishLine = true;
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "end";
@@ -670,7 +670,7 @@ class JuliaInstVisitor : public TextInstVisitor {
     virtual void visit(SimpleForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         *fOut << "@inbounds for " << inst->getName() << " in ";
 
@@ -703,7 +703,7 @@ class JuliaInstVisitor : public TextInstVisitor {
 
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "end";

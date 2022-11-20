@@ -28,6 +28,10 @@
 #include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 
+#include "faust/primitive/type/priority.hh"
+
+using Priority = ::Faust::Primitive::Type::Priority;
+
 DAGInstructionsCompiler::DAGInstructionsCompiler(CodeContainer* container) : InstructionsCompiler(container)
 {
 }
@@ -87,7 +91,7 @@ void DAGInstructionsCompiler::compileMultiSignal(Tree L)
             fContainer->openLoop("i");
 
             // Possibly cast to external float
-            ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->nature(), CS(sig));
+            ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->precision(), CS(sig));
 
             pushComputeDSPMethod(InstBuilder::genStoreArrayFunArgsVar(
                 name, getCurrentLoopIndex() + InstBuilder::genLoadLoopVar("vindex"), res));
@@ -103,7 +107,7 @@ void DAGInstructionsCompiler::compileMultiSignal(Tree L)
             fContainer->openLoop("i");
 
             // Possibly cast to external float
-            ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->nature(), CS(sig));
+            ValueInst* res = genCastedOutput(getCertifiedSigType(sig)->precision(), CS(sig));
 
             if (global::config().gComputeMix) {
                 ValueInst* res1 = InstBuilder::genAdd(res, InstBuilder::genLoadArrayStackVar(name, getCurrentLoopIndex()));
@@ -179,7 +183,7 @@ ValueInst* DAGInstructionsCompiler::CS(Tree sig)
         } else {
             if (isProj(sig, &i, r)) {
                 // cerr << "SYMBOL RECURSIF EN COURS ??? " << *r << endl;
-            } else if (getCertifiedSigType(sig)->variability() < kSamp) {
+            } else if (getCertifiedSigType(sig)->priority() < Priority::Samp) {
                 // cerr << "SLOW EXPRESSION " << endl;
             } else {
                 // cerr << "Expression absorbée" << *sig << endl;
@@ -286,7 +290,7 @@ ValueInst* DAGInstructionsCompiler::generateCacheCode(Tree sig, ValueInst* exp)
     old_Occurences* o      = fOccMarkup->retrieve(sig);
     int            d       = o->getMaxDelay();
 
-    if (t->variability() < kSamp) {
+    if (t->priority() < Priority::Samp) {
         if (d == 0) {
             // non-sample, not delayed : same as scalar cache
             return InstructionsCompiler::generateCacheCode(sig, exp);
@@ -378,7 +382,7 @@ bool DAGInstructionsCompiler::needSeparateLoop(Tree sig)
 
     if (o->getMaxDelay() > 0) {
         b = true;
-    } else if (verySimple(sig) || t->variability() < kSamp) {
+    } else if (verySimple(sig) || t->priority() < Priority::Samp) {
         b = false;  // non sample computation never require a loop
     } else if (isSigDelay(sig, x, y)) {
         b = false;
@@ -398,7 +402,7 @@ ValueInst* DAGInstructionsCompiler::generateVariableStore(Tree sig, ValueInst* e
 {
     ::Type t = getCertifiedSigType(sig);
 
-    if (t->variability() == kSamp) {
+    if (t->priority() == Priority::Samp) {
         std::string         vname;
         Typed::VarType ctype;
         getTypedNames(t, "Vector", ctype, vname);

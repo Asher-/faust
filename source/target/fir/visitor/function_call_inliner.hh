@@ -40,7 +40,7 @@ struct FunctionCallInliner : public BasicCloneVisitor {
         FunCallInst* fun_call = inst;
         if (fun_call->fName == fFunction->fName) {
             FunctionInliner inliner;
-            BlockInst*      inlined = inliner.ReplaceParametersByArgs(fFunction->fCode, fFunction->fType->fArgsTypes,
+            BlockInst*      inlined = inliner.ReplaceParametersByArgs(fFunction->_code, fFunction->fType->fArgsTypes,
                                                                  fun_call->fArgs, fun_call->fMethod);
 
             // Get return value and remove it from the block

@@ -507,9 +507,9 @@ class JAXInstVisitor : public TextInstVisitor {
 
     virtual void visitAux(RetInst* inst, bool gen_empty)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             *fOut << "return ";
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             EndLine(' ');
         } else if (gen_empty) {
             *fOut << "return";
@@ -519,8 +519,8 @@ class JAXInstVisitor : public TextInstVisitor {
 
     virtual void visit(DropInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
             EndLine(' ');
         }
     }
@@ -552,7 +552,7 @@ class JAXInstVisitor : public TextInstVisitor {
 
     virtual void generateFunDefBody(DeclareFunInst* inst)
     {
-        if (inst->fCode->fCode.size() == 0) {
+        if (inst->_code->_code.size() == 0) {
             *fOut << "):";
             fTab++;
             tab(fTab, *fOut);
@@ -565,7 +565,7 @@ class JAXInstVisitor : public TextInstVisitor {
             *fOut << "):";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             tab(fTab, *fOut);
@@ -720,7 +720,7 @@ class JAXInstVisitor : public TextInstVisitor {
         inst->fThen->accept(this);
         fTab--;
         back(1, *fOut);
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             *fOut << "else:";
             fTab++;
             tab(fTab, *fOut);
@@ -734,7 +734,7 @@ class JAXInstVisitor : public TextInstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         fIsDoingWhile = true;
 
@@ -749,7 +749,7 @@ class JAXInstVisitor : public TextInstVisitor {
         fFinishLine = true;
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         tab(fTab, *fOut);
         inst->fIncrement->accept(this);
         fTab--;
@@ -760,7 +760,7 @@ class JAXInstVisitor : public TextInstVisitor {
     virtual void visit(SimpleForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
         *fOut << "for " << inst->getName() << " in ";
 
         if (inst->fReverse) {
@@ -797,7 +797,7 @@ class JAXInstVisitor : public TextInstVisitor {
 
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         tab(fTab, *fOut);

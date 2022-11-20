@@ -28,6 +28,8 @@
 #include "compiler/types/floats.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/cast.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -46,11 +48,11 @@ namespace Faust {
           {
               faustassert(args.size() == 1);
               ::Type     t = args[0];
-              interval i = t->getInterval();
+              interval i = t->interval();
               if (i.valid && ::Faust::Primitive::Math::exceptions && (i.lo < -1 || i.hi > 1)) {
                   cerr << "WARNING : potential out of domain in asin(" << i << ")" << endl;
               }
-              return floatCast(args[0]);
+              return Type::floatCast(args[0]);
            }
           
           virtual int infereSigOrder(const vector<int>& args) { return args[0]; }

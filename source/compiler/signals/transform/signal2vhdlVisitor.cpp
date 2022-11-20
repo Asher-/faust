@@ -27,6 +27,10 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 //-------------------------Signal2VHDLVisitor-------------------------------
 // An identity transformation on signals. Can be used to test
 // that everything works, and as a pattern for real transformations.
@@ -99,8 +103,8 @@ void Signal2VHDLVisitor::visit(Tree sig)
     Tree   c, sel, x, y, z, u, v, var, le, label, id, ff, largs, type, name, file, sf;
 
     auto p = getUserData(sig);
-    int nature = getCertifiedSigType(sig)->nature();
-    string suffixe = getObjectSuffix(nature);
+    const Precision& precision = getCertifiedSigType(sig)->precision();
+    string suffixe = getObjectSuffix(precision);
 
     if (p) {
         if (p->name() == "fmod") {
@@ -110,10 +114,10 @@ void Signal2VHDLVisitor::visit(Tree sig)
             self(subsig[1]);
         } else if (p->name() == "sin") {
             getSubSignals(sig, subsig);
-            sincos_op("SIN", sig, subsig[0], nature);
+            sincos_op("SIN", sig, subsig[0], precision);
         } else if (p->name() == "cos") {
             getSubSignals(sig, subsig);
-            sincos_op("COS", sig, subsig[0],nature);
+            sincos_op("COS", sig, subsig[0],precision);
         } else {
             for (Tree b : sig->branches()) {
                 self(b);
@@ -121,16 +125,16 @@ void Signal2VHDLVisitor::visit(Tree sig)
         }
         return;
     } else if (isSigInt(sig, &i)) {
-        decl_sig(sig, HIGH, LOW, nature);
+        decl_sig(sig, HIGH, LOW, precision);
         return;
     } else if (isSigReal(sig, &r)) {
-        decl_sig(sig, HIGH, LOW, nature);
+        decl_sig(sig, HIGH, LOW, precision);
         return;
     } else if (isSigWaveform(sig)) {
         return;
     } else if (isSigInput(sig, &i)) {
         input_affectation(sig,i);
-        decl_sig(sig, HIGH, LOW, nature);
+        decl_sig(sig, HIGH, LOW, precision);
         return;
     } else if (isSigOutput(sig, &i, x)) {
         /* Never reached */
@@ -146,25 +150,25 @@ void Signal2VHDLVisitor::visit(Tree sig)
         if (!(isSigInt(y, &i)) && !(isSigReal(y, &r))) {
             if (fEntity.count("DELAYVAR" + suffixe) == 0) {
                 if (mxd < 5000) { // to precise number
-                    entity_delay_var_reg(nature, fDeclEntity);
+                    entity_delay_var_reg(precision, fDeclEntity);
                 } else {
-                    entity_delay_var_ram(nature, fDeclEntity);
+                    entity_delay_var_ram(precision, fDeclEntity);
                 }
-                component_delay_var(nature, fDeclCompnt);
+                component_delay_var(precision, fDeclCompnt);
                 fEntity.insert({"DELAYVAR" + suffixe, true});
             }
-            decl_sig(sig, HIGH, LOW, nature);
+            decl_sig(sig, HIGH, LOW, precision);
             inst_delay_var(sig, x, y, fMapCompnt, mxd);
         } else {
             if (((y->node()).getInt()) == 0) {
                 bypass("DELAY0" + suffixe, sig, x);
             } else {
                 if (fEntity.count("DELAY" + suffixe) == 0) {
-                    entity_delay(nature, fDeclEntity);
-                    component_delay(nature, fDeclCompnt);
+                    entity_delay(precision, fDeclEntity);
+                    component_delay(precision, fDeclCompnt);
                     fEntity.insert({"DELAY" + suffixe, true});
                 }
-                decl_sig(sig, HIGH, LOW, nature);
+                decl_sig(sig, HIGH, LOW, precision);
                 inst_delay(sig, x, y, fMapCompnt);
             }
         }
@@ -403,10 +407,14 @@ void Signal2VHDLVisitor::generic_decl(string& str)
     "    lsb     : integer);\n";
 }
 
-void Signal2VHDLVisitor::port_decl(int input, int nature, string& str)
+void Signal2VHDLVisitor::port_decl(
+  int input,
+  const Precision& precision,
+  std::string& str
+)
 {
-    string range = getRange(nature);
-    string stype = getSignalType(nature);
+    string range = getRange(precision);
+    string stype = getSignalType(precision);
 
     str += "port (\n"
     "   clk     : in std_logic;\n"
@@ -417,15 +425,15 @@ void Signal2VHDLVisitor::port_decl(int input, int nature, string& str)
     str += "   output0 : out " + stype + range + ");\n";
 }
 
-void Signal2VHDLVisitor::entity_bin_op(const string& name, const char* op, int nature, string& str)
+void Signal2VHDLVisitor::entity_bin_op(const string& name, const char* op, const Precision& precision, string& str)
 {
-    string range = getMSB(nature) + ", " + getLSB(nature);
-    string stype = getSignalType(nature);
+    string range = getMSB(precision) + ", " + getLSB(precision);
+    string stype = getSignalType(precision);
 
     entity_header(str);
     str += "entity " + name + " is\n";
     generic_decl(str);
-    port_decl(2,nature,str);
+    port_decl(2,precision,str);
     str += "end " + name + ";\n\n"
     "architecture behavioral of " + name + " is\n"
     "  signal temp : " + stype + "(msb downto lsb);\n"
@@ -440,15 +448,15 @@ void Signal2VHDLVisitor::entity_bin_op(const string& name, const char* op, int n
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_bin_op_concat(const string& name, const char* op, int nature, string& str)
+void Signal2VHDLVisitor::entity_bin_op_concat(const string& name, const char* op, const Precision& precision, string& str)
 {
-    int high = getHigh(nature), low = getLow(nature);
-    string stype = getSignalType(nature);
+    int high = getHigh(precision), low = getLow(precision);
+    string stype = getSignalType(precision);
 
     entity_header(str);
     str += "entity " + name + " is\n";
     generic_decl(str);
-    port_decl(2, nature, str);
+    port_decl(2, precision, str);
     str += "end " + name + ";\n\n"
     "architecture behavioral of " + name + " is\n"
     "signal inter : " + stype + "(63 downto 0);\n"
@@ -458,15 +466,15 @@ void Signal2VHDLVisitor::entity_bin_op_concat(const string& name, const char* op
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_cmp_op(const string& name, const char* op, int nature, string& str)
+void Signal2VHDLVisitor::entity_cmp_op(const string& name, const char* op, const Precision& precision, string& str)
 {
-    string range = getMSB(nature) + ", " + getLSB(nature);
-    string stype = getSignalType(nature);
+    string range = getMSB(precision) + ", " + getLSB(precision);
+    string stype = getSignalType(precision);
 
     entity_header(str);
     str += "entity " + name + " is\n";
     generic_decl(str);
-    port_decl(2, nature, str);
+    port_decl(2, precision, str);
     str += "end " + name + ";\n\n"
     "architecture behavioral of " + name + " is\n"
     "begin\n"
@@ -481,19 +489,19 @@ void Signal2VHDLVisitor::entity_cmp_op(const string& name, const char* op, int n
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_delay(int nature, string& str)
+void Signal2VHDLVisitor::entity_delay(const Precision& precision, string& str)
 {
-    string nature_string = getObjectSuffix(nature);
-    string stype = getSignalType(nature);
-    string range = getRange(nature);
-    string range_init = getFloatMSB(nature);
-    if (globalCodingFloat() && nature == kReal)
+    string precision_string = getObjectSuffix(precision);
+    string stype = getSignalType(precision);
+    string range = getRange(precision);
+    string range_init = getFloatMSB(precision);
+    if (globalCodingFloat() && precision == Precision::Real)
          range_init.append("input0 ");
     else range_init.append(",");
-    range_init.append(getFloatLSB(nature));
+    range_init.append(getFloatLSB(precision));
     entity_header(str);
 
-    str += "entity DELAY" + nature_string + " is\n"
+    str += "entity DELAY" + precision_string + " is\n"
     "generic (\n"
     "    delay_value   : integer;\n"
     "    msb     : integer;\n"
@@ -503,8 +511,8 @@ void Signal2VHDLVisitor::entity_delay(int nature, string& str)
     "    rst     : in std_logic;\n"
     "    input0  : in  " + stype + "" + range + ";\n"
     "    output0 : out " + stype + "" + range + ");\n"
-    "end DELAY" + nature_string + ";\n\n"
-    "architecture behavioral of DELAY" + nature_string + " is\n"
+    "end DELAY" + precision_string + ";\n\n"
+    "architecture behavioral of DELAY" + precision_string + " is\n"
     "type mem is array (delay_value-1 downto 0) of " + stype + "" + range + ";\n"
     "signal ligne : mem;\n"
     "begin\n"
@@ -527,10 +535,10 @@ void Signal2VHDLVisitor::entity_delay(int nature, string& str)
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_delay_var_reg(int nature, string& str)
+void Signal2VHDLVisitor::entity_delay_var_reg(const Precision& precision, string& str)
 {
-    string stype  = getSignalType(nature);
-    string range  = getRange(nature);
+    string stype  = getSignalType(precision);
+    string range  = getRange(precision);
     entity_header(str);
 
     str += "entity DELAYVAR is\n"
@@ -566,15 +574,15 @@ void Signal2VHDLVisitor::entity_delay_var_reg(int nature, string& str)
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_delay_var_ram(int nature, string& str)
+void Signal2VHDLVisitor::entity_delay_var_ram(const Precision& precision, string& str)
 {
-    string stype = getSignalType(nature);
-    string range = getRange(nature);
-    string range_init = getFloatMSB(nature);
-    if (globalCodingFloat() && nature == kReal)
+    string stype = getSignalType(precision);
+    string range = getRange(precision);
+    string range_init = getFloatMSB(precision);
+    if (globalCodingFloat() && precision == Precision::Real)
          range_init.append("input0 ");
     else range_init.append(",");
-    range_init.append(getFloatLSB(nature));
+    range_init.append(getFloatLSB(precision));
     entity_header(str);
 
     str += "entity DELAYVAR is\n"
@@ -621,21 +629,21 @@ void Signal2VHDLVisitor::entity_delay_var_ram(int nature, string& str)
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_bypass(const string& name, int nature, string& str)
+void Signal2VHDLVisitor::entity_bypass(const string& name, const Precision& precision, string& str)
 {
     // signal initialization is a bit tricky
-    string range = getRange(nature);
-    string stype = getSignalType(nature);
-    string range_init = getFloatMSB(nature);
-    if (globalCodingFloat() && nature == kReal)
+    string range = getRange(precision);
+    string stype = getSignalType(precision);
+    string range_init = getFloatMSB(precision);
+    if (globalCodingFloat() && precision == Precision::Real)
          range_init.append("input0 ");
     else range_init.append(",");
-    range_init.append(getFloatLSB(nature));
+    range_init.append(getFloatLSB(precision));
 
     entity_header(str);
     str += "entity " + name + " is\n";
     generic_decl(str);
-    port_decl(1,nature,str);
+    port_decl(1,precision,str);
     str += "end " + name + ";\n\n"
     "architecture behavioral of " + name + " is\n"
     "begin\n"
@@ -650,20 +658,20 @@ void Signal2VHDLVisitor::entity_bypass(const string& name, int nature, string& s
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_cast(const string& name, int nature_in, int nature_out, string& str)
+void Signal2VHDLVisitor::entity_cast(const string& name, const Precision& precision_in, const Precision& precision_out, string& str)
 {
     string coding     = getRealCoding();
-    string stype_in   = getSignalType(nature_in);
-    string stype_out  = getSignalType(nature_out);
-    string range_in   = getRange(nature_in);
-    string range_out  = getRange(nature_out);
-    string range_init = getFloatMSB(nature_out);
-//        ((global::config().gVHDLFloatType == 1) ? ((nature_out == kReal) ? " temp ": ",") : ",") + getFloatLSB(nature_out);
-//    string range_init_ = getFloatMSB(nature_out);
-    if (globalCodingFloat() && nature_out == kReal)
+    string stype_in   = getSignalType(precision_in);
+    string stype_out  = getSignalType(precision_out);
+    string range_in   = getRange(precision_in);
+    string range_out  = getRange(precision_out);
+    string range_init = getFloatMSB(precision_out);
+//        ((global::config().gVHDLFloatType == 1) ? ((precision_out == Precision::Real) ? " temp ": ",") : ",") + getFloatLSB(precision_out);
+//    string range_init_ = getFloatMSB(precision_out);
+    if (globalCodingFloat() && precision_out == Precision::Real)
          range_init.append(" temp ");
     else range_init.append(",");
-    range_init += getFloatLSB(nature_out);
+    range_init += getFloatLSB(precision_out);
 
     entity_header(str);
     str += "entity " + name + " is\n";
@@ -693,12 +701,12 @@ void Signal2VHDLVisitor::entity_cast(const string& name, int nature_in, int natu
     "end behavioral;\n\n";
 }
 
-void Signal2VHDLVisitor::entity_select2(const string& name, int nature, string& str)
+void Signal2VHDLVisitor::entity_select2(const string& name, const Precision& precision, string& str)
 {
     entity_header(str);
     str += "entity " + name + " is\n";
     generic_decl(str);
-    port_decl(3, nature, str);
+    port_decl(3, precision, str);
     str += "end " + name + ";\n\n"
     "architecture behavioral of " + name + " is\n"
     "begin\n"
@@ -761,21 +769,21 @@ void Signal2VHDLVisitor::entity_faust()
     }
 }
 
-void Signal2VHDLVisitor::component_standard(const string& name, int input, int nature, string& str)
+void Signal2VHDLVisitor::component_standard(const string& name, int input, const Precision& precision, string& str)
 {
-    string nature_coding = getObjectSuffix(nature);
+    string precision_coding = getObjectSuffix(precision);
     str += "component " + name + " is\n";
     generic_decl(str);
-    port_decl(input, nature, str);
+    port_decl(input, precision, str);
     str += "end component;\n\n";
 }
 
-void Signal2VHDLVisitor::component_cast(const string& name, int input, int nature_in, int nature_out, string& str)
+void Signal2VHDLVisitor::component_cast(const string& name, int input, const Precision& precision_in, const Precision& precision_out, string& str)
 {
-    string stype_in  = getSignalType(nature_in);
-    string stype_out = getSignalType(nature_out);
-    int high_in  = getHigh(nature_in),  low_in  = getLow(nature_in);
-    int high_out = getHigh(nature_out), low_out = getLow(nature_out);
+    string stype_in  = getSignalType(precision_in);
+    string stype_out = getSignalType(precision_out);
+    int high_in  = getHigh(precision_in),  low_in  = getLow(precision_in);
+    int high_out = getHigh(precision_out), low_out = getLow(precision_out);
 
     str += "component " + name + " is\n";
     generic_decl(str);
@@ -787,11 +795,11 @@ void Signal2VHDLVisitor::component_cast(const string& name, int input, int natur
     str += "end component;\n\n";
 }
 
-void Signal2VHDLVisitor::component_delay(int nature, string& str)
+void Signal2VHDLVisitor::component_delay(const Precision& precision, string& str)
 {
-    int high = getHigh(nature), low = getLow(nature);
-    string suffix = getObjectSuffix(nature);
-    string stype  = getSignalType(nature);
+    int high = getHigh(precision), low = getLow(precision);
+    string suffix = getObjectSuffix(precision);
+    string stype  = getSignalType(precision);
 
     str += "component DELAY" + suffix + " is\n"
     "generic (\n"
@@ -806,10 +814,10 @@ void Signal2VHDLVisitor::component_delay(int nature, string& str)
     "end component;\n\n";
 }
 
-void Signal2VHDLVisitor::component_delay_var(int nature, string& str)
+void Signal2VHDLVisitor::component_delay_var(const Precision& precision, string& str)
 {
-    string stype = getSignalType(nature);
-    int high = getHigh(nature), low = getLow(nature);
+    string stype = getSignalType(precision);
+    int high = getHigh(precision), low = getLow(precision);
 
     str += "component DELAYVAR is\n"
     "generic (\n"
@@ -825,9 +833,9 @@ void Signal2VHDLVisitor::component_delay_var(int nature, string& str)
     "end component;\n\n";
 }
 
-void Signal2VHDLVisitor::component_sincos(int nature, string& str)
+void Signal2VHDLVisitor::component_sincos(const Precision& precision, string& str)
 {
-    string stype = getSignalType(nature);
+    string stype = getSignalType(precision);
     printf("WARNING, SinCos not impl yet\n");
     str += "component SinCos8_23 is\n"
     "port (\n"
@@ -885,8 +893,8 @@ void Signal2VHDLVisitor::faust_process()
 void Signal2VHDLVisitor::inst_bin_op(const string& name, Tree sig, Tree x, Tree y, string& str)
 {
     // test type of first argument
-    int nature = getCertifiedSigType(x)->nature();
-    int high = getHigh(nature), low = getLow(nature);
+    const Precision& precision = getCertifiedSigType(x)->precision();
+    int high = getHigh(precision), low = getLow(precision);
 
     str += name + "_" + addr_to_str(sig) + " : " + name + "\n"
     "generic map (\n"
@@ -903,10 +911,10 @@ void Signal2VHDLVisitor::inst_bin_op(const string& name, Tree sig, Tree x, Tree 
 void Signal2VHDLVisitor::inst_delay(Tree sig, Tree x, Tree y, string& str)
 {
     // test type of output
-    int nature = getCertifiedSigType(sig)->nature();
-    int high = getHigh(nature), low = getLow(nature);
+    const Precision& precision = getCertifiedSigType(sig)->precision();
+    int high = getHigh(precision), low = getLow(precision);
 
-    string suffix = getObjectSuffix(nature);
+    string suffix = getObjectSuffix(precision);
 
     str += "DELAY" + suffix + "_" + addr_to_str(sig) + " : DELAY" + suffix + "\n"
     "generic map (\n"
@@ -923,8 +931,8 @@ void Signal2VHDLVisitor::inst_delay(Tree sig, Tree x, Tree y, string& str)
 void Signal2VHDLVisitor::inst_delay_var(Tree sig, Tree x, Tree y, string& str, int mxd)
 {
     // test type of second input
-    int nature = getCertifiedSigType(sig)->nature();
-    int high = getHigh(nature), low = getLow(nature);
+    const Precision& precision = getCertifiedSigType(sig)->precision();
+    int high = getHigh(precision), low = getLow(precision);
 
     str += "DELAYVAR_" + addr_to_str(sig) + " : DELAYVAR\n"
     "generic map (\n"
@@ -939,7 +947,7 @@ void Signal2VHDLVisitor::inst_delay_var(Tree sig, Tree x, Tree y, string& str, i
     "    output0 => sig" + addr_to_str(sig) + ");\n\n";
 }
 
-void Signal2VHDLVisitor::inst_sincos(const string& name, Tree sig, Tree x, int nature, string& str)
+void Signal2VHDLVisitor::inst_sincos(const string& name, Tree sig, Tree x, const Precision& precision, string& str)
 {
     str += name + "_" + addr_to_str(sig) + " : SinCos8_23\n"
     "port map (\n"
@@ -950,8 +958,8 @@ void Signal2VHDLVisitor::inst_sincos(const string& name, Tree sig, Tree x, int n
 void Signal2VHDLVisitor::inst_bypass(const string& name, Tree sig, Tree x, string& str)
 {
     // test type of  input
-    int nature = getCertifiedSigType(sig)->nature();
-    int high = getHigh(nature), low = getLow(nature);
+    const Precision& precision = getCertifiedSigType(sig)->precision();
+    int high = getHigh(precision), low = getLow(precision);
 
     str += name + "_" + addr_to_str(sig) + " : " + name +  "\n"
     "generic map (\n"
@@ -967,8 +975,8 @@ void Signal2VHDLVisitor::inst_bypass(const string& name, Tree sig, Tree x, strin
 void Signal2VHDLVisitor::inst_select2(const string& name, Tree sig, Tree sel, Tree x, Tree y, string& str)
 {
     // test type of  input
-    int nature = getCertifiedSigType(x)->nature();
-    int high = getHigh(nature), low = getLow(nature);
+    const Precision& precision = getCertifiedSigType(x)->precision();
+    int high = getHigh(precision), low = getLow(precision);
 
     str += name + "_" + addr_to_str(sig) + " : " + name + "\n"
     "generic map (\n"
@@ -983,17 +991,17 @@ void Signal2VHDLVisitor::inst_select2(const string& name, Tree sig, Tree sel, Tr
     "    output0 => sig"+ addr_to_str(sig) +");\n\n";
 }
 
-void Signal2VHDLVisitor::decl_sig(Tree sig, int msb, int lsb, int nature)
+void Signal2VHDLVisitor::decl_sig(Tree sig, int msb, int lsb, const Precision& precision)
 {
     int i;
     double r;
-    string stype = getSignalType(nature);
+    string stype = getSignalType(precision);
     string separator = global::config().gVHDLFloatType ? " downto " : ",";
     string val_init_sfixed, val_init_float;
     val_init_sfixed = "(" + val_to_str(sig) + "," + to_string(msb) + separator + to_string(lsb) + ")";
     val_init_float = "(" + val_to_str(sig) + ", sig_float_coding )";
 
-    if (nature == kReal) {
+    if (precision == Precision::Real) {
         // float type: " + float_coding + "(msb,lsb)
         if (isSigInt(sig, &i) || isSigReal(sig, &r)) {// with initialization
             fDeclSig += "signal    sig" + addr_to_str(sig) + " : " + stype + "(" + to_string(msb) + " downto " + to_string(lsb) + ") := to_" + stype + (global::config().gVHDLFloatType ? val_init_float : val_init_sfixed) + ";\n";
@@ -1043,80 +1051,80 @@ void Signal2VHDLVisitor::input_affectation(Tree sig, int i)
 
 void Signal2VHDLVisitor::bin_op(const string& name, const char* op, Tree sig, Tree x, Tree y)
 {
-    int nature = getCertifiedSigType(sig)->nature();
+    const Precision& precision = getCertifiedSigType(sig)->precision();
     if (fEntity.count(name) == 0) {
-        entity_bin_op(name, op, nature, fDeclEntity);
-        component_standard(name, 2, nature, fDeclCompnt);
+        entity_bin_op(name, op, precision, fDeclEntity);
+        component_standard(name, 2, precision, fDeclCompnt);
         fEntity.insert({name, true});
     }
-    decl_sig(sig, HIGH, LOW, nature);
+    decl_sig(sig, HIGH, LOW, precision);
     inst_bin_op(name, sig, x, y, fMapCompnt);
 }
 
 void Signal2VHDLVisitor::select_op(const string& name, Tree sig, Tree sel, Tree x, Tree y)
 {
-    int nature = getCertifiedSigType(sig)->nature();
+    const Precision& precision = getCertifiedSigType(sig)->precision();
     if (fEntity.count(name) == 0) {
-        entity_select2(name, nature, fDeclEntity);
-        component_standard(name, 3, nature, fDeclCompnt);
+        entity_select2(name, precision, fDeclEntity);
+        component_standard(name, 3, precision, fDeclCompnt);
         fEntity.insert({name, true});
     }
-    decl_sig(sig, HIGH, LOW, nature);
+    decl_sig(sig, HIGH, LOW, precision);
     inst_select2(name, sig, sel, x, y, fMapCompnt);
 }
 
 void Signal2VHDLVisitor::cmp_op(const string& name, const char* op, Tree sig, Tree x, Tree y)
 {
-    int nature = getCertifiedSigType(x)->nature();
+    const Precision& precision = getCertifiedSigType(x)->precision();
 
     if (fEntity.count(name) == 0) {
-        entity_cmp_op(name, op, nature, fDeclEntity);
-        component_standard(name, 2, nature, fDeclCompnt);
+        entity_cmp_op(name, op, precision, fDeclEntity);
+        component_standard(name, 2, precision, fDeclCompnt);
         fEntity.insert({name, true});
     }
-    decl_sig(sig, HIGH, LOW, nature);
+    decl_sig(sig, HIGH, LOW, precision);
     inst_bin_op(name, sig, x, y, fMapCompnt);
 }
 
-void Signal2VHDLVisitor::sincos_op(const string& name, Tree sig, Tree x, int nature)
+void Signal2VHDLVisitor::sincos_op(const string& name, Tree sig, Tree x, const Precision& precision)
 {
     if (fEntity.count("SinCos8_23") == 0) {
-        component_sincos(nature,fDeclCompnt);
+        component_sincos(precision,fDeclCompnt);
         fEntity.insert({"SinCos8_23", true});
     }
-    decl_sig(sig, 8, -23, nature);
-    inst_sincos(name, sig, x, nature, fMapCompnt);
+    decl_sig(sig, 8, -23, precision);
+    inst_sincos(name, sig, x, precision, fMapCompnt);
     self(x);
 }
 
 void Signal2VHDLVisitor::bypass(const string& name, Tree sig, Tree x)
 {
-    int nature = getCertifiedSigType(sig)->nature();
-    string real_name = name + getObjectSuffix(nature);
+    const Precision& precision = getCertifiedSigType(sig)->precision();
+    string real_name = name + getObjectSuffix(precision);
 
     if (fEntity.count(real_name) == 0) {
-        entity_bypass(name, nature, fDeclEntity);
-        component_standard(name, 1, nature, fDeclCompnt);
+        entity_bypass(name, precision, fDeclEntity);
+        component_standard(name, 1, precision, fDeclCompnt);
         fEntity.insert({real_name, true});
     }
-    decl_sig(sig, HIGH, LOW, nature);
+    decl_sig(sig, HIGH, LOW, precision);
     inst_bypass(name, sig, x, fMapCompnt);
 }
 
 void Signal2VHDLVisitor::cast(const string& name, Tree sig, Tree x)
 {
-    int nature_in  = getCertifiedSigType(x)->nature();
-    int nature_out = getCertifiedSigType(sig)->nature();
-    string real_name = name + getObjectSuffix(nature_out);
-    int high_out = getHigh(nature_out);
-    int low_out  = getLow(nature_out);
+    const Precision& precision_in  = getCertifiedSigType(x)->precision();
+    const Precision& precision_out = getCertifiedSigType(sig)->precision();
+    string real_name = name + getObjectSuffix(precision_out);
+    int high_out = getHigh(precision_out);
+    int low_out  = getLow(precision_out);
 
     if (fEntity.count(real_name) == 0) {
-        entity_cast(real_name, nature_in, nature_out, fDeclEntity);
-        component_cast(real_name, 1, nature_in, nature_out, fDeclCompnt);
+        entity_cast(real_name, precision_in, precision_out, fDeclEntity);
+        component_cast(real_name, 1, precision_in, precision_out, fDeclCompnt);
         fEntity.insert({real_name, true});
     }
-    decl_sig(sig, high_out, low_out, nature_out);
+    decl_sig(sig, high_out, low_out, precision_out);
     inst_bypass(real_name, sig, x, fMapCompnt);
 }
 

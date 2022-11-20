@@ -36,6 +36,10 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 namespace Faust {
@@ -58,13 +62,13 @@ CodeContainer::CodeContainer()
       fNumOutputs(-1),
       fNumActives(0),
       fNumPassives(0),
-      fSubContainerType(kInt),
+      fSubContainerType(Precision::Int),
       fGeneratedSR(false),
       fExtGlobalDeclarationInstructions(InstBuilder::genBlockInst()),
       fGlobalDeclarationInstructions(InstBuilder::genBlockInst()),
       fDeclarationInstructions(InstBuilder::genBlockInst()),
       fInitInstructions(InstBuilder::genBlockInst()),
-      fResetUserInterfaceInstructions(InstBuilder::genBlockInst()),
+      _resolutionetUserInterfaceInstructions(InstBuilder::genBlockInst()),
       fClearInstructions(InstBuilder::genBlockInst()),
       fPostInitInstructions(InstBuilder::genBlockInst()),
       fAllocateInstructions(InstBuilder::genBlockInst()),
@@ -518,8 +522,8 @@ void CodeContainer::processFIR(void)
     // Sort struct fields by size and type
     // 05/16/17 : deactivated since it slows down the code...
     /*
-     fDeclarationInstructions->fCode.sort(sortArrayDeclarations);
-     fDeclarationInstructions->fCode.sort(sortTypeDeclarations);
+     fDeclarationInstructions->_code.sort(sortArrayDeclarations);
+     fDeclarationInstructions->_code.sort(sortTypeDeclarations);
      */
 }
 
@@ -536,7 +540,7 @@ BlockInst* CodeContainer::flattenFIR(void)
     // Init method
     global_block->pushBackInst(InstBuilder::genLabelInst("========== Init method =========="));
     global_block->merge(fInitInstructions);
-    global_block->merge(fResetUserInterfaceInstructions);
+    global_block->merge(_resolutionetUserInterfaceInstructions);
     global_block->merge(fClearInstructions);
     global_block->merge(fPostInitInstructions);
 
@@ -797,7 +801,7 @@ DeclareFunInst* CodeContainer::generateStaticInitFun(const std::string& name, bo
 
     //  20/11/16 : added in generateInstanceInitFun, is this needed here ?
     /*
-    init_block->pushBackInst(fResetUserInterfaceInstructions);
+    init_block->pushBackInst(_resolutionetUserInterfaceInstructions);
     init_block->pushBackInst(fClearInstructions);
     */
 
@@ -822,7 +826,7 @@ DeclareFunInst* CodeContainer::generateInstanceInitFun(const std::string& name, 
     BlockInst* init_block = InstBuilder::genBlockInst();
     init_block->pushBackInst(fInitInstructions);
     init_block->pushBackInst(fPostInitInstructions);
-    init_block->pushBackInst(fResetUserInterfaceInstructions);
+    init_block->pushBackInst(_resolutionetUserInterfaceInstructions);
     init_block->pushBackInst(fClearInstructions);
 
     // Explicit return
@@ -839,7 +843,7 @@ DeclareFunInst* CodeContainer::generateFillFun(const std::string& name, const st
         args.push_back(InstBuilder::genNamedTyped(obj, Typed::kObj_ptr));
     }
     args.push_back(InstBuilder::genNamedTyped("count", Typed::kInt32));
-    if (fSubContainerType == kInt) {
+    if (fSubContainerType == Precision::Int) {
         args.push_back(InstBuilder::genNamedTyped(fTableName, Typed::kInt32_ptr));
     } else {
         args.push_back(InstBuilder::genNamedTyped(fTableName, itfloatptr()));

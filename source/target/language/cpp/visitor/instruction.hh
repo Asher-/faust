@@ -357,7 +357,7 @@ class CPPInstVisitor : public TextInstVisitor {
         }
 
         // Prototype
-        *fOut << fTypeManager->generateType(inst->fType->fResult, generateFunName(inst->fName));
+        *fOut << fTypeManager->generateType(inst->fType->_resolutionult, generateFunName(inst->fName));
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }
@@ -470,7 +470,7 @@ class CPPInstVisitor : public TextInstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         if (global::config().gClang && !inst->fIsRecursive) {
             *fOut << "#pragma clang loop vectorize(enable) interleave(enable)";

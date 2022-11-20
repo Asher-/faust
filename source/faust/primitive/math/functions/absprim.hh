@@ -33,12 +33,20 @@
 
 #include "compiler/signals/sigtype.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+#include "faust/primitive/type/cast.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
 
       class Abs : public ::Faust::Primitive::Math::xtended {
-          public:
+        protected:
+
+          using Precision = ::Faust::Primitive::Type::Precision;
+
+        public:
                   
           Abs() : ::Faust::Primitive::Math::xtended("abs") {}
 
@@ -50,7 +58,7 @@ namespace Faust {
           {
               faustassert(args.size() == arity());
               ::Type t = args[0];
-              return castInterval(t, abs(t->getInterval()));
+              return Type::castInterval(t, abs(t->interval()));
           }
 
           virtual int infereSigOrder(const vector<int>& args)
@@ -95,7 +103,7 @@ namespace Faust {
                       return *args.begin();
                   } else {
                       // Only compute abs when arg is < 0
-                      if (t->nature() == kReal) {
+                      if (t->precision() == Precision::Real) {
                           Values cargs;
                           prepareTypeArgsResult(result, args, types, rtype, atypes, cargs);
                           return container->pushFunction(subst("fabs$0", isuffix()), rtype, atypes, cargs);
@@ -108,7 +116,7 @@ namespace Faust {
                   }
               */
           
-              string fun_name = (result->nature() == kInt) ? "abs" : subst("fabs$0", isuffix());
+              string fun_name = (result->precision() == Precision::Int) ? "abs" : subst("fabs$0", isuffix());
               return generateFun(container, fun_name, args, result, types);
           }
 
@@ -118,7 +126,7 @@ namespace Faust {
               faustassert(types.size() == arity());
 
               ::Type t = infereSigType(types);
-              if (t->nature() == kReal) {
+              if (t->precision() == Precision::Real) {
                   return subst("fabs$1($0)", args[0], isuffix());
               } else {
                   return subst("abs($0)", args[0]);

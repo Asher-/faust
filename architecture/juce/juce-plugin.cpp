@@ -533,14 +533,14 @@ FaustPlugInAudioProcessor::FaustPlugInAudioProcessor()
     fSynth->buildUserInterface(&fStateUI);
     fSynth->buildUserInterface(&fParameterUI);
     // When no previous state was restored, init DSP controllers with their default values
-    if (!fStateUI.fRestored) {
+    if (!fStateUI._resolutiontored) {
         fSynth->instanceResetUserInterface();
     }
 #else
     fDSP->buildUserInterface(&fStateUI);
     fDSP->buildUserInterface(&fParameterUI);
     // When no previous state was restored, init DSP controllers with their default values
-    if (!fStateUI.fRestored) {
+    if (!fStateUI._resolutiontored) {
         fDSP->instanceResetUserInterface();
     }
 #endif

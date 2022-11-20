@@ -109,7 +109,7 @@ void CodeLoop::generateDAGScalarLoop(BlockInst* block, DeclareVarInst* count, bo
     }
 
     // Generate code before the loop
-    if (fPreInst->fCode.size() > 0) {
+    if (fPreInst->_code.size() > 0) {
         block->pushBackInst(InstBuilder::genLabelInst("/* Pre code */"));
         if (omp) {
             block->pushBackInst(InstBuilder::genLabelInst("#pragma omp single"));
@@ -118,7 +118,7 @@ void CodeLoop::generateDAGScalarLoop(BlockInst* block, DeclareVarInst* count, bo
     }
 
     // Generate loop code
-    if (fComputeInst->fCode.size() > 0) {
+    if (fComputeInst->_code.size() > 0) {
         DeclareVarInst* loop_decl =
             InstBuilder::genDecLoopVar(fLoopIndex, InstBuilder::genInt32Typed(), InstBuilder::genInt32NumInst(0));
         ValueInst*    loop_end       = InstBuilder::genLessThan(loop_decl->load(), count->load());
@@ -137,7 +137,7 @@ void CodeLoop::generateDAGScalarLoop(BlockInst* block, DeclareVarInst* count, bo
     }
 
     // Generate code after the loop
-    if (fPostInst->fCode.size() > 0) {
+    if (fPostInst->_code.size() > 0) {
         block->pushBackInst(InstBuilder::genLabelInst("/* Post code */"));
         if (omp) {
             block->pushBackInst(InstBuilder::genLabelInst("#pragma omp single"));
@@ -152,7 +152,7 @@ void CodeLoop::generateDAGScalarLoop(BlockInst* block, DeclareVarInst* count, bo
  */
 bool CodeLoop::isEmpty()
 {
-    return fPreInst->fCode.empty() && fComputeInst->fCode.empty() && fPostInst->fCode.empty() &&
+    return fPreInst->_code.empty() && fComputeInst->_code.empty() && fPostInst->_code.empty() &&
            (fExtraLoops.begin() == fExtraLoops.end());
 }
 
@@ -184,9 +184,9 @@ void CodeLoop::absorb(CodeLoop* l)
     fBackwardLoopDependencies.insert(l->fBackwardLoopDependencies.begin(), l->fBackwardLoopDependencies.end());
 
     // add the line of code of the absorbed loop
-    fPreInst->fCode.insert(fPreInst->fCode.end(), l->fPreInst->fCode.begin(), l->fPreInst->fCode.end());
-    fComputeInst->fCode.insert(fComputeInst->fCode.end(), l->fComputeInst->fCode.begin(), l->fComputeInst->fCode.end());
-    fPostInst->fCode.insert(fPostInst->fCode.begin(), l->fPostInst->fCode.begin(), l->fPostInst->fCode.end());
+    fPreInst->_code.insert(fPreInst->_code.end(), l->fPreInst->_code.begin(), l->fPreInst->_code.end());
+    fComputeInst->_code.insert(fComputeInst->_code.end(), l->fComputeInst->_code.begin(), l->fComputeInst->_code.end());
+    fPostInst->_code.insert(fPostInst->_code.begin(), l->fPostInst->_code.begin(), l->fPostInst->_code.end());
 
     // copy loop index
     fLoopIndex = l->fLoopIndex;

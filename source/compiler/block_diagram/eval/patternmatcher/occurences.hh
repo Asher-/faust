@@ -25,7 +25,12 @@
 #include "compiler/type_manager/garbageable.hh"
 #include "tlib/tlib.hh"
 
+#include "faust/primitive/type/priority.hh"
+
+
 class Occurences : public virtual Garbageable {
+    using Priority = ::Faust::Primitive::Type::Priority;
+    
     const int fXVariability;   ///< Extended Variability of the expression
     int       fOccurences[4];  ///< Occurences count according to Contexts
     bool      fMultiOcc;       ///< True when exp has multiple occ. or occ. in higher ctxt
@@ -34,9 +39,16 @@ class Occurences : public virtual Garbageable {
     int       fMaxDelay;       ///< Maximal fix delay usage
 
    public:
-    Occurences(int v, int r);
+    Occurences(
+      const Priority& priority,
+      const int& recursiveness
+    );
 
-    Occurences* incOccurences(int v, int r, int d);  ///< inc occurences in context v,r,d
+    Occurences* incOccurences(
+      const Priority& priority,
+      const int& recursiveness,
+      const int& delay
+    );  ///< inc occurences in context v,r,d
 
     bool hasMultiOccurences() const;     ///< true if multiple occurences or occ. in higher ctxt
     bool hasOutDelayOccurences() const;  ///< true if has occurences outside a a delay
@@ -49,10 +61,19 @@ class Occurences : public virtual Garbageable {
  * second om.mark(root) then om.retrieve(subtree)
  */
 class OccMarkup : public virtual Garbageable {
+
+    using Priority = ::Faust::Primitive::Type::Priority;
+
     Tree fRootTree;  ///< occurences computed within this tree
     Tree fPropKey;   ///< key used to store occurences property
 
-    void        incOcc(Tree env, int v, int r, int d, Tree t);  ///< inc the occurence of t in context v,r
+    void        incOcc(
+      Tree env,
+      const Priority& priority,
+      const int& recursiveness,
+      const int& delay,
+      Tree t
+    );  ///< inc the occurence of t in context v,r
     Occurences* getOcc(Tree t);                                 ///< get Occurences property of t or null
     void        setOcc(Tree t, Occurences* occ);                ///< set Occurences property of t
 

@@ -49,7 +49,7 @@ class netjackaudio : public audio
         int fLatency;
         int fMIDIInputs;
         int fMIDIOutputs;
-        jack_master_t fResult;
+        jack_master_t _resolutionult;
 
     #ifdef RESTART_CB_API
         static int netRestart(void* arg)
@@ -119,7 +119,7 @@ class netjackaudio : public audio
                 fLatency
             };
       
-            if ((fNet = jack_net_slave_open(fMasterIP.c_str(), fMasterPort, name, &request, &fResult)) == 0) {
+            if ((fNet = jack_net_slave_open(fMasterIP.c_str(), fMasterPort, name, &request, &_resolutionult)) == 0) {
                 printf("JACK remote server not running ?\n");
                 return false;
             }
@@ -223,11 +223,11 @@ class netjackaudio : public audio
         void setDsp(dsp* DSP)
         {
             fDSP = DSP;
-            fDSP->init(fResult.sample_rate);
+            fDSP->init(_resolutionult.sample_rate);
         }
         
-        virtual int getBufferSize() { return fResult.buffer_size; }
-        virtual int getSampleRate() { return fResult.sample_rate; }
+        virtual int getBufferSize() { return _resolutionult.buffer_size; }
+        virtual int getSampleRate() { return _resolutionult.sample_rate; }
     
         virtual int getNumInputs() { return fDSP->getNumInputs(); }
         virtual int getNumOutputs() { return fDSP->getNumOutputs(); }
@@ -247,13 +247,13 @@ class netjackaudio_control : public netjackaudio, public ControlUI {
             AVOIDDENORMALS;
             
             // Control buffer always use buffer_size, even if uncomplete data buffer (count < buffer_size) is received
-            decodeControl(audio_inputs[0], fResult.buffer_size);
+            decodeControl(audio_inputs[0], _resolutionult.buffer_size);
             
             // "count" may be less than buffer_size
             fDSP->compute(count, audio_inputs, audio_outputs);
             
             // Control buffer always use buffer_size, even if uncomplete data buffer (count < buffer_size) is received
-            encodeControl(audio_outputs[0], fResult.buffer_size);
+            encodeControl(audio_outputs[0], _resolutionult.buffer_size);
         }
         
     public:
@@ -300,7 +300,7 @@ class netjackaudio_midicontrol : public netjackaudio, public ControlUI, public j
             AVOIDDENORMALS;
             
             // Control buffer always use buffer_size, even if uncomplete data buffer (count < buffer_size) is received
-            decodeMidiControl(midi_inputs[0], fResult.buffer_size);
+            decodeMidiControl(midi_inputs[0], _resolutionult.buffer_size);
             
             // Decode MIDI messages
             processMidiInBuffer(midi_inputs[1]);
@@ -309,7 +309,7 @@ class netjackaudio_midicontrol : public netjackaudio, public ControlUI, public j
             fDSP->compute(count, audio_inputs, audio_outputs);
             
             // Control buffer always use buffer_size, even if uncomplete data buffer (count < buffer_size) is received
-            encodeMidiControl(midi_outputs[0], fResult.buffer_size);
+            encodeMidiControl(midi_outputs[0], _resolutionult.buffer_size);
             
             // Encode MIDI messages
             processMidiOutBuffer(midi_outputs[1], true);

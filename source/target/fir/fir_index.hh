@@ -22,6 +22,8 @@
 #ifndef _FIR_INDEX_
 #define _FIR_INDEX_
 
+#include "faust/primitive/type/precision.hh"
+
 struct InstBuilder; // Cyclic
 
 /* Syntactic sugar for index computations.
@@ -151,6 +153,6 @@ class FIRIndex {
     ValueInst* fValue;
 };
 
-Typed::VarType convert2FIRType(int type);
+Typed::VarType convert2FIRType( const ::Faust::Primitive::Type::Precision& precision );
 
 #endif

@@ -33,6 +33,9 @@
 #include "tlib/property.hh"
 #include "compiler/signals/sigtyperules.hh"
 
+#include "faust/primitive/type/priority.hh"
+
+
 ////////////////////////////////////////////////////////////////////////
 /**
  * Compile a list of FAUST signals into a scalar C++ class
@@ -41,6 +44,9 @@
 
 class ScalarCompiler : public Compiler {
    protected:
+    
+    using Priority = ::Faust::Primitive::Type::Priority;
+
     property<std::string>                fCompileProperty;
     property<std::string>                fSoundfileVariableProperty;  // variable associated to a soundfile
     property<std::string>                fVectorProperty;
@@ -87,7 +93,10 @@ class ScalarCompiler : public Compiler {
     int  getSharingCount(Tree t);
     void setSharingCount(Tree t, int count);
     void sharingAnalysis(Tree t);
-    void sharingAnnotation(int vctxt, Tree t);
+    void sharingAnnotation(
+      const Priority& priority,
+      Tree sig
+    );
 
     void   conditionAnnotation(Tree l);
     void   conditionAnnotation(Tree t, Tree nc);

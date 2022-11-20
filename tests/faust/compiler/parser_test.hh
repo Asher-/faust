@@ -52,12 +52,12 @@ struct ParserTest
 
 };
 
-//TEST_F( ParserTest, empty ) {
-//  std::string source = R""""()"""";
-//  Tree ast = parser.parseString( source, "Empty.dsp" );
-//  ASSERT_EQ( ast, nullptr );
-//}
-//
+TEST_F( ParserTest, empty ) {
+  std::string source = R""""()"""";
+  Tree ast = parser.parseString( source, "Empty.dsp" );
+  ASSERT_EQ( ast, nullptr );
+}
+
 //TEST_F( ParserTest, variants ) {
 //  std::string source = R""""(
 //    singleprecision one = 3.402823466e+38;
@@ -363,16 +363,16 @@ struct ParserTest
 //}
 
 // FIX
-TEST_F( ParserTest, reverseOrderOfOutputs ) {
-  std::string source = R""""(
-    Xo(expr) = expr <: par(i,n,ba.selector(n-i-1,n))
-    with {
-      n = outputs(expr);
-    };
-  )"""";
-  Tree ast = parser.parseString( source, "reverseOrderOfOutputs.dsp" );
-  ASSERT_NE( ast, nullptr );
-}
+//TEST_F( ParserTest, reverseOrderOfOutputs ) {
+//  std::string source = R""""(
+//    Xo(expr) = expr <: par(i,n,ba.selector(n-i-1,n))
+//    with {
+//      n = outputs(expr);
+//    };
+//  )"""";
+//  Tree ast = parser.parseString( source, "reverseOrderOfOutputs.dsp" );
+//  ASSERT_NE( ast, nullptr );
+//}
 
 //TEST_F( ParserTest, reverseOrderOfInputs ) {
 //  std::string source = R""""(

@@ -28,19 +28,19 @@ struct ForLoopInst : public StatementInst {
     StatementInst* fInit;
     StatementInst* fIncrement;
     ValueInst*     fEnd;
-    BlockInst*     fCode;
+    BlockInst*     _code;
     const bool     fIsRecursive;
 
     ForLoopInst(StatementInst* init, ValueInst* end, StatementInst* increment, BlockInst* code, bool is_recursive)
-        : fInit(init), fIncrement(increment), fEnd(end), fCode(code), fIsRecursive(is_recursive)
+        : fInit(init), fIncrement(increment), fEnd(end), _code(code), fIsRecursive(is_recursive)
     {
     }
 
     virtual ~ForLoopInst() {}
 
-    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode->pushFrontInst(inst); }
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); _code->pushFrontInst(inst); }
 
-    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode->pushBackInst(inst); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); _code->pushBackInst(inst); }
 
     std::string getName() const { return fInit->getName(); }
 

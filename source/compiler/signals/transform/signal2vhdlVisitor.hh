@@ -26,6 +26,8 @@
 #include "global.hh"
 #include "old_occurences.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 //-------------------------Signal2VHDLVisitor-------------------------------
 // A a signal visitor used to compile signals to vhdl code
 //----------------------------------------------------------------------
@@ -35,6 +37,9 @@ using namespace std;
 #define LOW -23 //  global::config().gVHDLFloatLSB
 
 class Signal2VHDLVisitor : public SignalVisitor {
+    protected:
+
+        using Precision = ::Faust::Primitive::Type::Precision;
 
     private:
         old_OccMarkup* fOccMarkup;
@@ -53,7 +58,7 @@ class Signal2VHDLVisitor : public SignalVisitor {
 
         void entity_header(string& str);
         void generic_decl(string& str);
-        void port_decl(int input, int nature, string& str);
+        void port_decl(int input, const Precision& precision, string& str);
 
         /** Functions generating different Faust blocks, each block is treated as an entity with declaration of inputs and outputs:
           *  - Each design must have at least one entity and one corresponding architecture
@@ -61,25 +66,25 @@ class Signal2VHDLVisitor : public SignalVisitor {
           *  - Each entity has a name assigned to it and a port list
           *  - Each port list has a direction (in/out/inout) and a type
           */
-        void entity_bin_op(const string& name, const char* op, int nature,  string& str);   // arithmetic and modulo operation
-        void entity_bin_op_concat(const string& name, const char* op, int nature, string& str);   // arithmetic and modulo operation
-        void entity_cmp_op(const string& name, const char* op, int nature, string& str);   // compare operation
-        void entity_delay(int nature, string& str);                                       // delay
-        void entity_delay_var_reg(int nature, string& str);                                // variable delay (Using Registers)
-        void entity_delay_var_ram(int nature, string& str);                                // variable delay (Using Blocks RAM)
-        void entity_bypass(const string& name, int nature, string& str);                   // bypass module
-        void entity_cast(const string& name,int nature_in, int nature_out, string& str);   // bypass module
-        void entity_select2(const string& name, int nature, string& str);                  // select module
+        void entity_bin_op(const string& name, const char* op, const Precision& precision,  string& str);   // arithmetic and modulo operation
+        void entity_bin_op_concat(const string& name, const char* op, const Precision& precision, string& str);   // arithmetic and modulo operation
+        void entity_cmp_op(const string& name, const char* op, const Precision& precision, string& str);   // compare operation
+        void entity_delay(const Precision& precision, string& str);                                       // delay
+        void entity_delay_var_reg(const Precision& precision, string& str);                                // variable delay (Using Registers)
+        void entity_delay_var_ram(const Precision& precision, string& str);                                // variable delay (Using Blocks RAM)
+        void entity_bypass(const string& name, const Precision& precision, string& str);                   // bypass module
+        void entity_cast(const string& name,const Precision& precision_in, const Precision& precision_out, string& str);   // bypass module
+        void entity_select2(const string& name, const Precision& precision, string& str);                  // select module
         void entity_faust();                                                              // main module
 
         /** Functions declaring the design entity interface for blocks that will be used
           * later to form a hierarchical design
           */
-        void component_standard(const string& name, int input, int nature, string& str);   // arith, mod, bypass, compare, select
-        void component_cast(const string& name, int input,int nature_in, int nature_out, string& str); //cast
-        void component_delay(int nature, string& str);                                     // delay
-        void component_delay_var(int nature, string& str);                                 // variable delay
-        void component_sincos(int nature, string& str);                                    // cosinus & sinus
+        void component_standard(const string& name, int input, const Precision& precision, string& str);   // arith, mod, bypass, compare, select
+        void component_cast(const string& name, int input,const Precision& precision_in, const Precision& precision_out, string& str); //cast
+        void component_delay(const Precision& precision, string& str);                                     // delay
+        void component_delay_var(const Precision& precision, string& str);                                 // variable delay
+        void component_sincos(const Precision& precision, string& str);                                    // cosinus & sinus
 
         /* Generate the process of the Faust module, it determine the behavioral modeling of the Faust IP */
         void faust_process();
@@ -91,17 +96,17 @@ class Signal2VHDLVisitor : public SignalVisitor {
         void inst_bin_op(const string& name, Tree sig, Tree x, Tree y, string& str); // arith, mod, compare
         void inst_delay(Tree sig, Tree x, Tree y, string& str);                      // delay
         void inst_delay_var(Tree sig, Tree x, Tree y, string& str, int mxd);         // variable delay
-        void inst_sincos(const string& name, Tree sig, Tree x, int nature, string& str);         // cosinus & sinus
+        void inst_sincos(const string& name, Tree sig, Tree x, const Precision& precision, string& str);         // cosinus & sinus
         void inst_bypass(const string& name, Tree sig, Tree x, string& str);         // bypass
         void inst_select2(const string& name, Tree sig, Tree sel, Tree x, Tree y, string& str);  // select
 
-        void decl_sig(Tree x, int msb, int lsb, int nature); // Declare the internal signals of the IP block with a type (and an initial value)
+        void decl_sig(Tree x, int msb, int lsb, const Precision& precision); // Declare the internal signals of the IP block with a type (and an initial value)
         void input_affectation(Tree sig,int i);
 
         void bin_op(const string& name, const char* op, Tree sig, Tree x, Tree y);
         void select_op(const string& name, Tree sig, Tree sel, Tree x, Tree y);
         void cmp_op(const string& name, const char* op, Tree sig, Tree x, Tree y);
-        void sincos_op(const string& name, Tree sig, Tree x, int nature);
+        void sincos_op(const string& name, Tree sig, Tree x, const Precision& precision);
         void bypass(const string& name, Tree sig, Tree x);
         void cast(const string& name, Tree sig, Tree x);
 
@@ -114,16 +119,16 @@ class Signal2VHDLVisitor : public SignalVisitor {
             return global::config().gVHDLFloatType == 0;
         }
 
-        string getObjectSuffix(int nature)
+        string getObjectSuffix(const Precision& precision)
         {
-            if (nature == kReal) {
+            if (precision == Precision::Real) {
                 return "_" + getRealCoding();
             }   else return "_int";
         }
 
-        string getSignalType(int nature)
+        string getSignalType(const Precision& precision)
         {
-            if (nature == kReal) {
+            if (precision == Precision::Real) {
                 return getRealCoding();
             }   else return "sfixed";
         }
@@ -132,39 +137,39 @@ class Signal2VHDLVisitor : public SignalVisitor {
             return globalCodingFloat() ? "float" : "sfixed";
         }
 
-        string getMSB(int nature)
+        string getMSB(const Precision& precision)
         {
-            return (nature == kReal) ? " msb " : to_string(31);
+            return (precision == Precision::Real) ? " msb " : to_string(31);
         }
 
-        string getFloatMSB(int nature)
+        string getFloatMSB(const Precision& precision)
         {
-            return (nature == kReal) ? ((globalCodingFloat()) ? "" : " msb ") : to_string(31);
+            return (precision == Precision::Real) ? ((globalCodingFloat()) ? "" : " msb ") : to_string(31);
         }
 
-        string getFloatLSB(int nature)
+        string getFloatLSB(const Precision& precision)
         {
-            return (nature == kReal) ? ((globalCodingFloat()) ? "" : " lsb ") : to_string(0);
+            return (precision == Precision::Real) ? ((globalCodingFloat()) ? "" : " lsb ") : to_string(0);
         }
 
-        string getLSB(int nature)
+        string getLSB(const Precision& precision)
         {
-            return (nature == kReal) ? " lsb " : to_string(0);
+            return (precision == Precision::Real) ? " lsb " : to_string(0);
         }
 
-        string getRange(int nature)
+        string getRange(const Precision& precision)
         {
-            return "(" + getMSB(nature) + " downto " + getLSB(nature) + ")";
+            return "(" + getMSB(precision) + " downto " + getLSB(precision) + ")";
         }
 
-        int getHigh(int nature)
+        int getHigh(const Precision& precision)
         {
-            return (nature == kReal) ? HIGH : 31;
+            return (precision == Precision::Real) ? HIGH : 31;
         }
 
-        int getLow(int nature)
+        int getLow(const Precision& precision)
         {
-            return (nature == kReal) ? LOW : 0;
+            return (precision == Precision::Real) ? LOW : 0;
         }
 
     public:

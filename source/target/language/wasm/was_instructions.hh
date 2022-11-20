@@ -31,6 +31,8 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 #define offStrNum ((::Faust::Primitive::Math::floatSize == 1) ? 2 : ((::Faust::Primitive::Math::floatSize == 2) ? 3 : 0))
 #define audioPtrSize global::config().audioSampleSize()
 #define wasmBlockSize int(pow(2, 16))
@@ -101,6 +103,8 @@ struct WASInst {
         int            fArgs;
     };
 
+    using Precision = ::Faust::Primitive::Type::Precision;
+
     map<string, bool>        fFunctionSymbolTable;  // Already generated functions
     map<string, MathFunDesc> fMathLibTable;         // Table : field_name, math description
     map<string, MemoryDesc>  fFieldTable;           // Table : field_name, { offset, size, type }
@@ -109,7 +113,7 @@ struct WASInst {
     map<string, bool> fTeeMap;
 
     int  fStructOffset;  // Keep the offset in bytes of the structure
-    int  fSubContainerType;
+    Precision  fSubContainerType;
     bool fFastMemory;    // If true, assume $dsp is always 0 to simplify and speed-up dsp memory access code
 
     WASInst(bool fast_memory = false)
@@ -192,12 +196,12 @@ struct WASInst {
         fMathLibTable["copysign"]  =  MathFunDesc(MathFunDesc::Gen::kExtWAS, "copysign", Typed::kDouble, Typed::kDouble, 2);
         
         fStructOffset     = 0;
-        fSubContainerType = -1;
+        fSubContainerType = Precision(-1);
         fFastMemory       = fast_memory;
     }
 
-    void setSubContainerType(int type) { fSubContainerType = type; }
-    int  getSubContainerType() { return fSubContainerType; }
+    void setSubContainerType(const Precision& type) { fSubContainerType = type; }
+    const Precision&  getSubContainerType() { return fSubContainerType; }
 
     // The DSP size in bytes
     int getStructSize() { return fStructOffset; }

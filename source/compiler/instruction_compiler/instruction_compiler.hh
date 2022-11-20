@@ -39,12 +39,19 @@
 #include "tlib/property.hh"
 #include "fir/fir_index.hh"
 
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+
 #define _DNF_ 1
 
 using namespace std;
 
 class InstructionsCompiler : public virtual Garbageable {
    protected:
+
+    using Precision = ::Faust::Primitive::Type::Precision;
+    using Priority = ::Faust::Primitive::Type::Priority;
+
     CodeContainer* fContainer;
 
     property<ValueInst*>            fCompileProperty;
@@ -143,7 +150,10 @@ class InstructionsCompiler : public virtual Garbageable {
     int  getSharingCount(Tree sig);
     void setSharingCount(Tree sig, int count);
     void sharingAnalysis(Tree t);
-    void sharingAnnotation(int vctxt, Tree sig);
+    void sharingAnnotation(
+      const Priority& priority,
+      Tree sig
+    );
 
     FIRIndex getCurrentLoopIndex() { return FIRIndex(fContainer->getCurLoop()->getLoopIndex()); }
 
@@ -162,7 +172,7 @@ class InstructionsCompiler : public virtual Garbageable {
 
     ValueInst* getConditionCode(Tree sig);
 
-    ValueInst* genCastedOutput(int type, ValueInst* value);
+    ValueInst* genCastedOutput(const Precision& precision, ValueInst* value);
     ValueInst* genCastedInput(ValueInst* value);
 
    public:

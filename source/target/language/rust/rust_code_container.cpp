@@ -28,6 +28,10 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -52,9 +56,9 @@ dsp_factory_base* RustCodeContainer::produceFactory()
         ((dynamic_cast<ostringstream*>(fOut)) ? dynamic_cast<ostringstream*>(fOut)->str() : ""), "");
 }
 
-CodeContainer* RustCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* RustCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new RustScalarCodeContainer(name, 0, 1, fOut, sub_container_type);
+    return new RustScalarCodeContainer(name, 0, 1, fOut, precision);
 }
 
 CodeContainer* RustCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
@@ -80,7 +84,7 @@ CodeContainer* RustCodeContainer::createContainer(const string& name, int numInp
         // container = new RustVectorCodeContainer(name, numInputs, numOutputs, dst);
         throw faustexception("ERROR : Vector not supported for Rust\n");
     } else {
-        container = new RustScalarCodeContainer(name, numInputs, numOutputs, dst, kInt);
+        container = new RustScalarCodeContainer(name, numInputs, numOutputs, dst, Precision::Int);
     }
 
     return container;
@@ -92,16 +96,16 @@ void RustCodeContainer::produceInternal()
 
     // Global declarations
     tab(n, *fOut);
-    fCodeProducer.Tab(n);
-    generateGlobalDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n);
+    generateGlobalDeclarations(&_codeProducer);
 
     tab(n, *fOut);
     *fOut << "pub struct " << fKlassName << " {";
     tab(n + 1, *fOut);
 
     // Fields
-    fCodeProducer.Tab(n + 1);
-    generateDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n + 1);
+    generateDeclarations(&_codeProducer);
 
     back(1, *fOut);
     *fOut << "}";
@@ -112,26 +116,26 @@ void RustCodeContainer::produceInternal()
 
     tab(n + 1, *fOut);
     tab(n + 1, *fOut);
-    produceInfoFunctions(n + 1, fKlassName, "&self", false, FunTyped::kDefault, &fCodeProducer);
+    produceInfoFunctions(n + 1, fKlassName, "&self", false, FunTyped::kDefault, &_codeProducer);
 
     // Init
     // TODO
-    // generateInstanceInitFun("instanceInit" + fKlassName, false, false)->accept(&fCodeProducer);
+    // generateInstanceInitFun("instanceInit" + fKlassName, false, false)->accept(&_codeProducer);
 
     tab(n + 1, *fOut);
     *fOut << "fn instance_init" << fKlassName << "(&mut self, sample_rate: i32) {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateInit(&fCodeProducer);
-    generateResetUserInterface(&fCodeProducer);
-    generateClear(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateInit(&_codeProducer);
+    generateResetUserInterface(&_codeProducer);
+    generateClear(&_codeProducer);
     back(1, *fOut);
     *fOut << "}";
 
     // Fill
     tab(n + 1, *fOut);
     string counter = "count";
-    if (fSubContainerType == kInt) {
+    if (fSubContainerType == Precision::Int) {
         tab(n + 1, *fOut);
         *fOut << "fn fill" << fKlassName << subst("(&mut self, $0: i32, table: &mut[i32]) {", counter);
     } else {
@@ -139,10 +143,10 @@ void RustCodeContainer::produceInternal()
         *fOut << "fn fill" << fKlassName << subst("(&mut self, $0: i32, table: &mut[$1]) {", counter, ifloat());
     }
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateComputeBlock(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateComputeBlock(&_codeProducer);
     SimpleForLoopInst* loop = fCurLoop->generateSimpleScalarLoop(counter);
-    loop->accept(&fCodeProducer);
+    loop->accept(&_codeProducer);
     back(1, *fOut);
     *fOut << "}" << endl;
 
@@ -172,8 +176,8 @@ void RustCodeContainer::produceClass()
 
     // Functions
     tab(n, *fOut);
-    fCodeProducer.Tab(n);
-    generateGlobalDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n);
+    generateGlobalDeclarations(&_codeProducer);
 
     tab(n, *fOut);
     *fOut << "#[cfg_attr(feature = \"default-boxed\", derive(default_boxed::DefaultBoxed))]";
@@ -182,8 +186,8 @@ void RustCodeContainer::produceClass()
     tab(n + 1, *fOut);
 
     // Fields
-    fCodeProducer.Tab(n + 1);
-    generateDeclarations(&fCodeProducer);
+    _codeProducer.Tab(n + 1);
+    generateDeclarations(&_codeProducer);
 
     back(1, *fOut);
     *fOut << "}";
@@ -198,29 +202,29 @@ void RustCodeContainer::produceClass()
 
     // Memory methods
     tab(n + 2, *fOut);
-    if (fAllocateInstructions->fCode.size() > 0) {
+    if (fAllocateInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
         *fOut << "static void allocate" << fKlassName << "(" << fKlassName << "* dsp) {";
         tab(n + 2, *fOut);
-        fAllocateInstructions->accept(&fCodeProducer);
+        fAllocateInstructions->accept(&_codeProducer);
         back(1, *fOut);
         *fOut << "}";
     }
 
     tab(n + 1, *fOut);
 
-    if (fDestroyInstructions->fCode.size() > 0) {
+    if (fDestroyInstructions->_code.size() > 0) {
         tab(n + 1, *fOut);
         *fOut << "static void destroy" << fKlassName << "(" << fKlassName << "* dsp) {";
         tab(n + 2, *fOut);
-        fDestroyInstructions->accept(&fCodeProducer);
+        fDestroyInstructions->accept(&_codeProducer);
          back(1, *fOut);
         *fOut << "}";
         tab(n + 1, *fOut);
     }
 
     *fOut << "fn new() -> " << fKlassName << " { ";
-    if (fAllocateInstructions->fCode.size() > 0) {
+    if (fAllocateInstructions->_code.size() > 0) {
         tab(n + 2, *fOut);
         *fOut << "allocate" << fKlassName << "(dsp);";
     }
@@ -238,10 +242,10 @@ void RustCodeContainer::produceClass()
 
     // Get sample rate method
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
-    generateGetSampleRate("get_sample_rate", "&self", false, false)->accept(&fCodeProducer);
+    _codeProducer.Tab(n + 1);
+    generateGetSampleRate("get_sample_rate", "&self", false, false)->accept(&_codeProducer);
 
-    produceInfoFunctions(n + 1, "", "&self", false, FunTyped::kDefault, &fCodeProducer);
+    produceInfoFunctions(n + 1, "", "&self", false, FunTyped::kDefault, &_codeProducer);
 
     // Inits
 
@@ -339,7 +343,7 @@ void RustCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "fn build_user_interface_static(ui_interface: &mut dyn UI<Self::T>) {";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
     RustUIInstVisitor uiCodeproducer(fOut, "", parameterLookup, n + 2);
     generateUserInterface(&uiCodeproducer);
     back(1, *fOut);
@@ -393,8 +397,8 @@ void RustCodeContainer::produceMetadata(int n)
 void RustCodeContainer::produceInfoFunctions(int tabs, const string& classname, const string& obj, bool ismethod, FunTyped::FunAttribute funtype, TextInstVisitor* producer)
 {
     producer->Tab(tabs);
-    generateGetInputs(subst("get_num_inputs$0", classname), obj, false, funtype)->accept(&fCodeProducer);
-    generateGetOutputs(subst("get_num_outputs$0", classname), obj, false, funtype)->accept(&fCodeProducer);
+    generateGetInputs(subst("get_num_inputs$0", classname), obj, false, funtype)->accept(&_codeProducer);
+    generateGetOutputs(subst("get_num_outputs$0", classname), obj, false, funtype)->accept(&_codeProducer);
 }
 
 void RustCodeContainer::produceParameterGetterSetter(int tabs, map<string, int> parameterLookup)
@@ -440,10 +444,10 @@ void RustCodeContainer::produceParameterGetterSetter(int tabs, map<string, int> 
 
 // Scalar
 RustScalarCodeContainer::RustScalarCodeContainer(const string& name, int numInputs, int numOutputs, std::ostream* out,
-                                                 int sub_container_type)
+                                                 const Precision& precision)
     : RustCodeContainer(name, numInputs, numOutputs, out)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }
 
 void RustScalarCodeContainer::generateCompute(int n)
@@ -454,10 +458,10 @@ void RustScalarCodeContainer::generateCompute(int n)
     *fOut << "fn compute("
           << subst("&mut self, $0: i32, inputs: &[&[Self::T]], outputs: &mut[&mut[Self::T]]) {", fFullCount);
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
 
     // Generates local variables declaration and setup
-    generateComputeBlock(&fCodeProducer);
+    generateComputeBlock(&_codeProducer);
 
     // Generates one single scalar loop
     std::vector<std::string> iterators;
@@ -468,10 +472,10 @@ void RustScalarCodeContainer::generateCompute(int n)
         iterators.push_back("outputs" + std::to_string(i));
     }
     IteratorForLoopInst* loop = fCurLoop->generateSimpleScalarLoop(iterators);
-    loop->accept(&fCodeProducer);
+    loop->accept(&_codeProducer);
     
     // Currently for soundfile management
-    generatePostComputeBlock(&fCodeProducer);
+    generatePostComputeBlock(&_codeProducer);
 
     back(1, *fOut);
     *fOut << "}" << endl;
@@ -486,22 +490,22 @@ RustVectorCodeContainer::RustVectorCodeContainer(const string& name, int numInpu
 void RustVectorCodeContainer::generateCompute(int n)
 {
     // Possibly generate separated functions
-    fCodeProducer.Tab(n);
+    _codeProducer.Tab(n);
     tab(n, *fOut);
-    generateComputeFunctions(&fCodeProducer);
+    generateComputeFunctions(&_codeProducer);
 
     // Compute declaration
     tab(n, *fOut);
     *fOut << "fn compute("
           << subst("&mut self, $0: i32, inputs: &[&[Self::T]], outputs: &mut[&mut[Self::T]]) {", fFullCount);
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
 
     // Generates local variables declaration and setup
-    generateComputeBlock(&fCodeProducer);
+    generateComputeBlock(&_codeProducer);
 
     // Generates the DSP loop
-    fDAGBlock->accept(&fCodeProducer);
+    fDAGBlock->accept(&_codeProducer);
 
     back(1, *fOut);
     *fOut << "}" << endl;
@@ -516,22 +520,22 @@ RustOpenMPCodeContainer::RustOpenMPCodeContainer(const string& name, int numInpu
 void RustOpenMPCodeContainer::generateCompute(int n)
 {
     // Possibly generate separated functions
-    fCodeProducer.Tab(n);
+    _codeProducer.Tab(n);
     tab(n, *fOut);
-    generateComputeFunctions(&fCodeProducer);
+    generateComputeFunctions(&_codeProducer);
 
     // Compute declaration
     tab(n, *fOut);
     *fOut << "fn compute("
           << subst("&mut self, $0: i32, inputs: &[&[Self::T]], outputs: &mut[&mut[Self::T]]) {", fFullCount);
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
 
     // Generates local variables declaration and setup
-    generateComputeBlock(&fCodeProducer);
+    generateComputeBlock(&_codeProducer);
 
     // Generate it
-    fGlobalLoopBlock->accept(&fCodeProducer);
+    fGlobalLoopBlock->accept(&_codeProducer);
 
     back(1, *fOut);
     *fOut << "}" << endl;
@@ -547,9 +551,9 @@ RustWorkStealingCodeContainer::RustWorkStealingCodeContainer(const string& name,
 void RustWorkStealingCodeContainer::generateCompute(int n)
 {
     // Possibly generate separated functions
-    fCodeProducer.Tab(n);
+    _codeProducer.Tab(n);
     tab(n, *fOut);
-    generateComputeFunctions(&fCodeProducer);
+    generateComputeFunctions(&_codeProducer);
 
     // Generates "computeThread" code
     // Note that users either have to adjust the trait in their architecture file.
@@ -557,10 +561,10 @@ void RustWorkStealingCodeContainer::generateCompute(int n)
     tab(n, *fOut);
     *fOut << "pub fn compute_thread(" << fKlassName << "&mut self, num_thread: i32) {";
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
 
     // Generate it
-    fThreadLoopBlock->accept(&fCodeProducer);
+    fThreadLoopBlock->accept(&_codeProducer);
 
     tab(n, *fOut);
     *fOut << "}" << endl;
@@ -570,10 +574,10 @@ void RustWorkStealingCodeContainer::generateCompute(int n)
     *fOut << "fn compute("
           << subst("&mut self, $0: i32, inputs: &[&[Self::T]], outputs: &mut[&mut[Self::T]]) {", fFullCount);
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
 
     // Generates local variables declaration and setup
-    generateComputeBlock(&fCodeProducer);
+    generateComputeBlock(&_codeProducer);
 
     tab(n, *fOut);
     *fOut << "}" << endl;

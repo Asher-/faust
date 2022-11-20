@@ -39,9 +39,9 @@ Tree TreeTransform::self(Tree t)
     if (fTrace) traceEnter(t);
     fIndent++;
     Tree r;
-    if (!fResult.get(t, r)) {
+    if (!_resolutionult.get(t, r)) {
         r = transformation(t);
-        fResult.set(t, r);
+        _resolutionult.set(t, r);
     }
     fIndent--;
     if (fTrace) traceExit(t, r);

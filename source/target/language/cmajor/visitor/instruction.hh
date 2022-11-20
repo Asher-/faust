@@ -369,7 +369,7 @@ class CmajorInstVisitor : public TextInstVisitor {
         inst->fThen->accept(this);
         fTab--;
         back(1, *fOut);
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             *fOut << "} else {";
             fTab++;
             tab(fTab, *fOut);
@@ -402,7 +402,7 @@ class CmajorInstVisitor : public TextInstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         *fOut << "for (";
 
@@ -419,7 +419,7 @@ class CmajorInstVisitor : public TextInstVisitor {
 
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "}";

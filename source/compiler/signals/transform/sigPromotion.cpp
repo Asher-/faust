@@ -30,6 +30,12 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+#include "faust/primitive/type/cast.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 void SignalTreeChecker::visit(Tree sig)
 {
     int  opnum;
@@ -44,7 +50,7 @@ void SignalTreeChecker::visit(Tree sig)
         }
         Type tx = p->infereSigType(vt);
         for (Tree b : sig->branches()) {
-            if (tx->nature() != getCertifiedSigType(b)->nature()) {
+            if (tx->precision() != getCertifiedSigType(b)->precision()) {
                 cerr << "ERROR : ::Faust::Primitive::Math::xtended wih args of incorrect types : " << *sig << endl;
                 faustassert(false);
             }
@@ -208,7 +214,7 @@ Tree SignalPromotion::transformation(Tree sig)
             case kLE:
             case kEQ:
             case kNE:
-                if (tx->nature() == ty->nature()) {
+                if (tx->precision() == ty->precision()) {
                     // same nature => no promotion needed
                     return sigBinOp(op, self(x), self(y));
                 } else {
@@ -217,7 +223,7 @@ Tree SignalPromotion::transformation(Tree sig)
                 }
 
             case kRem:
-                if (tx->nature() == kInt && ty->nature() == kInt) {
+                if (tx->precision() == Precision::Int && ty->precision() == Precision::Int) {
                     // int arguments => no promotion needed
                     return sigBinOp(op, self(x), self(y));
                 } else {
@@ -258,7 +264,13 @@ Tree SignalPromotion::transformation(Tree sig)
         for (int i = 0; i < ffarity(ff); i++) {
             Tree arg = nth(largs, i);
             Type ta  = getCertifiedSigType(arg);
-            clargs.push_back(smartCast(ffargtype(ff, len - i), ta->nature(), self(arg)));
+            clargs.push_back(
+              smartCast(
+                ffargtype(ff, len - i),
+                static_cast<int>(ta->precision()),
+                self(arg)
+              )
+            );
         }
         return sigFFun(ff, listConvert(clargs));
     }
@@ -269,7 +281,7 @@ Tree SignalPromotion::transformation(Tree sig)
         Type tx = getCertifiedSigType(x);
         Type ty = getCertifiedSigType(y);
 
-        if (tx->nature() == ty->nature()) {
+        if (tx->precision() == ty->precision()) {
             // same nature => no promotion needed
             return sigSelect2(smartIntCast(ts, self(sel)), self(x), self(y));
         } else {
@@ -331,26 +343,33 @@ Tree SignalPromotion::transformation(Tree sig)
 
 Tree SignalPromotion::smartCast(Type t1, Type t2, Tree sig)
 {
-    return smartCast(t1->nature(), t2->nature(), sig);
+    return smartCast(
+      static_cast<int>( t1->precision() ),
+      static_cast<int>( t2->precision() ),
+      sig
+    );
 }
 
-Tree SignalPromotion::smartCast(int t1, int t2, Tree sig)
+Tree SignalPromotion::smartCast(const int& t1, const int& t2, Tree sig)
 {
-    return (t1 != t2) ? cast(t1, sig) : sig;
+    return (t1 != t2) ? cast(Precision(t1), sig) : sig;
 }
 
 Tree SignalPromotion::cast(Type t, Tree sig)
 {
-    return cast(t->nature(), sig);
+    return cast(
+      t->precision(),
+      sig
+    );
 }
 
-Tree SignalPromotion::cast(int t, Tree sig)
+Tree SignalPromotion::cast(const Precision& t, Tree sig)
 {
-    if (t == kReal) {
+    if (t == Precision::Real) {
         return sigFloatCast(sig);
-    } else if (t == kInt) {
+    } else if (t == Precision::Int) {
         return sigIntCast(sig);
-    } else if (t == kAny) {
+    } else if (t == Precision::Any) {
         return sig;
     } else {
         faustassert(false);
@@ -359,26 +378,26 @@ Tree SignalPromotion::cast(int t, Tree sig)
 }
 
 /*
-## smartIntCast[S] : adds an intCast(S) only if needed
+## smartIntCast[S] : adds an Type::intCast(S) only if needed
 
-    smartIntCast[S] = intCast(S) when type(S) = float
+    smartIntCast[S] = Type::intCast(S) when type(S) = float
     smartIntCast[S] = S          otherwise
 */
 
 Tree SignalPromotion::smartIntCast(Type t, Tree sig)
 {
-    return (t->nature() == kReal) ? sigIntCast(sig) : sig;
+    return (t->precision() == Precision::Real) ? sigIntCast(sig) : sig;
 }
 
 /*
-## smartFloatCast[S] : adds a floatCast(S) only if needed
+## smartFloatCast[S] : adds a Type::floatCast(S) only if needed
 
-    smartFloatCast[S] = floatCast(S) when type(S) = int
+    smartFloatCast[S] = Type::floatCast(S) when type(S) = int
     smartFloatCast[S] = S            otherwise
 */
 Tree SignalPromotion::smartFloatCast(Type t, Tree sig)
 {
-    return (t->nature() == kInt) ? sigFloatCast(sig) : sig;
+    return (t->precision() == Precision::Int) ? sigFloatCast(sig) : sig;
 }
 
 Tree SignalBool2IntPromotion::transformation(Tree sig)

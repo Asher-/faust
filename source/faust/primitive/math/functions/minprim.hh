@@ -29,11 +29,19 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/value.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
 
       class Min : public ::Faust::Primitive::Math::xtended {
+          protected:
+
+            using Precision = ::Faust::Primitive::Type::Precision;
+            using Value = ::Faust::Primitive::Type::Value;
+
           public:
           Min() : ::Faust::Primitive::Math::xtended("min") {}
 
@@ -44,9 +52,9 @@ namespace Faust {
           virtual ::Type infereSigType(ConstTypes args)
           {
               faustassert(args.size() == arity());
-              interval i = args[0]->getInterval();
-              interval j = args[1]->getInterval();
-              return castInterval(args[0] | args[1], min(i, j));
+              interval i = args[0]->interval();
+              interval j = args[1]->interval();
+              return Type::castInterval(args[0] | args[1], min(i, j));
           }
 
           virtual int infereSigOrder(const vector<int>& args)
@@ -96,8 +104,8 @@ namespace Faust {
           
               /*
                   // Min of disjoint intervals returns one of them
-                  interval i1 = types[0]->getInterval();
-                  interval i2 = types[1]->getInterval();
+                  interval i1 = types[0]->interval();
+                  interval i2 = types[1]->interval();
                   
                   if (i1.valid && i2.valid) {
                       if (i1.hi <= i2.lo) {
@@ -108,7 +116,7 @@ namespace Faust {
                   }
                */
           
-              string fun_name = (result->nature() == kInt) ? "min_i" : subst("min_$0", isuffix());
+              string fun_name = (result->precision() == Precision::Int) ? "min_i" : subst("min_$0", isuffix());
               return generateFun(container, fun_name, args, result, types);
           }
 
@@ -118,40 +126,40 @@ namespace Faust {
               faustassert(types.size() == arity());
 
               // generates code compatible with overloaded min
-              int n0 = types[0]->nature();
-              int n1 = types[1]->nature();
-              if (n0 == kReal) {
-                  if (n1 == kReal) {
+              const Precision& n0 = types[0]->precision();
+              const Precision& n1 = types[1]->precision();
+              if (n0 == Precision::Real) {
+                  if (n1 == Precision::Real) {
                       // both are floats, no need to cast
                       return subst("min($0, $1)", args[0], args[1]);
                   } else {
-                      faustassert(n1 == kInt);  // second argument is not float, cast it to float
+                      faustassert(n1 == Precision::Int);  // second argument is not float, cast it to float
                       return subst("min($0, $2($1))", args[0], args[1], icast());
                   }
-              } else if (n1 == kReal) {
-                  faustassert(n0 == kInt);  // first not float but second is, cast first to float
+              } else if (n1 == Precision::Real) {
+                  faustassert(n0 == Precision::Int);  // first not float but second is, cast first to float
                   return subst("min($2($0), $1)", args[0], args[1], icast());
               } else {
-                  faustassert(n0 == kInt);
-                  faustassert(n1 == kInt);  // both are integers, check for booleans
-                  int b0 = types[0]->boolean();
-                  int b1 = types[1]->boolean();
-                  if (b0 == kNum) {
-                      if (b1 == kNum) {
+                  faustassert(n0 == Precision::Int);
+                  faustassert(n1 == Precision::Int);  // both are integers, check for booleans
+                  const Value& b0 = types[0]->valueType();
+                  const Value& b1 = types[1]->valueType();
+                  if (b0 == Value::Num) {
+                      if (b1 == Value::Num) {
                           // both are integers, no need to cast
                           return subst("min($0, $1)", args[0], args[1]);
                       } else {
-                          faustassert(b1 == kBool);  // second is boolean, cast to int
+                          faustassert(b1 == Value::Bool);  // second is boolean, cast to int
                           return subst("min($0, int($1))", args[0], args[1]);
                       }
-                  } else if (b1 == kNum) {
-                      faustassert(b0 == kBool);  // first is boolean, cast to int
+                  } else if (b1 == Value::Num) {
+                      faustassert(b0 == Value::Bool);  // first is boolean, cast to int
                       return subst("min(int($0), $1)", args[0], args[1], icast());
                   } else {
                       // both are booleans, theoretically no need to cast, but we still do it to be sure 'true' is actually
                       // '1' and 'false' is actually '0' (which is not the case if compiled in SSE mode)
-                      faustassert(b0 == kBool);
-                      faustassert(b1 == kBool);
+                      faustassert(b0 == Value::Bool);
+                      faustassert(b1 == Value::Bool);
                       return subst("min(int($0), int($1))", args[0], args[1]);
                   }
               }

@@ -62,7 +62,7 @@ class ClangCodeContainer : public virtual CodeContainer {
 
     virtual void produceInternal() { fContainer->produceInternal(); }
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type)
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision)
     {
         faustassert(false);
         return nullptr;

@@ -29,9 +29,9 @@
 #include "compiler/visitor/clone_visitor.hh"
 
 struct DropInst : public StatementInst {
-    ValueInst* fResult;
+    ValueInst* _resolutionult;
 
-    DropInst(ValueInst* result = nullptr) : fResult(result) {}
+    DropInst(ValueInst* result = nullptr) : _resolutionult(result) {}
 
     virtual ~DropInst() {}
 

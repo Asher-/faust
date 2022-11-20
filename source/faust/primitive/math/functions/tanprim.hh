@@ -28,6 +28,8 @@
 #include "compiler/types/floats.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/cast.hh"
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -47,7 +49,7 @@ namespace Faust {
           virtual ::Type infereSigType(ConstTypes args)
           {
               faustassert(args.size() == 1);
-              interval     srcInterval = args[0]->getInterval();
+              interval     srcInterval = args[0]->interval();
               const double halfpi      = M_PI / 2;
               interval     resultInterval;
 
@@ -56,7 +58,7 @@ namespace Faust {
                   if ((-halfpi < srcInterval.lo) && (srcInterval.hi < halfpi))
                       resultInterval = interval(tan(srcInterval.lo), tan(srcInterval.hi));
               }
-              return castInterval(floatCast(args[0]), resultInterval);
+              return Type::castInterval(Type::floatCast(args[0]), resultInterval);
           }
 
           virtual int infereSigOrder(const vector<int>& args) { return args[0]; }

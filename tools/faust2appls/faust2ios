@@ -154,14 +154,14 @@ for p in $FILES; do
 
         if [ $POLY = "POLY2" ]; then
             if [ $EFFECT = "auto" ]; then
-                cat > $T/effect.dsp << EndOfCode
+                cat > $T/effect.dsp << EndO_code
                 adapt(1,1) = _;
                 adapt(2,2) = _,_;
                 adapt(1,2) = _ <: _,_;
                 adapt(2,1) = _,_ :> _;
                 adaptor(F,G) = adapt(outputs(F),inputs(G));
                 process = adaptor(library("$SRCDIR/$F").process, library("$SRCDIR/$F").effect) : library("$SRCDIR/$F").effect;
-EndOfCode
+EndO_code
                 faust -i -json -a $ARCHFILE $OPTIONS "$p" -o "$T/${F%.dsp}_tmp.cpp" || exit
                 faust -i -cn effect -a minimal-effect.cpp "$T/effect.dsp" -o "$T/effect.h" || exit
                 rm "$T/effect.dsp"

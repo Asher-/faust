@@ -105,7 +105,7 @@ EFFECT_OUTPUT=$TMP/effect.h
 if [[ "$POLY" == *POLY2* ]]; then
     if [ $EFFECT = "auto" ]; then
         # Creer un fichier .dsp simple
-        cat > $TMP/effect.dsp << EndOfCode
+        cat > $TMP/effect.dsp << EndO_code
         adapt(1,1) = _;
         adapt(2,2) = _,_;
         adapt(1,2) = _ <: _,_;
@@ -114,7 +114,7 @@ if [[ "$POLY" == *POLY2* ]]; then
         adaptor(F,G) = adapt(outputs(F),inputs(G));
 
         process = adaptor(library("$INPUT_FILE").process, library("$INPUT_FILE").effect) : library("$INPUT_FILE").effect;
-EndOfCode
+EndO_code
         faust $FAUST_ARGS -i -cn effect -a minimal-effect.cpp "$TMP/effect.dsp" -o "$EFFECT_OUTPUT"
 
     else

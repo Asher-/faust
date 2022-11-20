@@ -28,6 +28,10 @@
 #include "compiler/signals/ppsig.hh"
 #include "global.hh"
 
+#include "faust/primitive/type/priority.hh"
+
+using Priority = ::Faust::Primitive::Type::Priority;
+
 void VectorCompiler::compileMultiSignal(Tree L)
 {
     // contextor recursivness(0);
@@ -106,7 +110,7 @@ string VectorCompiler::CS(Tree sig)
         } else {
             if (isProj(sig, &i, r)) {
                 //cerr << "SYMBOL RECURSIF EN COURS ??? " << *r << endl;
-            } else if (getCertifiedSigType(sig)->variability() < kSamp) {
+            } else if (getCertifiedSigType(sig)->priority() < Priority::Samp) {
                 //cerr << "SLOW EXPRESSION " << endl;
             } else {
                 //cerr << "Expression absorbée" << *sig << endl;
@@ -219,7 +223,7 @@ string VectorCompiler::generateCacheCode(Tree sig, const std::string& exp)
     old_Occurences* o       = fOccMarkup->retrieve(sig);
     int             d       = o->getMaxDelay();
 
-    if (t->variability() < kSamp) {
+    if (t->priority() < Priority::Samp) {
         if (d == 0) {
             // non-sample, not delayed : same as scalar cache
             return ScalarCompiler::generateCacheCode(sig, exp);
@@ -309,7 +313,7 @@ bool VectorCompiler::needSeparateLoop(Tree sig)
     if (o->getMaxDelay() > 0) {
         // cerr << "DLY "; // delayed expressions require a separate loop
         b = true;
-    } else if (verySimple(sig) || t->variability() < kSamp) {
+    } else if (verySimple(sig) || t->priority() < Priority::Samp) {
         b = false;  // non sample computation never require a loop
     } else if (isSigDelay(sig, x, y)) {
         b = false;  //
@@ -338,7 +342,7 @@ string VectorCompiler::generateVariableStore(Tree sig, const std::string& exp)
 {
     Type t = getCertifiedSigType(sig);
 
-    if (getCertifiedSigType(sig)->variability() == kSamp) {
+    if (getCertifiedSigType(sig)->priority() == Priority::Samp) {
         string vname, ctype;
         getTypedNames(t, "Vector", ctype, vname);
         generateVectorLoop(ctype, vname, exp, getConditionCode(sig));

@@ -32,7 +32,7 @@
 
 class CPPCodeContainer : public virtual CodeContainer {
    protected:
-    CPPInstVisitor* fCodeProducer;
+    CPPInstVisitor* _codeProducer;
     std::ostream*  fOut;
     std::string    fSuperKlassName;
 
@@ -62,12 +62,12 @@ class CPPCodeContainer : public virtual CodeContainer {
             addIncludeFile("<cstdint>");
         }
 
-        fCodeProducer = new CPPInstVisitor(out);
+        _codeProducer = new CPPInstVisitor(out);
     }
 
     virtual ~CPPCodeContainer()
     {
-        // fCodeProducer is a 'Garbageable'
+        // _codeProducer is a 'Garbageable'
     }
 
     virtual void produceClass();
@@ -94,8 +94,8 @@ class CPPCodeContainer : public virtual CodeContainer {
         *fOut << "#endif" << std::endl;
     }
 
-    CodeContainer* createScalarContainer(const std::string& name, int sub_container_type);
-    static CodeContainer* createScalarContainer(const std::string& name, const std::string& super, int numInputs, int numOutputs, ostream* dst, int sub_container_type);
+    CodeContainer* createScalarContainer(const std::string& name, const Precision& precision);
+    static CodeContainer* createScalarContainer(const std::string& name, const std::string& super, int numInputs, int numOutputs, ostream* dst, const Precision& precision);
 
     static CodeContainer* createContainer(const std::string& name, const std::string& super, int numInputs, int numOutputs,
                                           ostream* dst = new std::stringstream());

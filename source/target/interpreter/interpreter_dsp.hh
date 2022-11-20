@@ -198,7 +198,7 @@ void interpreter_dsp_factory_aux<REAL, TRACE>::optimize()
     #ifndef MACHINE
             fStaticInitBlock = FBCInstructionOptimizer<REAL>::optimizeBlock(fStaticInitBlock, 1, fOptLevel);
             fInitBlock       = FBCInstructionOptimizer<REAL>::optimizeBlock(fInitBlock, 1, fOptLevel);
-            fResetUIBlock    = FBCInstructionOptimizer<REAL>::optimizeBlock(fResetUIBlock, 1, fOptLevel);
+            _resolutionetUIBlock    = FBCInstructionOptimizer<REAL>::optimizeBlock(_resolutionetUIBlock, 1, fOptLevel);
             fClearBlock      = FBCInstructionOptimizer<REAL>::optimizeBlock(fClearBlock, 1, fOptLevel);
             fComputeBlock    = FBCInstructionOptimizer<REAL>::optimizeBlock(fComputeBlock, 1, fOptLevel);
             fComputeDSPBlock = FBCInstructionOptimizer<REAL>::optimizeBlock(fComputeDSPBlock, 1, fOptLevel);

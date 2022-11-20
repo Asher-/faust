@@ -436,7 +436,7 @@
             CGColorRef clr = a_clr.CGColor;
             
             // Set up color components from passed UIColor object
-            if (CGColorGetNumberOfComponents(clr) == 4) {
+            if (CGColorGetNumberO_components(clr) == 4) {
                 // Extract the components
                 //
                 //  Note that iOS 5.0 provides a nicer way to do this i.e.

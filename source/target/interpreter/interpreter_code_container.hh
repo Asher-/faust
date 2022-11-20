@@ -29,6 +29,8 @@
 #include "compiler/visitor/interpreter_instruction_visitor.hh"
 #include "vec_code_container.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 using namespace std;
 
 template <class REAL>
@@ -60,7 +62,7 @@ class InterpreterCodeContainer : public virtual CodeContainer {
     void                      produceInternal() {}
     virtual dsp_factory_base* produceFactory();
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const string& name, int numInputs, int numOutputs);
 };
@@ -68,10 +70,13 @@ class InterpreterCodeContainer : public virtual CodeContainer {
 template <class REAL>
 class InterpreterScalarCodeContainer : public InterpreterCodeContainer<REAL> {
    protected:
+
+    using Precision = ::Faust::Primitive::Type::Precision;
+
     virtual FBCBlockInstruction<REAL>* generateCompute();
 
    public:
-    InterpreterScalarCodeContainer(const string& name, int numInputs, int numOutputs, int sub_container_type);
+    InterpreterScalarCodeContainer(const string& name, int numInputs, int numOutputs, const Precision& precision);
     virtual ~InterpreterScalarCodeContainer();
 };
 

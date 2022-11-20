@@ -26,6 +26,10 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -64,9 +68,9 @@ JuliaCodeContainer::JuliaCodeContainer(const std::string& name, int numInputs, i
     }
 }
 
-CodeContainer* JuliaCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* JuliaCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new JuliaScalarCodeContainer(name, 0, 1, fOut, sub_container_type);
+    return new JuliaScalarCodeContainer(name, 0, 1, fOut, precision);
 }
 
 CodeContainer* JuliaCodeContainer::createContainer(const string& name, int numInputs, int numOutputs, ostream* dst)
@@ -89,7 +93,7 @@ CodeContainer* JuliaCodeContainer::createContainer(const string& name, int numIn
         //container = new JuliaVectorCodeContainer(name, numInputs, numOutputs, dst);
         throw faustexception("ERROR : Vector not supported for Julia\n");
     } else {
-        container = new JuliaScalarCodeContainer(name, numInputs, numOutputs, dst, kInt);
+        container = new JuliaScalarCodeContainer(name, numInputs, numOutputs, dst, Precision::Int);
     }
 
     return container;
@@ -132,7 +136,7 @@ void JuliaCodeContainer::produceClass()
     this->_visitor->Tab(n);
 
     // Only generate globals functions
-    for (const auto& it : fGlobalDeclarationInstructions->fCode) {
+    for (const auto& it : fGlobalDeclarationInstructions->_code) {
         if (dynamic_cast<DeclareFunInst*>(it)) {
             it->accept(this->_visitor);
         }
@@ -146,7 +150,7 @@ void JuliaCodeContainer::produceClass()
     this->_visitor->Tab(n + 1);
     generateDeclarations(this->_visitor);
     // Generate global variables definition
-    for (const auto& it : fGlobalDeclarationInstructions->fCode) {
+    for (const auto& it : fGlobalDeclarationInstructions->_code) {
         if (dynamic_cast<DeclareVarInst*>(it)) {
             it->accept(this->_visitor);
         }
@@ -157,7 +161,7 @@ void JuliaCodeContainer::produceClass()
     JuliaInitFieldsVisitor initializer(fOut, n + 2);
     generateDeclarations(&initializer);
     // Generate global variables initialisation
-    for (const auto& it : fGlobalDeclarationInstructions->fCode) {
+    for (const auto& it : fGlobalDeclarationInstructions->_code) {
         if (dynamic_cast<DeclareVarInst*>(it)) {
             it->accept(&initializer);
         }
@@ -337,7 +341,7 @@ JuliaScalarCodeContainer::JuliaScalarCodeContainer(const string& name,
                                                 int sub_container_type)
     : JuliaCodeContainer(name, numInputs, numOutputs, out)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }
 
 void JuliaScalarCodeContainer::generateCompute(int n)

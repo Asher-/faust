@@ -33,7 +33,7 @@ class CPPScalarOneSampleCodeContainer1 : public CPPScalarCodeContainer {
     virtual void produceClass();
    public:
     CPPScalarOneSampleCodeContainer1(const std::string& name, const std::string& super, int numInputs, int numOutputs, std::ostream* out,
-                                    int sub_container_type)
+                                    const Precision& precision)
     {
         initialize(numInputs, numOutputs);
         fKlassName = name;
@@ -50,7 +50,7 @@ class CPPScalarOneSampleCodeContainer1 : public CPPScalarCodeContainer {
             addIncludeFile("<cstdint>");
         }
 
-        fCodeProducer = new CPPInstVisitor(out);
+        _codeProducer = new CPPInstVisitor(out);
     }
     virtual ~CPPScalarOneSampleCodeContainer1()
     {}

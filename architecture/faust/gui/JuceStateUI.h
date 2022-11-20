@@ -33,9 +33,9 @@
 
 struct JuceStateUI : public MapUI {
     
-    bool fRestored;
+    bool _resolutiontored;
     
-    JuceStateUI():fRestored(false) {}
+    JuceStateUI():_resolutiontored(false) {}
     virtual ~JuceStateUI() {}
     
     void getStateInformation (juce::MemoryBlock& destData)
@@ -58,7 +58,7 @@ struct JuceStateUI : public MapUI {
     
     void setStateInformation (const void* data, int sizeInBytes)
     {
-        fRestored = true;
+        _resolutiontored = true;
         juce::MemoryInputStream stream (data, static_cast<size_t> (sizeInBytes), false);
         std::string path;
         

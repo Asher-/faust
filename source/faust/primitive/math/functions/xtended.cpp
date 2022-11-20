@@ -33,10 +33,10 @@ namespace Faust {
                                       ::Type result,
                                       ConstTypes types)
       {
-          Typed::VarType rtype = convert2FIRType(result->nature());
+          Typed::VarType rtype = convert2FIRType(result->precision());
           vector<Typed::VarType> atypes;
           for (size_t i = 0; i < types.size(); i++) {
-              atypes.push_back(convert2FIRType(types[i]->nature()));
+              atypes.push_back(convert2FIRType(types[i]->precision()));
           }
           return container->pushFunction(fun_name, rtype, atypes, args);
       }

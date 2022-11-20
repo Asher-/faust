@@ -26,9 +26,9 @@
 
 struct WhileLoopInst : public StatementInst {
     ValueInst* fCond;
-    BlockInst* fCode;
+    BlockInst* _code;
 
-    WhileLoopInst(ValueInst* cond, BlockInst* code) : fCond(cond), fCode(code) {}
+    WhileLoopInst(ValueInst* cond, BlockInst* code) : fCond(cond), _code(code) {}
 
     virtual ~WhileLoopInst() {}
 

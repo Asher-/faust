@@ -49,12 +49,18 @@
 #include "faust/primitive/math/functions/xtended.hh"
 #include "global.hh"
 
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+
 using namespace std;
+
+using Precision = ::Faust::Primitive::Type::Precision;
+using Priority = ::Faust::Primitive::Type::Priority;
 
 static Klass* signal2klass(Klass* parent, const std::string& name, Tree sig)
 {
     Type t = getCertifiedSigType(sig);  //, NULLENV);
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         ScalarCompiler C(new SigIntGenKlass(parent, name));
         C.compileSingleSignal(sig);
         return C.getClass();
@@ -602,12 +608,12 @@ string ScalarCompiler::generateBinOp(Tree sig, int opcode, Tree arg1, Tree arg2)
         Type t1 = getCertifiedSigType(arg1);
         Type t2 = getCertifiedSigType(arg2);
 
-        if (t1->nature() == kInt && t2->nature() == kInt) {
+        if (t1->precision() == Precision::Int && t2->precision() == Precision::Int) {
             return generateCacheCode(sig, subst("($3($0) $1 $3($2))", c1, gBinOpTable[opcode]->fName, c2, ifloat()));
-        } else if (t1->nature() == kInt && t2->nature() == kReal) {
+        } else if (t1->precision() == Precision::Int && t2->precision() == Precision::Real) {
             if (np2) c2 = subst("($0)", c2);
             return generateCacheCode(sig, subst("($3($0) $1 $2)", c1, gBinOpTable[opcode]->fName, c2, ifloat()));
-        } else if (t1->nature() == kReal && t2->nature() == kInt) {
+        } else if (t1->precision() == Precision::Real && t2->precision() == Precision::Int) {
             if (np1) c1 = subst("($0)", c1);
             return generateCacheCode(sig, subst("($0 $1 $3($2))", c1, gBinOpTable[opcode]->fName, c2, ifloat()));
         } else {
@@ -649,7 +655,7 @@ string ScalarCompiler::generateFFun(Tree sig, Tree ff, Tree largs)
 
 void ScalarCompiler::getTypedNames(Type t, const std::string& prefix, string& ctype, string& vname)
 {
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         ctype = "int";
         vname = subst("i$0", getFreshID(prefix));
     } else {
@@ -724,11 +730,11 @@ string ScalarCompiler::generateVariableStore(Tree sig, const std::string& exp)
     old_Occurences* o = fOccMarkup->retrieve(sig);
     faustassert(o);
 
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             getTypedNames(t, "Const", ctype, vname);
-            // The variable is used in compute (kBlock or kSamp), so define is as a field in the DSP struct
-            if (o->getOccurence(kBlock) || o->getOccurence(kSamp)) {
+            // The variable is used in compute (Priority::Block or Priority::Samp), so define is as a field in the DSP struct
+            if (o->getOccurence(Priority::Block) || o->getOccurence(Priority::Samp)) {
                 fClass->addDeclCode(subst("$0 \t$1;", ctype, vname));
                 fClass->addInitCode(subst("$0 = $1;", vname, exp));
             } else {
@@ -737,13 +743,13 @@ string ScalarCompiler::generateVariableStore(Tree sig, const std::string& exp)
             }
             break;
 
-        case kBlock:
+        case Priority::Block:
             getTypedNames(t, "Slow", ctype, vname);
             fClass->addFirstPrivateDecl(vname);
             fClass->addZone2(subst("$0 \t$1 = $2;", ctype, vname, exp));
             break;
 
-        case kSamp:
+        case Priority::Samp:
             getTypedNames(t, "Temp", ctype, vname);
             if (getConditionCode(sig) == "") {
                 fClass->addExecCode(Statement("", subst("$0 \t$1 = $2;", ctype, vname, exp)));
@@ -844,16 +850,16 @@ string ScalarCompiler::generateVBargraph(Tree sig, Tree path, Tree min, Tree max
     addUIWidget(reverse(tl(path)), uiWidget(hd(path), tree(varname), sig));
 
     Type t = getCertifiedSigType(sig);
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             fClass->addInitUICode(subst("$0 = $1;", varname, exp));
             break;
 
-        case kBlock:
+        case Priority::Block:
             fClass->addZone2(subst("$0 = $1;", varname, exp));
             break;
 
-        case kSamp:
+        case Priority::Samp:
             fClass->addExecCode(Statement(getConditionCode(sig), subst("$0 = $1;", varname, exp)));
             break;
     }
@@ -869,16 +875,16 @@ string ScalarCompiler::generateHBargraph(Tree sig, Tree path, Tree min, Tree max
     addUIWidget(reverse(tl(path)), uiWidget(hd(path), tree(varname), sig));
 
     Type t = getCertifiedSigType(sig);
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             fClass->addInitUICode(subst("$0 = $1;", varname, exp));
             break;
 
-        case kBlock:
+        case Priority::Block:
             fClass->addZone2(subst("$0 = $1;", varname, exp));
             break;
 
-        case kSamp:
+        case Priority::Samp:
             fClass->addExecCode(Statement(getConditionCode(sig), subst("$0 = $1;", varname, exp)));
             break;
     }
@@ -977,7 +983,7 @@ string ScalarCompiler::generateTable(Tree sig, Tree tsize, Tree content)
     // A REVOIR !!!!!!!!!
     Type t = getCertifiedSigType(content);  //, tEnv);
 
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         vname = getFreshID("itbl");
         ctype = "int";
     } else {
@@ -1029,7 +1035,7 @@ string ScalarCompiler::generateStaticTable(Tree sig, Tree tsize, Tree content)
     // A REVOIR !!!!!!!!!
     Type t = getCertifiedSigType(content);  //, tEnv);
 
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         vname = getFreshID("itbl");
         ctype = "int";
     } else {
@@ -1068,14 +1074,15 @@ string ScalarCompiler::generateWRTbl(Tree sig, Tree tbl, Tree idx, Tree data)
 
     Type t2 = getCertifiedSigType(idx);
     Type t3 = getCertifiedSigType(data);
-    // TODO : for a bug in type caching, t->variability() is not correct.
+    // TODO : for a bug in type caching, t->priority() is not correct.
     // Therefore in the meantime we compute it manually. (YO 2020/03/30)
-    int var = t2->variability() | t3->variability();
+    const Priority var = Priority( static_cast<unsigned int>(t2->priority())
+                                 | static_cast<unsigned int>(t3->priority()));
     switch (var) {
-        case kKonst:
+        case Priority::Konst:
             fClass->addInitCode(subst("$0[$1] = $2;", tblName, CS(idx), CS(data)));
             break;
-        case kBlock:
+        case Priority::Block:
             fClass->addZone2(subst("$0[$1] = $2;", tblName, CS(idx), CS(data)));
             break;
         default:
@@ -1180,7 +1187,7 @@ string ScalarCompiler::generatePrefix(Tree sig, Tree x, Tree e)
 {
     string vperm = getFreshID("pfPerm");
     string vtemp = getFreshID("pfTemp");
-    string type = (getCertifiedSigType(sig)->nature() == kInt) ? "int" : ifloat();
+    string type = (getCertifiedSigType(sig)->precision() == Precision::Int) ? "int" : ifloat();
 
     fClass->addDeclCode(subst("$0 \t$1;", type, vperm));
     fClass->addInitCode(subst("$0 = $1;", vperm, CS(x)));
@@ -1323,7 +1330,7 @@ string ScalarCompiler::generateDelay(Tree sig, Tree exp, Tree delay)
 string ScalarCompiler::generateDelayVec(Tree sig, const std::string& exp, const std::string& ctype, const std::string& vname, int mxd)
 {
     string s = generateDelayVecNoTemp(sig, exp, ctype, vname, mxd);
-    if (getCertifiedSigType(sig)->variability() < kSamp) {
+    if (getCertifiedSigType(sig)->priority() < Priority::Samp) {
         return exp;
     } else {
         return s;

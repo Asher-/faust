@@ -29,18 +29,18 @@
 struct IteratorForLoopInst : public StatementInst {
     std::vector<NamedAddress*> fIterators;
     const bool                 fReverse;
-    BlockInst*                 fCode;
+    BlockInst*                 _code;
 
     IteratorForLoopInst(const std::vector<NamedAddress*>& iterators, bool reverse, BlockInst* code)
-        : fIterators(iterators), fReverse(reverse), fCode(code)
+        : fIterators(iterators), fReverse(reverse), _code(code)
     {
     }
 
     virtual ~IteratorForLoopInst() {}
 
-    void pushFrontInst(StatementInst* inst) { faustassert(inst); fCode->pushFrontInst(inst); }
+    void pushFrontInst(StatementInst* inst) { faustassert(inst); _code->pushFrontInst(inst); }
 
-    void pushBackInst(StatementInst* inst) { faustassert(inst); fCode->pushBackInst(inst); }
+    void pushBackInst(StatementInst* inst) { faustassert(inst); _code->pushBackInst(inst); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 

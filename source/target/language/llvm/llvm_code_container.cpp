@@ -46,9 +46,9 @@ bool      linkModules(Module* dst, ModulePTR src, string& error);
 ModulePTR loadModule(const string& module_name, LLVMContext* context);
 Module*   linkAllModules(LLVMContext* context, Module* dst, string& error);
 
-CodeContainer* LLVMCodeContainer::createScalarContainer(const string& name, int sub_container_type)
+CodeContainer* LLVMCodeContainer::createScalarContainer(const string& name, const Precision& precision)
 {
-    return new LLVMScalarCodeContainer(name, 0, 1, fModule, fContext, sub_container_type);
+    return new LLVMScalarCodeContainer(name, 0, 1, fModule, fContext, precision);
 }
 
 LLVMCodeContainer::LLVMCodeContainer(const string& name, int numInputs, int numOutputs)
@@ -181,34 +181,34 @@ void LLVMCodeContainer::generateFunMap(const string& fun1_aux, const string& fun
     FunTyped* fun_type1 = InstBuilder::genFunTyped(args1, InstBuilder::genBasicTyped(type), FunTyped::kLocal);
     FunTyped* fun_type2 = InstBuilder::genFunTyped(args1, InstBuilder::genBasicTyped(type), FunTyped::kDefault);
 
-    InstBuilder::genDeclareFunInst(fun2, fun_type2)->accept(fCodeProducer);
+    InstBuilder::genDeclareFunInst(fun2, fun_type2)->accept(_codeProducer);
     if (body) {
         BlockInst* block = InstBuilder::genBlockInst();
         block->pushBackInst(InstBuilder::genRetInst(InstBuilder::genFunCallInst(fun2, args2)));
-        InstBuilder::genDeclareFunInst(fun1, fun_type1, block)->accept(fCodeProducer);
+        InstBuilder::genDeclareFunInst(fun1, fun_type1, block)->accept(_codeProducer);
     }
 }
 
 void LLVMCodeContainer::produceInternal()
 {
     // Generate DSP structure
-    fCodeProducer = new LLVMInstVisitor(fModule, fBuilder, &fStructVisitor, generateDspStruct());
+    _codeProducer = new LLVMInstVisitor(fModule, fBuilder, &fStructVisitor, generateDspStruct());
 
     /// Memory methods
-    generateCalloc()->accept(fCodeProducer);
-    generateFree()->accept(fCodeProducer);
+    generateCalloc()->accept(_codeProducer);
+    generateFree()->accept(_codeProducer);
 
-    generateNewDsp("new" + fKlassName, fStructVisitor.getStructSize())->accept(fCodeProducer);
-    generateDeleteDsp("delete" + fKlassName, "dsp")->accept(fCodeProducer);
+    generateNewDsp("new" + fKlassName, fStructVisitor.getStructSize())->accept(_codeProducer);
+    generateDeleteDsp("delete" + fKlassName, "dsp")->accept(_codeProducer);
 
     generateFunMaps();
 
     // Global declarations
-    generateExtGlobalDeclarations(fCodeProducer);
-    generateGlobalDeclarations(fCodeProducer);
+    generateExtGlobalDeclarations(_codeProducer);
+    generateGlobalDeclarations(_codeProducer);
 
-    generateInstanceInitFun("instanceInit" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
-    generateFillFun("fill" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
+    generateInstanceInitFun("instanceInit" + fKlassName, "dsp", false, false)->accept(_codeProducer);
+    generateFillFun("fill" + fKlassName, "dsp", false, false)->accept(_codeProducer);
 }
 
 dsp_factory_base* LLVMCodeContainer::produceFactory()
@@ -217,19 +217,19 @@ dsp_factory_base* LLVMCodeContainer::produceFactory()
     generateSubContainers();
 
     // Generate DSP structure
-    fCodeProducer = new LLVMInstVisitor(fModule, fBuilder, &fStructVisitor, generateDspStruct());
+    _codeProducer = new LLVMInstVisitor(fModule, fBuilder, &fStructVisitor, generateDspStruct());
 
     generateFunMaps();
 
     // Global declarations
-    generateExtGlobalDeclarations(fCodeProducer);
-    generateGlobalDeclarations(fCodeProducer);
+    generateExtGlobalDeclarations(_codeProducer);
+    generateGlobalDeclarations(_codeProducer);
 
-    generateStaticInitFun("classInit" + fKlassName, false)->accept(fCodeProducer);
-    generateInstanceClear("instanceClear" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
-    generateInstanceConstants("instanceConstants" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
-    generateAllocate("allocate" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
-    generateDestroy("destroy" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
+    generateStaticInitFun("classInit" + fKlassName, false)->accept(_codeProducer);
+    generateInstanceClear("instanceClear" + fKlassName, "dsp", false, false)->accept(_codeProducer);
+    generateInstanceConstants("instanceConstants" + fKlassName, "dsp", false, false)->accept(_codeProducer);
+    generateAllocate("allocate" + fKlassName, "dsp", false, false)->accept(_codeProducer);
+    generateDestroy("destroy" + fKlassName, "dsp", false, false)->accept(_codeProducer);
 
     // generateGetJSON generation
     if (::Faust::Primitive::Math::floatSize == 1) {
@@ -274,10 +274,10 @@ LLVMScalarCodeContainer::LLVMScalarCodeContainer(const string& name, int numInpu
 }
 
 LLVMScalarCodeContainer::LLVMScalarCodeContainer(const string& name, int numInputs, int numOutputs, Module* module,
-                                                 LLVMContext* context, int sub_container_type)
+                                                 LLVMContext* context, const Precision& precision)
     : LLVMCodeContainer(name, numInputs, numOutputs, module, context)
 {
-    fSubContainerType = sub_container_type;
+    fSubContainerType = precision;
 }
 
 LLVMScalarCodeContainer::~LLVMScalarCodeContainer()
@@ -286,7 +286,7 @@ LLVMScalarCodeContainer::~LLVMScalarCodeContainer()
 
 void LLVMScalarCodeContainer::generateCompute()
 {
-    generateComputeFun("compute" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
+    generateComputeFun("compute" + fKlassName, "dsp", false, false)->accept(_codeProducer);
 }
 
 BlockInst* LLVMScalarCodeContainer::generateComputeAux()
@@ -314,9 +314,9 @@ LLVMVectorCodeContainer::~LLVMVectorCodeContainer()
 void LLVMVectorCodeContainer::generateCompute()
 {
     // Possibly generate separated functions
-    generateComputeFunctions(fCodeProducer);
+    generateComputeFunctions(_codeProducer);
 
-    generateComputeFun("compute" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
+    generateComputeFun("compute" + fKlassName, "dsp", false, false)->accept(_codeProducer);
 }
 
 BlockInst* LLVMVectorCodeContainer::generateComputeAux()
@@ -415,16 +415,16 @@ LLVMWorkStealingCodeContainer::~LLVMWorkStealingCodeContainer()
 void LLVMWorkStealingCodeContainer::generateCompute()
 {
     // Possibly generate separated functions
-    generateComputeFunctions(fCodeProducer);
+    generateComputeFunctions(_codeProducer);
 
     // Generates "computeThread" code
-    generateComputeThread("computeThread" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
+    generateComputeThread("computeThread" + fKlassName, "dsp", false, false)->accept(_codeProducer);
 
     // Generates prototype to be used by worker threads
-    generateComputeThreadExternal("computeThreadExternal", "dsp")->accept(fCodeProducer);
+    generateComputeThreadExternal("computeThreadExternal", "dsp")->accept(_codeProducer);
 
     // Generates compute
-    generateComputeFun("compute" + fKlassName, "dsp", false, false)->accept(fCodeProducer);
+    generateComputeFun("compute" + fKlassName, "dsp", false, false)->accept(_codeProducer);
 }
 
 BlockInst* LLVMWorkStealingCodeContainer::generateComputeAux()

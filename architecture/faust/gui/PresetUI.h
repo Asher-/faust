@@ -52,7 +52,7 @@ class PresetUI : public DecoratorUI {
                 // uiCallbackItem(s) are deleted in GUI
                 new uiCallbackItem(this, &presetui->fLoad, PresetUI::load, presetui);
                 new uiCallbackItem(this, &presetui->fSave, PresetUI::save, presetui);
-                new uiCallbackItem(this, &presetui->fReset, PresetUI::reset, presetui);
+                new uiCallbackItem(this, &presetui->_resolutionet, PresetUI::reset, presetui);
             }
         };
     
@@ -60,7 +60,7 @@ class PresetUI : public DecoratorUI {
         FAUSTFLOAT fPreset;
         FAUSTFLOAT fLoad;
         FAUSTFLOAT fSave;
-        FAUSTFLOAT fReset;
+        FAUSTFLOAT _resolutionet;
         FUI fFileUI;
         LoaderUI fLoaderUI;
         const std::string fRootFolder;
@@ -94,7 +94,7 @@ class PresetUI : public DecoratorUI {
                 fUI->addButton("Save", &fSave);
                 fUI->addNumEntry("Preset", &fPreset, FAUSTFLOAT(0), FAUSTFLOAT(0), FAUSTFLOAT(100), FAUSTFLOAT(1));
                 fUI->addButton("Load", &fLoad);
-                fUI->addButton("Reset", &fReset);
+                fUI->addButton("Reset", &_resolutionet);
                 fUI->closeBox();
             }
         }
@@ -107,7 +107,7 @@ class PresetUI : public DecoratorUI {
             fPreset(FAUSTFLOAT(0)),
             fSave(FAUSTFLOAT(0)),
             fLoad(FAUSTFLOAT(0)),
-            fReset(FAUSTFLOAT(0)),
+            _resolutionet(FAUSTFLOAT(0)),
             fLoaderUI(this),
             fRootFolder(root_folfer)
         {}

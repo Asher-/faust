@@ -51,6 +51,12 @@
 #include "tlib/tlib.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+using Priority = ::Faust::Primitive::Type::Priority;
+
 extern bool getSigListNickName(Tree t, Tree& id);
 
 /*****************************************************************************
@@ -458,7 +464,7 @@ string DocCompiler::generateBinOp(Tree sig, int opcode, Tree arg1, Tree arg2, in
     Type t1            = getCertifiedSigType(arg1);
     Type t2            = getCertifiedSigType(arg2);
     bool intOpDetected = false;
-    if ((t1->nature() == kInt) && (t2->nature() == kInt)) {
+    if ((t1->precision() == Precision::Int) && (t2->precision() == Precision::Int)) {
         intOpDetected = true;
     }
 
@@ -531,7 +537,7 @@ string DocCompiler::generateFFun(Tree sig, Tree ff, Tree largs, int priority)
 
 void DocCompiler::getTypedNames(Type t, const string& prefix, string& ctype, string& vname)
 {
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         ctype = "int";
         vname = subst("$0", getFreshID(prefix));
     } else {
@@ -608,21 +614,21 @@ string DocCompiler::generateVariableStore(Tree sig, const string& exp)
     string vname, ctype;
     Type   t = getCertifiedSigType(sig);
 
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             getTypedNames(t, "k", ctype, vname);  ///< "k" for constants.
             fLateq->addConstSigFormula(subst("$0 = $1", vname, exp));
             global::config().gDocNoticeFlagMap["constsigs"] = true;
             return vname;
 
-        case kBlock:
+        case Priority::Block:
             getTypedNames(t, "p", ctype, vname);  ///< "p" for "parameter".
             fLateq->addParamSigFormula(subst("$0(t) = $1", vname, exp));
             global::config().gDocNoticeFlagMap["paramsigs"] = true;
             setVectorNameProperty(sig, vname);
             return subst("$0(t)", vname);
 
-        case kSamp:
+        case Priority::Samp:
             if (getVectorNameProperty(sig, vname)) {
                 return subst("$0(t)", vname);
             } else {
@@ -714,14 +720,14 @@ string DocCompiler::generateVBargraph(Tree sig, Tree path, Tree min, Tree max, c
     string varname = getFreshID("{u_g}");
 
     Type t = getCertifiedSigType(sig);
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             break;
 
-        case kBlock:
+        case Priority::Block:
             break;
 
-        case kSamp:
+        case Priority::Samp:
             break;
     }
     return generateCacheCode(sig, varname);
@@ -732,14 +738,14 @@ string DocCompiler::generateHBargraph(Tree sig, Tree path, Tree min, Tree max, c
     string varname = getFreshID("{u_g}");
 
     Type t = getCertifiedSigType(sig);
-    switch (t->variability()) {
-        case kKonst:
+    switch (t->priority()) {
+        case Priority::Konst:
             break;
 
-        case kBlock:
+        case Priority::Block:
             break;
 
-        case kSamp:
+        case Priority::Samp:
             break;
     }
     return generateCacheCode(sig, varname);
@@ -1121,7 +1127,7 @@ string DocCompiler::generateDelay(Tree sig, Tree exp, Tree delay, int priority)
 string DocCompiler::generateDelayVec(Tree sig, const string& exp, const string& ctype, const string& vname, int mxd)
 {
     string s = generateDelayVecNoTemp(sig, exp, ctype, vname, mxd);
-    if (getCertifiedSigType(sig)->variability() < kSamp) {
+    if (getCertifiedSigType(sig)->priority() < Priority::Samp) {
         return exp;
     } else {
         return s;

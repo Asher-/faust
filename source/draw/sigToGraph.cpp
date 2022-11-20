@@ -34,6 +34,14 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+#include "faust/primitive/type/vectorability.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+using Priority = ::Faust::Primitive::Type::Priority;
+using Vectorability = ::Faust::Primitive::Type::Vectorability;
+
 using namespace std;
 
 static void   recdraw(Tree sig, set<Tree>& drawn, ostream& fout);
@@ -121,13 +129,13 @@ string commonAttr(Type t)
 {
     string sout;
     // nature
-    if (t->nature() == kInt) {
+    if (t->precision() == Precision::Int) {
         sout += " color=\"blue\"";
     } else {
         sout += " color=\"red\"";
     }
     // vectorability
-    if (t->vectorability() == kVect && t->variability() == kSamp) {
+    if (t->vectorability() == Vectorability::Vect && t->priority() == Priority::Samp) {
         sout += " style=\"bold\"";
     }
     return sout;
@@ -141,9 +149,9 @@ static string edgeattr(Type t)
 {
     string sout(commonAttr(t));
     sout += " label =\"";
-    sout += t->getInterval().toString();
+    sout += t->interval().toString();
     sout += ", ";
-    sout += t->getRes().toString();
+    sout += t->resolution().toString();
     sout += "\"";
     return sout;
 }
@@ -156,11 +164,11 @@ static string nodeattr(Type t)
     string sout(commonAttr(t));
 
     // variability
-    if (t->variability() == kKonst) {
+    if (t->priority() == Priority::Konst) {
         sout += " shape=\"box\"";
-    } else if (t->variability() == kBlock) {
+    } else if (t->priority() == Priority::Block) {
         sout += " shape=\"hexagon\"";
-    } else if (t->variability() == kSamp) {
+    } else if (t->priority() == Priority::Samp) {
         sout += " shape=\"ellipse\"";
     }
     return sout;

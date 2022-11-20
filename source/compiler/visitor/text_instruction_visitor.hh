@@ -107,9 +107,9 @@ class TextInstVisitor : public InstVisitor {
 
     virtual void visitAux(RetInst* inst, bool gen_empty)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             *fOut << "return ";
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             EndLine();
         } else if (gen_empty) {
             *fOut << "return";
@@ -119,8 +119,8 @@ class TextInstVisitor : public InstVisitor {
 
     virtual void visit(DropInst* inst)
     {
-        if (inst->fResult) {
-            inst->fResult->accept(this);
+        if (inst->_resolutionult) {
+            inst->_resolutionult->accept(this);
             EndLine();
         }
     }
@@ -320,14 +320,14 @@ class TextInstVisitor : public InstVisitor {
 
     virtual void generateFunDefBody(DeclareFunInst* inst)
     {
-        if (inst->fCode->fCode.size() == 0) {
+        if (inst->_code->_code.size() == 0) {
             *fOut << ");" << endl;  // Pure prototype
         } else {
             // Function body
             *fOut << ") {";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             *fOut << "}";
@@ -375,7 +375,7 @@ class TextInstVisitor : public InstVisitor {
         inst->fThen->accept(this);
         fTab--;
         back(1, *fOut);
-        if (inst->fElse->fCode.size() > 0) {
+        if (inst->fElse->_code.size() > 0) {
             *fOut << "} else {";
             fTab++;
             tab(fTab, *fOut);
@@ -392,7 +392,7 @@ class TextInstVisitor : public InstVisitor {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         *fOut << "for (";
         fFinishLine = false;
@@ -405,7 +405,7 @@ class TextInstVisitor : public InstVisitor {
         *fOut << ") {";
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "}";
@@ -419,7 +419,7 @@ class TextInstVisitor : public InstVisitor {
         *fOut << ") {";
         fTab++;
         tab(fTab, *fOut);
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
         fTab--;
         back(1, *fOut);
         *fOut << "}";
@@ -434,9 +434,9 @@ class TextInstVisitor : public InstVisitor {
             tab(fTab, *fOut);
         }
         RetInst* ret_inst = nullptr;
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             // Special case for "return" as last instruction
-            if ((it == *inst->fCode.rbegin()) && (ret_inst = dynamic_cast<RetInst*>(it))) {
+            if ((it == *inst->_code.rbegin()) && (ret_inst = dynamic_cast<RetInst*>(it))) {
                 visitAux(ret_inst, false);
             } else {
                 it->accept(this);
@@ -458,7 +458,7 @@ class TextInstVisitor : public InstVisitor {
         fTab++;
         tab(fTab, *fOut);
         std::list<std::pair<int, BlockInst*> >::const_iterator it;
-        for (it = inst->fCode.begin(); it != inst->fCode.end(); it++) {
+        for (it = inst->_code.begin(); it != inst->_code.end(); it++) {
             if ((*it).first == -1) {  // -1 used to code "default" case
                 *fOut << "default: {";
             } else {

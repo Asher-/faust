@@ -34,7 +34,7 @@ class CPPScalarCodeContainer : public CPPCodeContainer {
     CPPScalarCodeContainer()
     {}
     CPPScalarCodeContainer(const std::string& name, const std::string& super, int numInputs, int numOutputs, std::ostream* out,
-                           int sub_container_type);
+                           const Precision& precision);
     virtual ~CPPScalarCodeContainer()
     {}
 

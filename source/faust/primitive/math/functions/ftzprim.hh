@@ -30,6 +30,8 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/precision.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -57,7 +59,11 @@ namespace Faust {
       };
 
       class Ftz : public ::Faust::Primitive::Math::xtended {
-         private:
+        protected:
+
+          using Precision = ::Faust::Primitive::Type::Precision;
+
+        private:
           static int freshnum;  // counter for fTempFTZxxx fresh variables
 
           public:
@@ -101,7 +107,7 @@ namespace Faust {
               faustassert(types.size() == arity());
 
               ::Type t = infereSigType(types);
-              if ((t->nature() == kReal) && (::Faust::Primitive::Math::FTZMode > 0)) {
+              if ((t->precision() == Precision::Real) && (::Faust::Primitive::Math::FTZMode > 0)) {
                   switch (::Faust::Primitive::Math::FTZMode) {
                       case 1: {
                           // "fabs" function has to be declared
@@ -172,7 +178,7 @@ namespace Faust {
               faustassert(types.size() == arity());
 
               ::Type t = infereSigType(types);
-              if ((t->nature() == kReal) && (::Faust::Primitive::Math::FTZMode > 0)) {
+              if ((t->precision() == Precision::Real) && (::Faust::Primitive::Math::FTZMode > 0)) {
                   // we need to create a temporary variable to store the expression
                   string vname = subst("fTempFTZ$0", T(++freshnum));
                   klass->addIncludeFile("<float.h>");

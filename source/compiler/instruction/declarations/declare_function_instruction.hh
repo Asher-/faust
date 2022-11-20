@@ -29,13 +29,13 @@
 struct DeclareFunInst : public StatementInst {
     const std::string fName;
     FunTyped*    fType;  // Describes type of all arguments and function result
-    BlockInst*   fCode;  // Code is a list of StatementInst*
+    BlockInst*   _code;  // Code is a list of StatementInst*
 
     DeclareFunInst(const std::string& name, FunTyped* type, BlockInst* code = new BlockInst());
 
     virtual ~DeclareFunInst() {}
 
-    Typed::VarType getResType() { return fType->fResult->getType(); }
+    Typed::VarType getResType() { return fType->_resolutionult->getType(); }
 
     void accept(InstVisitor* visitor) { visitor->visit(this); }
 

@@ -270,14 +270,14 @@ for p in $FILES; do
 
     if [ $POLY = "POLY2" ]; then
         if [ $EFFECT = "auto" ]; then
-            cat > "$SRCDIR/$dspName/effect.dsp" << EndOfCode
+            cat > "$SRCDIR/$dspName/effect.dsp" << EndO_code
             adapt(1,1) = _;
             adapt(2,2) = _,_;
             adapt(1,2) = _ <: _,_;
             adapt(2,1) = _,_ :> _;
             adaptor(F,G) = adapt(outputs(F),inputs(G));
             process = adaptor(library("$SRCDIR/$f").process, library("$SRCDIR/$f").effect) : library("$SRCDIR/$f").effect;
-EndOfCode
+EndO_code
             faust -scn base_dsp -i -cn effect -a minimal-effect.cpp "$SRCDIR/$dspName/effect.dsp" -o "$SRCDIR/$dspName/effect.h" || exit
             rm "$SRCDIR/$dspName/effect.dsp"
         else

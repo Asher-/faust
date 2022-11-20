@@ -28,6 +28,8 @@
 #include "compiler/types/floats.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/type/cast.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -43,7 +45,7 @@ namespace Faust {
           virtual ::Type infereSigType(ConstTypes args)
           {
               faustassert(args.size() == 1);
-              return castInterval(floatCast(args[0]), interval(-1, 1));
+              return Type::castInterval(Type::floatCast(args[0]), interval(-1, 1));
           }
 
           virtual int infereSigOrder(const vector<int>& args) { return args[0]; }

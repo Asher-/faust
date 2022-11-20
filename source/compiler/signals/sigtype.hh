@@ -31,6 +31,12 @@
 #include "tlib/smartable.hh"
 #include "tlib/tree.hh"
 
+#include "faust/primitive/type/availability.hh"
+#include "faust/primitive/type/precision.hh"
+#include "faust/primitive/type/priority.hh"
+#include "faust/primitive/type/value.hh"
+#include "faust/primitive/type/vectorability.hh"
+
 /*********************************************************************
  *
  *						Type System for FAUST
@@ -45,23 +51,6 @@
  *	<boolean>       ::= KNUM   || KBOOL
  *
  **********************************************************************/
-
-//--------------------------------------------------
-// simple types quality
-
-enum { kInt = 0, kReal = 1, kAny = 2 };  ///< nature : integer or floating point values
-enum {
-    kNum  = 0,
-    kBool = 1
-};  ///< boolean : when a signal stands for a boolean value ( while being of c-type int or float )
-enum { kKonst = 0, kBlock = 1, kSamp = 3 };  ///< variability : how fast values change
-enum { kComp = 0, kInit = 1, kExec = 3 };    ///< computability : when values are available
-enum {
-    kVect     = 0,
-    kScal     = 1,
-    kTrueScal = 3 /*, kIndex = 4*/
-};  ///< vectorability: when a signal can be vectorized (actually, only kVect and kScal matter; kTrueScal and kIndex
-    ///< don't denote types but are here to simplify code generation)
 
 /*---------------------------------------------------------------------
 
@@ -88,51 +77,67 @@ typedef const vector<Type>& ConstTypes;
  */
 
 class AudioType : public virtual Garbageable, public virtual smartable {
+
    protected:
-    int      fNature;         ///< the kind of data represented
-    int      fVariability;    ///< how fast values change
-    int      fComputability;  ///< when are values available
-    int      fVectorability;  ///< when a signal can be vectorized
-    int      fBoolean;        ///< when a signal stands for a boolean value
-    interval fInterval;       ///< Minimal and maximal values the signal can take
-    res      fRes;            ///< Resolution (fixed-point)
-    Tree     fCode;           ///< Tree representation (for memoization purposes)
+
+    using Availability = ::Faust::Primitive::Type::Availability;
+    using Precision = ::Faust::Primitive::Type::Precision;
+    using Priority = ::Faust::Primitive::Type::Priority;
+    using Value = ::Faust::Primitive::Type::Value;
+    using Vectorability = ::Faust::Primitive::Type::Vectorability;
+
+    Precision     _precision;     ///< the kind of data represented
+    Priority      _priority;      ///< how fast values change
+    Availability  _availability;  ///< when are values available
+    Vectorability    _vectorability;    ///< when a signal can be vectorized
+    Value         _valueType;     ///< when a signal stands for a boolean value
+    ::interval    _interval;      ///< Minimal and maximal values the signal can take
+    res           _resolution;    ///< Resolution (fixed-point)
+    Tree          _code;          ///< Tree representation (for memoization purposes)
 
    public:
-    AudioType(int n, int v, int c, int vec = kVect, int b = kNum, interval i = interval(), res r = res());
+    AudioType(
+      Precision     precision,
+      Priority      priority,
+      Availability  availability,
+      Vectorability    vectorability     = Vectorability::Vect,
+      Value         value_type     = Value::Num,
+      ::interval    interval       = ::interval(),
+      res           resolution     = res()
+    );
     virtual ~AudioType() {}  ///< not really useful here, but make compiler happier
 
-    int nature() const { return fNature; }  ///< returns the kind of values (integre or floating point)
-    int variability() const
+    Precision precision() const { return _precision; }  ///< returns the kind of values (integre or floating point)
+    Priority priority() const
     {
-        return fVariability;
+        return _priority;
     }  ///< returns how fast values change (constant, by blocks, by samples)
-    int computability() const
+    Availability availability() const
     {
-        return fComputability;
+        return _availability;
     }  ///< returns when values are available (compilation, initialisation, execution)
-    int vectorability() const { return fVectorability; }  ///< returns when a signal can be vectorized
-    int boolean() const { return fBoolean; }              ///< returns when a signal stands for a boolean value
+    Vectorability vectorability() const { return _vectorability; }  ///< returns when a signal can be vectorized
+    Value valueType() const { return _valueType; }              ///< returns when a signal stands for a boolean value
 
-    interval getInterval() const { return fInterval; }  ///< returns the interval (min dn max values) of a signal
-    res      getRes() const { return fRes; }            ///< return the resolution of the signal (fixed)
+    ::interval interval() const { return _interval; }  ///< returns the interval (min dn max values) of a signal
+    res      resolution() const { return _resolution; }            ///< return the resolution of the signal (fixed)
 
-    void setCode(Tree code) { fCode = code; }  ///< returns the interval (min dn max values) of a signal
-    Tree getCode() { return fCode; }           ///< returns the interval (min dn max values) of a signal
+    void setCode(Tree code) { _code = code; }  ///< returns the interval (min dn max values) of a signal
+    Tree code() { return _code; }           ///< returns the interval (min dn max values) of a signal
 
-    virtual AudioType* promoteNature(int n)               = 0;  ///< promote the nature of a type
-    virtual AudioType* promoteVariability(int n)          = 0;  ///< promote the variability of a type
-    virtual AudioType* promoteComputability(int n)        = 0;  ///< promote the computability of a type
-    virtual AudioType* promoteVectorability(int n)        = 0;  ///< promote the vectorability of a type
-    virtual AudioType* promoteBoolean(int n)              = 0;  ///< promote the booleanity of a type
-    virtual AudioType* promoteInterval(const interval& i) = 0;  ///< promote the interval of a type
+    virtual AudioType* promotePrecision( const Precision& )               = 0;  ///< promote the nature of a type
+    virtual AudioType* promotePriority( const Priority& )          = 0;  ///< promote the variability of a type
+    virtual AudioType* promoteAvailability( const Availability& )        = 0;  ///< promote the computability of a type
+    virtual AudioType* promoteVectorability( const Vectorability& )        = 0;  ///< promote the vectorability of a type
+    virtual AudioType* promoteValueType( const Value& )              = 0;  ///< promote the booleanity of a type
+    virtual AudioType* promoteInterval(const ::interval& i) = 0;  ///< promote the interval of a type
 
     virtual ostream& print(ostream& dst) const = 0;  ///< print nicely a type
     ///< true when type is maximal (and therefore can't change depending of hypothesis)
     virtual bool isMaximal() const = 0;
 
    protected:
-    void setInterval(const interval& r) { fInterval = r; }
+    void setInterval(const ::interval& r) { _interval = r; }
 };
 
 // printing
@@ -144,51 +149,56 @@ inline ostream& operator<<(ostream& s, const AudioType& n)
 /**
  * Return the nature of a vector of types.
  */
-inline int mergenature(ConstTypes v)
+inline ::Faust::Primitive::Type::Precision
+mergePrecision(ConstTypes v)
 {
     int r = 0;
-    for (unsigned int i = 0; i < v.size(); i++) r |= v[i]->nature();
-    return r;
+    for (std::size_t i = 0; i < v.size(); i++) r |= static_cast<int>(v[i]->precision());
+    return ::Faust::Primitive::Type::Precision(r);
 }
 
 /**
  * Return the variability of a vector of types.
  */
-inline int mergevariability(ConstTypes v)
+inline ::Faust::Primitive::Type::Priority
+mergePriority(ConstTypes v)
 {
     int r = 0;
-    for (unsigned int i = 0; i < v.size(); i++) r |= v[i]->variability();
-    return r;
+    for (std::size_t i = 0; i < v.size(); i++) r |= static_cast<int>(v[i]->priority());
+    return ::Faust::Primitive::Type::Priority(r);
 }
 
 /**
  * Return the computability of a vector of types.
  */
-inline int mergecomputability(ConstTypes v)
+inline ::Faust::Primitive::Type::Availability
+mergeAvailability(ConstTypes v)
 {
     int r = 0;
-    for (unsigned int i = 0; i < v.size(); i++) r |= v[i]->computability();
-    return r;
+    for (std::size_t i = 0; i < v.size(); i++) r |= static_cast<int>(v[i]->availability());
+    return ::Faust::Primitive::Type::Availability(r);
 }
 
 /**
  * Return the vectorability of a vector of types.
  */
-inline int mergevectorability(ConstTypes v)
+inline ::Faust::Primitive::Type::Vectorability
+mergeVectorability(ConstTypes v)
 {
     int r = 0;
-    for (unsigned int i = 0; i < v.size(); i++) r |= v[i]->vectorability();
-    return r;
+    for (std::size_t i = 0; i < v.size(); i++) r |= static_cast<int>(v[i]->vectorability());
+    return ::Faust::Primitive::Type::Vectorability(r);
 }
 
 /**
  * Return the booleanity of a vector of types.
  */
-inline int mergeboolean(ConstTypes v)
+inline ::Faust::Primitive::Type::Value
+mergeValueType(ConstTypes v)
 {
     int r = 0;
-    for (unsigned int i = 0; i < v.size(); i++) r |= v[i]->boolean();
-    return r;
+    for (std::size_t i = 0; i < v.size(); i++) r |= static_cast<int>(v[i]->valueType());
+    return ::Faust::Primitive::Type::Value(r);
 }
 
 /**
@@ -201,7 +211,7 @@ inline interval mergeinterval(ConstTypes v)
     } else {
         double lo = 0, hi = 0;
         for (unsigned int i = 0; i < v.size(); i++) {
-            interval r = v[i]->getInterval();
+            interval r = v[i]->interval();
             if (!r.valid) return r;
             if (i == 0) {
                 lo = r.lo;
@@ -215,15 +225,46 @@ inline interval mergeinterval(ConstTypes v)
     }
 }
 
-AudioType* makeSimpleType(int n, int v, int c, int vec, int b, const interval& i);
-AudioType* makeSimpleType(int n, int v, int c, int vec, int b, const interval& i, const res& lsb);
+AudioType* makeSimpleType(
+  ::Faust::Primitive::Type::Precision       precision,
+  ::Faust::Primitive::Type::Priority        priority,
+  ::Faust::Primitive::Type::Availability    availability,
+  ::Faust::Primitive::Type::Vectorability   vectorability,
+  ::Faust::Primitive::Type::Value           value_type,
+  const interval& i
+);
+AudioType* makeSimpleType(
+  ::Faust::Primitive::Type::Precision       precision,
+  ::Faust::Primitive::Type::Priority        priority,
+  ::Faust::Primitive::Type::Availability    availability,
+  ::Faust::Primitive::Type::Vectorability   vectorability,
+  ::Faust::Primitive::Type::Value           value_type,
+  const interval& i,
+  const res& lsb
+);
 // didn't use a default arg, would have created a cyclic dependancy with global.hh
 
 AudioType* makeTableType(const Type& ct);
-AudioType* makeTableType(const Type& ct, int n, int v, int c, int vec, int b, const interval& i);
+AudioType* makeTableType(
+  const Type&     t,
+  ::Faust::Primitive::Type::Precision       precision,
+  ::Faust::Primitive::Type::Priority        priority,
+  ::Faust::Primitive::Type::Availability    availability,
+  ::Faust::Primitive::Type::Vectorability   vectorability,
+  ::Faust::Primitive::Type::Value           value_type,
+  const interval& i
+);
 
 AudioType* makeTupletType(ConstTypes vt);
-AudioType* makeTupletType(ConstTypes vt, int n, int v, int c, int vec, int b, const interval& i);
+AudioType* makeTupletType(
+  ConstTypes      vt,
+  ::Faust::Primitive::Type::Precision       precision,
+  ::Faust::Primitive::Type::Priority        priority,
+  ::Faust::Primitive::Type::Availability    availability,
+  ::Faust::Primitive::Type::Vectorability   vectorability,
+  ::Faust::Primitive::Type::Value           value_type,
+  const interval& i
+);
 
 /**
  * The type of a simple numeric audio signal.
@@ -232,45 +273,130 @@ AudioType* makeTupletType(ConstTypes vt, int n, int v, int c, int vec, int b, co
  * point audio signals.
  */
 class SimpleType : public AudioType {
-   public:
-    SimpleType(int n, int v, int c, int vec, int b, const interval& i, const res& lsb)
-        : AudioType(n, v, c, vec, b, i, lsb)
+  protected:
+  
+    using Availability = ::Faust::Primitive::Type::Availability;
+    using Precision = ::Faust::Primitive::Type::Precision;
+    using Priority = ::Faust::Primitive::Type::Priority;
+    using Value = ::Faust::Primitive::Type::Value;
+    using Vectorability = ::Faust::Primitive::Type::Vectorability;
+  
+  public:
+    SimpleType(
+      ::Faust::Primitive::Type::Precision          precision,
+      ::Faust::Primitive::Type::Priority           priority,
+      ::Faust::Primitive::Type::Availability       availability,
+      ::Faust::Primitive::Type::Vectorability      vectorability  = Vectorability::Vect,
+      ::Faust::Primitive::Type::Value              value_type     = Value::Num,
+      const ::interval&  interval       = ::interval(),
+      const res&         resolution     = res()
+    )
+    :
+      AudioType(
+        precision,
+        priority,
+        availability,
+        vectorability,
+        value_type,
+        interval,
+        resolution
+      )
     {
         // cerr << "new simple type " << i << " -> " << *this << endl;
     }  ///< constructs a SimpleType from a nature a variability and a computability
 
-    virtual ostream& print(ostream& dst) const;  ///< print a SimpleType
+    virtual ostream& print(ostream& dst) const override;  ///< print a SimpleType
 
-    virtual AudioType* promoteNature(int n)
+    AudioType* promotePrecision( const Precision& precision )
+    override
     {
-        return makeSimpleType(n | fNature, fVariability, fComputability, fVectorability, fBoolean, fInterval);
+        return makeSimpleType(
+          Precision( static_cast<unsigned int>(_precision) | static_cast<unsigned int>(precision) ),
+          _priority,
+          _availability,
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the nature of a type
-    virtual AudioType* promoteVariability(int v)
+    AudioType* promotePriority( const Priority& priority )
+    override
     {
-        return makeSimpleType(fNature, v | fVariability, fComputability, fVectorability, fBoolean, fInterval);
+        return makeSimpleType(
+          _precision,
+          Priority( static_cast<unsigned int>(_priority) | static_cast<unsigned int>(priority) ),
+          _availability,
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the variability of a type
-    virtual AudioType* promoteComputability(int c)
+    AudioType* promoteAvailability( const Availability& availability )
+    override
     {
-        return makeSimpleType(fNature, fVariability, c | fComputability, fVectorability, fBoolean, fInterval);
+        return makeSimpleType(
+          _precision,
+          _priority,
+          Availability( static_cast<unsigned int>(_availability) | static_cast<unsigned int>(availability) ),
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the computability of a type
-    virtual AudioType* promoteVectorability(int vec)
+    AudioType* promoteVectorability( const Vectorability& vectorability )
+    override
     {
-        return makeSimpleType(fNature, fVariability, fComputability, vec | fVectorability, fBoolean, fInterval);
+        return makeSimpleType(
+          _precision,
+          _priority,
+          _availability,
+          Vectorability( static_cast<unsigned int>(_vectorability) | static_cast<unsigned int>(vectorability) ),
+          _valueType,
+          _interval
+        );
     }  ///< promote the vectorability of a type
-    virtual AudioType* promoteBoolean(int b)
+    AudioType* promoteValueType( const Value& value_type )
+    override
     {
-        return makeSimpleType(fNature, fVariability, fComputability, fVectorability, b | fBoolean, fInterval);
+        return makeSimpleType(
+          _precision,
+          _priority,
+          _availability,
+          _vectorability,
+          Value( static_cast<unsigned int>(_valueType) | static_cast<unsigned int>(value_type) ),
+          _interval
+        );
     }  ///< promote the booleanity of a type
-    virtual AudioType* promoteInterval(const interval& i)
+    AudioType* promoteInterval(const ::interval& i)
+    override
     {
         // cerr << "promote to Interval " << i << endl;
         // cerr << "for type : " << *this << endl;
-        Type t = makeSimpleType(fNature, fVariability, fComputability, fVectorability, fBoolean,
-                                i);  ///< promote the interval of a type
-                                     // cerr << "gives type " << *t << endl;
+        Type t = makeSimpleType(
+          _precision,
+          _priority,
+          _availability,
+          _vectorability,
+          _valueType,
+          i
+        );  ///< promote the interval of a type
+        // cerr << "gives type " << *t << endl;
         return t;
     }
-    virtual bool isMaximal() const;  ///< true when type is maximal (and therefore can't change depending of hypothesis)
+    bool isMaximal() const override;  ///< true when type is maximal (and therefore can't change depending of hypothesis)
+
+    void addReference()
+    override
+    {
+        smartable::addReference();
+    }
+
+    void removeReference()
+    override
+    {
+        smartable::removeReference();
+    }
+
 };
 
 inline Type intCast(Type t)
@@ -324,65 +450,194 @@ inline Type castInterval(Type t, const interval& i)
  */
 class TableType : public AudioType {
    protected:
-    const Type fContent;  ///< type of that data stored in the table
+    const Type _content;  ///< type of that data stored in the table
 
    public:
-    TableType(const Type& t) : AudioType(t->nature(), kKonst, kInit, kVect, t->boolean(), t->getInterval()), fContent(t)
+    TableType(const Type& t)
+    :
+      AudioType(
+        t->precision(),
+        Priority::Konst,
+        Availability::Init,
+        Vectorability::Vect,
+        t->valueType(),
+        t->interval()
+      ),
+      _content(t)
     {
     }  ///< construct a TableType with a content of a type t
 #if 0
-	TableType(const Type& t, int v, int c) :
-		  AudioType(t->nature(), t->variability()|v, t->computability()|c, t->vectorability(), t->boolean()),
-		  fContent(t) {}		///< construct a TableType with a content of a type t, promoting variability and computability
+	TableType(
+    const Type&  t,
+    Priority     priority,
+    Availability availability
+  ) :
+    AudioType(
+      t->precision(),
+      t->priority() | priority,
+      t->availability() | availability,
+      t->vectorability(),
+      t->valueType()
+    ),
+    _content(t) {}		///< construct a TableType with a content of a type t, promoting variability and computability
 
-	TableType(const Type& t, int n, int v, int c) :
-		  AudioType(t->nature()|n, t->variability()|v, t->computability()|c, t->vectorability(), t->boolean()),
-		  fContent(t) {}		///< construct a TableType with a content of a type t, promoting nature, variability and computability
+	TableType(
+    const Type&  t,
+    Precision    precision,
+    Priority     priority,
+    Availability availability
+  ) :
+    AudioType(
+      t->precision() | precision,
+      t->priority() | priority,
+      t->availability() | availability,
+      t->vectorability(),
+      t->valueType()
+    ),
+    _content(t) {}		///< construct a TableType with a content of a type t, promoting nature, variability and computability
 
-	TableType(const Type& t, int n, int v, int c, int vec, int b) :
-		  AudioType(t->nature()|n, t->variability()|v, t->computability()|c, t->vectorability()|vec, t->boolean()|b),
-		  fContent(t) {}		///< construct a TableType with a content of a type t, promoting nature, variability, computability, vectorability and booleanity
+	TableType(
+    const Type&     t,
+    Precision       precision,
+    Priority        priority,
+    Availability    availability,
+    Vectorability   vectorability,
+    Value           value_type
+  ) :
+    AudioType(
+      t->precision() | precision,
+      t->priority() | priority,
+      t->availability() | availability,
+      t->vectorability() | vectorability,
+      t->valueType() | value_type
+    ),
+    _content(t) {}		///< construct a TableType with a content of a type t, promoting nature, variability, computability, vectorability and booleanity
 #endif
 
-    TableType(const Type& t, int n, int v, int c, int vec, int b, const interval& i)
-        : AudioType(t->nature() | n, kKonst | v, kInit | c, kVect | vec, t->boolean() | b, i), fContent(t)
+    TableType(
+      const Type&        t,
+      Precision          precision,
+      Priority           priority,
+      Availability       availability,
+      Vectorability      vectorability,
+      Value              value_type,
+      const ::interval&  i
+    ) :
+      AudioType(
+        Precision( static_cast<unsigned int>( t->precision() )
+                 | static_cast<unsigned int>( precision ) ),
+        Priority( static_cast<unsigned int>( Priority::Konst )
+                | static_cast<unsigned int>( priority ) ),
+        Availability( static_cast<unsigned int>( Availability::Init )
+                    | static_cast<unsigned int>( availability ) ),
+        Vectorability( static_cast<unsigned int>( Vectorability::Vect )
+                     | static_cast<unsigned int>( vectorability ) ),
+        Value( static_cast<unsigned int>( t->valueType() )
+             | static_cast<unsigned int>( value_type ) ),
+        i
+      ),
+      _content(t)
     {
     }  ///< construct a TableType with a content of a type t, promoting nature, variability, computability,
        ///< vectorability and booleanity
 
-    TableType(const Type& t, int n, int v, int c, int vec)
-        : AudioType(t->nature() | n, kKonst | v, kInit | c, kVect | vec, t->boolean()), fContent(t)
+    TableType(
+      const Type&     t,
+      Precision       precision,
+      Priority        priority,
+      Availability    availability,
+      Vectorability   vectorability
+    ) :
+      AudioType(
+        Precision( static_cast<unsigned int>( t->precision() )
+                 | static_cast<unsigned int>( precision ) ),
+        Priority( static_cast<unsigned int>( Priority::Konst )
+                | static_cast<unsigned int>( priority ) ),
+        Availability( static_cast<unsigned int>( Availability::Init )
+                    | static_cast<unsigned int>( availability ) ),
+        Vectorability( static_cast<unsigned int>( Vectorability::Vect )
+                     | static_cast<unsigned int>( vectorability ) ),
+        t->valueType()
+      ),
+      _content(t)
     {
     }  ///< construct a TableType with a content of a type t, promoting nature, variability, computability and
        ///< vectorability
 
-    Type             content() const { return fContent; }  ///< return the type of data store in the table
+    Type             content() const { return _content; }  ///< return the type of data store in the table
     virtual ostream& print(ostream& dst) const;            ///< print a TableType
 
-    virtual AudioType* promoteNature(int n)
+    virtual AudioType* promotePrecision( const Precision& precision )
     {
-        return makeTableType(fContent, n | fNature, fVariability, fComputability, fVectorability, fBoolean, fInterval);
+        return makeTableType(
+          _content,
+          Precision( static_cast<unsigned int>(_precision) | static_cast<unsigned int>(precision) ),
+          _priority,
+          _availability,
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the nature of a type
-    virtual AudioType* promoteVariability(int v)
+    virtual AudioType* promotePriority( const Priority& priority )
     {
-        return makeTableType(fContent, fNature, v | fVariability, fComputability, fVectorability, fBoolean, fInterval);
+        return makeTableType(
+          _content,
+          _precision,
+          Priority( static_cast<unsigned int>(_priority) | static_cast<unsigned int>(priority) ),
+          _availability,
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the variability of a type
-    virtual AudioType* promoteComputability(int c)
+    virtual AudioType* promoteAvailability( const Availability& availability )
     {
-        return makeTableType(fContent, fNature, fVariability, c | fComputability, fVectorability, fBoolean, fInterval);
+        return makeTableType(
+          _content,
+          _precision,
+          _priority,
+          Availability( static_cast<unsigned int>(_availability) | static_cast<unsigned int>(availability) ),
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the computability of a type
-    virtual AudioType* promoteVectorability(int vec)
+    virtual AudioType* promoteVectorability( const Vectorability& vectorability )
     {
-        return makeTableType(fContent, fNature, fVariability, fComputability, vec | fVectorability, fBoolean,
-                             fInterval);
+        return makeTableType(
+          _content,
+          _precision,
+          _priority,
+          _availability,
+          Vectorability( static_cast<unsigned int>(_vectorability) | static_cast<unsigned int>(vectorability) ),
+          _valueType,
+          _interval
+        );
     }  ///< promote the vectorability of a type
-    virtual AudioType* promoteBoolean(int b)
+    virtual AudioType* promoteValueType( const Value& value_type )
     {
-        return makeTableType(fContent, fNature, fVariability, fComputability, fVectorability, b | fBoolean, fInterval);
+        return makeTableType(
+          _content,
+          _precision,
+          _priority,
+          _availability,
+          _vectorability,
+          Value( static_cast<unsigned int>(_valueType) | static_cast<unsigned int>(value_type) ),
+          _interval
+        );
     }  ///< promote the booleanity of a type
-    virtual AudioType* promoteInterval(const interval& i)
+    virtual AudioType* promoteInterval(const ::interval& i)
     {
-        return makeTableType(fContent, fNature, fVariability, fComputability, fVectorability, fBoolean, i);
+        return makeTableType(
+          _content,
+          _precision,
+          _priority,
+          _availability,
+          _vectorability,
+          _valueType,
+          i
+        );
     }  ///< promote the interval of a type
 
     virtual bool isMaximal() const;  ///< true when type is maximal (and therefore can't change depending of hypothesis)
@@ -395,57 +650,131 @@ class TableType : public AudioType {
  */
 class TupletType : public AudioType {
    protected:
-    vector<Type> fComponents;
+    vector<Type> _components;
 
    public:
-    TupletType() : AudioType(0, 0, 0) {}
+    TupletType()
+    : AudioType(
+        Precision( 0 ),
+        Priority( 0 ),
+        Availability( 0 )
+      )
+    {}
 
     TupletType(ConstTypes vt)
-        : AudioType(mergenature(vt), mergevariability(vt), mergecomputability(vt), mergevectorability(vt),
-                    mergeboolean(vt), mergeinterval(vt)),
-          fComponents(vt)
+    : AudioType(
+        mergePrecision(vt),
+        mergePriority(vt),
+        mergeAvailability(vt),
+        mergeVectorability(vt),
+        mergeValueType(vt),
+        mergeinterval(vt)
+      ),
+      _components(vt)
     {
     }
 
-    TupletType(ConstTypes vt, int n, int v, int c, int vec, int b, const interval& i)
-        : AudioType(n | mergenature(vt), v | mergevariability(vt), c | mergecomputability(vt),
-                    vec | mergevectorability(vt), b | mergeboolean(vt), i),
-          fComponents(vt)
+    TupletType(
+      ConstTypes             vt,
+      const Precision&       precision,
+      const Priority&        priority,
+      const Availability&    availability,
+      const Vectorability&   vectorability,
+      const Value&           value_type,
+      const ::interval& i
+    ) :
+      AudioType(
+        Precision( static_cast<unsigned int>(precision)
+        | static_cast<unsigned int>(mergePrecision(vt)) ),
+        Priority( static_cast<unsigned int>(priority)
+        | static_cast<unsigned int>(mergePriority(vt)) ),
+        Availability( static_cast<unsigned int>(availability)
+        | static_cast<unsigned int>(mergeAvailability(vt)) ),
+        Vectorability( static_cast<unsigned int>(vectorability)
+        | static_cast<unsigned int>(mergeVectorability(vt)) ),
+        Value( static_cast<unsigned int>(value_type)
+        | static_cast<unsigned int>(mergeValueType(vt)) ),
+        i
+      ),
+      _components(vt)
     {
     }
 
-    int              arity() const { return (int)fComponents.size(); }
-    Type             operator[](unsigned int i) const { return fComponents[i]; }
+    std::size_t arity() const { return _components.size(); }
+    Type operator[]( const std::size_t& i ) const { return _components[i]; }
     virtual ostream& print(ostream& dst) const;
 
-    virtual AudioType* promoteNature(int n)
+    virtual AudioType* promotePrecision( const Precision& precision )
     {
-        return new TupletType(fComponents, n | fNature, fVariability, fComputability, fVectorability, fBoolean,
-                              fInterval);
+        return new TupletType(
+          _components,
+          Precision( static_cast<unsigned int>(_precision) | static_cast<unsigned int>(precision) ),
+          _priority,
+          _availability,
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the nature of a type
-    virtual AudioType* promoteVariability(int v)
+    virtual AudioType* promotePriority( const Priority& priority )
     {
-        return new TupletType(fComponents, fNature, v | fVariability, fComputability, fVectorability, fBoolean,
-                              fInterval);
+        return new TupletType(
+          _components,
+          _precision,
+          Priority( static_cast<unsigned int>(_priority) | static_cast<unsigned int>(priority) ),
+          _availability,
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the variability of a type
-    virtual AudioType* promoteComputability(int c)
+    virtual AudioType* promoteAvailability( const Availability& availability )
     {
-        return new TupletType(fComponents, fNature, fVariability, c | fComputability, fVectorability, fBoolean,
-                              fInterval);
+        return new TupletType(
+          _components,
+          _precision,
+          _priority,
+          Availability( static_cast<unsigned int>(_availability) | static_cast<unsigned int>(availability) ),
+          _vectorability,
+          _valueType,
+          _interval
+        );
     }  ///< promote the computability of a type
-    virtual AudioType* promoteVectorability(int vec)
+    virtual AudioType* promoteVectorability( const Vectorability& vectorability )
     {
-        return new TupletType(fComponents, fNature, fVariability, fComputability, vec | fVectorability, fBoolean,
-                              fInterval);
+        return new TupletType(
+          _components,
+          _precision,
+          _priority,
+          _availability,
+          Vectorability( static_cast<unsigned int>(_vectorability) | static_cast<unsigned int>(vectorability) ),
+          _valueType,
+          _interval
+        );
     }  ///< promote the vectorability of a type
-    virtual AudioType* promoteBoolean(int b)
+    virtual AudioType* promoteValueType( const Value& value_type )
     {
-        return new TupletType(fComponents, fNature, fVariability, fComputability, fVectorability, b | fBoolean,
-                              fInterval);
+        return new TupletType(
+          _components,
+          _precision,
+          _priority,
+          _availability,
+          _vectorability,
+          Value( static_cast<unsigned int>(_valueType) | static_cast<unsigned int>(value_type) ),
+          _interval
+        );
     }  ///< promote the booleanity of a type
-    virtual AudioType* promoteInterval(const interval& i)
+    virtual AudioType* promoteInterval(const ::interval& i)
     {
-        return new TupletType(fComponents, fNature, fVariability, fComputability, fVectorability, fBoolean, i);
+        return new TupletType(
+          _components,
+          _precision,
+          _priority,
+          _availability,
+          _vectorability,
+          _valueType,
+          i
+        );
     }  ///< promote the interval of a type
 
     virtual bool isMaximal() const;  ///< true when type is maximal (and therefore can't change depending of hypothesis)

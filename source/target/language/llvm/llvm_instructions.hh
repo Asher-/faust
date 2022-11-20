@@ -513,7 +513,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
             }
 
             // If there is a body, compile it
-            if (inst->fCode->fCode.size() > 0) {
+            if (inst->_code->_code.size() > 0) {
                 // Prepare a entry_block to insert into
                 BasicBlock* entry_block = genBlock("entry_block", function);
 
@@ -522,7 +522,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
                 fAllocaBuilder->SetInsertPoint(entry_block);
 
                 // Compile code in this block
-                inst->fCode->accept(this);
+                inst->_code->accept(this);
                 verifyFunction(*function);
 
                 // Clear inserting points
@@ -635,7 +635,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
                 fCurValue = loadArrayAsPointer(visit(inst->fAddress), named_address->fAccess & Address::kVolatile);
             }
         } else if (indexed_address) {
-            Value* Ptr = visit(inst->fAddress);
+            llvm::Value* Ptr = visit(inst->fAddress);
             fCurValue = MyCreateLoad1(Ptr);
         } else {
             faustassert(false);
@@ -823,9 +823,9 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
 
     virtual void visit(RetInst* inst)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             // Add a return instruction
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
             fBuilder->CreateRet(fCurValue);
         } else {
             // Add a return void instruction
@@ -835,9 +835,9 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
 
     virtual void visit(DropInst* inst)
     {
-        if (inst->fResult) {
+        if (inst->_resolutionult) {
             // Result is in fCurValue;
-            inst->fResult->accept(this);
+            inst->_resolutionult->accept(this);
         }
         // Drop it
         fCurValue = nullptr;
@@ -1036,7 +1036,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
     virtual void visit(ForLoopInst* inst)
     {
         // Don't generate empty loops...
-        if (inst->fCode->size() == 0) return;
+        if (inst->_code->size() == 0) return;
 
         Function* function = fBuilder->GetInsertBlock()->getParent();
         faustassert(function);
@@ -1096,7 +1096,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
             fBuilder->SetInsertPoint(loop_body_block);
 
             // Generates loop internal code
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
         }
 
         // Get last block of post code section
@@ -1160,7 +1160,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
         fBuilder->SetInsertPoint(test_block);
 
         // Compiles internal block
-        inst->fCode->accept(this);
+        inst->_code->accept(this);
 
         // Branch back to cond block
         fBuilder->CreateBr(cond_block);
@@ -1189,7 +1189,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
         }
 
         // Generates block internal code
-        for (const auto& it : inst->fCode) {
+        for (const auto& it : inst->_code) {
             it->accept(this);
         }
 
@@ -1221,10 +1221,10 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
         BasicBlock* default_block = genBlock("default_block", function);
 
         // Creates switch
-        llvm::SwitchInst* switch_inst = fBuilder->CreateSwitch(fCurValue, default_block, inst->fCode.size());
+        llvm::SwitchInst* switch_inst = fBuilder->CreateSwitch(fCurValue, default_block, inst->_code.size());
 
         std::list<std::pair<int, BlockInst*> >::const_iterator it;
-        for (it = inst->fCode.begin(); it != inst->fCode.end(); it++) {
+        for (it = inst->_code.begin(); it != inst->_code.end(); it++) {
             if ((*it).first != -1) {  // All cases but "default"
                 // Creates "case" block
                 BasicBlock* case_block = genBlock("case_block", function);
@@ -1239,7 +1239,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
             }
         }
 
-        for (it = inst->fCode.begin(); it != inst->fCode.end(); it++) {
+        for (it = inst->_code.begin(); it != inst->_code.end(); it++) {
             if ((*it).first == -1) {  // Default case found
                 break;
             }
@@ -1249,7 +1249,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
         fBuilder->SetInsertPoint(default_block);
 
         // Compiles "default" block if one has been found
-        if (it != inst->fCode.end()) {
+        if (it != inst->_code.end()) {
             (*it).second->accept(this);
         }
 

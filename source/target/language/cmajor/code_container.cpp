@@ -28,6 +28,10 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/type/precision.hh"
+
+using Precision = ::Faust::Primitive::Type::Precision;
+
 using namespace std;
 
 /*
@@ -121,7 +125,7 @@ void CmajorCodeContainer::produceInternal()
         int    table_size   = it.second;
         if (startWith(fun_name_aux, fun_name)) {
             tab(n + 1, *fOut);
-            if (fSubContainerType == kInt) {
+            if (fSubContainerType == Precision::Int) {
                 tab(n + 1, *fOut);
                 *fOut << "void " << fun_name_aux << " (" << fKlassName << "& this, "
                       << subst("int $0, int[" + to_string(table_size) + "]& " + fTableName + ")", counter);
@@ -207,7 +211,7 @@ void CmajorCodeContainer::produceClass()
 
     // Fields
     tab(n + 1, *fOut);
-    fCodeProducer.Tab(n + 1);
+    _codeProducer.Tab(n + 1);
 
     if (global::config().gOutputLang == "cmajor-dsp") {
         string json = generateJSONAux();
@@ -228,7 +232,7 @@ void CmajorCodeContainer::produceClass()
 
     generateUserInterface(&fUIVisitor);
     *fOut << fUIVisitor.fOut.str();
-    generateDeclarations(&fCodeProducer);
+    generateDeclarations(&_codeProducer);
 
     // Control
     *fOut << "bool fUpdated;";
@@ -244,21 +248,21 @@ void CmajorCodeContainer::produceClass()
         tab(n + 1, *fOut);
     }
     if (fRealControlNum > 0) {
-        *fOut << fCodeProducer.getTypeManager()->fTypeDirectTable[itfloat()] << "[" << fRealControlNum << "] fControl;";
+        *fOut << _codeProducer.getTypeManager()->fTypeDirectTable[itfloat()] << "[" << fRealControlNum << "] fControl;";
     }
 
     // Global declarations
-    if (fGlobalDeclarationInstructions->fCode.size() > 0) {
+    if (fGlobalDeclarationInstructions->_code.size() > 0) {
         tab(n + 1, *fOut);
-        fCodeProducer.Tab(n + 1);
-        generateGlobalDeclarations(&fCodeProducer);
+        _codeProducer.Tab(n + 1);
+        generateGlobalDeclarations(&_codeProducer);
     }
 
     // UI
-    if (fUserInterfaceInstructions->fCode.size() > 0) {
+    if (fUserInterfaceInstructions->_code.size() > 0) {
         tab(n + 1, *fOut);
-        fCodeProducer.Tab(n + 1);
-        generateUserInterface(&fCodeProducer);
+        _codeProducer.Tab(n + 1);
+        generateUserInterface(&_codeProducer);
     }
 
     /*
@@ -321,14 +325,14 @@ void CmajorCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "{";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
     // Rename the 'fillXXX' function with the proper table size
     {
         TableSizeCloneVisitor fill_funcall;
         BlockInst*            block1 = fill_funcall.getCode(fStaticInitInstructions);
-        block1->accept(&fCodeProducer);
+        block1->accept(&_codeProducer);
         BlockInst* block2 = fill_funcall.getCode(fPostStaticInitInstructions);
-        block2->accept(&fCodeProducer);
+        block2->accept(&_codeProducer);
     }
     back(1, *fOut);
     *fOut << "}";
@@ -339,14 +343,14 @@ void CmajorCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "{";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
     // Rename the 'fillXXX' function with the proper table size
     {
         TableSizeCloneVisitor fill_funcall;
         BlockInst*            block1 = fill_funcall.getCode(fInitInstructions);
-        block1->accept(&fCodeProducer);
+        block1->accept(&_codeProducer);
         BlockInst* block2 = fill_funcall.getCode(fPostInitInstructions);
-        block2->accept(&fCodeProducer);
+        block2->accept(&_codeProducer);
     }
     back(1, *fOut);
     *fOut << "}";
@@ -362,8 +366,8 @@ void CmajorCodeContainer::produceClass()
     *fOut << "fUpdated = true;";
     tab(n + 2, *fOut);
 
-    fCodeProducer.Tab(n + 2);
-    generateResetUserInterface(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateResetUserInterface(&_codeProducer);
     back(1, *fOut);
     *fOut << "}";
     tab(n + 1, *fOut);
@@ -373,8 +377,8 @@ void CmajorCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "{";
     tab(n + 2, *fOut);
-    fCodeProducer.Tab(n + 2);
-    generateClear(&fCodeProducer);
+    _codeProducer.Tab(n + 2);
+    generateClear(&_codeProducer);
     back(1, *fOut);
     *fOut << "}";
     tab(n + 1, *fOut);
@@ -390,9 +394,9 @@ void CmajorCodeContainer::produceClass()
     tab(n + 2, *fOut);
     // Debug code
     //*fOut << "console << \"control\\n\";";
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
     // Generates local variables declaration and setup
-    generateComputeBlock(&fCodeProducer);
+    generateComputeBlock(&_codeProducer);
     back(1, *fOut);
     *fOut << "}" << endl;
 
@@ -419,14 +423,14 @@ void CmajorScalarCodeContainer::generateCompute(int n)
     tab(n + 2, *fOut);
 
     // Generates one sample computation
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
     *fOut << "// Computes one sample";
     tab(n + 2, *fOut);
     BlockInst* block = fCurLoop->generateOneSample();
-    block->accept(&fCodeProducer);
+    block->accept(&_codeProducer);
 
     // Currently for soundfile management
-    generatePostComputeBlock(&fCodeProducer);
+    generatePostComputeBlock(&_codeProducer);
 
     tab(n + 2, *fOut);
     if (fUIVisitor.fHasBargraph) {
@@ -470,7 +474,7 @@ void CmajorVectorCodeContainer::generateCompute(int n)
     tab(n + 2, *fOut);
 
     // TODO
-    fCodeProducer.Tab(n + 2);
+    _codeProducer.Tab(n + 2);
 
     tab(n + 2, *fOut);
     *fOut << "// Move all streams forward by one 'tick'";

@@ -163,21 +163,21 @@ class dsp_factory_imp : public dsp_factory_base {
 /* To be used by textual backends */
 class text_dsp_factory_aux : public dsp_factory_imp {
    protected:
-    std::string fCode;
+    std::string _code;
     std::string fHelpers;
 
    public:
     text_dsp_factory_aux(const std::string& name, const std::string& sha_key, const std::string& dsp,
                          const std::string& code, const std::string& helpers)
-        : dsp_factory_imp(name, sha_key, dsp), fCode(code), fHelpers(helpers)
+        : dsp_factory_imp(name, sha_key, dsp), _code(code), fHelpers(helpers)
     {
     }
 
-    virtual void write(std::ostream* out, bool binary = false, bool compact = false) { *out << fCode; }
+    virtual void write(std::ostream* out, bool binary = false, bool compact = false) { *out << _code; }
 
     virtual void writeHelper(std::ostream* out, bool binary = false, bool compact = false) { *out << fHelpers; }
 
-    virtual std::string getBinaryCode() { return fCode; }
+    virtual std::string getBinaryCode() { return _code; }
 };
 
 // Backend API implemented in libcode.cpp

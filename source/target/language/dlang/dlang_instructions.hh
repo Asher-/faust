@@ -288,21 +288,21 @@ class DLangInstVisitor : public TextInstVisitor {
 
         // Prototype
         // Special case: member function `init` renamed to `initialize` so it doesnt conflict with D `.init` property.
-        *fOut << fTypeManager->generateType(inst->fType->fResult, generateFunName(inst->fName == "init" ? "initialize" : inst->fName));
+        *fOut << fTypeManager->generateType(inst->fType->_resolutionult, generateFunName(inst->fName == "init" ? "initialize" : inst->fName));
         generateFunDefArgs(inst);
         generateFunDefBody(inst);
     }
 
     virtual void generateFunDefBody(DeclareFunInst* inst)
     {
-        if (inst->fCode->fCode.size() == 0) {
+        if (inst->_code->_code.size() == 0) {
             *fOut << ") nothrow @nogc;" << endl;  // Pure prototype
         } else {
             // Function body
             *fOut << ") nothrow @nogc {";
             fTab++;
             tab(fTab, *fOut);
-            inst->fCode->accept(this);
+            inst->_code->accept(this);
             fTab--;
             back(1, *fOut);
             *fOut << "}";

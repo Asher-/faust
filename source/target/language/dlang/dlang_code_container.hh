@@ -37,7 +37,7 @@ using namespace std;
 
 class DLangCodeContainer : public virtual CodeContainer {
    protected:
-    DLangInstVisitor fCodeProducer;
+    DLangInstVisitor _codeProducer;
     std::ostream*  fOut;
     string         fSuperKlassName;
 
@@ -46,7 +46,7 @@ class DLangCodeContainer : public virtual CodeContainer {
 
    public:
     DLangCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out)
-        : fCodeProducer(out), fOut(out), fSuperKlassName(super)
+        : _codeProducer(out), fOut(out), fSuperKlassName(super)
     {
         initialize(numInputs, numOutputs);
         fKlassName = name;
@@ -68,7 +68,7 @@ class DLangCodeContainer : public virtual CodeContainer {
     static void printDRecipeComment(ostream& dst, const string& klassName);
     static void printDModuleStmt(ostream& dst, const string& klassName);
 
-    CodeContainer* createScalarContainer(const string& name, int sub_container_type);
+    CodeContainer* createScalarContainer(const string& name, const Precision& precision);
 
     static CodeContainer* createContainer(const string& name, const string& super, int numInputs, int numOutputs,
                                           ostream* dst = new stringstream());
@@ -78,7 +78,7 @@ class DLangScalarCodeContainer : public DLangCodeContainer {
    protected:
    public:
     DLangScalarCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out,
-                           int sub_container_type);
+                           const Precision& precision);
     virtual ~DLangScalarCodeContainer()
     {}
 
@@ -90,8 +90,8 @@ class DLangScalarOneSampleCodeContainer : public DLangScalarCodeContainer {
     virtual void produceClass();
    public:
     DLangScalarOneSampleCodeContainer(const string& name, const string& super, int numInputs, int numOutputs, std::ostream* out,
-                                    int sub_container_type)
-    : DLangScalarCodeContainer(name, super, numInputs, numOutputs, out, sub_container_type)
+                                    const Precision& precision)
+    : DLangScalarCodeContainer(name, super, numInputs, numOutputs, out, precision)
     {}
     virtual ~DLangScalarOneSampleCodeContainer()
     {}
