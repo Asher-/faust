@@ -398,15 +398,19 @@ Tree codeAudioType(AudioType* t)
 
     Tree r;
 
-    if ((r = t->code())) return r;
+    if ((r = t->code()))
+      return r;
 
     if ((st = isSimpleType(t))) {
         r = codeSimpleType(st);
-    } else if ((tt = isTableType(t))) {
+    }
+    else if ((tt = isTableType(t))) {
         r = codeTableType(tt);
-    } else if ((nt = isTupletType(t))) {
+    }
+    else if ((nt = isTupletType(t))) {
         r = codeTupletType(nt);
-    } else {
+    }
+    else {
         stringstream error;
         error << "ERROR : codeAudioType(), invalid pointer " << t << endl;
         throw faustexception(error.str());

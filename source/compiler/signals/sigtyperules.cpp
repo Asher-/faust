@@ -44,6 +44,8 @@
 
 #include "faust/primitive/type/cast.hh"
 
+#include "faust/primitive/audio/simple_types.hh"
+
 using Availability = ::Faust::Primitive::Type::Availability;
 using Precision = ::Faust::Primitive::Type::Precision;
 using Priority = ::Faust::Primitive::Type::Priority;
@@ -486,7 +488,7 @@ static Type infereSigType(Tree sig, Tree env)
     }
 
     else if (isSigInput(sig, &i)) { /*sig->setType(TINPUT);*/
-        return global::config().TINPUT;
+        return ::Faust::Primitive::Audio::simpleTypes().TINPUT;
     }
 
     else if (isSigOutput(sig, &i, s1))
@@ -576,11 +578,11 @@ static Type infereSigType(Tree sig, Tree env)
         return infereFVarType(type);
 
     else if (isSigButton(sig)) { /*sig->setType(TGUI01);*/
-        return global::config().TGUI01;
+        return ::Faust::Primitive::Audio::simpleTypes().TGUI01;
     }
 
     else if (isSigCheckbox(sig)) { /*sig->setType(TGUI01);*/
-        return global::config().TGUI01;
+        return ::Faust::Primitive::Audio::simpleTypes().TGUI01;
     }
 
     else if (isSigVSlider(sig, label, cur, min, max, step)) {
@@ -588,7 +590,7 @@ static Type infereSigType(Tree sig, Tree env)
         Type t2 = T(min, env);
         Type t3 = T(max, env);
         Type t4 = T(step, env);
-        return ::Faust::Primitive::Type::castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
+        return ::Faust::Primitive::Type::castInterval(::Faust::Primitive::Audio::simpleTypes().TGUI, interval(tree2float(min), tree2float(max)));
     }
 
     else if (isSigHSlider(sig, label, cur, min, max, step)) {
@@ -596,7 +598,7 @@ static Type infereSigType(Tree sig, Tree env)
         Type t2 = T(min, env);
         Type t3 = T(max, env);
         Type t4 = T(step, env);
-        return ::Faust::Primitive::Type::castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
+        return ::Faust::Primitive::Type::castInterval(::Faust::Primitive::Audio::simpleTypes().TGUI, interval(tree2float(min), tree2float(max)));
     }
 
     else if (isSigNumEntry(sig, label, cur, min, max, step)) {
@@ -604,7 +606,7 @@ static Type infereSigType(Tree sig, Tree env)
         Type t2 = T(min, env);
         Type t3 = T(max, env);
         Type t4 = T(step, env);
-        return ::Faust::Primitive::Type::castInterval(global::config().TGUI, interval(tree2float(min), tree2float(max)));
+        return ::Faust::Primitive::Type::castInterval(::Faust::Primitive::Audio::simpleTypes().TGUI, interval(tree2float(min), tree2float(max)));
     }
 
     else if (isSigHBargraph(sig, l, x, y, s1)) {
@@ -933,7 +935,7 @@ static Type infereDocAccessTblType(Type tbl, Type ridx)
 static TupletType* initialRecType(Tree t)
 {
     faustassert(isList(t));
-    return new TupletType(vector<Type>(len(t), global::config().TREC));
+    return new TupletType(vector<Type>(len(t), ::Faust::Primitive::Audio::simpleTypes().TREC));
 }
 
 /**
@@ -944,7 +946,10 @@ static TupletType* initialRecType(Tree t)
 static TupletType* maximalRecType(Tree t)
 {
     faustassert(isList(t));
-    return new TupletType(vector<Type>(len(t), global::config().TRECMAX));
+    return new TupletType(vector<Type>(
+      len(t),
+      ::Faust::Primitive::Audio::simpleTypes().TRECMAX)
+    );
 }
 
 /**

@@ -491,7 +491,7 @@ void global::initTypeSizeMap()
     gTypeSizeMap[Typed::kDouble]         = gMachineDoubleSize;
     gTypeSizeMap[Typed::kDouble_ptr]     = gMachinePtrSize;
     gTypeSizeMap[Typed::kDouble_ptr_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kDouble_vec]     = gMachineDoubleSize * gVecSize; 
+    gTypeSizeMap[Typed::kDouble_vec]     = gMachineDoubleSize * gVecSize;
     gTypeSizeMap[Typed::kDouble_vec_ptr] = gMachinePtrSize;
 
     gTypeSizeMap[Typed::kQuad]         = gMachineQuadSize;
