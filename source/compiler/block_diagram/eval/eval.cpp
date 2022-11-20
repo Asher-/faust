@@ -264,7 +264,7 @@ static bool getArgName(Tree t, Tree& id)
  */
 static void setEvalProperty(Tree box, Tree env, Tree value)
 {
-    setProperty(box, tree(global::config().EVALPROPERTY, env), value);
+    setProperty(box, tree(::Faust::Primitive::Symbols::internal().symbol("EvalProperty"), env), value);
 }
 
 /**
@@ -276,7 +276,7 @@ static void setEvalProperty(Tree box, Tree env, Tree value)
  */
 static bool getEvalProperty(Tree box, Tree env, Tree& value)
 {
-    return getProperty(box, tree(global::config().EVALPROPERTY, env), value);
+    return getProperty(box, tree(::Faust::Primitive::Symbols::internal().symbol("EvalProperty"), env), value);
 }
 
 /**
@@ -1362,12 +1362,12 @@ static Tree listn(int n, Tree e)
 
 static void setPMProperty(Tree t, Tree env, Tree pm)
 {
-    setProperty(t, tree(global::config().PMPROPERTYNODE, env), pm);
+    setProperty(t, tree(::Faust::Primitive::Symbols::internal().symbol("PMPROPERTY"), env), pm);
 }
 
 static bool getPMProperty(Tree t, Tree env, Tree& pm)
 {
-    return getProperty(t, tree(global::config().PMPROPERTYNODE, env), pm);
+    return getProperty(t, tree(::Faust::Primitive::Symbols::internal().symbol("PMPROPERTY"), env), pm);
 }
 
 /**

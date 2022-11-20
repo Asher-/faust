@@ -361,9 +361,6 @@ struct global {
     property<bool>* gPureRoutingProperty;
     property<Tree>* gSymbolicBoxProperty;
 
-    Node EVALPROPERTY;
-    Node PMPROPERTYNODE;
-
     property<Tree>* gSimplifiedBoxProperty;
 
     // The map of types and associated Structured types

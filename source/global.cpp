@@ -85,9 +85,6 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
     // Part of the state that needs to be initialized between consecutive calls to Box/Signal API
     reset();
 
-    EVALPROPERTY   = ::Faust::Primitive::Symbols::internal().symbol("EvalProperty");
-    PMPROPERTYNODE = ::Faust::Primitive::Symbols::internal().symbol("PMPROPERTY");
-
     gResult          = nullptr;
     gResult2         = nullptr;
     gExpandedDefList = nullptr;
@@ -494,7 +491,7 @@ void global::initTypeSizeMap()
     gTypeSizeMap[Typed::kDouble]         = gMachineDoubleSize;
     gTypeSizeMap[Typed::kDouble_ptr]     = gMachinePtrSize;
     gTypeSizeMap[Typed::kDouble_ptr_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kDouble_vec]     = gMachineDoubleSize * gVecSize;
+    gTypeSizeMap[Typed::kDouble_vec]     = gMachineDoubleSize * gVecSize; 
     gTypeSizeMap[Typed::kDouble_vec_ptr] = gMachinePtrSize;
 
     gTypeSizeMap[Typed::kQuad]         = gMachineQuadSize;
