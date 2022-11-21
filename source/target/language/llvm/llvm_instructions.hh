@@ -62,7 +62,7 @@ using namespace llvm;
     #if LLVM_VERSION_MAJOR == 15
     #error LLVM 15 not yet supported
     #endif
-#define GetType(ptr) ptr->getType()->getScalarType()->getPointerElementType()
+#define GetType(ptr) ptr->getType()
 #define MakeStructGEP(v1, v2) fBuilder->CreateStructGEP(GetType(v1), v1, v2);
 #define MyCreateLoad(var, is_volatile) fBuilder->CreateLoad(GetType(var), var, is_volatile)
 #define MyCreateLoad1(var) fBuilder->CreateLoad(GetType(var), var)
@@ -312,7 +312,7 @@ class LLVMInstVisitor : public InstVisitor, public LLVMTypeHelper {
 
     LLVMValue loadArrayAsPointer(LLVMValue var, bool is_volatile = false)
     {
-        if (isa<ArrayType>(var->getType()->getPointerElementType())) {
+        if (isa<ArrayType>(var->getType())) {
             LLVMValue idx[] = {genInt32(0), genInt32(0)};
         #if LLVM_VERSION_MAJOR >= 14
             return fBuilder->CreateInBoundsGEP(GetType(var), var, MakeIdx(idx, idx + 2));
