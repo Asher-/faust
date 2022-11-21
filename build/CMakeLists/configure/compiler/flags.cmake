@@ -1,4 +1,8 @@
 
 set (FAUST_DEFINITIONS ${FAUST_DEFINITIONS} -DLIBDIR="${LIBSDIR}")
-set(CMAKE_CXX_FLAGS_DEBUG   "-g  -fvisibility=hidden -fstandalone-debug -fno-eliminate-unused-debug-types -fdebug-macro -fno-limit-debug-info -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wshadow")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fvisibility=hidden -Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual")
+
+set (DEBUG_FLAGS "-fvisibility=hidden -fstandalone-debug -fno-eliminate-unused-debug-types -fdebug-macro -fno-limit-debug-info")
+set (WARNING_FLAGS "-Wall -Wextra -Wno-unused-parameter -Wno-unused-function -Wno-overloaded-virtual -Wno-shadow")
+
+set(CMAKE_CXX_FLAGS_DEBUG   "-g ${DEBUG_FLAGS} ${WARNING_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fvisibility=hidden ${WARNING_FLAGS}")
