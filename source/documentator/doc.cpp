@@ -154,7 +154,7 @@ bool isDocTxt(Tree t0, const char** str)
     Tree t1;
     Sym  s;
     if (isTree(t0, ::Faust::Primitive::Symbols::internal().symbol("DocTxt"), t1) && isSym(t1->node(), &s)) {
-        *str = std::string(s->name()).c_str();
+        *str = s->name().c_str();
         return true;
     } else {
         return false;

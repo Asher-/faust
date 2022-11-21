@@ -171,7 +171,7 @@ LIBFAUST_API unsigned int xtendedArity(Signal s);
  *
  * @return the name of the xtended signal.
  */
-LIBFAUST_API const char* xtendedName(Signal s);
+LIBFAUST_API const std::string& xtendedName(Signal s);
 
 /**
  * Constant integer : for all t, x(t) = n.

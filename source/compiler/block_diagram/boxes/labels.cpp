@@ -93,7 +93,7 @@ static Tree encodeName(char g, const string& name)
  * Analyzes a label and converts it as a path
  */
 
-static Tree label2path(const std::string_view& label)
+static Tree label2path(const std::string& label)
 {
     if (label[0] == 0) {
         return cons(tree(""), global::config().nil);

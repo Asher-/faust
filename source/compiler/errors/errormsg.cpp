@@ -67,7 +67,7 @@ void yyerror(const char* msg)
     throw faustexception(error.str());
 }
 
-void evalerror(const std::string_view& filename, int linenum, const char* msg, Tree exp)
+void evalerror(const std::string& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : ERROR : " << msg << " : " << boxpp(exp) << endl;
@@ -75,7 +75,7 @@ void evalerror(const std::string_view& filename, int linenum, const char* msg, T
     throw faustexception(error.str());
 }
 
-void evalerrorbox(const std::string_view& filename, int linenum, const char* msg, Tree exp)
+void evalerrorbox(const std::string& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : ERROR : " << msg << " : " << boxpp(exp) << endl;
@@ -83,14 +83,14 @@ void evalerrorbox(const std::string_view& filename, int linenum, const char* msg
     throw faustexception(error.str());
 }
 
-void evalwarning(const std::string_view& filename, int linenum, const char* msg, Tree exp)
+void evalwarning(const std::string& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : WARNING : " << msg << " : " << boxpp(exp) << endl;
     global::config.gErrorMessage = error.str();
 }
 
-void evalremark(const std::string_view& filename, int linenum, const char* msg, Tree exp)
+void evalremark(const std::string& filename, int linenum, const char* msg, Tree exp)
 {
     stringstream error;
     error << filename << " : " << linenum << " : REMARK : " << msg << " : " << boxpp(exp) << endl;
@@ -108,7 +108,7 @@ bool hasDefProp(Tree sym)
     return getProperty(sym, global::config().DEFLINEPROP, n);
 }
 
-const std::string_view& getDefFileProp(Tree sym)
+const std::string& getDefFileProp(Tree sym)
 {
     Tree n;
     if (getProperty(sym, global::config().DEFLINEPROP, n)) {
@@ -133,7 +133,7 @@ void setUseProp(Tree sym, const char* filename, int lineno)
     setProperty(sym, global::config().USELINEPROP, cons(tree(filename), tree(lineno)));
 }
 
-const std::string_view& getUseFileProp(Tree sym)
+const std::string& getUseFileProp(Tree sym)
 {
     Tree n;
     if (getProperty(sym, global::config().USELINEPROP, n)) {

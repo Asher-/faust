@@ -400,7 +400,7 @@ static schema* generateInsideSchema(Tree t)
     auto xt = getUserData(t);
 
     if (xt) {
-        return makeBlockSchema(xt->arity(), 1, std::string(xt->name()), normalcolor, "");
+        return makeBlockSchema(xt->arity(), 1, xt->name(), normalcolor, "");
     }
 
     else if (isInverter(t)) {

@@ -28,7 +28,7 @@
 #include <array>
 #include <string_view>
 
-#include "faust/primitive/symbol/internal/abstract/implementation.hh"
+#include "faust/primitive/symbol/abstract/implementation.hh"
 
 namespace Faust {
   namespace Primitive {
@@ -46,12 +46,11 @@ namespace Faust {
         >
         struct Implementation
         :
-          ::Faust::Primitive::Symbol::Internal::Abstract::Implementation
+          ::Faust::Primitive::Symbol::Abstract::Implementation
         {
           /********** Types **********/
           
           using AbstractImplementation = ::Faust::Primitive::Symbol::Abstract::Implementation;
-          using AbstractInternalImplementation = ::Faust::Primitive::Symbol::Internal::Abstract::Implementation;
           using AbstractSymbol = AbstractImplementation;
           using HashType = typename AbstractImplementation::HashType;
 
@@ -67,16 +66,17 @@ namespace Faust {
           ///< Hash key computed from the name and used to determine the hash table entry
           static constexpr const HashType Hash = ::Faust::Primitive::Symbol::hash( Name );
 
+          /********** Constructors **********/
+
+          Implementation
+          ()
+          :
+            /* Decided to store duplicate as std::string for consistent non-constexpr access. */
+            AbstractImplementation( Name.data() )
+          {}
+
           /********** Accessors **********/
           
-          const std::string_view&
-          name()
-          const
-          override
-          {
-            return Name;
-          }
-
           const HashType&
           hash()
           const override

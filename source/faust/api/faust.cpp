@@ -691,6 +691,7 @@ bool processCmdline(int argc, const char* argv[])
                      Faust directories information
 *****************************************************************/
 
+<<<<<<< HEAD
 #ifndef LIBDIR
 #define LIBDIR "lib"
 #endif

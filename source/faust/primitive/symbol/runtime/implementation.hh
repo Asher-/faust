@@ -52,11 +52,8 @@ namespace Faust {
           /********** Constructors **********/
           
           Implementation
-          () = default;
-
-          Implementation
           (
-            const std::string_view& name
+            const std::string& name
           )
           :
             Implementation(
@@ -67,11 +64,13 @@ namespace Faust {
 
           Implementation
           (
-            const std::string_view& name,
+            const std::string& name,
             const HashType hash
           )
           :
-            _name(name),
+            AbstractImplementation(
+              name
+            ),
             _hash(hash)
           {}
 
@@ -80,14 +79,6 @@ namespace Faust {
           using AbstractImplementation::operator ==;
           
           /********** Accessors **********/
-          
-          const std::string_view&
-          name()
-          const
-          override
-          {
-            return _name;
-          }
 
           const HashType&
           hash()
@@ -98,7 +89,6 @@ namespace Faust {
 
           /********** Variables **********/
           
-          std::string_view _name;
           HashType _hash;
 
         };

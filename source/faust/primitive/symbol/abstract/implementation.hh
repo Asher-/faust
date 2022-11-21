@@ -51,7 +51,10 @@ namespace Faust {
           /********** Constructors **********/
 
           Implementation
-          () = default;
+          ( const std::string& name )
+          :
+            _name( name )
+          {}
 
           /********** Destructor **********/
           
@@ -137,8 +140,12 @@ namespace Faust {
 
           /********** Accessors **********/
           
-          virtual const std::string_view& name() const = 0;
           virtual const HashType& hash() const = 0;
+
+          virtual const std::string& name() const
+          {
+            return _name;
+          };
 
           virtual const std::size_t& nextUniqueNumber() const
           {
@@ -180,6 +187,8 @@ namespace Faust {
           Data* _data = nullptr;
           
           std::size_t _nextUniqueNumber = 0;
+          std::string _name;
+
 
         };
 

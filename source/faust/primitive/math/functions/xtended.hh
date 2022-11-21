@@ -75,7 +75,7 @@ namespace Faust {
           virtual ~xtended() {}
 
           Sym         symbol() { return _symbol; }
-          const std::string_view& name() { return _symbol->name(); }
+          const std::string& name() { return _symbol->name(); }
 
           // Create the box
           Tree box()

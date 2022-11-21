@@ -66,7 +66,7 @@ TEST_F( ParserTest, identity ) {
   std::stringstream pprint;
   pprint << boxpp(ast);
   std::string printed(pprint.str());
-  std::cout << pprint.str();
+  std::cout << pprint.str() << std::endl;
 }
 
 //TEST_F( ParserTest, function ) {
