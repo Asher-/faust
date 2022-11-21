@@ -60,7 +60,7 @@
 #include "documentator/doc_compile.hh"
 #include "documentator/doc_lang.hh"
 #include "documentator/doc_notice.hh"
-#include "drawschema.hh"
+#include "draw/drawschema.hh"
 #include "compiler/file_handling/string_substitution.hh"
 #include "compiler/errors/errormsg.hh"
 #include "compiler/block_diagram/eval/eval.hh"

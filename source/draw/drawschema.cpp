@@ -48,7 +48,7 @@
 #include "tlib/compatibility.hh"
 #include "compiler/compile/xml_description.hh"
 #include "devLib.h"
-#include "drawschema.hh"
+#include "draw/drawschema.hh"
 #include "compiler/errors/exception.hh"
 #include "files.hh"
 #include "global.hh"

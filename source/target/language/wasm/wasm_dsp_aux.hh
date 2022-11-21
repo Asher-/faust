@@ -30,7 +30,7 @@
 #include "faust/gui/JSONControl.h"
 #include "faust/export.h"
 
-#include "dsp_aux.hh"
+#include "compiler/dsp_factory/dsp_aux.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
 #include "wasm_binary.hh"
 

@@ -35,9 +35,9 @@ Compile a list of FAUST signals into a C++ class.
 
 #include <stdio.h>
 
-#include "compile_scalar.hh"
-#include "compile_vect.hh"
-#include "dcond.hh"
+#include "compiler/compile/compile_scalar.hh"
+#include "compiler/compile/compile_vect.hh"
+#include "tlib/dcond.hh"
 #include "compiler/signals/ppsig.hh"
 #include "tlib/property.hh"
 #include "sigprint.hh"

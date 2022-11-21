@@ -21,7 +21,7 @@
 
 #include <fstream>
 
-#include "dag_instruction_compiler.hh"
+#include "compiler/instruction_compiler/dag_instruction_compiler.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/sigtyperules.hh"
 #include "timing.hh"

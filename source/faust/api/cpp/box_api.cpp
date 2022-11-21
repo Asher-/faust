@@ -20,7 +20,7 @@
  ************************************************************************/
 
 #include "global.hh"
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "libfaust.h"
 #include "boxes/ppbox.hh"
 #include "propagate.hh"

@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "compile_sched.hh"
+#include "compiler/compile/compile_sched.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/signals/ppsig.hh"
 #include "global.hh"

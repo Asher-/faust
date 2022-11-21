@@ -22,10 +22,10 @@
 #ifndef __FAUST_COMPILE_INTERPRETER_HH__
 #define __FAUST_COMPILE_INTERPRETER_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
-#include "interpreter_code_container.cpp"
+#include "target/interpreter/interpreter_code_container.cpp"
 
 #include "faust/primitive/math.hh"
 

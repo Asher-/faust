@@ -34,10 +34,10 @@
 #include "compiler/type_manager/garbageable.hh"
 #include "global.hh"
 #include "compiler/instruction/instructions.hh"
-#include "dcond.hh"
-#include "old_occurences.hh"
+#include "tlib/dcond.hh"
+#include "compiler/block_diagram/eval/patternmatcher/old_occurences.hh"
 #include "tlib/property.hh"
-#include "fir/fir_index.hh"
+#include "target/fir/fir_index.hh"
 
 #include "faust/primitive/type/precision.hh"
 #include "faust/primitive/type/priority.hh"

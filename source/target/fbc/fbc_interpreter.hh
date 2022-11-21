@@ -31,9 +31,9 @@
 #include <functional>
 
 #include "compiler/errors/exception.hh"
-#include "fbc/fbc_executor.hh"
-#include "interpreter_bytecode.hh"
-#include "dsp_aux.hh"
+#include "target/fbc/fbc_executor.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
+#include "compiler/dsp_factory/dsp_aux.hh"
 
 /*
  Interpreter using 'computed goto' technique: https://eli.thegreenplace.net/2012/07/12/computed-goto-for-efficient-dispatch-tables

@@ -22,13 +22,13 @@
 #ifndef __FAUST_COMPILE_C_HH__
 #define __FAUST_COMPILE_C_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
-#include "dag_instruction_compiler.hh"
-#include "instruction_compiler.hh"
+#include "compiler/instruction_compiler/dag_instruction_compiler.hh"
+#include "compiler/instruction_compiler/instruction_compiler.hh"
 
-#include "c_code_container.hh"
+#include "target/language/c/c_code_container.hh"
 
 namespace Faust {
   namespace Compiler {

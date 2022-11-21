@@ -23,7 +23,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "compile_vect.hh"
+#include "compiler/compile/compile_vect.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/signals/ppsig.hh"
 #include "global.hh"

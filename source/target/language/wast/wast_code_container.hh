@@ -25,7 +25,7 @@
 #include "target/code_container.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
 #include "target/fir/fir_to_fir.hh"
-#include "vec_code_container.hh"
+#include "target/vector/vec_code_container.hh"
 #include "wast_instructions.hh"
 #include "compiler/visitor/json_instruction_visitor.hh"
 

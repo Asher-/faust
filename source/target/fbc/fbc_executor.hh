@@ -23,8 +23,8 @@
 #define _FBC_EXECUTOR_H
 
 #include "faust/gui/CGlue.h"
-#include "interpreter_bytecode.hh"
-#include "dsp_aux.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
+#include "compiler/dsp_factory/dsp_aux.hh"
 
 /*
  * The base class for Interpreter and mixed Interpreter/Compiler.

@@ -26,7 +26,7 @@
 #include <vector>
 
 #include "global.hh"
-#include "exepath.hh"
+#include "compiler/util/exepath.hh"
 
 #include "faust/compiler/generator/common.hh"
 

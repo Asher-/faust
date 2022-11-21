@@ -22,11 +22,11 @@
 #ifndef __FAUST_COMPILE_LLVM_HH__
 #define __FAUST_COMPILE_LLVM_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
-#include "clang_code_container.hh"
-#include "llvm_code_container.hh"
+#include "target/language/llvm/llvm_code_container.hh"
+#include "target/language/clang/clang_code_container.hh"
 
 namespace Faust {
   namespace Compiler {

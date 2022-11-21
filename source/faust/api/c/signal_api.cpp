@@ -23,7 +23,7 @@
 // Signal C API
 // =============
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/api/cpp/signal_api.hh"
 #include "normalform.hh"
 

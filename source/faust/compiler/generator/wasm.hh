@@ -22,10 +22,10 @@
 #ifndef __FAUST_COMPILE_WASM_HH__
 #define __FAUST_COMPILE_WASM_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
-#include "wasm_code_container.hh"
+#include "target/language/wasm/wasm_code_container.hh"
 
 #include "faust/primitive/math.hh"
 

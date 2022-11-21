@@ -22,11 +22,11 @@
 #ifndef __FAUST_COMPILE_WAST_HH__
 #define __FAUST_COMPILE_WAST_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 #include <cassert>
 
-#include "wast_code_container.hh"
+#include "target/language/wast/wast_code_container.hh"
 
 #include "faust/primitive/math.hh"
 

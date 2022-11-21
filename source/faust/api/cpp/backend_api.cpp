@@ -21,7 +21,7 @@
 
 #include "compiler/dsp_factory/dsp_factory.hh"
 #include "global.hh"
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "libfaust.h"
 #include "normalform.hh"
 #include "compiler/type_manager/Text.hh"

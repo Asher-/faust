@@ -24,7 +24,7 @@
 
 #include <ostream>
 
-#include "was_instructions.hh"
+#include "target/language/wasm/was_instructions.hh"
 #include "target/fir/visitor/move_variables_in_front_3.hh"
 
 #include "faust/primitive/math.hh"

@@ -24,7 +24,7 @@
 #include <algorithm>
 
 #include "global.hh"
-#include "old_occurences.hh"
+#include "compiler/block_diagram/eval/patternmatcher/old_occurences.hh"
 #include "recursivness.hh"
 #include "compiler/signals/sigtyperules.hh"
 

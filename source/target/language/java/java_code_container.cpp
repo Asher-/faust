@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "java_code_container.hh"
+#include "target/language/java/java_code_container.hh"
 #include "compiler/type_manager/Text.hh"
 #include "compiler/errors/exception.hh"
 #include "compiler/types/floats.hh"

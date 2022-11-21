@@ -22,11 +22,11 @@
 #ifndef __FAUST_COMPILE_JAX_HH__
 #define __FAUST_COMPILE_JAX_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 #include "target/language/jax/instruction_compiler_jax.hh"
 
-#include "jax_code_container.hh"
+#include "target/language/jax/jax_code_container.hh"
 
 #include "faust/primitive/math.hh"
 

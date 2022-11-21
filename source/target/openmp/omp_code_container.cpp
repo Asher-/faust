@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "omp_code_container.hh"
+#include "target/openmp/omp_code_container.hh"
 #include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 

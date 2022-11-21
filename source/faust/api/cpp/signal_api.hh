@@ -22,7 +22,7 @@
 #ifndef _SIGNAL_API_H_
 #define _SIGNAL_API_H_
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 
 // ===============
 // Signal C++ API

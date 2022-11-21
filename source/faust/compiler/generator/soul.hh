@@ -22,7 +22,7 @@
 #ifndef __FAUST_COMPILE_SOUL_HH__
 #define __FAUST_COMPILE_SOUL_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
 #include "target/language/soul/code_container.hh"

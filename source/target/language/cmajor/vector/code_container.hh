@@ -22,7 +22,7 @@
 #ifndef __SOUL__VECTOR__CODE_CONTAINER_HH__
 #define __SOUL__VECTOR__CODE_CONTAINER_HH__
 
-#include "vec_code_container.hh"
+#include "target/vector/vec_code_container.hh"
 #include "target/language/soul/code_container.hh"
 
 class SOULVectorCodeContainer : public VectorCodeContainer, public SOULCodeContainer {

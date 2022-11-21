@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "wasm_code_container.hh"
+#include "target/language/wasm/wasm_code_container.hh"
 #include "compiler/type_manager/Text.hh"
 #include "compiler/errors/exception.hh"
 #include "compiler/types/floats.hh"

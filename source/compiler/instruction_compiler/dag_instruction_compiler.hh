@@ -22,7 +22,7 @@
 #ifndef _DAG_INSTRUCTION_COMPILER_H
 #define _DAG_INSTRUCTION_COMPILER_H
 
-#include "instruction_compiler.hh"
+#include "compiler/instruction_compiler/instruction_compiler.hh"
 
 class DAGInstructionsCompiler : public InstructionsCompiler {
    public:

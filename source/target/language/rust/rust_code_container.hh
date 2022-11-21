@@ -24,10 +24,10 @@
 
 #include "target/code_container.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
-#include "omp_code_container.hh"
+#include "target/openmp/omp_code_container.hh"
 #include "target/language/rust/visitor/instruction.hh"
-#include "vec_code_container.hh"
-#include "wss_code_container.hh"
+#include "target/vector/vec_code_container.hh"
+#include "target/wss/wss_code_container.hh"
 
 using namespace std;
 

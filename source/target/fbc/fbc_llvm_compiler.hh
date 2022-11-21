@@ -33,8 +33,8 @@
 #include <llvm-c/Transforms/PassManagerBuilder.h>
 #include <llvm-c/Transforms/Vectorize.h>
 
-#include "interpreter_bytecode.hh"
-#include "fbc/fbc_executor.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
+#include "target/fbc/fbc_executor.hh"
 
 // FBC LLVM compiler
 template <class REAL>

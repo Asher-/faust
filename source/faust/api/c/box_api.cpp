@@ -23,7 +23,7 @@
 // Box C API
 // ==========
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/api/cpp/box_api.hh"
 
 #ifdef __cplusplus

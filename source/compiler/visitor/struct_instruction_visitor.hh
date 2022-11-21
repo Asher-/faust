@@ -27,7 +27,7 @@
 #include <vector>
 
 #include "compiler/instruction/instructions.hh"
-#include "memory_description.hh"
+#include "compiler/type_manager/memory_description.hh"
 
 /*
  Compute all field info, the DSP size, and separate 'int' and 'real' types

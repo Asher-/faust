@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "wss_code_container.hh"
+#include "target/wss/wss_code_container.hh"
 #include "target/fir/fir_to_fir.hh"
 #include "global.hh"
 #include "variable_mover.hh"

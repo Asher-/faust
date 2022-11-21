@@ -22,7 +22,7 @@
 #ifndef _COMPILE_SCHED_
 #define _COMPILE_SCHED_
 
-#include "compile_vect.hh"
+#include "compiler/compile/compile_vect.hh"
 #include "compiler/block_diagram/parallelize/loop.hh"
 
 ////////////////////////////////////////////////////////////////////////

@@ -317,7 +317,7 @@
 %type <Tree> primitive.foreign.function
 %type <Tree> primitive.foreign.function.signature
 %type <Tree> primitive.foreign.variable
-%type <Tree> primitive.signal.input.implicit
+%type <Tree> primitive.signal.input.wire
 %type <Tree> primitive.signal.input.terminate
 %type <Tree> primitive.signal.inputs
 %type <Tree> primitive.number
@@ -861,13 +861,13 @@ primitive:
 
   primitive.signal:
     primitive.signal.inputs
-  | primitive.signal.input.implicit
+  | primitive.signal.input.wire
   | primitive.signal.input.terminate
   | primitive.signal.outputs
   | primitive.signal.route
   | primitive.signal.source
   
-  primitive.signal.input.implicit:
+  primitive.signal.input.wire:
       WIRE { $$ = boxWire(); }
 
   primitive.signal.input.terminate:
@@ -1112,10 +1112,10 @@ statement:
         }
 
     statement.definition.assignment:
-        statement.identifier.box DEF expression[body] ENDDEF {
+        statement.identifier.box DEF expression ENDDEF {
           $$ = cons(
             $[statement.identifier.box],
-            cons( self._nil, $body )
+            cons( self._nil, $expression )
           );
           setDefProp(
             $[statement.identifier.box],

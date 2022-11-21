@@ -132,8 +132,8 @@ CTree::~CTree()
             p = t;
             t = t->fNext;
         }
-        faustassert(p);
-        p->fNext = fNext;
+        if(p)
+          p->fNext = fNext;
     }
 }
 
@@ -395,14 +395,15 @@ LIBFAUST_API xtended* getUserData(Tree t)
 {
     Sym s;
     if (isSym(t->node(), &s)) {
+      if ( s->data() ) {
         if ( xtended* xtended_data = dynamic_cast<xtended*>( s->data() ) )
           return xtended_data;
         else {
           throw "Symbol data was not xtended*!";
         }
-    } else {
-        return 0;
+      }
     }
+    return nullptr;
 }
 
 /**

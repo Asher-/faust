@@ -229,7 +229,7 @@ NSID	 {ID}("::"{ID})*
 "max"		return Parser::make_MAX( yytext, this->self._location );
 
 "fmod"		return Parser::make_FMOD( yytext, this->self._location );
-"remainder"	return Parser::make_REMAINDER( yytext, this->self._location );
+"remainder"	return Parser::make_REMAINDER( yytext,  this->self._location );
 
 "floor"		return Parser::make_FLOOR( yytext, this->self._location );
 "ceil"		return Parser::make_CEIL( yytext, this->self._location );

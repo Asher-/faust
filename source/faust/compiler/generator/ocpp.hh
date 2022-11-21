@@ -22,13 +22,13 @@
 #ifndef __FAUST_COMPILE_OCPP_HH__
 #define __FAUST_COMPILE_OCPP_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
-#include "instruction_compiler1.hh"
+#include "compiler/instruction_compiler/instruction_compiler1.hh"
 
-#include "compile_scalar.hh"
-#include "compile_sched.hh"
-#include "compile_vect.hh"
+#include "compiler/compile/compile_scalar.hh"
+#include "compiler/compile/compile_sched.hh"
+#include "compiler/compile/compile_vect.hh"
 
 namespace Faust {
   namespace Compiler {

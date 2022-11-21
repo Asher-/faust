@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include "signalVisitor.hh"
 #include "global.hh"
-#include "old_occurences.hh"
+#include "compiler/block_diagram/eval/patternmatcher/old_occurences.hh"
 
 #include "faust/primitive/type/precision.hh"
 

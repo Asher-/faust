@@ -28,7 +28,7 @@
 #include <string>
 
 #include "compiler/errors/exception.hh"
-#include "interpreter_bytecode.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
 
 #define INTER_MAX_OPT_LEVEL 6
 

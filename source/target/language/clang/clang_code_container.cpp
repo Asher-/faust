@@ -23,7 +23,7 @@
 
 #if CLANG_BUILD
 
-#include "clang_code_container.hh"
+#include "target/language/clang/clang_code_container.hh"
 
 #include <clang/CodeGen/CodeGenAction.h>
 #include <clang/Driver/Compilation.h>

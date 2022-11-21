@@ -26,7 +26,7 @@
 //#define TEMPLATE_BUILD 1
 //#define LLVM_BUILD 1
 
-#include "fbc/fbc_interpreter.hh"
+#include "target/fbc/fbc_interpreter.hh"
 
 #ifdef MIR_BUILD
 #include "fbc/fbc_mir_compiler.hh"

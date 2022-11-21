@@ -25,7 +25,7 @@
 #include <string>
 
 #include "compiler/visitor/text_instruction_visitor.hh"
-#include "memory_description.hh"
+#include "compiler/type_manager/memory_description.hh"
 #include "target/language/julia/type_manager/string.hh"
 
 using namespace std;

@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "instruction_compiler1.hh"
+#include "compiler/instruction_compiler/instruction_compiler1.hh"
 #include "global.hh"
 
 StatementInst* InstructionsCompiler1::generateInitArray(const std::string& vname, Typed::VarType ctype, int delay)

@@ -36,7 +36,7 @@
 #define kPSEP '/'
 #endif
 
-#include "exepath.hh"
+#include "compiler/util/exepath.hh"
 
 using namespace std;
 

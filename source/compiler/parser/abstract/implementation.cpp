@@ -2,7 +2,7 @@
 
 // Skeleton implementation for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2022-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -294,7 +294,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -597,7 +597,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -900,7 +900,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -1202,7 +1202,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -1766,7 +1766,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -2823,7 +2823,7 @@ namespace Faust { namespace Compiler { namespace Parser {
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 188: // primitive.signal: primitive.signal.input.implicit
+  case 188: // primitive.signal: primitive.signal.input.wire
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
@@ -2843,7 +2843,7 @@ namespace Faust { namespace Compiler { namespace Parser {
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 193: // primitive.signal.input.implicit: WIRE
+  case 193: // primitive.signal.input.wire: WIRE
            { yylhs.value.as < Tree > () = boxWire(); }
     break;
 
@@ -3200,7 +3200,7 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 267: // statement.definition.assignment: statement.identifier.box DEF expression ENDDEF
-                                                             {
+                                                       {
           yylhs.value.as < Tree > () = cons(
             yystack_[3].value.as < Tree > (),
             cons( self._nil, yystack_[1].value.as < Tree > () )
@@ -4462,7 +4462,7 @@ namespace Faust { namespace Compiler { namespace Parser {
   "expression.signal.delay", "expression.signal.logic", "primitive",
   "primitive.foreign", "primitive.number", "primitive.string.quoted",
   "primitive.string.unquoted", "primitive.string.tag", "primitive.signal",
-  "primitive.signal.input.implicit", "primitive.signal.input.terminate",
+  "primitive.signal.input.wire", "primitive.signal.input.terminate",
   "primitive.type", "primitive.type.number", "primitive.type.number.int",
   "primitive.type.number.float", "primitive.type.any",
   "primitive.type.number.list", "primitive.type.number.list.member",
@@ -4506,37 +4506,37 @@ namespace Faust { namespace Compiler { namespace Parser {
   const short
   AbstractImplementation::yyrline_[] =
   {
-       0,   405,   405,   409,   420,   424,   425,   426,   427,   428,
-     429,   432,   433,   436,   439,   442,   445,   450,   451,   454,
-     455,   458,   461,   466,   471,   472,   479,   480,   481,   486,
-     493,   494,   497,   502,   503,   504,   505,   506,   509,   514,
-     519,   524,   550,   557,   558,   559,   560,   561,   562,   563,
-     564,   565,   566,   567,   568,   569,   570,   571,   572,   574,
-     576,   579,   587,   590,   591,   592,   593,   596,   597,   598,
-     599,   600,   601,   606,   607,   608,   609,   610,   611,   614,
-     615,   616,   619,   620,   625,   628,   629,   634,   639,   644,
-     649,   656,   661,   662,   665,   668,   673,   680,   687,   698,
-     699,   702,   705,   708,   712,   715,   721,   726,   727,   728,
-     729,   730,   733,   734,   735,   736,   737,   738,   741,   742,
-     743,   744,   745,   746,   747,   748,   749,   752,   753,   754,
-     757,   758,   759,   760,   761,   762,   763,   764,   767,   768,
-     771,   772,   773,   774,   775,   776,   779,   780,   781,   782,
-     785,   786,   787,   788,   789,   790,   791,   796,   801,   802,
-     803,   806,   807,   808,   811,   812,   813,   816,   817,   818,
-     819,   820,   821,   830,   831,   832,   833,   834,   839,   840,
-     841,   846,   847,   852,   855,   858,   859,   864,   865,   866,
-     867,   868,   869,   872,   875,   878,   879,   884,   885,   888,
-     891,   894,   899,   900,   903,   906,   911,   914,   919,   920,
-     921,   924,   929,   934,   945,   946,   947,   950,   951,   954,
-     959,   968,   969,   972,   975,   981,   982,   983,   984,   985,
-     986,   987,   988,   989,   990,   993,   996,   999,  1004,  1009,
-    1014,  1017,  1020,  1023,  1028,  1035,  1040,  1043,  1046,  1049,
-    1052,  1055,  1060,  1065,  1072,  1075,  1083,  1084,  1085,  1086,
-    1087,  1092,  1093,  1094,  1097,  1106,  1109,  1116,  1129,  1134,
-    1142,  1143,  1144,  1145,  1148,  1153,  1161,  1166,  1176,  1182,
-    1188,  1196,  1202,  1208,  1213,  1218,  1219,  1220,  1221,  1224,
-    1229,  1237,  1242,  1252,  1253,  1254,  1255,  1260,  1261,  1264,
-    1267,  1274,  1279,  1280,  1283,  1286
+       0,   404,   404,   408,   419,   423,   424,   425,   426,   427,
+     428,   431,   432,   435,   438,   441,   444,   449,   450,   453,
+     454,   457,   460,   465,   470,   471,   478,   479,   480,   485,
+     492,   493,   496,   501,   502,   503,   504,   505,   508,   513,
+     518,   523,   549,   556,   557,   558,   559,   560,   561,   562,
+     563,   564,   565,   566,   567,   568,   569,   570,   571,   573,
+     575,   578,   586,   589,   590,   591,   592,   595,   596,   597,
+     598,   599,   600,   605,   606,   607,   608,   609,   610,   613,
+     614,   615,   618,   619,   624,   627,   628,   633,   638,   643,
+     648,   655,   660,   661,   664,   667,   672,   679,   686,   697,
+     698,   701,   704,   707,   711,   714,   720,   725,   726,   727,
+     728,   729,   732,   733,   734,   735,   736,   737,   740,   741,
+     742,   743,   744,   745,   746,   747,   748,   751,   752,   753,
+     756,   757,   758,   759,   760,   761,   762,   763,   766,   767,
+     770,   771,   772,   773,   774,   775,   778,   779,   780,   781,
+     784,   785,   786,   787,   788,   789,   790,   795,   800,   801,
+     802,   805,   806,   807,   810,   811,   812,   815,   816,   817,
+     818,   819,   820,   829,   830,   831,   832,   833,   838,   839,
+     840,   845,   846,   851,   854,   857,   858,   863,   864,   865,
+     866,   867,   868,   871,   874,   877,   878,   883,   884,   887,
+     890,   893,   898,   899,   902,   905,   910,   913,   918,   919,
+     920,   923,   928,   933,   944,   945,   946,   949,   950,   953,
+     958,   967,   968,   971,   974,   980,   981,   982,   983,   984,
+     985,   986,   987,   988,   989,   992,   995,   998,  1003,  1008,
+    1013,  1016,  1019,  1022,  1027,  1034,  1039,  1042,  1045,  1048,
+    1051,  1054,  1059,  1064,  1071,  1074,  1082,  1083,  1084,  1085,
+    1086,  1091,  1092,  1093,  1096,  1105,  1108,  1115,  1128,  1133,
+    1141,  1142,  1143,  1144,  1147,  1152,  1160,  1165,  1175,  1181,
+    1187,  1195,  1201,  1207,  1212,  1217,  1218,  1219,  1220,  1223,
+    1228,  1236,  1241,  1251,  1252,  1253,  1254,  1259,  1260,  1263,
+    1266,  1273,  1278,  1279,  1282,  1285
   };
 
   void

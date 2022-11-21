@@ -25,9 +25,9 @@
 #include "target/language/jax/visitor/instruction.hh"
 #include "target/code_container.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
-#include "omp_code_container.hh"
-#include "vec_code_container.hh"
-#include "wss_code_container.hh"
+#include "target/openmp/omp_code_container.hh"
+#include "target/vector/vec_code_container.hh"
+#include "target/wss/wss_code_container.hh"
 
 #ifdef WIN32
 #pragma warning(disable : 4250)

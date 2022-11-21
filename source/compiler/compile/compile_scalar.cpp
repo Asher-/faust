@@ -34,7 +34,7 @@
 
 #include "tlib/compatibility.hh"
 #include "compile.hh"
-#include "compile_scalar.hh"
+#include "compiler/compile/compile_scalar.hh"
 #include "compiler/types/floats.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/signals/prim2.hh"

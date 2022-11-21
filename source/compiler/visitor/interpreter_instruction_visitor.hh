@@ -25,9 +25,9 @@
 #include <cstdlib>
 
 #include "compiler/errors/exception.hh"
-#include "fbc/fbc_interpreter.hh"
+#include "target/fbc/fbc_interpreter.hh"
 #include "compiler/instruction/instructions.hh"
-#include "memory_description.hh"
+#include "compiler/type_manager/memory_description.hh"
 #include "compiler/visitor/typing_instruction_visitor.hh"
 
 template <class REAL>

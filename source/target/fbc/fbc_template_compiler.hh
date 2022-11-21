@@ -26,8 +26,8 @@
 #include <map>
 #include <stdio.h>
 
-#include "interpreter_bytecode.hh"
-#include "fbc/fbc_executor.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
+#include "target/fbc/fbc_executor.hh"
 
 /*
  * FBC template compiler, where REAL will be either 'float' or 'double'

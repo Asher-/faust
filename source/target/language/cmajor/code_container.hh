@@ -23,10 +23,9 @@
 #define _CMAJ_CODE_CONTAINER_H
 
 #include "target/code_container.hh"
-#include "omp_code_container.hh"
-
-#include "vec_code_container.hh"
-#include "wss_code_container.hh"
+#include "target/openmp/omp_code_container.hh"
+#include "target/vector/vec_code_container.hh"
+#include "target/wss/wss_code_container.hh"
 
 #include "target/language/cmajor/visitor/instruction.hh"
 #include "target/language/cmajor/visitor/table_size.hh"

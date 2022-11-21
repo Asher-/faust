@@ -24,28 +24,28 @@
 
 #include <cassert>
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "compiler/file_handling/string_substitution.hh"
 #include "faust/controller.hh"
 
 #include "compiler/file_handling/string_substitution.hh"
 #include "compiler/errors/exception.hh"
-#include "propagate.hh"
+#include "compiler/block_diagram/eval/propagate.hh"
 
-#include "sigprint.hh"
+#include "compiler/signals/sigprint.hh"
 #include "compiler/signals/ppsig.hh"
 #include "compiler/block_diagram/eval/eval.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
-#include "drawschema.hh"
+#include "draw/drawschema.hh"
 
 #include "timing.hh"
 
-#include "instruction_compiler.hh"
+#include "compiler/instruction_compiler/instruction_compiler.hh"
 #include "documentator/doc.hh"
 
 
 #ifdef DLANG_BUILD
-#include "dlang_code_container.hh"
+#include "target/language/dlang/dlang_code_container.hh"
 #endif
 
 namespace Faust {

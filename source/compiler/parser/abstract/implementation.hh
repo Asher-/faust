@@ -2,7 +2,7 @@
 
 // Skeleton interface for Bison LALR(1) parsers in C++
 
-// Copyright (C) 2002-2015, 2022-2021 Free Software Foundation, Inc.
+// Copyright (C) 2002-2015, 2018-2021 Free Software Foundation, Inc.
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -476,7 +476,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       // primitive.string.unquoted
       // primitive.string.tag
       // primitive.signal
-      // primitive.signal.input.implicit
+      // primitive.signal.input.wire
       // primitive.signal.input.terminate
       // primitive.type
       // primitive.type.number
@@ -1104,7 +1104,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         S_203_primitive_string_unquoted = 203,   // primitive.string.unquoted
         S_204_primitive_string_tag = 204,        // primitive.string.tag
         S_205_primitive_signal = 205,            // primitive.signal
-        S_206_primitive_signal_input_implicit = 206, // primitive.signal.input.implicit
+        S_206_primitive_signal_input_wire = 206, // primitive.signal.input.wire
         S_207_primitive_signal_input_terminate = 207, // primitive.signal.input.terminate
         S_208_primitive_type = 208,              // primitive.type
         S_209_primitive_type_number = 209,       // primitive.type.number
@@ -1276,7 +1276,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -1681,7 +1681,7 @@ switch (yykind)
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -4603,7 +4603,7 @@ switch (yykind)
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number
@@ -4922,7 +4922,7 @@ switch (yykind)
       case symbol_kind::S_203_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_204_primitive_string_tag: // primitive.string.tag
       case symbol_kind::S_205_primitive_signal: // primitive.signal
-      case symbol_kind::S_206_primitive_signal_input_implicit: // primitive.signal.input.implicit
+      case symbol_kind::S_206_primitive_signal_input_wire: // primitive.signal.input.wire
       case symbol_kind::S_207_primitive_signal_input_terminate: // primitive.signal.input.terminate
       case symbol_kind::S_208_primitive_type: // primitive.type
       case symbol_kind::S_209_primitive_type_number: // primitive.type.number

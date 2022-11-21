@@ -22,7 +22,7 @@
 #include <iostream>
 #include <vector>
 
-#include "dcond.hh"
+#include "tlib/dcond.hh"
 #include "global.hh"
 #include "compiler/signals/ppsig.hh"
 

@@ -22,7 +22,7 @@
 #ifndef _INSTRUCTION_COMPILER1_H
 #define _INSTRUCTION_COMPILER1_H
 
-#include "instruction_compiler.hh"
+#include "compiler/instruction_compiler/instruction_compiler.hh"
 
 // To be used with Rust and Julia backends
 

@@ -24,7 +24,7 @@
 
 using namespace std;
 
-#include "memory_description.hh"
+#include "compiler/type_manager/memory_description.hh"
 #include "compiler/visitor/text_instruction_visitor.hh"
 #include "compiler/visitor/struct_instruction_visitor_1.hh"
 

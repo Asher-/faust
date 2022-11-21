@@ -31,8 +31,8 @@
 
 #include "compiler/errors/exception.hh"
 #include "faust/gui/CGlue.h"
-#include "fbc/fbc_executor.hh"
-#include "interpreter_bytecode.hh"
+#include "target/fbc/fbc_executor.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
 
 //#define interp_assert(exp) faustassert(exp)
 #define interp_assert(exp)

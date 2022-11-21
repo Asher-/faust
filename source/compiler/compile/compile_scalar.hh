@@ -28,8 +28,8 @@
 #include <utility>
 
 #include "compile.hh"
-#include "dcond.hh"
-#include "old_occurences.hh"
+#include "tlib/dcond.hh"
+#include "compiler/block_diagram/eval/patternmatcher/old_occurences.hh"
 #include "tlib/property.hh"
 #include "compiler/signals/sigtyperules.hh"
 

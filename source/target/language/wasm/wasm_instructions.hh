@@ -27,7 +27,7 @@
 #include <vector>
 
 #include "target/fir/fir_to_fir.hh"
-#include "was_instructions.hh"
+#include "target/language/wasm/was_instructions.hh"
 #include "wasm_binary.hh"
 
 #include "faust/primitive/math.hh"

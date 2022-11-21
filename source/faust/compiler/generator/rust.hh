@@ -22,10 +22,10 @@
 #ifndef __FAUST_COMPILE_RUST_HH__
 #define __FAUST_COMPILE_RUST_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
-#include "rust_code_container.hh"
+#include "target/language/rust/rust_code_container.hh"
 
 namespace Faust {
   namespace Compiler {

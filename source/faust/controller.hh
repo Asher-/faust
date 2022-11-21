@@ -23,7 +23,7 @@
 #define __FAUST_CONTROLLER_HH__
 
 #include "tlib/compatibility.hh"
-#include "exepath.hh"
+#include "compiler/util/exepath.hh"
 
 namespace Faust {
 

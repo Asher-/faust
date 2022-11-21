@@ -22,10 +22,10 @@
 #ifndef __FAUST_COMPILE_CSHARP_HH__
 #define __FAUST_COMPILE_CSHARP_HH__
 
-#include "faust.hh"
+#include "faust/api/faust.hh"
 #include "faust/compiler/generator/common.hh"
 
-#include "csharp_code_container.hh"
+#include "target/language/csharp/csharp_code_container.hh"
 
 namespace Faust {
   namespace Compiler {

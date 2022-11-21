@@ -24,10 +24,10 @@
 
 #include "target/code_container.hh"
 #include "target/fir/fir_to_fir.hh"
-#include "instruction_compiler.hh"
+#include "compiler/instruction_compiler/instruction_compiler.hh"
 #include "interpreter_dsp.hh"
 #include "compiler/visitor/interpreter_instruction_visitor.hh"
-#include "vec_code_container.hh"
+#include "target/vector/vec_code_container.hh"
 
 #include "faust/primitive/type/precision.hh"
 

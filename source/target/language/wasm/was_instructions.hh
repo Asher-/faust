@@ -25,7 +25,7 @@
 #include <iomanip>
 
 #include "compiler/signals/binop.hh"
-#include "memory_description.hh"
+#include "compiler/type_manager/memory_description.hh"
 #include "compiler/visitor/text_instruction_visitor.hh"
 #include "compiler/visitor/typing_instruction_visitor.hh"
 

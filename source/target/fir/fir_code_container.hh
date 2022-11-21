@@ -28,9 +28,9 @@
 
 #include "target/code_container.hh"
 #include "target/fir/fir_instructions.hh"
-#include "omp_code_container.hh"
-#include "vec_code_container.hh"
-#include "wss_code_container.hh"
+#include "target/openmp/omp_code_container.hh"
+#include "target/vector/vec_code_container.hh"
+#include "target/wss/wss_code_container.hh"
 
 using namespace std;
 

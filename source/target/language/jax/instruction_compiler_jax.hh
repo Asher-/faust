@@ -22,7 +22,7 @@
 #ifndef _INSTRUCTION_COMPILER_JAX_H
 #define _INSTRUCTION_COMPILER_JAX_H
 
-#include "instruction_compiler.hh"
+#include "compiler/instruction_compiler/instruction_compiler.hh"
 
 // To be used with JAX backend
 

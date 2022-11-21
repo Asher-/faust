@@ -19,7 +19,7 @@
  ************************************************************************
  ************************************************************************/
 
-#include "vec_code_container.hh"
+#include "target/vector/vec_code_container.hh"
 #include "compiler/errors/exception.hh"
 #include "target/fir/fir_code_checker.hh"
 #include "target/fir/fir_to_fir.hh"

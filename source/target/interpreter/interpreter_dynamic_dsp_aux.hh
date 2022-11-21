@@ -22,7 +22,7 @@
 #ifndef interpreter_dynamic_dsp_aux_h
 #define interpreter_dynamic_dsp_aux_h
 
-#include "interpreter_dsp_aux.hh"
+#include "target/interpreter/interpreter_dsp_aux.hh"
 
 LIBFAUST_API interpreter_dsp_factory* createInterpreterDSPFactoryFromFile(const std::string& filename, int argc,
                                                                           const char* argv[], std::string& error_msg);

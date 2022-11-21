@@ -32,10 +32,10 @@
 
 #include "faust/export.h"
 
-#include "dsp_aux.hh"
+#include "compiler/dsp_factory/dsp_aux.hh"
 #include "compiler/dsp_factory/dsp_factory.hh"
-#include "interpreter_bytecode.hh"
-#include "fbc/fbc_interpreter.hh"
+#include "target/interpreter/interpreter_bytecode.hh"
+#include "target/fbc/fbc_interpreter.hh"
 
 static inline void checkToken(const std::string& token, const std::string& expected)
 {

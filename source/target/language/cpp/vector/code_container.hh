@@ -22,7 +22,7 @@
 #ifndef __CPP_VECTOR_CODE_CONTAINER_HH__
 #define __CPP_VECTOR_CODE_CONTAINER_HH__
 
-#include "vec_code_container.hh"
+#include "target/vector/vec_code_container.hh"
 
 #include "target/language/cpp/code_container.hh"
 
