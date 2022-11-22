@@ -1,4 +1,4 @@
-/************************************************************************
+  /************************************************************************
  ************************************************************************
  FAUST compiler
  Copyright (C) 2003-2022 GRAME, Centre National de Creation Musicale
@@ -20,6 +20,18 @@
  ************************************************************************/
 
 #include "compiler/parser/lexer/implementation.hh"
+#include "compiler/parser/implementation.hh"
 
 int FaustAbstractFlexLexer::yylex() { throw "Should never have gotten here."; return -1; }
 int FaustAbstractFlexLexer::yywrap() { return 1; }
+
+namespace Faust {
+  namespace Compiler {
+    namespace Parser {
+      namespace Lexer {
+
+
+      };
+    };
+  };
+};

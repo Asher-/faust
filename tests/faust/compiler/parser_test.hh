@@ -59,22 +59,22 @@ struct ParserTest
 //  ASSERT_EQ( ast, nullptr );
 //}
 
-TEST_F( ParserTest, identity ) {
-  std::string source = R""""(process=_;)"""";
-  Tree ast = parser.parseString( source, "identity.dsp" );
-  ASSERT_NE( ast, nullptr );
-  std::stringstream pprint;
-  pprint << boxpp(ast);
-  std::string printed(pprint.str());
-  std::cout << pprint.str() << std::endl;
-}
-
-//TEST_F( ParserTest, function ) {
-//  std::string source = R""""(x(y)=x*y;)"""";
-//  Tree ast = parser.parseString( source, "function.dsp" );
-//  ASSERT_EQ( ast, nullptr );
+//TEST_F( ParserTest, identity ) {
+//  std::string source = R""""(process=_;)"""";
+//  Tree ast = parser.parseString( source, "identity.dsp" );
+//  ASSERT_NE( ast, nullptr );
 //  std::stringstream pprint;
 //  pprint << boxpp(ast);
-//  std::cout << pprint.str();
+//  std::string printed(pprint.str());
+//  std::cout << pprint.str() << std::endl;
 //}
+
+TEST_F( ParserTest, function ) {
+  std::string source = R""""(somename(y)=x*y;)"""";
+  Tree ast = parser.parseString( source, "function.dsp" );
+  ASSERT_EQ( ast, nullptr );
+  std::stringstream pprint;
+  pprint << boxpp(ast);
+  std::cout << pprint.str();
+}
 

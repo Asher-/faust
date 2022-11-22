@@ -11,13 +11,15 @@
 
 %define api.namespace {::Faust::Compiler::Parser}
 %define api.parser.class {AbstractImplementation}
+%define api.location.type {::Faust::Compiler::Parser::Lexer::Location::Implementation}
 
 %define parse.assert /* runtime assertions to catch invalid uses */
 %define parse.trace /* set yydebug = 1 to print trace to stderr */
 %define parse.error verbose /* simple, detailed, verbose */
 %define parse.lac full /* look-ahead correction (5.8.3 LAC) */
 
-%param { Implementation& self }
+%param {Implementation& self}
+%lex-param {symbol_type& yyla}
 
 %header "abstract/implementation.hh"   /* Generate faustparser.hh */
 
@@ -26,15 +28,24 @@
 
 %initial-action
 {
-  @$.begin.filename = @$.end.filename = &this->self._streamName;
+  self._location.begin().streamName() = self._location.end().streamName() = self._streamName;
 };
 
 %code requires { /* Faust requires */
   #include <string>
   #include "compiler/parser/type/tokens.hh"
-  #include "compiler/parser/abstract/location.hh"
+  #include "compiler/parser/lexer/location/implementation.hh"
   namespace Faust { namespace Compiler { namespace Parser {
     struct Implementation;
+//    template <typename Self, typename RHSLocations>
+//    void tokenDidMatch(
+//      Self& self,
+//      Lexer::Location::Implementation& location,
+//      RHSLocations& rhs_locations,
+//      const std::size_t& rhs_count
+//    ) {
+//      self.template tokenDidMatch<RHSLocations>( location, rhs_locations, rhs_count );
+//    }
     namespace Lexer { struct Implementation; }
   } } }
 }
@@ -57,13 +68,21 @@
 #include "documentator/doc.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 
-#define YYMAXDEPTH	100000
-
 #include "faust/primitive/math.hh"
 
 #include "compiler/parser/lexer/implementation.hh"
+
+#define YYMAXDEPTH	100000
+#define YYLLOC_DEFAULT( token, rhs_locations, rhs_count ) \
+        self.tokenDidMatch(                               \
+          token,                                          \
+          rhs_count,                                      \
+          rhs_locations                                   \
+        )
+
+
 #undef yylex
-#define yylex this->self._lexer->lex
+#define yylex self._lexer->lex
 
 
 %}
@@ -320,7 +339,7 @@
 %type <Tree> primitive.signal.input.wire
 %type <Tree> primitive.signal.input.terminate
 %type <Tree> primitive.signal.inputs
-%type <Tree> primitive.number
+%type <Tree> primitive.type.number
 %type <Tree> primitive.type.number.list
 %type <Tree> primitive.type.number.list.start
 %type <Tree> primitive.type.number.list.append
@@ -827,7 +846,7 @@ expression:
 
 primitive:
     primitive.foreign
-  | primitive.number
+  | primitive.type.number
   | primitive.type.number
   | primitive.signal
   | primitive.ui
@@ -841,7 +860,7 @@ primitive:
 
   /******************** Number ********************/
 
-  primitive.number:
+  primitive.type.number:
       INT { $$ = boxInt(std::stoi(self._lexer->YYText())); }
     | FLOAT { $$ = boxReal(atof(self._lexer->YYText())); }
 
@@ -899,8 +918,8 @@ primitive:
       | primitive.type.number.list.append
 
       primitive.type.number.list.member:
-          primitive.number {
-            global::config().gWaveForm.push_back($[primitive.number]);
+          primitive.type.number {
+            global::config().gWaveForm.push_back($[primitive.type.number]);
           }
         | expression.math.scalar {
             global::config().gWaveForm.push_back($[expression.math.scalar]);

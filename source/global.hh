@@ -103,7 +103,7 @@ struct global {
     Tree gResult;
     Tree gResult2;
 
-    SourceReader gReader;
+
     Tree         gExpandedDefList;
     string       gInputString;
     list<string> gInputFiles;
@@ -204,49 +204,53 @@ struct global {
     bool   gShadowBlur;      // note: svg2pdf doesn't like the blur filter
     bool   gScaledSVG;       // to draw scaled SVG files
     bool   gStripDocSwitch;  // Strip <mdoc> content from doc listings.
-    int    gFoldThreshold;   // global complexity threshold before activating folding
-    int    gFoldComplexity;  // individual complexity threshold before folding
-    int    gMaxNameSize;
     bool   gSimpleNames;
     bool   gSimplifyDiagrams;
-    int    gMaxCopyDelay;
-    string gOutputFile;
-
-    bool gVectorSwitch;
-    bool gDeepFirstSwitch;
-    int  gVecSize;
-    int  gVectorLoopVariant;
-
-    bool gOpenMPSwitch;
-    bool gOpenMPLoop;
-    bool gSchedulerSwitch;
-    bool gOpenCLSwitch;
-    bool gCUDASwitch;
-    bool gGroupTaskSwitch;
-    bool gFunTaskSwitch;
-
-    bool gUIMacroSwitch;
-    int  gDumpNorm;
-    bool gRangeUI;  // whether to generate code to limit vslider/hslider/nentry values in [min..max] range
 
 
-    bool gPrintFileListSwitch;
-    bool gInlineArchSwitch;
 
-    bool gDSPStruct;
-    bool gLightMode;    // do not generate the entire DSP API (to be used with Emscripten to generate a light DSP module
+    bool   gVectorSwitch;
+    bool   gDeepFirstSwitch;
+  
+    bool   gOpenMPSwitch;
+    bool   gOpenMPLoop;
+    bool   gSchedulerSwitch;
+    bool   gOpenCLSwitch;
+    bool   gCUDASwitch;
+    bool   gGroupTaskSwitch;
+    bool   gFunTaskSwitch;
+  
+    bool   gUIMacroSwitch;
+    int    gDumpNorm;
+    bool   gRangeUI;  // whether to generate code to limit vslider/hslider/nentry values in [min..max] range
+  
+  
+    bool   gPrintFileListSwitch;
+    bool   gInlineArchSwitch;
+  
+    bool   gDSPStruct;
+    bool   gLightMode;    // do not generate the entire DSP API (to be used with Emscripten to generate a light DSP module
                         // for JavaScript)
     bool   gClang;      // when compiled with clang/clang++, adds specific #pragma for auto-vectorization
     bool   gNoVirtual;  // when compiled with the C++ backend, does not add the 'virtual' keyword
-    string gCheckTable;  // whether to check RDTable and RWTable index range
+
+    int    gFoldThreshold;   // global complexity threshold before activating folding
+    int    gFoldComplexity;  // individual complexity threshold before folding
+    int    gMaxNameSize;
+    int    gMaxCopyDelay;
+    int    gVecSize;
+    int    gVectorLoopVariant;
 
 
-    string gClassName;       // name of the generated dsp class, by default 'mydsp'
-    string gSuperClassName;  // name of the root class the generated dsp class inherits from, by default 'dsp'
-    string gProcessName;     // name of the entry point of the Faust program, by default 'process'
+    std::string gCheckTable;  // whether to check RDTable and RWTable index range
+
+
+    std::string gClassName;       // name of the generated dsp class, by default 'mydsp'
+    std::string gSuperClassName;  // name of the root class the generated dsp class inherits from, by default 'dsp'
+    std::string gProcessName;     // name of the entry point of the Faust program, by default 'process'
 
     // Backend configuration
-    string gOutputLang;            // Chosen backend
+    std::string gOutputLang;            // Chosen backend
     bool   gAllowForeignFunction;  // Can use foreign functions
     bool   gAllowForeignConstant;  // Can use foreign constant
     bool   gAllowForeignVar;       // Can use foreign variable
@@ -272,7 +276,7 @@ struct global {
     int gWideningLimit;   // Max number of iterations before interval widening
     int gNarrowingLimit;  // Max number of iterations to compute interval widener
 
-    map<string, string> gFastMathLibTable;      // Mapping table for fastmath functions
+    map<string, std::string> gFastMathLibTable;      // Mapping table for fastmath functions
     map<string, bool>   gMathForeignFunctions;  // Map of math foreign functions
 
     dsp_factory_base* gDSPFactory;  // compiled factory
@@ -281,7 +285,7 @@ struct global {
     string              gDocLang;
     string              gDocName;
 
-    map<string, string> gDocMetadatasStringMap;
+    map<string, std::string> gDocMetadatasStringMap;
     set<string>         gDocMetadatasKeySet;
     map<string, string> gDocAutodocStringMap;
     set<string>         gDocAutodocKeySet;
@@ -465,7 +469,7 @@ struct global {
 
     // Source file injection
     bool   gInjectFlag;
-    string gInjectFile;
+    std::string gInjectFile;
 
     int gTimeout;  // Time out to abort compiler (in seconds)
 
@@ -476,7 +480,7 @@ struct global {
     Tree   gLsignalsTree;
     int    gNumInputs;
     int    gNumOutputs;
-    string gErrorMessage;
+    std::string gErrorMessage;
 
     // GC
     static bool               gHeapCleanup;
@@ -496,14 +500,14 @@ struct global {
     static void allocate();
     static void destroy();
 
-    static string printFloat();
+    static std::string printFloat();
 
-    string getFreshID(const string& prefix);
+    std::string getFreshID(const std::string& prefix);
 
-    string makeDrawPath();
-    string makeDrawPathNoExt();
+    std::string makeDrawPath();
+    std::string makeDrawPathNoExt();
 
-    string getMathFunction(const string& name)
+    std::string getMathFunction(const std::string& name)
     {
         if (gFastMath && (gFastMathLibTable.find(name) != gFastMathLibTable.end())) {
             return gFastMathLibTable[name];
@@ -512,34 +516,34 @@ struct global {
         }
     }
 
-    bool hasVarType(const string& name)
+    bool hasVarType(const std::string& name)
     {
         return gVarTypeTable.find(name) != gVarTypeTable.end();
     }
 
     BasicTyped* genBasicTyped(Typed::VarType type);
 
-    Typed::VarType getVarType(const string& name);
+    Typed::VarType getVarType(const std::string& name);
 
-    void setVarType(const string& name, Typed::VarType type);
+    void setVarType(const std::string& name, Typed::VarType type);
 
-    inline bool startWith(const string& str, const string& prefix)
+    inline bool startWith(const std::string& str, const std::string& prefix)
     {
         return (str.substr(0, prefix.size()) == prefix);
     }
 
     // Some backends have an internal implementation of foreign functions like acos, asinh...
-    bool hasForeignFunction(const string& name, const string& inc_file);
+    bool hasForeignFunction(const std::string& name, const std::string& inc_file);
 
-    void   printCompilationOptions(stringstream& dst, bool backend = true);
-    string printCompilationOptions1();
+    void   printCompilationOptions(std::stringstream& dst, bool backend = true);
+    std::string printCompilationOptions1();
 
     void initTypeSizeMap();
 
     int audioSampleSize();
   
     // Allows to test if a given debug variable is set
-    static bool isDebug(const string& debug_val);
+    static bool isDebug(const std::string& debug_val);
 };
 
 // Unique shared global pointer

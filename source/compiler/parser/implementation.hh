@@ -44,14 +44,16 @@ namespace Faust {
       struct Implementation
       {
         using AbstractParser = ::Faust::Compiler::Parser::AbstractImplementation;
-        using Location = ::Faust::Compiler::Parser::location;
+        using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
         using Lexer = ::Faust::Compiler::Parser::Lexer::Implementation;
+        using symbol_type = typename AbstractParser::symbol_type;
 
         Implementation ()
         :
           _traceParsing(false),
           _traceScanning(false),
-          _parser(*this)
+          _parser(*this),
+          _location("Scanner")
         {
         }
 
@@ -107,10 +109,39 @@ namespace Faust {
           std::istringstream iss(input);
           return parseStream(iss, stream_name);
         }
+        
+        template
+        <
+          typename RHSLocations,
+          typename StackSymbolType
+        >
+        void
+        tokenDidMatch(
+          StackSymbolType&  symbol,
+          const std::size_t&  count,
+          RHSLocations&       rhs_locations
+        ) {
+          Location& location = symbol.location;
+          location.name() = _parser.symbol_name( symbol.kind() );
+          if ( count ) {
+            location.begin()   = rhs_locations[1].location.begin();
+            location.end()     = rhs_locations[count].location.end();
+            for ( std::size_t index = 0 ; index < count ; ++index ) {
+              const StackSymbolType& this_symbol_part{rhs_locations[index+1]};
+              Location this_location_part{this_symbol_part.location};
+              this_location_part.name() = _parser.symbol_name( this_symbol_part.kind() );
+              location.parts().push_back(this_location_part);
+            }
+          }
+          else {
+            location = _location;
+          }
+          _location.begin() = _location.end() = location.end();
+        }
 
         void
         error(
-          const class location& l,
+          const Location& l,
           const std::string& m
         ) {
           std::cerr << l << ": " << m << std::endl;

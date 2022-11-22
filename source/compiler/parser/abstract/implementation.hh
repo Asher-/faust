@@ -48,9 +48,18 @@
  /* Faust requires */
   #include <string>
   #include "compiler/parser/type/tokens.hh"
-  #include "compiler/parser/abstract/location.hh"
+  #include "compiler/parser/lexer/location/implementation.hh"
   namespace Faust { namespace Compiler { namespace Parser {
     struct Implementation;
+//    template <typename Self, typename RHSLocations>
+//    void tokenDidMatch(
+//      Self& self,
+//      Lexer::Location::Implementation& location,
+//      RHSLocations& rhs_locations,
+//      const std::size_t& rhs_count
+//    ) {
+//      self.template tokenDidMatch<RHSLocations>( location, rhs_locations, rhs_count );
+//    }
     namespace Lexer { struct Implementation; }
   } } }
 
@@ -98,7 +107,7 @@
 #else
 # define YY_CONSTEXPR
 #endif
-# include "location.hh"
+
 #include <typeinfo>
 #ifndef YY_ASSERT
 # include <cassert>
@@ -716,7 +725,7 @@ namespace Faust { namespace Compiler { namespace Parser {
     typedef value_type semantic_type;
 
     /// Symbol locations.
-    typedef location location_type;
+    typedef ::Faust::Compiler::Parser::Lexer::Location::Implementation location_type;
 
     /// Syntax errors thrown from user actions.
     struct syntax_error : std::runtime_error
