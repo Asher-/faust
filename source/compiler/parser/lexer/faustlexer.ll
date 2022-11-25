@@ -75,7 +75,7 @@ DIGIT    [0-9]
 ID       _*[a-zA-Z][_a-zA-Z0-9]*
 LETTER   [a-zA-Z]
 NUMBER   ({DIGIT}+"."{DIGIT}*|"."{DIGIT}+|{DIGIT}+)
-WS_BLANK [\s\t]
+WS_BLANK [ \t]
 WS_LINE  [\n\r]
 ENDL     \n
 TMACRO   \\{ID}(\[(\ *({ID}|{NUMBER}),?\ *)\])?(\{(\ *({ID}|{NUMBER}),?\ *)*\})*
@@ -267,10 +267,10 @@ NSID	 {ID}("::"{ID})*
 "lowest"  return Parser::make_LOWEST( yytext, self._location );
 "highest"  return Parser::make_HIGHEST( yytext, self._location );
 
-"singleprecision" return Parser::make_FLOATMODE( std::stoi(yytext), self._location );
-"doubleprecision"  return Parser::make_DOUBLEMODE( std::stoi(yytext), self._location );
-"quadprecision"    return Parser::make_QUADMODE( std::stoi(yytext), self._location );
-"fixedpointprecision"    return Parser::make_FIXEDPOINTMODE( std::stoi(yytext), self._location );
+"singleprecision" return Parser::make_FLOATMODE( yytext, self._location );
+"doubleprecision"  return Parser::make_DOUBLEMODE( yytext, self._location );
+"quadprecision"    return Parser::make_QUADMODE( yytext, self._location );
+"fixedpointprecision"    return Parser::make_FIXEDPOINTMODE( yytext, self._location );
 
 
 "::"{NSID}   	return Parser::make_IDENT( yytext, self._location );
@@ -292,7 +292,7 @@ NSID	 {ID}("::"{ID})*
 
        /* Catch all the alien characters. */
      .  {
-          std::string error_text( std::string("invalid character: %s") + yytext );
+          std::string error_text( std::string("invalid character: '") + yytext + "'" );
           this->LexerError( error_text.c_str() );
           return Parser::make_EXTRA( yytext, self._location );
         }

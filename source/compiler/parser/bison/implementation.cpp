@@ -247,10 +247,6 @@ namespace Faust { namespace Compiler { namespace Parser {
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -265,11 +261,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -404,6 +396,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.YY_MOVE_OR_COPY< Tree > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.YY_MOVE_OR_COPY< bool > (YY_MOVE (that.value));
         break;
@@ -516,6 +511,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -538,6 +537,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -588,10 +588,6 @@ namespace Faust { namespace Compiler { namespace Parser {
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -606,11 +602,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -745,6 +737,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.move< Tree > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.move< bool > (YY_MOVE (that.value));
         break;
@@ -857,6 +852,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -879,6 +878,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -929,10 +929,6 @@ namespace Faust { namespace Compiler { namespace Parser {
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -947,11 +943,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -1086,6 +1078,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.copy< Tree > (that.value);
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.copy< bool > (that.value);
         break;
@@ -1198,6 +1193,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -1220,6 +1219,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -1269,10 +1269,6 @@ namespace Faust { namespace Compiler { namespace Parser {
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -1287,11 +1283,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -1426,6 +1418,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.move< Tree > (that.value);
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.move< bool > (that.value);
         break;
@@ -1538,6 +1533,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -1560,6 +1559,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -1871,10 +1871,6 @@ namespace Faust { namespace Compiler { namespace Parser {
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -1889,11 +1885,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -2028,6 +2020,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         yylhs.value.emplace< Tree > ();
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         yylhs.value.emplace< bool > ();
         break;
@@ -2140,6 +2135,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -2162,6 +2161,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -2212,95 +2212,139 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 2: // program: statement.list
                                {
 			yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > ();
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
 			self._ast = self.formatDefinitions(yylhs.value.as < Tree > ());
 		}
     break;
 
   case 3: // program: %empty
-                { yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil; }
+           {
+    yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+    yylhs.value.as < Tree > ()->location() = yylhs.location;
+  }
     break;
 
   case 4: // doc: doc.text
                          {
 			yylhs.value.as < Tree > () = ::docTxt(yystack_[0].value.as < std::string > ().c_str());
-//			delete $[doc.text];
 		}
     break;
 
   case 5: // doc: doc.equation
-                 { yylhs.value.as < Tree > () = ::docEqn(yystack_[0].value.as < Tree > ()); }
-    break;
-
-  case 6: // doc: doc.diagram
-                { yylhs.value.as < Tree > () = ::docDgm(yystack_[0].value.as < Tree > ()); }
-    break;
-
-  case 7: // doc: doc.notice
-               { yylhs.value.as < Tree > () = ::docNtc(); }
-    break;
-
-  case 8: // doc: doc.list
-             { yylhs.value.as < Tree > () = ::docLst(); }
-    break;
-
-  case 9: // doc: doc.metadata
-                 { yylhs.value.as < Tree > () = ::docMtd(yystack_[0].value.as < Tree > ()); }
-    break;
-
-  case 10: // doc: %empty
-                      { yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil; }
-    break;
-
-  case 11: // doc.text: DOCCHAR
-              { yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > (); }
-    break;
-
-  case 12: // doc.text: doc.text DOCCHAR
-                              { yylhs.value.as < std::string > () = yystack_[1].value.as < std::string > ().append(self._lexer->YYText()); }
-    break;
-
-  case 13: // doc.equation: BEQN expression EEQN
-                           { yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > (); }
-    break;
-
-  case 14: // doc.diagram: BDGM expression EDGM
-                           { yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > (); }
-    break;
-
-  case 15: // doc.notice: NOTICE
-             { }
-    break;
-
-  case 16: // doc.metadata: BMETADATA statement.identifier.as.tree EMETADATA
-                                                               {
-      yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+                 {
+      yylhs.value.as < Tree > () = ::docEqn(yystack_[0].value.as < Tree > ());
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
     }
     break;
 
+  case 6: // doc: doc.diagram
+                {
+      yylhs.value.as < Tree > () = ::docDgm(yystack_[0].value.as < Tree > ());
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
+    break;
+
+  case 7: // doc: doc.notice
+               {
+      yylhs.value.as < Tree > () = ::docNtc();
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
+    break;
+
+  case 8: // doc: doc.list
+             {
+      yylhs.value.as < Tree > () = ::docLst();
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
+    break;
+
+  case 9: // doc: doc.metadata
+                 {
+      yylhs.value.as < Tree > () = ::docMtd(yystack_[0].value.as < Tree > ());
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
+    break;
+
+  case 10: // doc: %empty
+                 {
+      yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
+    break;
+
+  case 11: // doc.text: DOCCHAR
+              {
+        yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > ();
+      }
+    break;
+
+  case 12: // doc.text: doc.text DOCCHAR
+                              {
+        yylhs.value.as < std::string > () = yystack_[1].value.as < std::string > ().append(self._lexer->YYText());
+      }
+    break;
+
+  case 13: // doc.equation: BEQN expression EEQN
+                           {
+        yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
+    break;
+
+  case 14: // doc.diagram: BDGM expression EDGM
+                           {
+        yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
+    break;
+
+  case 15: // doc.notice: NOTICE
+             {
+        yylhs.value.as < std::string > () = yystack_[0].value.as < std::string > ();
+      }
+    break;
+
+  case 16: // doc.metadata: BMETADATA statement.identifier.as.tree EMETADATA
+                                                       {
+        yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
+    break;
+
   case 17: // doc.list: BLST doc.attribute.list ELST
-                                   { }
+                                   {
+        yylhs.value.as < bool > () = yystack_[1].value.as < bool > ();
+      }
     break;
 
   case 18: // doc.list: BLST ELST
-                                 { }
+                                 {
+        yylhs.value.as < bool > () = ::Faust::Primitive::Symbols::asTree().nil;
+      }
     break;
 
   case 19: // doc.attribute.list: doc.attribute.definition
-                                 {}
+                                 {
+          yylhs.value.as < bool > () = yystack_[0].value.as < bool > ();
+        }
     break;
 
   case 20: // doc.attribute.list: doc.attribute.list doc.attribute.definition
-                                                    { }
+                                                    {
+          yylhs.value.as < bool > () = yystack_[0].value.as < bool > ();
+        }
     break;
 
   case 21: // doc.attribute.definition: LSTDEPENDENCIES LSTEQ LSTQ doc.attribute.value LSTQ
                                                             {
+          yylhs.value.as < bool > () = yystack_[1].value.as < bool > ();
           self._lstDependenciesSwitch = yystack_[1].value.as < bool > ();
         }
     break;
 
   case 22: // doc.attribute.definition: LSTMDOCTAGS LSTEQ LSTQ doc.attribute.value LSTQ
                                                         {
+          yylhs.value.as < bool > () = yystack_[1].value.as < bool > ();
           self._stripDocSwitch = yystack_[1].value.as < bool > ();
           self._stripDocSwitch ? self._stripDocSwitch=false
                                    : self._stripDocSwitch=true;
@@ -2309,16 +2353,21 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 23: // doc.attribute.definition: LSTDISTRIBUTED LSTEQ LSTQ doc.attribute.value LSTQ
                                                            {
+          yylhs.value.as < bool > () = yystack_[1].value.as < bool > ();
           self._lstDistributedSwitch = yystack_[1].value.as < bool > ();
         }
     break;
 
   case 24: // doc.attribute.value: LSTTRUE
-                { yylhs.value.as < bool > () = true; }
+                {
+          yylhs.value.as < bool > () = true;
+        }
     break;
 
   case 25: // doc.attribute.value: LSTFALSE
-                 { yylhs.value.as < bool > () = false; }
+                 {
+          yylhs.value.as < bool > () = false;
+        }
     break;
 
   case 26: // expression: statement.definition.with
@@ -2336,6 +2385,7 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 29: // expression.component: COMPONENT LPAR primitive.string.unquoted.as.tree RPAR
                                                             {
         yylhs.value.as < Tree > () = ::boxComponent(yystack_[1].value.as < Tree > ());
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2350,6 +2400,7 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 32: // expression.composition.parallel: expression COMMA expression
                                             {
         yylhs.value.as < Tree > () = ::boxPar( yystack_[2].value.as < Tree > (), yystack_[0].value.as < Tree > () );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2376,30 +2427,35 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 38: // expression.composition.mix: expression.composition.serial MIX expression.composition.serial
                                                                                   {
           yylhs.value.as < Tree > () = ::boxMerge( yystack_[2].value.as < Tree > (), yystack_[0].value.as < Tree > () );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 39: // expression.composition.recursive: expression.composition.serial REC expression.composition.serial
                                                                                   {
           yylhs.value.as < Tree > () = ::boxRec(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 40: // expression.composition.sequence: expression.composition.serial SEQ expression.composition.serial
                                                                                   {
           yylhs.value.as < Tree > () = ::boxSeq(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 41: // expression.composition.split: expression.composition.serial SPLIT expression.composition.serial
                                                                                     {
           yylhs.value.as < Tree > () = ::boxSplit(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 42: // expression.environment: ENVIRONMENT LBRAQ statement.list RBRAQ
                                              {
         yylhs.value.as < Tree > () = ::boxWithLocalDef(boxEnvironment(),self.formatDefinitions(yystack_[1].value.as < Tree > ()));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2481,11 +2537,15 @@ namespace Faust { namespace Compiler { namespace Parser {
           yystack_[3].value.as < Tree > (),
           self.formatDefinitions(yystack_[1].value.as < Tree > ())
         );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
   case 62: // expression.infix.environment.access: expression.infix DOT statement.box.identifier.as.tree
-                                                                      { yylhs.value.as < Tree > () = ::boxAccess(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()); }
+                                                                      {
+        yylhs.value.as < Tree > () = ::boxAccess(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ());      
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 63: // expression.infix.math: expression.infix.math.algebra
@@ -2505,87 +2565,143 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 67: // expression.infix.math.algebra: expression.infix ADD expression.infix
-                                                        { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigAdd)); }
+                                                        {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigAdd));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 68: // expression.infix.math.algebra: expression.infix SUB expression.infix
-                                                        { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigSub)); }
+                                                        {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigSub));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 69: // expression.infix.math.algebra: expression.infix MUL expression.infix
-                                                        { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigMul)); }
+                                                        {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigMul));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 70: // expression.infix.math.algebra: expression.infix DIV expression.infix
-                                                        { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigDiv)); }
+                                                        {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigDiv));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 71: // expression.infix.math.algebra: expression.infix MOD expression.infix
-                                                        { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigRem)); }
+                                                        {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigRem));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 72: // expression.infix.math.algebra: expression.infix POWOP expression.infix
                                                         {
         yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxMathPrimitive( "pow" ));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
   case 73: // expression.infix.math.comparison: expression.infix LT expression.infix
-                                                     { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigLT)); }
+                                                     {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigLT));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 74: // expression.infix.math.comparison: expression.infix LE expression.infix
-                                                     { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigLE)); }
+                                                     {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigLE));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 75: // expression.infix.math.comparison: expression.infix GT expression.infix
-                                                     { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigGT)); }
+                                                     {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigGT));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 76: // expression.infix.math.comparison: expression.infix GE expression.infix
-                                                     { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigGE)); }
+                                                     {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigGE));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 77: // expression.infix.math.comparison: expression.infix EQ expression.infix
-                                                     { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigEQ)); }
+                                                     {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigEQ));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 78: // expression.infix.math.comparison: expression.infix NE expression.infix
-                                                     { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigNE)); }
+                                                     {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigNE));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 79: // expression.infix.math.logic: expression.infix AND expression.infix
-                                                      { yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigAND)); }
+                                                      {
+        yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigAND));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 80: // expression.infix.math.logic: expression.infix OR expression.infix
-                                                      { yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigOR)); }
+                                                      {
+        yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigOR));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 81: // expression.infix.math.logic: expression.infix XOR expression.infix
-                                                      { yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigXOR)); }
+                                                      {
+        yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigXOR));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 82: // expression.infix.math.shift: expression.infix LSH expression.infix
-                                                      { yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigLeftShift)); }
+                                                      {
+        yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigLeftShift));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 83: // expression.infix.math.shift: expression.infix RSH expression.infix
                                                       {
         yylhs.value.as < Tree > () = ::boxSeq(::boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigARightShift));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
   case 84: // expression.infix.prefix: expression.infix LPAR expression.composition.parallel RPAR
-                                                                       { yylhs.value.as < Tree > () = ::buildBoxAppl(yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ()); }
+                                                                       {
+        yylhs.value.as < Tree > () = ::buildBoxAppl(yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 85: // expression.infix.signal.delay: expression.infix FDELAY expression.infix
-                                                         { yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigDelay)); }
+                                                         {
+        yylhs.value.as < Tree > () = ::boxSeq(boxPar(yystack_[2].value.as < Tree > (),yystack_[0].value.as < Tree > ()),::boxPrim2(sigDelay));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 86: // expression.infix.signal.delay: expression.infix DELAY1
-                                   { yylhs.value.as < Tree > () = ::boxSeq(yystack_[1].value.as < Tree > (),::boxPrim1(sigDelay1)); }
+                                   {
+        yylhs.value.as < Tree > () = ::boxSeq(yystack_[1].value.as < Tree > (),::boxPrim1(sigDelay1));
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
     break;
 
   case 87: // expression.iterate.parallel: ITERATE_PARALLEL LPAR statement.box.identifier.as.tree COMMA expression.composition.serial COMMA expression RPAR
@@ -2595,6 +2711,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           yystack_[3].value.as < Tree > (),
           yystack_[1].value.as < Tree > ()
         );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2605,6 +2722,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           yystack_[3].value.as < Tree > (),
           yystack_[1].value.as < Tree > ()
         );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2615,6 +2733,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           yystack_[3].value.as < Tree > (),
           yystack_[1].value.as < Tree > ()
         );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2625,6 +2744,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           yystack_[3].value.as < Tree > (),
           yystack_[1].value.as < Tree > ()
         );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2634,6 +2754,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           yystack_[5].value.as < Tree > (),
           yystack_[1].value.as < Tree > ()
         );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2651,11 +2772,18 @@ namespace Faust { namespace Compiler { namespace Parser {
             yystack_[0].value.as < Tree > (),
             ::Faust::Primitive::Symbols::asTree().nil
           );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 95: // expression.lambda.params.append: expression.lambda.params COMMA statement.box.identifier.as.tree
-                                                                                     { yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),yystack_[2].value.as < Tree > ()); }
+                                                                        {
+          yylhs.value.as < Tree > () = ::cons(
+            yystack_[0].value.as < Tree > (),
+            yystack_[2].value.as < Tree > ()
+          );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 96: // expression.letrec: expression LETREC LBRAQ RBRAQ
@@ -2665,6 +2793,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         self.formatDefinitions(::Faust::Primitive::Symbols::asTree().nil),
         ::Faust::Primitive::Symbols::asTree().nil
       );
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
 		}
     break;
 
@@ -2675,6 +2804,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         self.formatDefinitions(yystack_[1].value.as < Tree > ()),
         ::Faust::Primitive::Symbols::asTree().nil
       );
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
 		}
     break;
 
@@ -2685,6 +2815,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         self.formatDefinitions(yystack_[3].value.as < Tree > ()),
         self.formatDefinitions(yystack_[3].value.as < Tree > ())
       );
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
 		}
     break;
 
@@ -2702,11 +2833,18 @@ namespace Faust { namespace Compiler { namespace Parser {
             yystack_[0].value.as < Tree > (),
             ::Faust::Primitive::Symbols::asTree().nil
           );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 102: // expression.letrec.list.append: expression.letrec.list expression.letrec.equation
-                                                                       { yylhs.value.as < Tree > () = cons (yystack_[0].value.as < Tree > (),yystack_[1].value.as < Tree > ()); }
+                                                          {
+          yylhs.value.as < Tree > () = cons (
+            yystack_[0].value.as < Tree > (),
+            yystack_[1].value.as < Tree > ()
+          );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 103: // expression.letrec.equation: expression.letrec.equation.name DEF expression ENDDEF
@@ -2723,16 +2861,24 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 104: // expression.letrec.equation: error ENDDEF
-                   { yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil; self._lexer->LexerError("Expected expression."); }
+                   {
+        yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+        self._lexer->LexerError("Expected expression.");
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
     break;
 
   case 105: // expression.letrec.equation.name: DELAY1 statement.box.identifier.as.tree
-                                                { yylhs.value.as < Tree > ()=yystack_[0].value.as < Tree > (); }
+                                                {
+          yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > ();
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 106: // expression.library: LIBRARY LPAR primitive.string.unquoted.as.tree RPAR
                                                           {
         yylhs.value.as < Tree > () = ::boxLibrary( yystack_[1].value.as < Tree > () );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -2757,63 +2903,108 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 112: // expression.math.comparison: LT
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigLT); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigLT);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 113: // expression.math.comparison: LE
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigLE); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigLE);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 114: // expression.math.comparison: GT
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigGT); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigGT);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 115: // expression.math.comparison: GE
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigGE); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigGE);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 116: // expression.math.comparison: EQ
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigEQ); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigEQ);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 117: // expression.math.comparison: NE
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigNE); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigNE);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 118: // expression.math.rounding: ABS
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "abs" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "abs" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 119: // expression.math.rounding: MIN
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "min" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "min" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 120: // expression.math.rounding: MAX
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "max" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "max" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 121: // expression.math.rounding: FLOOR
-                { yylhs.value.as < Tree > () = ::boxMathPrimitive( "floor" ); }
+                {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "floor" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 122: // expression.math.rounding: CEIL
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "ceil" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "ceil" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 123: // expression.math.rounding: ASSERTBOUNDS
-                       { yylhs.value.as < Tree > () = ::boxPrim3(sigAssertBounds);}
+                       {
+            yylhs.value.as < Tree > () = ::boxPrim3(sigAssertBounds);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 124: // expression.math.rounding: LOWEST
-                 { yylhs.value.as < Tree > () = ::boxPrim1(sigLowest);}
+                 {
+            yylhs.value.as < Tree > () = ::boxPrim1(sigLowest);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 125: // expression.math.rounding: HIGHEST
-                  { yylhs.value.as < Tree > () = ::boxPrim1(sigHighest);}
+                  {
+            yylhs.value.as < Tree > () = ::boxPrim1(sigHighest);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 126: // expression.math.rounding: RINT
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "rint" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "rint" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 127: // expression.math.signal: expression.math.signal.algebra
@@ -2829,75 +3020,121 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 130: // expression.math.signal.algebra: ADD
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigAdd); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigAdd);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 131: // expression.math.signal.algebra: SUB
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigSub); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigSub);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 132: // expression.math.signal.algebra: MUL
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigMul); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigMul);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 133: // expression.math.signal.algebra: DIV
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigDiv); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigDiv);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 134: // expression.math.signal.algebra: MOD
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigRem); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigRem);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 135: // expression.math.signal.algebra: FMOD
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "fmod" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "fmod" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 136: // expression.math.signal.algebra: REMAINDER
-                    { yylhs.value.as < Tree > () = ::boxMathPrimitive( "remainder" ); }
+                    {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "remainder" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 137: // expression.math.signal.algebra: SUB statement.box.identifier.as.tree
                                                {
-          yylhs.value.as < Tree > () = ::boxSeq(
-            ::boxPar(
-              ::boxInt(0),
-              yystack_[0].value.as < Tree > ()
-            ),
-            ::boxPrim2(sigSub)
-          );
+            yylhs.value.as < Tree > () = ::boxSeq(
+              ::boxPar(
+                ::boxInt(0),
+                yystack_[0].value.as < Tree > ()
+              ),
+              ::boxPrim2(sigSub)
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 138: // expression.math.signal.shift: LSH
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigLeftShift); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigLeftShift);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 139: // expression.math.signal.shift: RSH
-              { yylhs.value.as < Tree > () = ::boxPrim2(sigARightShift); }
+              {
+            yylhs.value.as < Tree > () = ::boxPrim2(sigARightShift);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 140: // expression.math.signal.power: EXP
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "exp" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "exp" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 141: // expression.math.signal.power: LOG
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "log" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "log" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 142: // expression.math.signal.power: LOG10
-                { yylhs.value.as < Tree > () = ::boxMathPrimitive( "log10" ); }
+                {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "log10" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 143: // expression.math.signal.power: POWOP
-                { yylhs.value.as < Tree > () = ::boxMathPrimitive( "pow" ); }
+                {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "pow" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 144: // expression.math.signal.power: POWFUN
-                 { yylhs.value.as < Tree > () = ::boxMathPrimitive( "pow" ); }
+                 {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "pow" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 145: // expression.math.signal.power: SQRT
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "sqrt" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "sqrt" );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 146: // expression.math.scalar.as.tree: expression.math.scalar.int.as.tree
@@ -2909,63 +3146,97 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 148: // expression.math.scalar.int: ADD INT
-                  { yylhs.value.as < IntType > () = std::stoi(self._lexer->YYText()); }
+                  {
+            yylhs.value.as < IntType > () = std::stoi(self._lexer->YYText());
+          }
     break;
 
   case 149: // expression.math.scalar.int: SUB INT
-                  { yylhs.value.as < IntType > () = -yystack_[0].value.as < IntType > (); }
+                  {
+            yylhs.value.as < IntType > () = -yystack_[0].value.as < IntType > ();
+          }
     break;
 
   case 150: // expression.math.scalar.int.as.tree: expression.math.scalar.int
                                      {
             yylhs.value.as < Tree > () = ::boxInt( yystack_[0].value.as < IntType > () );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 151: // expression.math.scalar.float: ADD FLOAT
-                    { yylhs.value.as < FloatType > () = yystack_[0].value.as < FloatType > (); }
+                    {
+            yylhs.value.as < FloatType > () = yystack_[0].value.as < FloatType > ();
+          }
     break;
 
   case 152: // expression.math.scalar.float: SUB FLOAT
-                    { yylhs.value.as < FloatType > () = -yystack_[0].value.as < FloatType > (); }
+                    {
+            yylhs.value.as < FloatType > () = -yystack_[0].value.as < FloatType > ();
+          }
     break;
 
   case 153: // expression.math.scalar.float.as.tree: expression.math.scalar.float
                                        {
             yylhs.value.as < Tree > () = ::boxReal( yystack_[0].value.as < FloatType > () );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 154: // expression.math.trigonometry.as.tree: ACOS
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "acos" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "acos" );
+          
+          }
     break;
 
   case 155: // expression.math.trigonometry.as.tree: ASIN
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "asin" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "asin" );
+        
+          }
     break;
 
   case 156: // expression.math.trigonometry.as.tree: ATAN
-               { yylhs.value.as < Tree > () = ::boxMathPrimitive( "atan" ); }
+               {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "atan" );
+        
+          }
     break;
 
   case 157: // expression.math.trigonometry.as.tree: ATAN2
-                { yylhs.value.as < Tree > () = ::boxMathPrimitive( "atan2" ); }
+                {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "atan2" );
+        
+          }
     break;
 
   case 158: // expression.math.trigonometry.as.tree: COS
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "cos" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "cos" );
+        
+          }
     break;
 
   case 159: // expression.math.trigonometry.as.tree: SIN
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "sin" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "sin" );
+        
+          }
     break;
 
   case 160: // expression.math.trigonometry.as.tree: TAN
-              { yylhs.value.as < Tree > () = ::boxMathPrimitive( "tan" ); }
+              {
+            yylhs.value.as < Tree > () = ::boxMathPrimitive( "tan" );
+        
+          }
     break;
 
   case 161: // expression.parenthesis: LPAR expression RPAR
-                         { yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > (); }
+                         {
+      yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
+    }
     break;
 
   case 162: // expression.signal: expression.signal.control
@@ -2981,52 +3252,86 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 165: // expression.signal.control: ATTACH
-               { yylhs.value.as < Tree > () = ::boxPrim2(sigAttach); }
+               {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigAttach);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 166: // expression.signal.control: ENABLE
-               { yylhs.value.as < Tree > () = ::boxPrim2(sigEnable); }
+               {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigEnable);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 167: // expression.signal.control: CONTROL
-                { yylhs.value.as < Tree > () = ::boxPrim2(sigControl); }
+                {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigControl);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 168: // expression.signal.delay: MEM
-            { yylhs.value.as < Tree > () = ::boxPrim1(sigDelay1); }
+            {
+          yylhs.value.as < Tree > () = ::boxPrim1(sigDelay1);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 169: // expression.signal.delay: PREFIX
-               { yylhs.value.as < Tree > () = ::boxPrim2(sigPrefix); }
+               {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigPrefix);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 170: // expression.signal.delay: FDELAY
-               { yylhs.value.as < Tree > () = ::boxPrim2(sigDelay); }
+               {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigDelay);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 171: // expression.signal.logic: AND
-            { yylhs.value.as < Tree > () = ::boxPrim2(sigAND); }
+            {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigAND);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 172: // expression.signal.logic: OR
-           { yylhs.value.as < Tree > () = ::boxPrim2(sigOR); }
+           {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigOR);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 173: // expression.signal.logic: XOR
-            { yylhs.value.as < Tree > () = ::boxPrim2(sigXOR); }
+            {
+          yylhs.value.as < Tree > () = ::boxPrim2(sigXOR);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 174: // expression.signal.logic: SELECT2
-                { yylhs.value.as < Tree > () = ::boxPrim3(sigSelect2); }
+                {
+          yylhs.value.as < Tree > () = ::boxPrim3(sigSelect2);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 175: // expression.signal.logic: SELECT3
-                { yylhs.value.as < Tree > () = ::boxPrim4(sigSelect3); }
+                {
+          yylhs.value.as < Tree > () = ::boxPrim4(sigSelect3);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 176: // expression.signal.logic: CASE LBRAQ statement.signal.pattern.rule.list RBRAQ
                                                             {
           yylhs.value.as < Tree > () = ::boxCase(self.checkRulelist(yystack_[1].value.as < Tree > ()));
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3085,12 +3390,14 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 189: // primitive.type.number.int.as.tree: primitive.type.number.int
                                 {
         yylhs.value.as < Tree > () = boxInt( yystack_[0].value.as < IntType > () );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
   case 190: // primitive.type.number.float.as.tree: primitive.type.number.float
                                   {
         yylhs.value.as < Tree > () = boxReal( yystack_[0].value.as < FloatType > () );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3103,6 +3410,7 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 192: // primitive.string.quoted.as.tree: primitive.string.quoted
                               {
         yylhs.value.as < Tree > () = ::tree( yystack_[0].value.as < std::string > () );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3115,20 +3423,26 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 194: // primitive.string.unquoted.as.tree: primitive.string.unquoted
                                 {
         yylhs.value.as < Tree > () = ::tree( yystack_[0].value.as < std::string > () );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
   case 195: // primitive.string.tag: STRING
-             { yylhs.value.as < std::string > () = self._lexer->YYText(); }
+             {
+        yylhs.value.as < std::string > () = self._lexer->YYText();
+      }
     break;
 
   case 196: // primitive.string.tag: TAGSTRING
-                { yylhs.value.as < std::string > () = self._lexer->YYText(); }
+                {
+        yylhs.value.as < std::string > () = self._lexer->YYText();
+      }
     break;
 
   case 197: // primitive.string.tag.as.tree: primitive.string.tag
                          {
       yylhs.value.as < Tree > () = ::tree( yystack_[0].value.as < std::string > () );
+      yylhs.value.as < Tree > ()->location() = yylhs.location;
     }
     break;
 
@@ -3157,11 +3471,17 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 204: // primitive.signal.input.wire: WIRE
-           { yylhs.value.as < Tree > () = ::boxWire(); }
+           {
+        yylhs.value.as < Tree > () = ::boxWire();
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 205: // primitive.signal.input.terminate: CUT
-          { yylhs.value.as < Tree > () = ::boxCut(); }
+          {
+        yylhs.value.as < Tree > () = ::boxCut();
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 206: // primitive.type: primitive.type.cast.number
@@ -3181,15 +3501,24 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 210: // primitive.type.cast.number.int: INTCAST
-                  { yylhs.value.as < Tree > () = ::boxPrim1(sigIntCast); }
+                  {
+            yylhs.value.as < Tree > () = ::boxPrim1(sigIntCast);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 211: // primitive.type.cast.number.float: FLOATCAST
-                    { yylhs.value.as < Tree > () = ::boxPrim1(sigFloatCast); }
+                    {
+            yylhs.value.as < Tree > () = ::boxPrim1(sigFloatCast);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 212: // primitive.type.cast.any: ANYCAST
-                { yylhs.value.as < Tree > () = ::tree(2); }
+                {
+          yylhs.value.as < Tree > () = ::tree(2);
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 213: // primitive.type.number.int.list: primitive.type.number.int.list.start
@@ -3323,6 +3652,7 @@ namespace Faust { namespace Compiler { namespace Parser {
               yystack_[1].value.as < Tree > (),
               ::boxPar( ::boxInt(0), ::boxInt(0) )
             );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3333,6 +3663,7 @@ namespace Faust { namespace Compiler { namespace Parser {
               yystack_[1].value.as < Tree > (),
               ::boxPar( ::boxInt(0), ::boxInt(0) )
             );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3343,6 +3674,7 @@ namespace Faust { namespace Compiler { namespace Parser {
               yystack_[3].value.as < Tree > (),
               yystack_[1].value.as < Tree > ()
             );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3359,16 +3691,23 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 246: // primitive.signal.source.table: RDTBL
-                { yylhs.value.as < Tree > () = ::boxPrim3(sigReadOnlyTable); }
+                {
+            yylhs.value.as < Tree > () = ::boxPrim3(sigReadOnlyTable);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 247: // primitive.signal.source.table: RWTBL
-                { yylhs.value.as < Tree > () = ::boxPrim5(sigWriteReadTable); }
+                {
+            yylhs.value.as < Tree > () = ::boxPrim5(sigWriteReadTable);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 248: // primitive.signal.source.soundfile: SOUNDFILE LPAR primitive.string.unquoted.as.tree COMMA expression.composition RPAR
                                                                                              {
             yylhs.value.as < Tree > () = ::boxSoundfile( yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > () );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3383,12 +3722,14 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 251: // primitive.signal.source.waveform.int.as.tree: WAVEFORM LBRAQ primitive.type.number.int.list.as.tree RBRAQ
                                                                     {
           yylhs.value.as < Tree > () = ::boxWaveform( yystack_[1].value.as < std::vector<Tree> > () );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 252: // primitive.signal.source.waveform.float.as.tree: WAVEFORM LBRAQ primitive.type.number.float.list.as.tree RBRAQ
                                                                       {
           yylhs.value.as < Tree > () = ::boxWaveform( yystack_[1].value.as < std::vector<Tree> > () );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3401,11 +3742,20 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 255: // primitive.type.list.start: primitive.type
-                         { yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil); }
+                         {
+            yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil);
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 256: // primitive.type.list.append: primitive.type.list COMMA primitive.type
-                                                                { yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),yystack_[2].value.as < Tree > ()); }
+                                                   {
+            yylhs.value.as < Tree > () = ::cons(
+              yystack_[0].value.as < Tree > (),
+              yystack_[2].value.as < Tree > ()
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
+          }
     break;
 
   case 257: // primitive.ui: primitive.ui.button
@@ -3451,60 +3801,70 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 267: // primitive.ui.button: BUTTON LPAR primitive.string.unquoted.as.tree RPAR
                                                            {
           yylhs.value.as < Tree > () = ::boxButton(yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 268: // primitive.ui.checkbox: CHECKBOX LPAR primitive.string.unquoted.as.tree RPAR
                                                              {
           yylhs.value.as < Tree > () = ::boxCheckbox(yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 269: // primitive.ui.vslider: VSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                                                                                                     {
           yylhs.value.as < Tree > () = ::boxVSlider(yystack_[9].value.as < Tree > (),yystack_[7].value.as < Tree > (),yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 270: // primitive.ui.hslider: HSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                                                                                                     {
           yylhs.value.as < Tree > () = ::boxHSlider(yystack_[9].value.as < Tree > (),yystack_[7].value.as < Tree > (),yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 271: // primitive.ui.nentry: NENTRY LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                                                                                                    {
           yylhs.value.as < Tree > () = ::boxNumEntry(yystack_[9].value.as < Tree > (),yystack_[7].value.as < Tree > (),yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 272: // primitive.ui.vgroup: VGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
                                                                             {
           yylhs.value.as < Tree > () = ::boxVGroup(yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 273: // primitive.ui.hgroup: HGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
                                                                             {
           yylhs.value.as < Tree > () = ::boxHGroup(yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 274: // primitive.ui.tgroup: TGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
                                                                             {
           yylhs.value.as < Tree > () = ::boxTGroup(yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 275: // primitive.ui.vbargraph: VBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                   {
           yylhs.value.as < Tree > () = ::boxVBargraph(yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 276: // primitive.ui.hbargraph: HBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                   {
           yylhs.value.as < Tree > () = ::boxHBargraph(yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3517,6 +3877,7 @@ namespace Faust { namespace Compiler { namespace Parser {
               yystack_[1].value.as < Tree > ()
             )
           );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3527,14 +3888,13 @@ namespace Faust { namespace Compiler { namespace Parser {
               ::cons(
                 ::cons(
                   yystack_[3].value.as < Tree > (),
-                  ::cons(
-                    yystack_[3].value.as < Tree > (),
-                    ::cons( yystack_[3].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
+                  ::cons( yystack_[3].value.as < Tree > (), ::cons( yystack_[3].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
                   )
                 ),
                 yystack_[1].value.as < Tree > ()
               )
             );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3547,39 +3907,89 @@ namespace Faust { namespace Compiler { namespace Parser {
                   yystack_[5].value.as < Tree > (),
                   ::cons(
                     yystack_[3].value.as < Tree > (),
-                    ::cons(
-                      yystack_[3].value.as < Tree > (),
-                      ::Faust::Primitive::Symbols::asTree().nil
-                    )
+                    ::cons( yystack_[3].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
                   )
                 ),
                 yystack_[1].value.as < Tree > ()
               )
             );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 280: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
                                                                                                                                                                                                                                         {
-            yylhs.value.as < Tree > () = ::cons(yystack_[8].value.as < Tree > (), ::cons(::cons(yystack_[7].value.as < Tree > (),::cons(yystack_[5].value.as < Tree > (),::cons(yystack_[3].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil))), yystack_[1].value.as < Tree > ()));
+            yylhs.value.as < Tree > () = ::cons(
+              yystack_[8].value.as < Tree > (),
+              ::cons(
+                ::cons(
+                  yystack_[7].value.as < Tree > (),
+                  ::cons(
+                    yystack_[5].value.as < Tree > (),
+                    ::cons( yystack_[3].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                yystack_[1].value.as < Tree > ()
+              )
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 281: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree LPAR RPAR
                                                                                                      {
-            yylhs.value.as < Tree > () = ::cons(yystack_[3].value.as < Tree > (), ::cons(::cons(yystack_[2].value.as < Tree > (),::cons(yystack_[2].value.as < Tree > (),::cons(yystack_[2].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil))), ::Faust::Primitive::Symbols::asTree().nil));
+            yylhs.value.as < Tree > () = ::cons(
+              yystack_[3].value.as < Tree > (),
+              ::cons(
+                ::cons(
+                  yystack_[2].value.as < Tree > (),
+                  ::cons(
+                    yystack_[2].value.as < Tree > (),
+                    ::cons( yystack_[2].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 282: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR RPAR
                                                                                                                                                              {
-            yylhs.value.as < Tree > () = ::cons(yystack_[5].value.as < Tree > (), ::cons(::cons(yystack_[4].value.as < Tree > (),::cons(yystack_[2].value.as < Tree > (),::cons(yystack_[2].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil))), ::Faust::Primitive::Symbols::asTree().nil));
+            yylhs.value.as < Tree > () = ::cons(
+              yystack_[5].value.as < Tree > (),
+              ::cons(
+                ::cons(
+                  yystack_[4].value.as < Tree > (),
+                  ::cons(
+                    yystack_[2].value.as < Tree > (),
+                    ::cons( yystack_[2].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 283: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR RPAR
                                                                                                                                                                                                                     {
-            yylhs.value.as < Tree > () = ::cons(yystack_[7].value.as < Tree > (), ::cons(::cons(yystack_[6].value.as < Tree > (),::cons(yystack_[4].value.as < Tree > (),::cons(yystack_[2].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil))), ::Faust::Primitive::Symbols::asTree().nil));
+            yylhs.value.as < Tree > () = ::cons(
+              yystack_[7].value.as < Tree > (),
+              ::cons(
+                ::cons(
+                  yystack_[6].value.as < Tree > (),
+                  ::cons(
+                    yystack_[4].value.as < Tree > (),
+                    ::cons( yystack_[2].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3590,6 +4000,7 @@ namespace Faust { namespace Compiler { namespace Parser {
             yystack_[3].value.as < Tree > (),
             yystack_[1].value.as < Tree > ()
           );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3600,15 +4011,22 @@ namespace Faust { namespace Compiler { namespace Parser {
             yystack_[3].value.as < Tree > (),
             yystack_[1].value.as < Tree > ()
           );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 286: // primitive.signal.inputs: INPUTS LPAR expression RPAR
-                                    { yylhs.value.as < Tree > () = ::boxInputs(yystack_[1].value.as < Tree > ()); }
+                                    {
+          yylhs.value.as < Tree > () = ::boxInputs(yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 287: // primitive.signal.outputs: OUTPUTS LPAR expression RPAR
-                                     { yylhs.value.as < Tree > () = ::boxOutputs(yystack_[1].value.as < Tree > ()); }
+                                     {
+          yylhs.value.as < Tree > () = ::boxOutputs(yystack_[1].value.as < Tree > ());
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 288: // statement: statement.definition
@@ -3657,13 +4075,21 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 299: // statement.definition.function.args.start: statement.definition.function.arg
                                         {
-        yylhs.value.as < Tree > () = ::cons( yystack_[0].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil );
-      }
+        yylhs.value.as < Tree > () = ::cons(
+          yystack_[0].value.as < Tree > (),
+          ::Faust::Primitive::Symbols::asTree().nil
+        );
+       yylhs.value.as < Tree > ()->location() = yylhs.location;
+     }
     break;
 
   case 300: // statement.definition.function.args.append: statement.definition.function.args COMMA statement.definition.function.arg
                                                                                  {
-        yylhs.value.as < Tree > () = ::cons( yystack_[0].value.as < Tree > (), yystack_[2].value.as < Tree > () );
+        yylhs.value.as < Tree > () = ::cons(
+          yystack_[0].value.as < Tree > (),
+          yystack_[2].value.as < Tree > ()
+        );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3680,18 +4106,21 @@ namespace Faust { namespace Compiler { namespace Parser {
   case 302: // statement.definition.function: statement.definition.function.declaration ENDDEF
                                                          {
           yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 303: // statement.definition.function: statement.definition.function.declaration ENDOFINPUT
                                                              {
           yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 304: // statement.definition.function: statement.definition.function.declaration ENDL
                                                        {
           yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3700,6 +4129,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         yyerrok;
         yyclearin;
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3715,7 +4145,11 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 307: // statement.definition.with: expression WITH LBRAQ statement.definition.list RBRAQ
                                                             {
-        yylhs.value.as < Tree > () = ::boxWithLocalDef(yystack_[4].value.as < Tree > (),self.formatDefinitions(yystack_[1].value.as < Tree > ()));
+        yylhs.value.as < Tree > () = ::boxWithLocalDef(
+          yystack_[4].value.as < Tree > (),
+          self.formatDefinitions(yystack_[1].value.as < Tree > ())
+        );
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3723,6 +4157,7 @@ namespace Faust { namespace Compiler { namespace Parser {
                      {
           yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
           self._lexer->LexerError("Error in definition.");
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3744,7 +4179,11 @@ namespace Faust { namespace Compiler { namespace Parser {
 
   case 313: // statement.definition.list.start: statement.definition
                                {
-            yylhs.value.as < Tree > () = ::cons( yylhs.value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil );
+            yylhs.value.as < Tree > () = ::cons(
+              yylhs.value.as < Tree > (),
+              ::Faust::Primitive::Symbols::asTree().nil
+            );
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3754,12 +4193,14 @@ namespace Faust { namespace Compiler { namespace Parser {
               yylhs.value.as < Tree > () = ::cons( yystack_[0].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil );
             else
               yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
   case 315: // statement.definition.list.append: statement.definition.list statement.definition
                                                          {
             yylhs.value.as < Tree > () = cons (yystack_[0].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3769,6 +4210,7 @@ namespace Faust { namespace Compiler { namespace Parser {
               yylhs.value.as < Tree > () = cons (yystack_[0].value.as < Tree > (),yystack_[2].value.as < Tree > ());
             else
               yylhs.value.as < Tree > () = yystack_[2].value.as < Tree > ();
+            yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
@@ -3776,6 +4218,7 @@ namespace Faust { namespace Compiler { namespace Parser {
                                                                                               {
         self.declareMetadata(yystack_[2].value.as < Tree > (),yystack_[1].value.as < Tree > ());
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3783,6 +4226,7 @@ namespace Faust { namespace Compiler { namespace Parser {
                                                                                                                                     {
         self.declareDefinitionMetadata( yystack_[3].value.as < Tree > (), yystack_[2].value.as < Tree > (), yystack_[1].value.as < Tree > () );
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3790,6 +4234,7 @@ namespace Faust { namespace Compiler { namespace Parser {
                           {
         ::declareDoc(yystack_[1].value.as < Tree > ());
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
@@ -3808,11 +4253,17 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 322: // statement.foreign.function.identifier.as.tree: IDENT
-            { yylhs.value.as < Tree > () = ::tree(self._lexer->YYText()); }
+            {
+        yylhs.value.as < Tree > () = ::tree(self._lexer->YYText());
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 323: // statement.import: IMPORT LPAR primitive.string.unquoted.as.tree RPAR ENDDEF
-                                                                          { yylhs.value.as < Tree > () = ::importFile(yystack_[2].value.as < Tree > ()); }
+                                                                          {
+        yylhs.value.as < Tree > () = ::importFile(yystack_[2].value.as < Tree > ());
+        yylhs.value.as < Tree > ()->location() = yylhs.location;
+      }
     break;
 
   case 324: // statement.list: statement.list.start
@@ -3839,6 +4290,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           else {
             yylhs.value.as < Tree > () = yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
           }
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3849,6 +4301,7 @@ namespace Faust { namespace Compiler { namespace Parser {
             yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil);
           else
             yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3860,6 +4313,7 @@ namespace Faust { namespace Compiler { namespace Parser {
           else {
             yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
           }
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
@@ -3872,23 +4326,32 @@ namespace Faust { namespace Compiler { namespace Parser {
           else {
             yylhs.value.as < Tree > ()=yystack_[2].value.as < Tree > ();
           }
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
   case 332: // statement.math.precision: FLOATMODE
-                  { yylhs.value.as < IntType > () = 1; }
+                  {
+          yylhs.value.as < IntType > () = 1;
+        }
     break;
 
   case 333: // statement.math.precision: DOUBLEMODE
-                   { yylhs.value.as < IntType > () = 2; }
+                   {
+          yylhs.value.as < IntType > () = 2;
+        }
     break;
 
   case 334: // statement.math.precision: QUADMODE
-                 { yylhs.value.as < IntType > () = 4; }
+                 {
+          yylhs.value.as < IntType > () = 4;
+        }
     break;
 
   case 335: // statement.math.precision: FIXEDPOINTMODE
-                       { yylhs.value.as < IntType > () = 8; }
+                       {
+          yylhs.value.as < IntType > () = 8;
+        }
     break;
 
   case 336: // statement.math.precision.list: statement.math.precision.list.start
@@ -3922,11 +4385,23 @@ namespace Faust { namespace Compiler { namespace Parser {
     break;
 
   case 343: // statement.signal.pattern.rule.list.start: statement.signal.pattern.rule
-                                      { yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil); }
+                                      {
+          yylhs.value.as < Tree > () = ::cons(
+            yystack_[0].value.as < Tree > (),
+            ::Faust::Primitive::Symbols::asTree().nil
+          );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
   case 344: // statement.signal.pattern.rule.list.append: statement.signal.pattern.rule.list statement.signal.pattern.rule
-                                                                                      { yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),yystack_[1].value.as < Tree > ()); }
+                                                                         {
+          yylhs.value.as < Tree > () = ::cons(
+            yystack_[0].value.as < Tree > (),
+            yystack_[1].value.as < Tree > ()
+          );
+          yylhs.value.as < Tree > ()->location() = yylhs.location;
+        }
     break;
 
 
@@ -5080,41 +5555,41 @@ namespace Faust { namespace Compiler { namespace Parser {
   const short
   BisonImplementation::yyrline_[] =
   {
-       0,   442,   442,   446,   457,   461,   462,   463,   464,   465,
-     466,   469,   470,   473,   476,   479,   482,   489,   490,   493,
-     494,   497,   500,   505,   510,   511,   518,   519,   520,   525,
-     532,   533,   536,   541,   542,   543,   544,   545,   548,   553,
-     558,   563,   570,   577,   578,   579,   580,   581,   582,   583,
-     584,   585,   586,   587,   588,   589,   590,   591,   592,   594,
-     596,   599,   607,   610,   611,   612,   613,   616,   617,   618,
-     619,   620,   621,   626,   627,   628,   629,   630,   631,   634,
-     635,   636,   639,   640,   645,   648,   649,   654,   663,   672,
-     681,   692,   700,   701,   704,   712,   717,   724,   731,   742,
-     743,   746,   754,   757,   767,   770,   776,   783,   784,   785,
-     786,   787,   790,   791,   792,   793,   794,   795,   798,   799,
-     800,   801,   802,   803,   804,   805,   806,   809,   810,   811,
-     814,   815,   816,   817,   818,   819,   820,   821,   832,   833,
-     836,   837,   838,   839,   840,   841,   844,   845,   848,   849,
-     852,   857,   858,   861,   866,   867,   868,   869,   870,   871,
-     872,   877,   882,   883,   884,   887,   888,   889,   892,   893,
-     894,   897,   898,   899,   900,   901,   902,   911,   912,   913,
-     914,   915,   920,   921,   922,   927,   928,   931,   936,   941,
-     946,   953,   958,   963,   968,   973,   974,   977,   984,   985,
-     986,   987,   988,   989,   992,   995,   998,   999,  1004,  1005,
-    1008,  1011,  1014,  1019,  1020,  1023,  1024,  1027,  1032,  1037,
-    1038,  1041,  1042,  1045,  1050,  1057,  1058,  1061,  1062,  1065,
-    1070,  1075,  1076,  1079,  1080,  1083,  1088,  1095,  1096,  1097,
-    1100,  1109,  1118,  1129,  1130,  1131,  1134,  1135,  1138,  1143,
-    1144,  1147,  1152,  1159,  1160,  1163,  1166,  1172,  1173,  1174,
-    1175,  1176,  1177,  1178,  1179,  1180,  1181,  1184,  1189,  1194,
-    1199,  1204,  1209,  1214,  1219,  1224,  1229,  1236,  1247,  1262,
-    1280,  1283,  1286,  1289,  1294,  1303,  1314,  1317,  1325,  1326,
-    1327,  1328,  1329,  1334,  1335,  1336,  1339,  1342,  1343,  1346,
-    1351,  1356,  1365,  1368,  1371,  1374,  1381,  1390,  1395,  1403,
-    1404,  1405,  1406,  1409,  1414,  1422,  1427,  1437,  1443,  1449,
-    1457,  1463,  1469,  1474,  1479,  1480,  1481,  1482,  1485,  1495,
-    1504,  1514,  1527,  1528,  1529,  1530,  1535,  1536,  1539,  1542,
-    1549,  1554,  1555,  1558,  1561
+       0,   442,   442,   447,   461,   464,   468,   472,   476,   480,
+     484,   490,   493,   498,   504,   510,   515,   523,   526,   531,
+     534,   539,   543,   549,   555,   558,   567,   568,   569,   574,
+     582,   583,   586,   592,   593,   594,   595,   596,   599,   605,
+     611,   617,   625,   633,   634,   635,   636,   637,   638,   639,
+     640,   641,   642,   643,   644,   645,   646,   647,   648,   649,
+     650,   653,   662,   668,   669,   670,   671,   674,   678,   682,
+     686,   690,   694,   700,   704,   708,   712,   716,   720,   726,
+     730,   734,   740,   744,   750,   756,   760,   768,   778,   788,
+     798,   810,   819,   820,   823,   832,   843,   851,   859,   871,
+     872,   875,   884,   893,   903,   910,   919,   927,   928,   929,
+     930,   931,   934,   938,   942,   946,   950,   954,   960,   964,
+     968,   972,   976,   980,   984,   988,   992,   998,   999,  1000,
+    1003,  1007,  1011,  1015,  1019,  1023,  1027,  1031,  1043,  1047,
+    1053,  1057,  1061,  1065,  1069,  1073,  1079,  1080,  1083,  1086,
+    1091,  1097,  1100,  1105,  1111,  1115,  1119,  1123,  1127,  1131,
+    1135,  1143,  1151,  1152,  1153,  1156,  1160,  1164,  1170,  1174,
+    1178,  1184,  1188,  1192,  1196,  1200,  1204,  1214,  1215,  1216,
+    1217,  1218,  1223,  1224,  1225,  1230,  1231,  1234,  1239,  1244,
+    1250,  1258,  1263,  1269,  1274,  1280,  1283,  1288,  1296,  1297,
+    1298,  1299,  1300,  1301,  1304,  1310,  1316,  1317,  1322,  1323,
+    1326,  1332,  1338,  1346,  1347,  1350,  1351,  1354,  1359,  1364,
+    1365,  1368,  1369,  1372,  1377,  1384,  1385,  1388,  1389,  1392,
+    1397,  1402,  1403,  1406,  1407,  1410,  1415,  1422,  1423,  1424,
+    1427,  1437,  1447,  1459,  1460,  1461,  1464,  1468,  1474,  1480,
+    1481,  1484,  1490,  1498,  1499,  1502,  1508,  1520,  1521,  1522,
+    1523,  1524,  1525,  1526,  1527,  1528,  1529,  1532,  1538,  1544,
+    1550,  1556,  1562,  1568,  1574,  1580,  1586,  1594,  1606,  1620,
+    1636,  1652,  1668,  1684,  1702,  1712,  1724,  1730,  1741,  1742,
+    1743,  1744,  1745,  1750,  1751,  1752,  1755,  1758,  1759,  1762,
+    1771,  1780,  1789,  1793,  1797,  1801,  1809,  1818,  1827,  1836,
+    1837,  1838,  1839,  1842,  1851,  1860,  1866,  1877,  1884,  1891,
+    1900,  1906,  1912,  1920,  1928,  1929,  1930,  1931,  1934,  1945,
+    1955,  1966,  1980,  1983,  1986,  1989,  1996,  1997,  2000,  2003,
+    2010,  2015,  2016,  2019,  2028
   };
 
   void

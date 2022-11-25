@@ -206,11 +206,28 @@ namespace Faust {
               const Implementation& rhs
             )
             {
+              _name = rhs.name();
               _begin = rhs.begin();
               _end = rhs.end();
+              _parts = rhs.parts();
               return *this;
             }
-
+            
+            /* To declare locations in Faust implementation (C++) source. */
+            Implementation&
+            setToPositionInImplementation(
+              const std::string& name,
+              const std::string& stream_name,
+              const std::size_t& line_number
+            )
+            {
+              _name = name;
+              _begin.line() = _end.line() = line_number;
+              _begin.streamName() = _end.streamName() = stream_name;
+              _positionInImplementation = true;
+              return *this;
+            }
+            
             /********** ostream **********/
 
             /** \brief Intercept output stream redirection.
@@ -245,6 +262,9 @@ namespace Faust {
             std::string& name() { return _name; };
             const std::string& name() const { return _name; };
 
+            bool& positionInImplementation() { return _positionInImplementation; };
+            const bool& positionInImplementation() const { return _positionInImplementation; };
+
             Position& begin() { return _begin; };
             const Position& begin() const { return _begin; };
             Position& end() { return _end; };
@@ -256,6 +276,7 @@ namespace Faust {
             /********** Variables **********/
             
             std::string _name;
+            bool        _positionInImplementation = false;
             
             Position _begin;
             Position _end;
@@ -264,6 +285,8 @@ namespace Faust {
 
           };
 
+          #define SET_LOCATION_IN_IMPLEMENTATION( location, name ) \
+                  location.setToPositionInImplementation( name, __FILE__, __LINE__ );
   
         }
       }

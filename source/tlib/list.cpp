@@ -115,6 +115,28 @@ Tree cons(Tree a, Tree b)
 {
     return tree(::Faust::Primitive::Symbols::internal().symbol("cons"), a, b);
 }
+
+Tree cons(
+  const std::string& name,
+  const std::string& stream_name,
+  const std::size_t& line_number,
+  Tree a,
+  Tree b
+)
+{
+    Tree join = cons( a, b );
+    auto& location = join->location();
+    location.setToPositionInImplementation( name, stream_name, line_number );
+    auto& parts = location.parts();
+    parts.push_back( a->location() );
+    parts.push_back( b->location() );
+    if ( b == ::Faust::Primitive::Symbols::asTree().nil ) {
+      auto& nil_location = parts[1];
+      nil_location.setToPositionInImplementation( "nil", stream_name, line_number );
+    }
+    return join;
+}
+
 Tree list0()
 {
     return ::Faust::Primitive::Symbols::asTree().nil;

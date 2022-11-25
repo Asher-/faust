@@ -105,6 +105,7 @@ This file contains several extensions to the tree library :
 
 #include <stdio.h>
 #include "faust/primitive/symbols.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 #include "tlib/tree.hh"
 
 // Basic List Operations implemented on trees
@@ -115,6 +116,24 @@ void print(Tree t, FILE* out = stdout);
 
 // to create new lists
 Tree        cons(Tree a, Tree b);
+Tree cons(
+  const std::string& name,
+  const std::string& stream_name,
+  const std::size_t& line_number,
+  Tree a,
+  Tree b = ::Faust::Primitive::Symbols::asTree().nil
+);
+
+#define TREE_JOIN_NIL(name, lhs) cons(name, __FILE__, __LINE__, lhs)
+#define TREE_JOIN_RHS(name, lhs, rhs) cons(name, __FILE__, __LINE__, lhs, rhs)
+#define SELECT_TREE_JOIN(name, lhs, rhs, macro, ...) macro
+
+#define TREE_JOIN(default, ...) SELECT_TREE_JOIN( \
+        ,##__VA_ARGS__, \
+        TREE_JOIN_RHS(default, __VA_ARGS__), \
+        TREE_JOIN_NIL(default, __VA_ARGS__), \
+    )
+
 Tree        list0();
 inline Tree list1(Tree a)
 {

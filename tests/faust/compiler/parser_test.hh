@@ -58,13 +58,13 @@ struct ParserTest
 //  Tree ast = parser.parseString( source, "Empty.dsp" );
 //  ASSERT_EQ( ast, nullptr );
 //}
-
-TEST_F( ParserTest, semicolon ) {
-  std::string source = R""""(;)"""";
-  Tree ast = parser.parseString( source, "semicolon.dsp" );
-  ASSERT_EQ( ast, nullptr );
-}
-
+//
+//TEST_F( ParserTest, semicolon ) {
+//  std::string source = R""""(;)"""";
+//  Tree ast = parser.parseString( source, "semicolon.dsp" );
+//  ASSERT_EQ( ast, nullptr );
+//}
+//
 //TEST_F( ParserTest, identifier ) {
 //  std::string source = R""""(process=_;)"""";
 //  Tree ast = parser.parseString( source, "identity.dsp" );

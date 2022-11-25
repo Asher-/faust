@@ -52,21 +52,21 @@ struct ParserTest
 
 };
 
-TEST_F( ParserTest, empty ) {
-  std::string source = R""""()"""";
-  Tree ast = parser.parseString( source, "Empty.dsp" );
-  ASSERT_EQ( ast, nullptr );
+//TEST_F( ParserTest, empty ) {
+//  std::string source = R""""()"""";
+//  Tree ast = parser.parseString( source, "Empty.dsp" );
+//  ASSERT_EQ( ast, nullptr );
+//}
+
+TEST_F( ParserTest, variants ) {
+  std::string source = R""""(
+    singleprecision one = 3.402823466e+38;
+    doubleprecision two = 1.7976931348623158e+308;
+  )"""";
+  Tree ast = parser.parseString( source, "variants.dsp" );
+  ASSERT_NE( ast, nullptr );
 }
 
-//TEST_F( ParserTest, variants ) {
-//  std::string source = R""""(
-//    singleprecision one = 3.402823466e+38;
-//    doubleprecision two = 1.7976931348623158e+308;
-//  )"""";
-//  Tree ast = parser.parseString( source, "variants.dsp" );
-//  ASSERT_NE( ast, nullptr );
-//}
-//
 //TEST_F( ParserTest, simpleProgram ) {
 //  std::string source = R""""(
 //    declare name "Noise";
@@ -361,8 +361,8 @@ TEST_F( ParserTest, empty ) {
 //  Tree ast = parser.parseString( source, "numberOfOutputs.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
-
-// FIX
+//
+//// FIX
 //TEST_F( ParserTest, reverseOrderOfOutputs ) {
 //  std::string source = R""""(
 //    Xo(expr) = expr <: par(i,n,ba.selector(n-i-1,n))
@@ -373,7 +373,7 @@ TEST_F( ParserTest, empty ) {
 //  Tree ast = parser.parseString( source, "reverseOrderOfOutputs.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
-
+//
 //TEST_F( ParserTest, reverseOrderOfInputs ) {
 //  std::string source = R""""(
 //    Xi(expr) = si.bus(n) <: par(i,n,ba.selector(n-i-1,n)) : expr
@@ -1594,16 +1594,5 @@ TEST_F( ParserTest, empty ) {
 //    g = nentry("gain[acc: 0 0 0 0 10]",0,0,1,0.01);
 //  )"""";
 //  Tree ast = parser.parseString( source, "accelerometerLeftSide.dsp" );
-//  ASSERT_NE( ast, nullptr );
-//}
-
-  /******************** Error Handling ********************/
-
-//TEST_F( ParserTest, missingSemicolon ) {
-//  std::string source = R""""(
-//    g = nentry("gain[acc: 0 0 0 0 10]",0,0,1,0.01)
-//    process = g;
-//  )"""";
-//  Tree ast = parser.parseString( source, "missingSemicolon.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}

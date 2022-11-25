@@ -634,10 +634,10 @@ Terminals, with rules where they appear
     ASSERTBOUNDS <std::string> (365) 122
     LOWEST <std::string> (366) 123
     HIGHEST <std::string> (367) 124
-    FLOATMODE <IntType> (368) 331
-    DOUBLEMODE <IntType> (369) 332
-    QUADMODE <IntType> (370) 333
-    FIXEDPOINTMODE <IntType> (371) 334
+    FLOATMODE <std::string> (368) 331
+    DOUBLEMODE <std::string> (369) 332
+    QUADMODE <std::string> (370) 333
+    FIXEDPOINTMODE <std::string> (371) 334
     BDOC <std::string> (372) 318
     EDOC <std::string> (373) 318
     BEQN <std::string> (374) 12
@@ -680,19 +680,19 @@ Nonterminals, with rules where they appear
     doc.diagram <Tree> (143)
         on left: 13
         on right: 5
-    doc.notice <Tree> (144)
+    doc.notice <std::string> (144)
         on left: 14
         on right: 6
     doc.metadata <Tree> (145)
         on left: 15
         on right: 8
-    doc.list <Tree> (146)
+    doc.list <bool> (146)
         on left: 16 17
         on right: 7
-    doc.attribute.list <Tree> (147)
+    doc.attribute.list <bool> (147)
         on left: 18 19
         on right: 16 19
-    doc.attribute.definition <Tree> (148)
+    doc.attribute.definition <bool> (148)
         on left: 20 21 22
         on right: 18 19
     doc.attribute.value <bool> (149)

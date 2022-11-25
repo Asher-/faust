@@ -226,10 +226,10 @@
 %token <std::string> LOWEST
 %token <std::string> HIGHEST
 
-%token <IntType> FLOATMODE
-%token <IntType> DOUBLEMODE
-%token <IntType> QUADMODE
-%token <IntType> FIXEDPOINTMODE
+%token <std::string> FLOATMODE
+%token <std::string> DOUBLEMODE
+%token <std::string> QUADMODE
+%token <std::string> FIXEDPOINTMODE
 
 %token ENDOFINPUT 0
 
@@ -258,14 +258,14 @@
 %token <std::string> ENDL
 
 %type <Tree> doc
-%type <Tree> doc.attribute.list
-%type <Tree> doc.attribute.definition
+%type <bool> doc.attribute.list
+%type <bool> doc.attribute.definition
 %type <bool> doc.attribute.value
 %type <std::string> doc.text
 %type <Tree> doc.equation
 %type <Tree> doc.diagram
-%type <Tree> doc.notice
-%type <Tree> doc.list
+%type <std::string> doc.notice
+%type <bool> doc.list
 %type <Tree> doc.metadata
 
 %type <Tree> expression
@@ -441,9 +441,13 @@
 program:
 		statement.list {
 			$$ = $[statement.list];
+      $$->location() = @$;
 			self._ast = self.formatDefinitions($$);
 		}
-  | /* empty */ { $$ = ::Faust::Primitive::Symbols::asTree().nil; }
+  | %empty {
+    $$ = ::Faust::Primitive::Symbols::asTree().nil;
+    $$->location() = @$;
+  }
 
 /*-----------------------------------------------------*
 |  Everything else is in (mostly) alphabetical order.  |
@@ -456,59 +460,104 @@ program:
 doc:
 		doc.text {
 			$$ = ::docTxt($[doc.text].c_str());
-//			delete $[doc.text];
 		}
-  | doc.equation { $$ = ::docEqn($[doc.equation]); }
-  | doc.diagram { $$ = ::docDgm($[doc.diagram]); }
-  | doc.notice { $$ = ::docNtc(); }
-  | doc.list { $$ = ::docLst(); }
-  | doc.metadata { $$ = ::docMtd($[doc.metadata]); }
-	| /* empty */ { $$ = ::Faust::Primitive::Symbols::asTree().nil; }
+  | doc.equation {
+      $$ = ::docEqn($[doc.equation]);
+      $$->location() = @$;
+    }
+  | doc.diagram {
+      $$ = ::docDgm($[doc.diagram]);
+      $$->location() = @$;
+    }
+  | doc.notice {
+      $$ = ::docNtc();
+      $$->location() = @$;
+    }
+  | doc.list {
+      $$ = ::docLst();
+      $$->location() = @$;
+    }
+  | doc.metadata {
+      $$ = ::docMtd($[doc.metadata]);
+      $$->location() = @$;
+    }
+	| %empty {
+      $$ = ::Faust::Primitive::Symbols::asTree().nil;
+      $$->location() = @$;
+    }
 
   doc.text:
-      DOCCHAR { $$ = $DOCCHAR; }
-    | doc.text[prior] DOCCHAR { $$ = $prior.append(self._lexer->YYText()); }
+      DOCCHAR {
+        $$ = $DOCCHAR;
+      }
+    | doc.text[prior] DOCCHAR {
+        $$ = $prior.append(self._lexer->YYText());
+      }
 
   doc.equation:
-      BEQN expression EEQN { $$ = $expression; }
+      BEQN expression EEQN {
+        $$ = $expression;
+        $$->location() = @$;
+      }
 
   doc.diagram:
-      BDGM expression EDGM { $$ = $expression; }
+      BDGM expression EDGM {
+        $$ = $expression;
+        $$->location() = @$;
+      }
 
   doc.notice:
-      NOTICE { }
+      NOTICE {
+        $$ = $NOTICE;
+      }
 
   doc.metadata:
-    BMETADATA statement.identifier.as.tree[metadata] EMETADATA {
-      $$ = $metadata;
-    }
+      BMETADATA statement.identifier.as.tree EMETADATA {
+        $$ = $[statement.identifier.as.tree];
+        $$->location() = @$;
+      }
 
   /*------------------- doc.list -------------------*/
 
   doc.list:
-      BLST doc.attribute.list ELST { }
-   |  BLST /* Empty list */ ELST { }
+      BLST doc.attribute.list ELST {
+        $$ = $[doc.attribute.list];
+      }
+   |  BLST /* Empty list */ ELST {
+        $$ = ::Faust::Primitive::Symbols::asTree().nil;
+      }
 
     doc.attribute.list:
-        doc.attribute.definition {}
-      | doc.attribute.list doc.attribute.definition { }
+        doc.attribute.definition {
+          $$ = $[doc.attribute.definition];
+        }
+      | doc.attribute.list doc.attribute.definition {
+          $$ = $[doc.attribute.definition];
+        }
 
     doc.attribute.definition:
         LSTDEPENDENCIES LSTEQ LSTQ doc.attribute.value LSTQ {
+          $$ = $[doc.attribute.value];
           self._lstDependenciesSwitch = $[doc.attribute.value];
         }
       | LSTMDOCTAGS LSTEQ LSTQ doc.attribute.value LSTQ {
+          $$ = $[doc.attribute.value];
           self._stripDocSwitch = $[doc.attribute.value];
           self._stripDocSwitch ? self._stripDocSwitch=false
                                    : self._stripDocSwitch=true;
         }
       | LSTDISTRIBUTED LSTEQ LSTQ doc.attribute.value LSTQ {
+          $$ = $[doc.attribute.value];
           self._lstDistributedSwitch = $[doc.attribute.value];
         }
 
     doc.attribute.value:
-        LSTTRUE { $$ = true; }
-      | LSTFALSE { $$ = false; }
+        LSTTRUE {
+          $$ = true;
+        }
+      | LSTFALSE {
+          $$ = false;
+        }
 
 /****************************************************/
 /******************** Expression ********************/
@@ -524,6 +573,7 @@ expression:
   expression.component:
       COMPONENT LPAR primitive.string.unquoted.as.tree RPAR {
         $$ = ::boxComponent($[primitive.string.unquoted.as.tree]);
+        $$->location() = @$;
       }
 
   /******************** Composition ********************/
@@ -535,6 +585,7 @@ expression:
   expression.composition.parallel:
       expression[lhs] COMMA expression[rhs] {
         $$ = ::boxPar( $lhs, $rhs );
+        $$->location() = @$;
       }
                 
   expression.composition.serial:
@@ -547,21 +598,25 @@ expression:
     expression.composition.mix:
         expression.composition.serial[lhs] MIX expression.composition.serial[rhs] {
           $$ = ::boxMerge( $lhs, $rhs );
+          $$->location() = @$;
         }
           
     expression.composition.recursive:
         expression.composition.serial[lhs] REC expression.composition.serial[rhs] {
           $$ = ::boxRec($lhs,$rhs);
+          $$->location() = @$;
         }
       
     expression.composition.sequence:
         expression.composition.serial[lhs] SEQ expression.composition.serial[rhs] {
           $$ = ::boxSeq($lhs,$rhs);
+          $$->location() = @$;
         }
 
     expression.composition.split:
         expression.composition.serial[lhs] SPLIT expression.composition.serial[rhs] {
           $$ = ::boxSplit($lhs,$rhs);
+          $$->location() = @$;
         }
 
   /******************** Environment ********************/
@@ -569,6 +624,7 @@ expression:
   expression.environment:
       ENVIRONMENT LBRAQ statement.list RBRAQ {
         $$ = ::boxWithLocalDef(boxEnvironment(),self.formatDefinitions($[statement.list]));
+        $$->location() = @$;
       }
 
   /******************** Infix ********************/
@@ -590,9 +646,7 @@ expression:
     | expression.math
     | expression.parenthesis
     | expression.signal
-
     | statement.box.identifier.as.tree
-
     | primitive
 
   expression.infix.definitions.substitution:
@@ -601,10 +655,14 @@ expression:
           $lhs,
           self.formatDefinitions($defs)
         );
+        $$->location() = @$;
       }
       
   expression.infix.environment.access:
-      expression.infix[lhs] DOT statement.box.identifier.as.tree[rhs] { $$ = ::boxAccess($lhs,$rhs); }
+      expression.infix[lhs] DOT statement.box.identifier.as.tree[rhs] {
+        $$ = ::boxAccess($lhs,$rhs);      
+        $$->location() = @$;
+      }
 
   expression.infix.math:
       expression.infix.math.algebra
@@ -613,40 +671,96 @@ expression:
     | expression.infix.math.shift
 
   expression.infix.math.algebra:
-      expression.infix[lhs] ADD   expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigAdd)); }
-    | expression.infix[lhs] SUB   expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigSub)); }
-    | expression.infix[lhs] MUL   expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigMul)); }
-    | expression.infix[lhs] DIV   expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigDiv)); }
-    | expression.infix[lhs] MOD   expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigRem)); }
+      expression.infix[lhs] ADD   expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigAdd));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] SUB   expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigSub));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] MUL   expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigMul));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] DIV   expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigDiv));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] MOD   expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigRem));
+        $$->location() = @$;
+      }
     | expression.infix[lhs] POWOP expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxMathPrimitive( "pow" ));
+        $$->location() = @$;
       }
 
   expression.infix.math.comparison:
-      expression.infix[lhs] LT expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigLT)); }
-    | expression.infix[lhs] LE expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigLE)); }
-    | expression.infix[lhs] GT expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigGT)); }
-    | expression.infix[lhs] GE expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigGE)); }
-    | expression.infix[lhs] EQ expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigEQ)); }
-    | expression.infix[lhs] NE expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigNE)); }
+      expression.infix[lhs] LT expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigLT));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] LE expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigLE));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] GT expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigGT));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] GE expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigGE));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] EQ expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigEQ));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] NE expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigNE));
+        $$->location() = @$;
+      }
 
   expression.infix.math.logic:
-      expression.infix[lhs] AND expression.infix[rhs] { $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigAND)); }
-    | expression.infix[lhs] OR  expression.infix[rhs] { $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigOR)); }
-    | expression.infix[lhs] XOR expression.infix[rhs] { $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigXOR)); }
+      expression.infix[lhs] AND expression.infix[rhs] {
+        $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigAND));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] OR  expression.infix[rhs] {
+        $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigOR));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] XOR expression.infix[rhs] {
+        $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigXOR));
+        $$->location() = @$;
+      }
 
   expression.infix.math.shift:
-      expression.infix[lhs] LSH expression.infix[rhs] { $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigLeftShift)); }
+      expression.infix[lhs] LSH expression.infix[rhs] {
+        $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigLeftShift));
+        $$->location() = @$;
+      }
     | expression.infix[lhs] RSH expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigARightShift));
+        $$->location() = @$;
       }
 
   expression.infix.prefix:
-      expression.infix[lhs] LPAR  expression.composition.parallel RPAR { $$ = ::buildBoxAppl($lhs,$[expression.composition.parallel]); }
+      expression.infix[lhs] LPAR  expression.composition.parallel RPAR {
+        $$ = ::buildBoxAppl($lhs,$[expression.composition.parallel]);
+        $$->location() = @$;
+      }
   
   expression.infix.signal.delay:
-      expression.infix[lhs] FDELAY expression.infix[rhs] { $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigDelay)); }
-    | expression.infix[lhs] DELAY1 { $$ = ::boxSeq($lhs,::boxPrim1(sigDelay1)); }
+      expression.infix[lhs] FDELAY expression.infix[rhs] {
+        $$ = ::boxSeq(boxPar($lhs,$rhs),::boxPrim2(sigDelay));
+        $$->location() = @$;
+      }
+    | expression.infix[lhs] DELAY1 {
+        $$ = ::boxSeq($lhs,::boxPrim1(sigDelay1));
+        $$->location() = @$;
+    }
 
   /******************** Iteration ********************/
 
@@ -657,6 +771,7 @@ expression:
           $[expression.composition.serial],
           $expression
         );
+        $$->location() = @$;
       }
 
   expression.iterate.sequence:
@@ -666,6 +781,7 @@ expression:
           $[expression.composition.serial],
           $expression
         );
+        $$->location() = @$;
       }
 
   expression.iterate.sum:
@@ -675,6 +791,7 @@ expression:
           $[expression.composition.serial],
           $expression
         );
+        $$->location() = @$;
       }
 
   expression.iterate.product:
@@ -684,6 +801,7 @@ expression:
           $[expression.composition.serial],
           $expression
         );
+        $$->location() = @$;
       }
 
   /******************** Lambda ********************/
@@ -694,6 +812,7 @@ expression:
           $[expression.lambda.params],
           $expression
         );
+        $$->location() = @$;
       }
   
   expression.lambda.params:
@@ -706,10 +825,17 @@ expression:
             $[statement.box.identifier.as.tree],
             ::Faust::Primitive::Symbols::asTree().nil
           );
+          $$->location() = @$;
         }
 
     expression.lambda.params.append:
-        expression.lambda.params[prior] COMMA statement.box.identifier.as.tree[next] { $$ = ::cons($next,$prior); }
+        expression.lambda.params COMMA statement.box.identifier.as.tree {
+          $$ = ::cons(
+            $[statement.box.identifier.as.tree],
+            $[expression.lambda.params]
+          );
+          $$->location() = @$;
+        }
 
   /******************** Letrec ********************/
 
@@ -720,6 +846,7 @@ expression:
         self.formatDefinitions(::Faust::Primitive::Symbols::asTree().nil),
         ::Faust::Primitive::Symbols::asTree().nil
       );
+      $$->location() = @$;
 		}
   | expression[lhs] LETREC LBRAQ expression.letrec.list RBRAQ {
 			$$ = boxWithRecDef(
@@ -727,6 +854,7 @@ expression:
         self.formatDefinitions($[expression.letrec.list]),
         ::Faust::Primitive::Symbols::asTree().nil
       );
+      $$->location() = @$;
 		}
   | expression[lhs] LETREC LBRAQ expression.letrec.list WHERE statement.definition.list RBRAQ {
 			$$ = boxWithRecDef(
@@ -734,6 +862,7 @@ expression:
         self.formatDefinitions($[expression.letrec.list]),
         self.formatDefinitions($[expression.letrec.list])
       );
+      $$->location() = @$;
 		}
 
   /*------------------- letrec.list -------------------*/
@@ -748,10 +877,17 @@ expression:
             $item,
             ::Faust::Primitive::Symbols::asTree().nil
           );
+          $$->location() = @$;
         }
         
     expression.letrec.list.append:
-        expression.letrec.list[prior] expression.letrec.equation[next] { $$ = cons ($next,$prior); }
+        expression.letrec.list expression.letrec.equation {
+          $$ = cons (
+            $[expression.letrec.equation],
+            $[expression.letrec.list]
+          );
+          $$->location() = @$;
+        }
         
   expression.letrec.equation:
       expression.letrec.equation.name DEF expression ENDDEF {
@@ -764,10 +900,17 @@ expression:
         );
         $$->location() = @$;
       }
-    | error ENDDEF { $$ = ::Faust::Primitive::Symbols::asTree().nil; self._lexer->LexerError("Expected expression."); }
+    | error ENDDEF {
+        $$ = ::Faust::Primitive::Symbols::asTree().nil;
+        self._lexer->LexerError("Expected expression.");
+        $$->location() = @$;
+    }
 
     expression.letrec.equation.name:
-        DELAY1 statement.box.identifier.as.tree { $$=$[statement.box.identifier.as.tree]; }
+        DELAY1 statement.box.identifier.as.tree {
+          $$ = $[statement.box.identifier.as.tree];
+          $$->location() = @$;
+        }
 
 
   /******************** Library ********************/
@@ -775,6 +918,7 @@ expression:
   expression.library:
       LIBRARY LPAR primitive.string.unquoted.as.tree RPAR {
         $$ = ::boxLibrary( $[primitive.string.unquoted.as.tree] );
+        $$->location() = @$;
       }
 
   /******************** Math ********************/
@@ -787,23 +931,68 @@ expression:
     | expression.math.rounding
 
     expression.math.comparison:
-        LT { $$ = ::boxPrim2(sigLT); }
-      | LE { $$ = ::boxPrim2(sigLE); }
-      | GT { $$ = ::boxPrim2(sigGT); }
-      | GE { $$ = ::boxPrim2(sigGE); }
-      | EQ { $$ = ::boxPrim2(sigEQ); }
-      | NE { $$ = ::boxPrim2(sigNE); }
+        LT {
+          $$ = ::boxPrim2(sigLT);
+          $$->location() = @$;
+        }
+      | LE {
+          $$ = ::boxPrim2(sigLE);
+          $$->location() = @$;
+        }
+      | GT {
+          $$ = ::boxPrim2(sigGT);
+          $$->location() = @$;
+        }
+      | GE {
+          $$ = ::boxPrim2(sigGE);
+          $$->location() = @$;
+        }
+      | EQ {
+          $$ = ::boxPrim2(sigEQ);
+          $$->location() = @$;
+        }
+      | NE {
+          $$ = ::boxPrim2(sigNE);
+          $$->location() = @$;
+        }
 
       expression.math.rounding:
-          ABS { $$ = ::boxMathPrimitive( "abs" ); }
-        | MIN { $$ = ::boxMathPrimitive( "min" ); }
-        | MAX { $$ = ::boxMathPrimitive( "max" ); }
-        | FLOOR { $$ = ::boxMathPrimitive( "floor" ); }
-        | CEIL { $$ = ::boxMathPrimitive( "ceil" ); }
-        | ASSERTBOUNDS { $$ = ::boxPrim3(sigAssertBounds);}
-        | LOWEST { $$ = ::boxPrim1(sigLowest);}
-        | HIGHEST { $$ = ::boxPrim1(sigHighest);}
-        | RINT { $$ = ::boxMathPrimitive( "rint" ); }
+          ABS {
+            $$ = ::boxMathPrimitive( "abs" );
+            $$->location() = @$;
+          }
+        | MIN {
+            $$ = ::boxMathPrimitive( "min" );
+            $$->location() = @$;
+          }
+        | MAX {
+            $$ = ::boxMathPrimitive( "max" );
+            $$->location() = @$;
+          }
+        | FLOOR {
+            $$ = ::boxMathPrimitive( "floor" );
+            $$->location() = @$;
+          }
+        | CEIL {
+            $$ = ::boxMathPrimitive( "ceil" );
+            $$->location() = @$;
+          }
+        | ASSERTBOUNDS {
+            $$ = ::boxPrim3(sigAssertBounds);
+            $$->location() = @$;
+          }
+        | LOWEST {
+            $$ = ::boxPrim1(sigLowest);
+            $$->location() = @$;
+          }
+        | HIGHEST {
+            $$ = ::boxPrim1(sigHighest);
+            $$->location() = @$;
+          }
+        | RINT {
+            $$ = ::boxMathPrimitive( "rint" );
+            $$->location() = @$;
+          }
 
     expression.math.signal:
         expression.math.signal.algebra
@@ -811,70 +1000,150 @@ expression:
       | expression.math.signal.power
 
       expression.math.signal.algebra:
-          ADD { $$ = ::boxPrim2(sigAdd); }
-        | SUB { $$ = ::boxPrim2(sigSub); }
-        | MUL { $$ = ::boxPrim2(sigMul); }
-        | DIV { $$ = ::boxPrim2(sigDiv); }
-        | MOD { $$ = ::boxPrim2(sigRem); }
-        | FMOD { $$ = ::boxMathPrimitive( "fmod" ); }
-        | REMAINDER { $$ = ::boxMathPrimitive( "remainder" ); }
+          ADD {
+            $$ = ::boxPrim2(sigAdd);
+            $$->location() = @$;
+          }
+        | SUB {
+            $$ = ::boxPrim2(sigSub);
+            $$->location() = @$;
+          }
+        | MUL {
+            $$ = ::boxPrim2(sigMul);
+            $$->location() = @$;
+          }
+        | DIV {
+            $$ = ::boxPrim2(sigDiv);
+            $$->location() = @$;
+          }
+        | MOD {
+            $$ = ::boxPrim2(sigRem);
+            $$->location() = @$;
+          }
+        | FMOD {
+            $$ = ::boxMathPrimitive( "fmod" );
+            $$->location() = @$;
+          }
+        | REMAINDER {
+            $$ = ::boxMathPrimitive( "remainder" );
+            $$->location() = @$;
+          }
         | SUB statement.box.identifier.as.tree {
-          $$ = ::boxSeq(
-            ::boxPar(
-              ::boxInt(0),
-              $[statement.box.identifier.as.tree]
-            ),
-            ::boxPrim2(sigSub)
-          );
+            $$ = ::boxSeq(
+              ::boxPar(
+                ::boxInt(0),
+                $[statement.box.identifier.as.tree]
+              ),
+              ::boxPrim2(sigSub)
+            );
+            $$->location() = @$;
         }
 
       expression.math.signal.shift:
-          LSH { $$ = ::boxPrim2(sigLeftShift); }
-        | RSH { $$ = ::boxPrim2(sigARightShift); }
+          LSH {
+            $$ = ::boxPrim2(sigLeftShift);
+            $$->location() = @$;
+          }
+        | RSH {
+            $$ = ::boxPrim2(sigARightShift);
+            $$->location() = @$;
+          }
 
       expression.math.signal.power:
-          EXP { $$ = ::boxMathPrimitive( "exp" ); }
-        | LOG { $$ = ::boxMathPrimitive( "log" ); }
-        | LOG10 { $$ = ::boxMathPrimitive( "log10" ); }
-        | POWOP { $$ = ::boxMathPrimitive( "pow" ); }
-        | POWFUN { $$ = ::boxMathPrimitive( "pow" ); }
-        | SQRT { $$ = ::boxMathPrimitive( "sqrt" ); }
+          EXP {
+            $$ = ::boxMathPrimitive( "exp" );
+            $$->location() = @$;
+          }
+        | LOG {
+            $$ = ::boxMathPrimitive( "log" );
+            $$->location() = @$;
+          }
+        | LOG10 {
+            $$ = ::boxMathPrimitive( "log10" );
+            $$->location() = @$;
+          }
+        | POWOP {
+            $$ = ::boxMathPrimitive( "pow" );
+            $$->location() = @$;
+          }
+        | POWFUN {
+            $$ = ::boxMathPrimitive( "pow" );
+            $$->location() = @$;
+          }
+        | SQRT {
+            $$ = ::boxMathPrimitive( "sqrt" );
+            $$->location() = @$;
+          }
 
       expression.math.scalar.as.tree:
         expression.math.scalar.int.as.tree
       | expression.math.scalar.float.as.tree
 
         expression.math.scalar.int:
-          ADD INT { $$ = std::stoi(self._lexer->YYText()); }
-        | SUB INT { $$ = -$INT; }
+          ADD INT {
+            $$ = std::stoi(self._lexer->YYText());
+          }
+        | SUB INT {
+            $$ = -$INT;
+          }
 
         expression.math.scalar.int.as.tree:
           expression.math.scalar.int {
             $$ = ::boxInt( $[expression.math.scalar.int] );
+            $$->location() = @$;
           }
 
         expression.math.scalar.float:
-          ADD FLOAT { $$ = $FLOAT; }
-        | SUB FLOAT { $$ = -$FLOAT; }
+          ADD FLOAT {
+            $$ = $FLOAT;
+          }
+        | SUB FLOAT {
+            $$ = -$FLOAT;
+          }
 
         expression.math.scalar.float.as.tree:
           expression.math.scalar.float {
             $$ = ::boxReal( $[expression.math.scalar.float] );
+            $$->location() = @$;
           }
 
       expression.math.trigonometry.as.tree:
-          ACOS { $$ = ::boxMathPrimitive( "acos" ); }
-        | ASIN { $$ = ::boxMathPrimitive( "asin" ); }
-        | ATAN { $$ = ::boxMathPrimitive( "atan" ); }
-        | ATAN2 { $$ = ::boxMathPrimitive( "atan2" ); }
-        | COS { $$ = ::boxMathPrimitive( "cos" ); }
-        | SIN { $$ = ::boxMathPrimitive( "sin" ); }
-        | TAN { $$ = ::boxMathPrimitive( "tan" ); }
+          ACOS {
+            $$ = ::boxMathPrimitive( "acos" );
+          
+          }
+        | ASIN {
+            $$ = ::boxMathPrimitive( "asin" );
+        
+          }
+        | ATAN {
+            $$ = ::boxMathPrimitive( "atan" );
+        
+          }
+        | ATAN2 {
+            $$ = ::boxMathPrimitive( "atan2" );
+        
+          }
+        | COS {
+            $$ = ::boxMathPrimitive( "cos" );
+        
+          }
+        | SIN {
+            $$ = ::boxMathPrimitive( "sin" );
+        
+          }
+        | TAN {
+            $$ = ::boxMathPrimitive( "tan" );
+        
+          }
 
   /******************** Parenthesis ********************/
 
   expression.parenthesis:
-    LPAR expression RPAR { $$ = $expression; }
+    LPAR expression RPAR {
+      $$ = $expression;
+      $$->location() = @$;
+    }
 
   /******************** Signal ********************/
 
@@ -884,23 +1153,57 @@ expression:
     | expression.signal.logic
   
     expression.signal.control:
-        ATTACH { $$ = ::boxPrim2(sigAttach); }
-      | ENABLE { $$ = ::boxPrim2(sigEnable); }
-      | CONTROL { $$ = ::boxPrim2(sigControl); }
+        ATTACH {
+          $$ = ::boxPrim2(sigAttach);
+          $$->location() = @$;
+        }
+      | ENABLE {
+          $$ = ::boxPrim2(sigEnable);
+          $$->location() = @$;
+        }
+      | CONTROL {
+          $$ = ::boxPrim2(sigControl);
+          $$->location() = @$;
+        }
 
     expression.signal.delay:
-        MEM { $$ = ::boxPrim1(sigDelay1); }
-      | PREFIX { $$ = ::boxPrim2(sigPrefix); }
-      | FDELAY { $$ = ::boxPrim2(sigDelay); }
+        MEM {
+          $$ = ::boxPrim1(sigDelay1);
+          $$->location() = @$;
+        }
+      | PREFIX {
+          $$ = ::boxPrim2(sigPrefix);
+          $$->location() = @$;
+        }
+      | FDELAY {
+          $$ = ::boxPrim2(sigDelay);
+          $$->location() = @$;
+        }
 
     expression.signal.logic:
-        AND { $$ = ::boxPrim2(sigAND); }
-      | OR { $$ = ::boxPrim2(sigOR); }
-      | XOR { $$ = ::boxPrim2(sigXOR); }
-      | SELECT2 { $$ = ::boxPrim3(sigSelect2); }
-      | SELECT3 { $$ = ::boxPrim4(sigSelect3); }
+        AND {
+          $$ = ::boxPrim2(sigAND);
+          $$->location() = @$;
+        }
+      | OR {
+          $$ = ::boxPrim2(sigOR);
+          $$->location() = @$;
+        }
+      | XOR {
+          $$ = ::boxPrim2(sigXOR);
+          $$->location() = @$;
+        }
+      | SELECT2 {
+          $$ = ::boxPrim3(sigSelect2);
+          $$->location() = @$;
+        }
+      | SELECT3 {
+          $$ = ::boxPrim4(sigSelect3);
+          $$->location() = @$;
+        }
       | CASE LBRAQ statement.signal.pattern.rule.list RBRAQ {
           $$ = ::boxCase(self.checkRulelist($[statement.signal.pattern.rule.list]));
+          $$->location() = @$;
         }
 
 /***************************************************/
@@ -940,11 +1243,13 @@ primitive:
     primitive.type.number.int.as.tree:
       primitive.type.number.int {
         $$ = boxInt( $[primitive.type.number.int] );
+        $$->location() = @$;
       }
 
     primitive.type.number.float.as.tree:
       primitive.type.number.float {
         $$ = boxReal( $[primitive.type.number.float] );
+        $$->location() = @$;
       }
 
   /******************** String ********************/
@@ -957,6 +1262,7 @@ primitive:
   primitive.string.quoted.as.tree:
       primitive.string.quoted {
         $$ = ::tree( $[primitive.string.quoted] );
+        $$->location() = @$;
       }
 
   primitive.string.unquoted:
@@ -967,15 +1273,21 @@ primitive:
   primitive.string.unquoted.as.tree:
       primitive.string.unquoted {
         $$ = ::tree( $[primitive.string.unquoted] );
+        $$->location() = @$;
       }
 
   primitive.string.tag:
-      STRING { $$ = self._lexer->YYText(); }
-    | TAGSTRING { $$ = self._lexer->YYText(); }
+      STRING {
+        $$ = self._lexer->YYText();
+      }
+    | TAGSTRING {
+        $$ = self._lexer->YYText();
+      }
 
   primitive.string.tag.as.tree:
     primitive.string.tag {
       $$ = ::tree( $[primitive.string.tag] );
+      $$->location() = @$;
     }
 
   /******************** Signal ********************/
@@ -989,10 +1301,16 @@ primitive:
   | primitive.signal.source
   
   primitive.signal.input.wire:
-      WIRE { $$ = ::boxWire(); }
+      WIRE {
+        $$ = ::boxWire();
+        $$->location() = @$;
+      }
 
   primitive.signal.input.terminate:
-      CUT { $$ = ::boxCut(); }
+      CUT {
+        $$ = ::boxCut();
+        $$->location() = @$;
+      }
 
   primitive.type:
       primitive.type.cast.number
@@ -1005,13 +1323,22 @@ primitive:
       | primitive.type.cast.number.float
 
       primitive.type.cast.number.int:
-          INTCAST { $$ = ::boxPrim1(sigIntCast); }
+          INTCAST {
+            $$ = ::boxPrim1(sigIntCast);
+            $$->location() = @$;
+          }
 
       primitive.type.cast.number.float:
-          FLOATCAST { $$ = ::boxPrim1(sigFloatCast); }
+          FLOATCAST {
+            $$ = ::boxPrim1(sigFloatCast);
+            $$->location() = @$;
+          }
 
     primitive.type.cast.any:
-        ANYCAST { $$ = ::tree(2); }
+        ANYCAST {
+          $$ = ::tree(2);
+          $$->location() = @$;
+        }
 
     /*------------------- type.number.list.int -------------------*/
 
@@ -1103,6 +1430,7 @@ primitive:
               $connections,
               ::boxPar( ::boxInt(0), ::boxInt(0) )
             );
+            $$->location() = @$;
           }
 
       primitive.signal.route.implied.connections:
@@ -1112,6 +1440,7 @@ primitive:
               $outputs,
               ::boxPar( ::boxInt(0), ::boxInt(0) )
             );
+            $$->location() = @$;
           }
 
       primitive.signal.route.explicit:
@@ -1121,6 +1450,7 @@ primitive:
               $outputs,
               $[expression.composition.parallel]
             );
+            $$->location() = @$;
           }
 
     /******************** Source ********************/
@@ -1131,12 +1461,19 @@ primitive:
       | primitive.signal.source.table
 
       primitive.signal.source.table:
-          RDTBL { $$ = ::boxPrim3(sigReadOnlyTable); }
-        | RWTBL { $$ = ::boxPrim5(sigWriteReadTable); }
+          RDTBL {
+            $$ = ::boxPrim3(sigReadOnlyTable);
+            $$->location() = @$;
+          }
+        | RWTBL {
+            $$ = ::boxPrim5(sigWriteReadTable);
+            $$->location() = @$;
+          }
 
       primitive.signal.source.soundfile:
           SOUNDFILE LPAR primitive.string.unquoted.as.tree COMMA expression.composition RPAR {
             $$ = ::boxSoundfile( $[primitive.string.unquoted.as.tree], $[expression.composition] );
+            $$->location() = @$;
           }
         
       primitive.signal.source.waveform.as.tree:
@@ -1146,11 +1483,13 @@ primitive:
       primitive.signal.source.waveform.int.as.tree:
         WAVEFORM LBRAQ primitive.type.number.int.list.as.tree RBRAQ {
           $$ = ::boxWaveform( $[primitive.type.number.int.list.as.tree] );
+          $$->location() = @$;
         }
 
       primitive.signal.source.waveform.float.as.tree:
         WAVEFORM LBRAQ primitive.type.number.float.list.as.tree RBRAQ {
           $$ = ::boxWaveform( $[primitive.type.number.float.list.as.tree] );
+          $$->location() = @$;
         }
 
     /******************** Type ********************/
@@ -1160,10 +1499,19 @@ primitive:
       | primitive.type.list.append
 
       primitive.type.list.start:
-          primitive.type { $$ = ::cons($[primitive.type],::Faust::Primitive::Symbols::asTree().nil); }
+          primitive.type {
+            $$ = ::cons($[primitive.type],::Faust::Primitive::Symbols::asTree().nil);
+            $$->location() = @$;
+          }
 
       primitive.type.list.append:
-          primitive.type.list[prior] COMMA primitive.type[next] { $$ = ::cons($next,$prior); }
+          primitive.type.list COMMA primitive.type {
+            $$ = ::cons(
+              $[primitive.type],
+              $[primitive.type.list]
+            );
+            $$->location() = @$;
+          }
 
 
   /******************** UI ********************/
@@ -1183,51 +1531,61 @@ primitive:
     primitive.ui.button:
         BUTTON LPAR primitive.string.unquoted.as.tree RPAR {
           $$ = ::boxButton($[primitive.string.unquoted.as.tree]);
+          $$->location() = @$;
         }
 
     primitive.ui.checkbox:
         CHECKBOX LPAR primitive.string.unquoted.as.tree RPAR {
           $$ = ::boxCheckbox($[primitive.string.unquoted.as.tree]);
+          $$->location() = @$;
         }
 
     primitive.ui.vslider:
         VSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
           $$ = ::boxVSlider($[primitive.string.unquoted.as.tree],$arg1,$arg2,$arg3,$arg4);
+          $$->location() = @$;
         }
 
     primitive.ui.hslider:
         HSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
           $$ = ::boxHSlider($[primitive.string.unquoted.as.tree],$arg1,$arg2,$arg3,$arg4);
+          $$->location() = @$;
         }
 
     primitive.ui.nentry:
         NENTRY LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
           $$ = ::boxNumEntry($[primitive.string.unquoted.as.tree],$arg1,$arg2,$arg3,$arg4);
+          $$->location() = @$;
         }
 
     primitive.ui.vgroup:
         VGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR {
           $$ = ::boxVGroup($[primitive.string.unquoted.as.tree], $expression);
+          $$->location() = @$;
         }
 
     primitive.ui.hgroup:
         HGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR {
           $$ = ::boxHGroup($[primitive.string.unquoted.as.tree], $expression);
+          $$->location() = @$;
         }
 
     primitive.ui.tgroup:
         TGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR {
           $$ = ::boxTGroup($[primitive.string.unquoted.as.tree], $expression);
+          $$->location() = @$;
         }
 
     primitive.ui.vbargraph:
         VBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] RPAR {
           $$ = ::boxVBargraph($[primitive.string.unquoted.as.tree],$arg1,$arg2);
+          $$->location() = @$;
         }
 
     primitive.ui.hbargraph:
         HBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] RPAR {
           $$ = ::boxHBargraph($[primitive.string.unquoted.as.tree],$arg1,$arg2);
+          $$->location() = @$;
         }
 
     /******************** Foreign ********************/
@@ -1241,10 +1599,57 @@ primitive:
               $[primitive.string.unquoted.as.tree]
             )
           );
+          $$->location() = @$;
         }
 
       primitive.foreign.function.signature:
           primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun] LPAR primitive.type.list RPAR {
+            $$ = ::cons(
+              $[primitive.type.number.as.tree],
+              ::cons(
+                ::cons(
+                  $fun,
+                  ::cons( $fun, ::cons( $fun, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                $[primitive.type.list]
+              )
+            );
+            $$->location() = @$;
+          }
+        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR primitive.type.list RPAR {
+            $$ = ::cons(
+              $[primitive.type.number.as.tree],
+              ::cons(
+                ::cons(
+                  $fun1,
+                  ::cons(
+                    $fun2,
+                    ::cons( $fun2, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                $[primitive.type.list]
+              )
+            );
+            $$->location() = @$;
+          }
+        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR primitive.type.list RPAR {
+            $$ = ::cons(
+              $[primitive.type.number.as.tree],
+              ::cons(
+                ::cons(
+                  $fun1,
+                  ::cons(
+                    $fun2,
+                    ::cons( $fun3, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                $[primitive.type.list]
+              )
+            );
+            $$->location() = @$;
+          }
+        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun] LPAR RPAR {
             $$ = ::cons(
               $[primitive.type.number.as.tree],
               ::cons(
@@ -1255,11 +1660,12 @@ primitive:
                     ::cons( $fun, ::Faust::Primitive::Symbols::asTree().nil )
                   )
                 ),
-                $[primitive.type.list]
+                ::Faust::Primitive::Symbols::asTree().nil
               )
             );
+            $$->location() = @$;
           }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR primitive.type.list RPAR {
+        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR RPAR {
             $$ = ::cons(
               $[primitive.type.number.as.tree],
               ::cons(
@@ -1267,27 +1673,29 @@ primitive:
                   $fun1,
                   ::cons(
                     $fun2,
-                    ::cons(
-                      $fun2,
-                      ::Faust::Primitive::Symbols::asTree().nil
-                    )
+                    ::cons( $fun2, ::Faust::Primitive::Symbols::asTree().nil )
                   )
                 ),
-                $[primitive.type.list]
+                ::Faust::Primitive::Symbols::asTree().nil
               )
             );
-          }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR primitive.type.list RPAR {
-            $$ = ::cons($[primitive.type.number.as.tree], ::cons(::cons($fun1,::cons($fun2,::cons($fun3,::Faust::Primitive::Symbols::asTree().nil))), $[primitive.type.list]));
-          }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun] LPAR RPAR {
-            $$ = ::cons($[primitive.type.number.as.tree], ::cons(::cons($fun,::cons($fun,::cons($fun,::Faust::Primitive::Symbols::asTree().nil))), ::Faust::Primitive::Symbols::asTree().nil));
-          }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR RPAR {
-            $$ = ::cons($[primitive.type.number.as.tree], ::cons(::cons($fun1,::cons($fun2,::cons($fun2,::Faust::Primitive::Symbols::asTree().nil))), ::Faust::Primitive::Symbols::asTree().nil));
+            $$->location() = @$;
           }
         | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR RPAR {
-            $$ = ::cons($[primitive.type.number.as.tree], ::cons(::cons($fun1,::cons($fun2,::cons($fun3,::Faust::Primitive::Symbols::asTree().nil))), ::Faust::Primitive::Symbols::asTree().nil));
+            $$ = ::cons(
+              $[primitive.type.number.as.tree],
+              ::cons(
+                ::cons(
+                  $fun1,
+                  ::cons(
+                    $fun2,
+                    ::cons( $fun3, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            $$->location() = @$;
           }
 
     primitive.foreign.constant:
@@ -1297,6 +1705,7 @@ primitive:
             $[statement.identifier.as.tree],
             $[primitive.string.tag.as.tree]
           );
+          $$->location() = @$;
         }
 
     primitive.foreign.variable:
@@ -1306,15 +1715,22 @@ primitive:
             $[statement.identifier.as.tree],
             $[primitive.string.tag.as.tree]
           );
+          $$->location() = @$;
         }
 
     /******************** I/O ********************/
 
     primitive.signal.inputs:
-        INPUTS LPAR expression RPAR { $$ = ::boxInputs($expression); }
+        INPUTS LPAR expression RPAR {
+          $$ = ::boxInputs($expression);
+          $$->location() = @$;
+        }
 
     primitive.signal.outputs:
-        OUTPUTS LPAR expression RPAR { $$ = ::boxOutputs($expression); }
+        OUTPUTS LPAR expression RPAR {
+          $$ = ::boxOutputs($expression);
+          $$->location() = @$;
+        }
 
 /***************************************************/
 /******************** Statement ********************/
@@ -1344,12 +1760,20 @@ statement:
 
     statement.definition.function.args.start:
       statement.definition.function.arg {
-        $$ = ::cons( $[statement.definition.function.arg], ::Faust::Primitive::Symbols::asTree().nil );
-      }
+        $$ = ::cons(
+          $[statement.definition.function.arg],
+          ::Faust::Primitive::Symbols::asTree().nil
+        );
+       $$->location() = @$;
+     }
       
     statement.definition.function.args.append:
       statement.definition.function.args COMMA statement.definition.function.arg {
-        $$ = ::cons( $[statement.definition.function.arg], $[statement.definition.function.args] );
+        $$ = ::cons(
+          $[statement.definition.function.arg],
+          $[statement.definition.function.args]
+        );
+        $$->location() = @$;
       }
 
     statement.definition.function.declaration:
@@ -1364,17 +1788,21 @@ statement:
     statement.definition.function:
         statement.definition.function.declaration ENDDEF {
           $$ = $[statement.definition.function.declaration];
+          $$->location() = @$;
         }
       | statement.definition.function.declaration ENDOFINPUT {
           $$ = $[statement.definition.function.declaration];
+          $$->location() = @$;
         }
       | statement.definition.function.declaration ENDL {
           $$ = $[statement.definition.function.declaration];
+          $$->location() = @$;
         }
       | ENDDEF error {
         yyerrok;
         yyclearin;
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
+        $$->location() = @$;
       }
 
     statement.definition.assignment:
@@ -1388,13 +1816,18 @@ statement:
     
     statement.definition.with:
       expression WITH LBRAQ statement.definition.list RBRAQ {
-        $$ = ::boxWithLocalDef($expression,self.formatDefinitions($[statement.definition.list]));
+        $$ = ::boxWithLocalDef(
+          $expression,
+          self.formatDefinitions($[statement.definition.list])
+        );
+        $$->location() = @$;
       }
 
     statement.definition.error:
         error ENDDEF {
           $$ = ::Faust::Primitive::Symbols::asTree().nil;
           self._lexer->LexerError("Error in definition.");
+          $$->location() = @$;
         }
 
     /*------------------- statement.definition.list -------------------*/
@@ -1407,7 +1840,11 @@ statement:
 
       statement.definition.list.start:
           statement.definition {
-            $$ = ::cons( $[statement.definition.list.start], ::Faust::Primitive::Symbols::asTree().nil );
+            $$ = ::cons(
+              $[statement.definition.list.start],
+              ::Faust::Primitive::Symbols::asTree().nil
+            );
+            $$->location() = @$;
           }
 
       statement.definition.list.start.qualified:
@@ -1416,11 +1853,13 @@ statement:
               $$ = ::cons( $[statement.definition], ::Faust::Primitive::Symbols::asTree().nil );
             else
               $$ = ::Faust::Primitive::Symbols::asTree().nil;
+            $$->location() = @$;
           }
 
       statement.definition.list.append:
           statement.definition.list statement.definition {
             $$ = cons ($[statement.definition],$[statement.definition.list]);
+            $$->location() = @$;
           }
           
       statement.definition.list.append.qualified:
@@ -1429,6 +1868,7 @@ statement:
               $$ = cons ($[statement.definition],$[statement.definition.list]);
             else
               $$ = $[statement.definition.list];
+            $$->location() = @$;
           }
 
   /******************** Declare ********************/
@@ -1437,18 +1877,21 @@ statement:
       DECLARE statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] ENDDEF {
         self.declareMetadata($key,$value);
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
+        $$->location() = @$;
       }
 
   statement.declare.feature.metadata:
       DECLARE statement.identifier.as.tree[feature] statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] ENDDEF {
         self.declareDefinitionMetadata( $feature, $key, $value );
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
+        $$->location() = @$;
       }
 
   statement.declare.doc:
       BDOC doc[body] EDOC {
         ::declareDoc($body);
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
+        $$->location() = @$;
       }
 
   /******************** Identifier ********************/
@@ -1466,12 +1909,18 @@ statement:
       }
 
   statement.foreign.function.identifier.as.tree:
-      IDENT { $$ = ::tree(self._lexer->YYText()); }
+      IDENT {
+        $$ = ::tree(self._lexer->YYText());
+        $$->location() = @$;
+      }
 
   /******************** Import ********************/
 
   statement.import:
-      IMPORT LPAR primitive.string.unquoted.as.tree[filename] RPAR ENDDEF { $$ = ::importFile($filename); }
+      IMPORT LPAR primitive.string.unquoted.as.tree[filename] RPAR ENDDEF {
+        $$ = ::importFile($filename);
+        $$->location() = @$;
+      }
 
   /******************** List ********************/
 
@@ -1489,6 +1938,7 @@ statement:
           else {
             $$ = $$ = ::Faust::Primitive::Symbols::asTree().nil;
           }
+          $$->location() = @$;
         }
 
     statement.list.start.qualified:
@@ -1498,6 +1948,7 @@ statement:
             $$ = ::cons($statement, ::Faust::Primitive::Symbols::asTree().nil);
           else
             $$ = ::Faust::Primitive::Symbols::asTree().nil;
+          $$->location() = @$;
         }
 
     statement.list.append:
@@ -1508,6 +1959,7 @@ statement:
           else {
             $$ = $[statement.list];
           }
+          $$->location() = @$;
         }
     
     statement.list.append.qualified:
@@ -1519,15 +1971,24 @@ statement:
           else {
             $$=$[statement.list];
           }
+          $$->location() = @$;
         }
 
   /******************** Math ********************/
 
     statement.math.precision:
-        FLOATMODE { $$ = 1; }
-      | DOUBLEMODE { $$ = 2; }
-      | QUADMODE { $$ = 4; }
-      | FIXEDPOINTMODE { $$ = 8; }
+        FLOATMODE {
+          $$ = 1;
+        }
+      | DOUBLEMODE {
+          $$ = 2;
+        }
+      | QUADMODE {
+          $$ = 4;
+        }
+      | FIXEDPOINTMODE {
+          $$ = 8;
+        }
 
       /*------------------- math.precision.list -------------------*/
 
@@ -1555,9 +2016,21 @@ statement:
     | statement.signal.pattern.rule.list.append
 
     statement.signal.pattern.rule.list.start:
-        statement.signal.pattern.rule { $$ = ::cons($[statement.signal.pattern.rule],::Faust::Primitive::Symbols::asTree().nil); }
+        statement.signal.pattern.rule {
+          $$ = ::cons(
+            $[statement.signal.pattern.rule],
+            ::Faust::Primitive::Symbols::asTree().nil
+          );
+          $$->location() = @$;
+        }
     
     statement.signal.pattern.rule.list.append:
-        statement.signal.pattern.rule.list[prior] statement.signal.pattern.rule[next] { $$ = ::cons($next,$prior); }
+        statement.signal.pattern.rule.list statement.signal.pattern.rule {
+          $$ = ::cons(
+            $[statement.signal.pattern.rule],
+            $[statement.signal.pattern.rule.list]
+          );
+          $$->location() = @$;
+        }
 
 %%

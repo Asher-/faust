@@ -420,10 +420,6 @@ namespace Faust { namespace Compiler { namespace Parser {
       char dummy1[sizeof (FloatType)];
 
       // INT
-      // FLOATMODE
-      // DOUBLEMODE
-      // QUADMODE
-      // FIXEDPOINTMODE
       // expression.math.scalar.int
       // primitive.type.number.int
       // primitive.type.number.int.list.member
@@ -437,11 +433,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       // doc
       // doc.equation
       // doc.diagram
-      // doc.notice
       // doc.metadata
-      // doc.list
-      // doc.attribute.list
-      // doc.attribute.definition
       // expression
       // expression.component
       // expression.composition
@@ -575,6 +567,9 @@ namespace Faust { namespace Compiler { namespace Parser {
       // statement.signal.pattern.rule.list.append
       char dummy3[sizeof (Tree)];
 
+      // doc.list
+      // doc.attribute.list
+      // doc.attribute.definition
       // doc.attribute.value
       char dummy4[sizeof (bool)];
 
@@ -686,6 +681,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       // ASSERTBOUNDS
       // LOWEST
       // HIGHEST
+      // FLOATMODE
+      // DOUBLEMODE
+      // QUADMODE
+      // FIXEDPOINTMODE
       // BDOC
       // EDOC
       // BEQN
@@ -708,6 +707,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       // LSTQ
       // ENDL
       // doc.text
+      // doc.notice
       // primitive.string.quoted
       // primitive.string.unquoted
       // primitive.string.tag
@@ -1285,10 +1285,6 @@ namespace Faust { namespace Compiler { namespace Parser {
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -1303,11 +1299,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -1442,6 +1434,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.move< Tree > (std::move (that.value));
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.move< bool > (std::move (that.value));
         break;
@@ -1554,6 +1549,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -1576,6 +1575,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -1770,10 +1770,6 @@ switch (yykind)
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -1788,11 +1784,7 @@ switch (yykind)
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -1927,6 +1919,9 @@ switch (yykind)
         value.template destroy< Tree > ();
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.template destroy< bool > ();
         break;
@@ -2039,6 +2034,10 @@ switch (yykind)
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -2061,6 +2060,7 @@ switch (yykind)
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -2210,8 +2210,7 @@ switch (yykind)
 #endif
       {
 #if !defined _MSC_VER || defined __clang__
-        YY_ASSERT (tok == token::FAUST_INT
-                   || (token::FAUST_FLOATMODE <= tok && tok <= token::FAUST_FIXEDPOINTMODE));
+        YY_ASSERT (tok == token::FAUST_INT);
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -2224,8 +2223,7 @@ switch (yykind)
       {
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT ((token::FAUST_WITH <= tok && tok <= token::FAUST_SELECT3)
-                   || (token::FAUST_LAMBDA <= tok && tok <= token::FAUST_HIGHEST)
-                   || (token::FAUST_BDOC <= tok && tok <= token::FAUST_ENDL));
+                   || (token::FAUST_LAMBDA <= tok && tok <= token::FAUST_ENDL));
 #endif
       }
     };
@@ -3974,14 +3972,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_FLOATMODE (IntType v, location_type l)
+      make_FLOATMODE (std::string v, location_type l)
       {
         return symbol_type (token::FAUST_FLOATMODE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_FLOATMODE (const IntType& v, const location_type& l)
+      make_FLOATMODE (const std::string& v, const location_type& l)
       {
         return symbol_type (token::FAUST_FLOATMODE, v, l);
       }
@@ -3989,14 +3987,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_DOUBLEMODE (IntType v, location_type l)
+      make_DOUBLEMODE (std::string v, location_type l)
       {
         return symbol_type (token::FAUST_DOUBLEMODE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_DOUBLEMODE (const IntType& v, const location_type& l)
+      make_DOUBLEMODE (const std::string& v, const location_type& l)
       {
         return symbol_type (token::FAUST_DOUBLEMODE, v, l);
       }
@@ -4004,14 +4002,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_QUADMODE (IntType v, location_type l)
+      make_QUADMODE (std::string v, location_type l)
       {
         return symbol_type (token::FAUST_QUADMODE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_QUADMODE (const IntType& v, const location_type& l)
+      make_QUADMODE (const std::string& v, const location_type& l)
       {
         return symbol_type (token::FAUST_QUADMODE, v, l);
       }
@@ -4019,14 +4017,14 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_FIXEDPOINTMODE (IntType v, location_type l)
+      make_FIXEDPOINTMODE (std::string v, location_type l)
       {
         return symbol_type (token::FAUST_FIXEDPOINTMODE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_FIXEDPOINTMODE (const IntType& v, const location_type& l)
+      make_FIXEDPOINTMODE (const std::string& v, const location_type& l)
       {
         return symbol_type (token::FAUST_FIXEDPOINTMODE, v, l);
       }
@@ -4730,10 +4728,6 @@ switch (yykind)
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -4748,11 +4742,7 @@ switch (yykind)
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -4887,6 +4877,9 @@ switch (yykind)
         value.copy< Tree > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.copy< bool > (YY_MOVE (that.value));
         break;
@@ -4999,6 +4992,10 @@ switch (yykind)
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -5021,6 +5018,7 @@ switch (yykind)
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
@@ -5087,10 +5085,6 @@ switch (yykind)
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_FLOATMODE: // FLOATMODE
-      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
-      case symbol_kind::S_QUADMODE: // QUADMODE
-      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
       case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
@@ -5105,11 +5099,7 @@ switch (yykind)
       case symbol_kind::S_doc: // doc
       case symbol_kind::S_142_doc_equation: // doc.equation
       case symbol_kind::S_143_doc_diagram: // doc.diagram
-      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_145_doc_metadata: // doc.metadata
-      case symbol_kind::S_146_doc_list: // doc.list
-      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_expression: // expression
       case symbol_kind::S_151_expression_component: // expression.component
       case symbol_kind::S_152_expression_composition: // expression.composition
@@ -5244,6 +5234,9 @@ switch (yykind)
         value.move< Tree > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_146_doc_list: // doc.list
+      case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
+      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
       case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
         value.move< bool > (YY_MOVE (s.value));
         break;
@@ -5356,6 +5349,10 @@ switch (yykind)
       case symbol_kind::S_ASSERTBOUNDS: // ASSERTBOUNDS
       case symbol_kind::S_LOWEST: // LOWEST
       case symbol_kind::S_HIGHEST: // HIGHEST
+      case symbol_kind::S_FLOATMODE: // FLOATMODE
+      case symbol_kind::S_DOUBLEMODE: // DOUBLEMODE
+      case symbol_kind::S_QUADMODE: // QUADMODE
+      case symbol_kind::S_FIXEDPOINTMODE: // FIXEDPOINTMODE
       case symbol_kind::S_BDOC: // BDOC
       case symbol_kind::S_EDOC: // EDOC
       case symbol_kind::S_BEQN: // BEQN
@@ -5378,6 +5375,7 @@ switch (yykind)
       case symbol_kind::S_LSTQ: // LSTQ
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
+      case symbol_kind::S_144_doc_notice: // doc.notice
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag

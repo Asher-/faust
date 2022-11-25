@@ -179,33 +179,44 @@ void Implementation::declareDefinitionMetadata(Tree id, Tree key, Tree value)
 Tree Implementation::makeDefinition(Tree symbol, std::list<Tree>& variants)
 {
   if (variants.size() == 1) {
-    Tree rhs = *(variants.begin());
+    Tree rhs = *variants.begin();
     Tree args = hd(rhs);
     Tree body = tl(rhs);
 
-    if (isNil(args)) {
+    if ( isNil(args) ) {
       return body;
-    } else if (standardArgList(args)) {
-      return buildBoxAbstr(args, body);
-    } else {
-      return boxCase(cons(rhs,::Faust::Primitive::Symbols::asTree().nil));
     }
-  } else {
-    Tree l = ::Faust::Primitive::Symbols::asTree().nil;
+    else if ( standardArgList(args) ) {
+      return buildBoxAbstr(args, body);
+    }
+    else {
+      Tree rules = TREE_JOIN( "makeDefinition(1).boxCase( rules )", rhs );
+      return boxCase( rules );
+    }
+  }
+  else {
     Tree prev = *variants.begin();
-    int npat = len(hd(prev));
+    Tree l = ::Faust::Primitive::Symbols::asTree().nil;
 
-        if (npat == 0) {
-            throw faustexception(printRedefinitionError(symbol, variants));
-        }
+    int npat = len(hd(prev));
+    if (npat == 0) {
+        throw faustexception(printRedefinitionError(symbol, variants));
+    }
 
     for (const auto& p : variants) {
       Tree cur = p;
-      if ((npat == 0) || (npat != len(hd(cur)))) {
-                throw faustexception(printPatternError(symbol, hd(prev), tl(prev), hd(cur), tl(cur)));
+      if ( (npat == 0)
+        || (npat != len(hd(cur)))) {
+          throw faustexception(printPatternError(
+            symbol,
+            hd(prev),
+            tl(prev),
+            hd(cur),
+            tl(cur)
+          ));
       }
       prev = cur;
-      l = cons(p,l);
+      l = TREE_JOIN( "makeDefinition(n).boxCase( rules )", p, l );
     }
     return boxCase(l);
   }
@@ -222,27 +233,40 @@ Tree Implementation::makeDefinition(Tree symbol, std::list<Tree>& variants)
 
 Tree Implementation::formatDefinitions(Tree rldef)
 {
-    map<Tree, list<Tree> > dic;
-    map<Tree, list<Tree> >::iterator p;
+    map<Tree, std::list<Tree> > statements;
     Tree ldef2 = ::Faust::Primitive::Symbols::asTree().nil;
     Tree file;
 
     // Collects the definitions in a dictionnary
-    while (!isNil(rldef)) {
-        Tree def = hd(rldef);
-        rldef = tl(rldef);
-        if (isImportFile(def, file)) {
-            ldef2 = cons(def,ldef2);
-        } else if (!isNil(def)) {
+    while (!isNil(rldef)) { // while we have rhs branch
+        Tree def = hd(rldef); // lhs of rhs branch
+        rldef = tl(rldef);    // rhs of rhs branch
+        if ( isImportFile(def, file) ) {
+            // collect imports in ldef2
+            ldef2 = TREE_JOIN("formatDefinitions.importFile()", def,ldef2);
+        }
+        else if (! isNil(def) ) {
             //cout << " def : " << *def << endl;
-            dic[hd(def)].push_front(tl(def));
+            std::list<Tree>& list = statements[hd(def)];
+            list.push_front( tl(def) );
         }
     }
 
     // Produces the definitions
-    if ( dic.size() ) {
-      for (p = dic.begin(); p != dic.end(); p++) {
-          ldef2 = cons(cons(p->first, makeDefinition(p->first, p->second)), ldef2);
+    map<Tree, list<Tree> >::iterator tree_iterator;
+    if ( statements.size() ) {
+      for ( tree_iterator = statements.begin();
+            tree_iterator != statements.end();
+            ++tree_iterator ) {
+          Tree definition = TREE_JOIN( "formatDefinitions().definition",
+            tree_iterator->first,
+            makeDefinition( tree_iterator->first, tree_iterator->second )
+          );
+          
+          ldef2 = TREE_JOIN( "formatDefinitions().list",
+            definition,
+            ldef2
+          );
       }
       return ldef2;
     }
