@@ -59,7 +59,13 @@ struct ParserTest
 //  ASSERT_EQ( ast, nullptr );
 //}
 
-//TEST_F( ParserTest, identity ) {
+TEST_F( ParserTest, semicolon ) {
+  std::string source = R""""(;)"""";
+  Tree ast = parser.parseString( source, "semicolon.dsp" );
+  ASSERT_EQ( ast, nullptr );
+}
+
+//TEST_F( ParserTest, identifier ) {
 //  std::string source = R""""(process=_;)"""";
 //  Tree ast = parser.parseString( source, "identity.dsp" );
 //  ASSERT_NE( ast, nullptr );
@@ -69,12 +75,12 @@ struct ParserTest
 //  std::cout << pprint.str() << std::endl;
 //}
 
-TEST_F( ParserTest, function ) {
-  std::string source = R""""(somename(y)=x*y)"""";
-  Tree ast = parser.parseString( source, "function.dsp" );
-  ASSERT_NE( ast, nullptr );
-  std::stringstream pprint;
-  pprint << boxpp(ast);
-  std::cout << pprint.str();
-}
+//TEST_F( ParserTest, function ) {
+//  std::string source = R""""(somename(y)=x*y)"""";
+//  Tree ast = parser.parseString( source, "function.dsp" );
+//  ASSERT_NE( ast, nullptr );
+//  std::stringstream pprint;
+//  pprint << boxpp(ast);
+//  std::cout << pprint.str() << std::endl;
+//}
 

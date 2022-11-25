@@ -25,10 +25,7 @@
 //#include "faust/primitive/symbols_test.hh"
 
 /* Parser */
-//#include "faust/compiler/parser_test.hh"
+#include "faust/compiler/parser_test.hh"
 
-
-
-#include "faust/primitive/math/functions/xtended.hh"
 
 

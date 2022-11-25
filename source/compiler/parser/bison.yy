@@ -404,7 +404,7 @@
 %type <Tree> statement.definition.function.args
 %type <Tree> statement.definition.function.args.start
 %type <Tree> statement.definition.function.args.append
-%type <Tree> statement.definition.function.incomplete
+%type <Tree> statement.definition.function.declaration
 %type <Tree> statement.definition.list
 %type <Tree> statement.definition.list.start
 %type <Tree> statement.definition.list.start.qualified
@@ -1352,7 +1352,7 @@ statement:
         $$ = ::cons( $[statement.definition.function.arg], $[statement.definition.function.args] );
       }
 
-    statement.definition.function.incomplete:
+    statement.definition.function.declaration:
       statement.box.identifier.as.tree LPAR statement.definition.function.args RPAR DEF expression {
         $$ = cons(
           $[statement.box.identifier.as.tree],
@@ -1360,21 +1360,22 @@ statement:
         );
         $$->location() = @$;
       }
-      
+
     statement.definition.function:
-        statement.definition.function.incomplete ENDDEF {
-          $$ = $[statement.definition.function.incomplete];
+        statement.definition.function.declaration ENDDEF {
+          $$ = $[statement.definition.function.declaration];
         }
-      | statement.definition.function.incomplete ENDOFINPUT {
-          self._lexer->LexerError("Incomplete function definition.");
-          $$ = $[statement.definition.function.incomplete];
-          yyerrok;
+      | statement.definition.function.declaration ENDOFINPUT {
+          $$ = $[statement.definition.function.declaration];
         }
-      | statement.definition.function.incomplete error ENDL {
-          self._lexer->LexerError("Incomplete function definition.");
-          $$ = $[statement.definition.function.incomplete];
-          yyerrok;
+      | statement.definition.function.declaration ENDL {
+          $$ = $[statement.definition.function.declaration];
         }
+      | ENDDEF error {
+        yyerrok;
+        yyclearin;
+        $$ = ::Faust::Primitive::Symbols::asTree().nil;
+      }
 
     statement.definition.assignment:
         statement.box.identifier.as.tree DEF expression ENDDEF {
@@ -1482,12 +1483,18 @@ statement:
    
     statement.list.start:
         statement {
-          $$ = ::cons($statement, ::Faust::Primitive::Symbols::asTree().nil);
+          if ( $statement != ::Faust::Primitive::Symbols::asTree().nil ) {
+            $$ = ::cons($statement, ::Faust::Primitive::Symbols::asTree().nil);
+          }
+          else {
+            $$ = $$ = ::Faust::Primitive::Symbols::asTree().nil;
+          }
         }
 
     statement.list.start.qualified:
         statement.math.precision.list statement {
-          if (self.acceptdefinition($[statement.math.precision.list]))
+          if ( $statement != ::Faust::Primitive::Symbols::asTree().nil
+            && self.acceptdefinition($[statement.math.precision.list]))
             $$ = ::cons($statement, ::Faust::Primitive::Symbols::asTree().nil);
           else
             $$ = ::Faust::Primitive::Symbols::asTree().nil;
@@ -1495,15 +1502,23 @@ statement:
 
     statement.list.append:
         statement.list statement {
-          $$ = ::cons($statement,$[statement.list]);
+          if ( $statement != ::Faust::Primitive::Symbols::asTree().nil ) {
+            $$ = ::cons($statement,$[statement.list]);
+          }
+          else {
+            $$ = $[statement.list];
+          }
         }
     
     statement.list.append.qualified:
         statement.list statement.math.precision.list statement {
-          if (self.acceptdefinition($[statement.math.precision.list]))
+          if ( $statement != ::Faust::Primitive::Symbols::asTree().nil
+            && self.acceptdefinition($[statement.math.precision.list])) {
             $$ = ::cons($[statement.list],$[statement]);
-          else
+          }
+          else {
             $$=$[statement.list];
+          }
         }
 
   /******************** Math ********************/

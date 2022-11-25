@@ -240,11 +240,15 @@ Tree Implementation::formatDefinitions(Tree rldef)
     }
 
     // Produces the definitions
-    for (p = dic.begin(); p != dic.end(); p++) {
-        ldef2 = cons(cons(p->first, makeDefinition(p->first, p->second)), ldef2);
+    if ( dic.size() ) {
+      for (p = dic.begin(); p != dic.end(); p++) {
+          ldef2 = cons(cons(p->first, makeDefinition(p->first, p->second)), ldef2);
+      }
+      return ldef2;
     }
+    else
+      return nullptr;
 
-    return ldef2;
 }
 
 /**

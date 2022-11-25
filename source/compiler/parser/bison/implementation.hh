@@ -547,7 +547,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       // statement.definition.function.args
       // statement.definition.function.args.start
       // statement.definition.function.args.append
-      // statement.definition.function.incomplete
+      // statement.definition.function.declaration
       // statement.definition.function
       // statement.definition.assignment
       // statement.definition.with
@@ -1211,7 +1211,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         S_273_statement_definition_function_args = 273, // statement.definition.function.args
         S_274_statement_definition_function_args_start = 274, // statement.definition.function.args.start
         S_275_statement_definition_function_args_append = 275, // statement.definition.function.args.append
-        S_276_statement_definition_function_incomplete = 276, // statement.definition.function.incomplete
+        S_276_statement_definition_function_declaration = 276, // statement.definition.function.declaration
         S_277_statement_definition_function = 277, // statement.definition.function
         S_278_statement_definition_assignment = 278, // statement.definition.assignment
         S_279_statement_definition_with = 279,   // statement.definition.with
@@ -1413,7 +1413,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
       case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
       case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_277_statement_definition_function: // statement.definition.function
       case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
       case symbol_kind::S_279_statement_definition_with: // statement.definition.with
@@ -1898,7 +1898,7 @@ switch (yykind)
       case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
       case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
       case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_277_statement_definition_function: // statement.definition.function
       case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
       case symbol_kind::S_279_statement_definition_with: // statement.definition.with
@@ -4695,9 +4695,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 963,     ///< Last index in yytable_.
+      yylast_ = 970,     ///< Last index in yytable_.
       yynnts_ = 168,  ///< Number of nonterminal symbols.
-      yyfinal_ = 48 ///< Termination state number.
+      yyfinal_ = 50 ///< Termination state number.
     };
 
 
@@ -4858,7 +4858,7 @@ switch (yykind)
       case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
       case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
       case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_277_statement_definition_function: // statement.definition.function
       case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
       case symbol_kind::S_279_statement_definition_with: // statement.definition.with
@@ -5215,7 +5215,7 @@ switch (yykind)
       case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
       case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
       case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_incomplete: // statement.definition.function.incomplete
+      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_277_statement_definition_function: // statement.definition.function
       case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
       case symbol_kind::S_279_statement_definition_with: // statement.definition.with
