@@ -31,6 +31,10 @@
 #include "global.hh"
 #include "tlib/tlib.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+#include "compiler/parser/implementation.hh"
+
+
 /*****************************************************************************
                         Public functions
  *****************************************************************************/
@@ -45,7 +49,7 @@
  */
 void declareAutoDoc()
 {
-    Tree autodoc = global::config().nil;
+    Tree autodoc = ::Faust::Primitive::Symbols::asTree().nil;
     Tree process = boxIdent("process");
 
     /** Autodoc's "head", with title, author, date, and metadatas. */
@@ -53,7 +57,7 @@ void declareAutoDoc()
     /** The latex title macro is bound to the metadata "name" if it exists,
      (corresponding to "declare name") or else just to the file name. */
     autodoc = cons(docTxt("\\title{"), autodoc);
-    if (global::config().gMetaDataSet.count(tree("name"))) {
+    if (gMetaDataSet().count(tree("name"))) {
         autodoc = cons(docMtd(tree("name")), autodoc);
     } else {
         autodoc = cons(docTxt(global::config().gDocName.c_str()), autodoc);
@@ -62,7 +66,7 @@ void declareAutoDoc()
 
     /** The latex author macro is bound to the metadata "author" if it exists,
      (corresponding to "declare author") or else no author item is printed. */
-    if (global::config().gMetaDataSet.count(tree("author"))) {
+    if (gMetaDataSet().count(tree("author"))) {
         autodoc = cons(docTxt("\\author{"), autodoc);
         autodoc = cons(docMtd(tree("author")), autodoc);
         autodoc = cons(docTxt("}\n"), autodoc);
@@ -71,7 +75,7 @@ void declareAutoDoc()
     /** The latex date macro is bound to the metadata "date" if it exists,
      (corresponding to "declare date") or else to the today latex macro. */
     autodoc = cons(docTxt("\\date{"), autodoc);
-    if (global::config().gMetaDataSet.count(tree("date"))) {
+    if (gMetaDataSet().count(tree("date"))) {
         autodoc = cons(docMtd(tree("date")), autodoc);
     } else {
         autodoc = cons(docTxt("\\today"), autodoc);
@@ -82,10 +86,10 @@ void declareAutoDoc()
     autodoc = cons(docTxt("\\maketitle\n"), autodoc);
 
     /** Insert all declared metadatas in a latex tabular environment. */
-    if (!global::config().gMetaDataSet.empty()) {
+    if (!gMetaDataSet().empty()) {
         autodoc = cons(docTxt("\\begin{tabular}{ll}\n"), autodoc);
         autodoc = cons(docTxt("\t\\hline\n"), autodoc);
-        for (const auto& it : global::config().gMetaDataSet) {
+        for (const auto& it : gMetaDataSet()) {
             string mtdkey           = tree2str(it.first);
             string mtdTranslatedKey = global::config().gDocMetadatasStringMap[mtdkey];
             if (mtdTranslatedKey.empty()) {

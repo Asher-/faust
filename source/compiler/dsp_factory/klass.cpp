@@ -48,6 +48,9 @@
 #include "global.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+
+#include "compiler/parser/implementation.hh"
 
 static int gTaskCount = 0;
 
@@ -259,7 +262,7 @@ void Klass::printMetadata(int n, const MetaDataSet& S, ostream& fout)
     fout << "virtual void metadata(Meta* m) { ";
 
     // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : global::config().gMetaDataSet) {
+    for (const auto& i : gMetaDataSet()) {
         if (i.first != tree("author")) {
             tab(n + 1, fout);
             fout << "m->declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";
@@ -851,7 +854,7 @@ void Klass::println(int n, ostream& fout)
         fout << "static dsp_memory_manager* fManager;" << endl;
     }
 
-    printMetadata(n + 1, global::config().gMetaDataSet, fout);
+    printMetadata(n + 1, gMetaDataSet(), fout);
 
     if (global::config().gSchedulerSwitch) {
         tab(n + 1, fout);
@@ -968,7 +971,7 @@ void Klass::println(int n, ostream& fout)
         fout << "#ifdef FAUST_UIMACROS";
         tab(n + 1, fout);
         tab(n + 1, fout);
-        for (const auto& it : global::config().gMetaDataSet) {
+        for (const auto& it : gMetaDataSet()) {
             if (it.first == tree("filename")) {
                 fout << "#define FAUST_FILE_NAME " << **(it.second.begin());
                 break;

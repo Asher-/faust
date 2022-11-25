@@ -46,6 +46,7 @@
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
 #include "faust/primitive/math/functions/xtended.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 static bool infereBoxType(Tree box, int* inum, int* onum);
 
@@ -60,7 +61,7 @@ static bool infereBoxType(Tree box, int* inum, int* onum);
 LIBFAUST_API bool getBoxType(Tree box, int* inum, int* onum)
 {
     Tree t;
-    if (getProperty(box, global::config().BOXTYPEPROP, t)) {
+    if (getProperty(box, ::Faust::Primitive::Symbols::asTree().BOXTYPEPROP, t)) {
         if (isNil(t)) {
             return false;
         } else {
@@ -71,10 +72,10 @@ LIBFAUST_API bool getBoxType(Tree box, int* inum, int* onum)
 
     } else {
         if (infereBoxType(box, inum, onum)) {
-            setProperty(box, global::config().BOXTYPEPROP, cons(tree(*inum), tree(*onum)));
+            setProperty(box, ::Faust::Primitive::Symbols::asTree().BOXTYPEPROP, cons(tree(*inum), tree(*onum)));
             return true;
         } else {
-            setProperty(box, global::config().BOXTYPEPROP, global::config().nil);
+            setProperty(box, ::Faust::Primitive::Symbols::asTree().BOXTYPEPROP, ::Faust::Primitive::Symbols::asTree().nil);
             return false;
         }
     }

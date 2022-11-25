@@ -22,6 +22,7 @@
 #include "labels.hh"
 #include "tlib/compatibility.hh"
 #include "global.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 //=========================== PATHNAME ===============================
 
@@ -96,7 +97,7 @@ static Tree encodeName(char g, const string& name)
 static Tree label2path(const std::string& label)
 {
     if (label[0] == 0) {
-        return cons(tree(""), global::config().nil);
+        return cons(tree(""), ::Faust::Primitive::Symbols::asTree().nil);
 
     } else if (label[0] == '/') {
         return cons(pathRoot(), label2path(&label[1]));
@@ -119,7 +120,7 @@ static Tree label2path(const std::string& label)
         return cons(encodeName(g, s), label2path(&label[i]));
 
     } else {
-        return cons(tree(std::string(label).c_str()), global::config().nil);
+        return cons(tree(std::string(label).c_str()), ::Faust::Primitive::Symbols::asTree().nil);
     }
 }
 
@@ -134,7 +135,7 @@ static Tree concatPath(Tree relpath, Tree abspath)
     if (isList(relpath)) {
         Tree head = hd(relpath);
         if (isPathRoot(head)) {
-            return concatPath(tl(relpath), global::config().nil);
+            return concatPath(tl(relpath), ::Faust::Primitive::Symbols::asTree().nil);
         } else if (isPathParent(head)) {
             if (!isList(abspath)) {
                 // cerr << "abspath : " << *abspath << endl;

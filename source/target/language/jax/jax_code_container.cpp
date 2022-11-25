@@ -28,6 +28,7 @@
 #include "target/fir/visitor/function_call_inliner.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
 

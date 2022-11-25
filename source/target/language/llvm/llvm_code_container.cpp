@@ -32,6 +32,7 @@
 #include "target/language/llvm/llvm_instructions.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 /*
  LLVM module description:

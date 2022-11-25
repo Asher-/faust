@@ -47,6 +47,10 @@
 #include "faust/primitive/type/precision.hh"
 #include "faust/primitive/type/priority.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
+#include "compiler/parser/implementation.hh"
+
 using Priority = ::Faust::Primitive::Type::Priority;
 
 using namespace std;
@@ -176,7 +180,7 @@ void InstructionsCompiler::conditionStatistics(Tree l)
 void InstructionsCompiler::conditionAnnotation(Tree l)
 {
     while (isList(l)) {
-        conditionAnnotation(hd(l), global::config().nil);
+        conditionAnnotation(hd(l), ::Faust::Primitive::Symbols::asTree().nil);
         l = tl(l);
     }
 }
@@ -409,10 +413,10 @@ CodeContainer* InstructionsCompiler::signal2Container(const std::string& name, T
 
     CodeContainer* container = fContainer->createScalarContainer(name, t->precision());
 
-    if (global::config().gOutputLang == "rust" || global::config().gOutputLang == "julia") {
+    if (gOutputLang() == "rust" || gOutputLang() == "julia") {
         InstructionsCompiler1 C(container);
         C.compileSingleSignal(sig);
-    } else if (global::config().gOutputLang == "jax") {
+    } else if (gOutputLang() == "jax") {
         InstructionsCompilerJAX C(container);
         C.compileSingleSignal(sig);
     } else {
@@ -428,10 +432,10 @@ CodeContainer* InstructionsCompiler::signal2Container(const std::string& name, T
 
 ValueInst* InstructionsCompiler::dnf2code(Tree cc)
 {
-    if (cc == global::config().nil) return InstBuilder::genNullValueInst();
+    if (cc == ::Faust::Primitive::Symbols::asTree().nil) return InstBuilder::genNullValueInst();
     Tree c1 = hd(cc);
     cc      = tl(cc);
-    if (cc == global::config().nil) {
+    if (cc == ::Faust::Primitive::Symbols::asTree().nil) {
         return and2code(c1);
     } else {
         return InstBuilder::genOr(and2code(c1), dnf2code(cc));
@@ -440,10 +444,10 @@ ValueInst* InstructionsCompiler::dnf2code(Tree cc)
 
 ValueInst* InstructionsCompiler::and2code(Tree cs)
 {
-    if (cs == global::config().nil) return InstBuilder::genNullValueInst();
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) return InstBuilder::genNullValueInst();
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == global::config().nil) {
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) {
         return CS(c1);
     } else {
         return InstBuilder::genAnd(CS(c1), and2code(cs));
@@ -452,10 +456,10 @@ ValueInst* InstructionsCompiler::and2code(Tree cs)
 
 ValueInst* InstructionsCompiler::cnf2code(Tree cs)
 {
-    if (cs == global::config().nil) return InstBuilder::genNullValueInst();
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) return InstBuilder::genNullValueInst();
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == global::config().nil) {
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) {
         return or2code(c1);
     } else {
         return InstBuilder::genAnd(or2code(c1), cnf2code(cs));
@@ -464,10 +468,10 @@ ValueInst* InstructionsCompiler::cnf2code(Tree cs)
 
 ValueInst* InstructionsCompiler::or2code(Tree cs)
 {
-    if (cs == global::config().nil) return InstBuilder::genNullValueInst();
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) return InstBuilder::genNullValueInst();
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == global::config().nil) {
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) {
         return CS(c1);
     } else {
         return InstBuilder::genOr(CS(c1), or2code(cs));
@@ -484,7 +488,7 @@ ValueInst* InstructionsCompiler::or2code(Tree cs)
 ValueInst* InstructionsCompiler::getConditionCode(Tree sig)
 {
     Tree cc = fConditionProperty[sig];
-    if ((cc != 0) && (cc != global::config().nil)) {
+    if ((cc != 0) && (cc != ::Faust::Primitive::Symbols::asTree().nil)) {
         return CND2CODE(cc);
     } else {
         return InstBuilder::genNullValueInst();
@@ -542,13 +546,13 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
     if (!global::config().gOpenCLSwitch && !global::config().gCUDASwitch) {  // HACK
 
         // Input declarations
-        if (global::config().gOutputLang == "rust") {
+        if (gOutputLang() == "rust") {
             // special handling for Rust backend
             pushComputeBlockMethod(InstBuilder::genDeclareBufferIterators("*input", "inputs", fContainer->inputs(), type, false));
-        } else if (global::config().gOutputLang == "julia") {
+        } else if (gOutputLang() == "julia") {
             // special handling Julia backend
             pushComputeBlockMethod(InstBuilder::genDeclareBufferIterators("input", "inputs", fContainer->inputs(), ptr_type, false));
-        } else if (global::config().gOutputLang != "jax") {
+        } else if (gOutputLang() != "jax") {
             // "input" and "inputs" used as a name convention
             if (global::config().gOneSampleControl) {
                 for (int index = 0; index < fContainer->inputs(); index++) {
@@ -567,13 +571,13 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
         }
 
         // Output declarations
-        if (global::config().gOutputLang == "rust") {
+        if (gOutputLang() == "rust") {
             // special handling for Rust backend
             pushComputeBlockMethod(InstBuilder::genDeclareBufferIterators("*output", "outputs", fContainer->outputs(), type, true));
-        } else if (global::config().gOutputLang == "julia") {
+        } else if (gOutputLang() == "julia") {
             // special handling for Julia backend
             pushComputeBlockMethod(InstBuilder::genDeclareBufferIterators("output", "outputs", fContainer->outputs(), ptr_type, true));
-        } else if (global::config().gOutputLang != "jax") {
+        } else if (gOutputLang() != "jax") {
             // "output" and "outputs" used as a name convention
             if (global::config().gOneSampleControl) {
                 for (int index = 0; index < fContainer->outputs(); index++) {
@@ -604,10 +608,10 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
 
         // HACK for Rust backend
         std::string name;
-        if (global::config().gOutputLang == "rust") {
+        if (gOutputLang() == "rust") {
             name = subst("*output$0", T(index));
             pushComputeDSPMethod(InstBuilder::genStoreStackVar(name, res));
-        } else if (global::config().gOutputLang == "jax") {
+        } else if (gOutputLang() == "jax") {
             res = CS(sig);
             string result_var = "_result" + to_string(index);
             return_string = return_string + sep + result_var;
@@ -640,7 +644,7 @@ void InstructionsCompiler::compileMultiSignal(Tree L)
         }
     }
 
-    if (global::config().gOutputLang == "jax") {
+    if (gOutputLang() == "jax") {
         return_string = return_string + "])";
         pushPostComputeDSPMethod(InstBuilder::genRetInst(InstBuilder::genLoadStackVar(return_string)));
     }
@@ -936,9 +940,9 @@ ValueInst* InstructionsCompiler::generateInput(Tree sig, int idx)
     // Cast to internal float
     ValueInst* res;
     // HACK for Rust backend
-    if (global::config().gOutputLang == "rust") {
+    if (gOutputLang() == "rust") {
         res = InstBuilder::genLoadStackVar(subst("*input$0", T(idx)));
-    } else if (global::config().gOutputLang == "jax") {
+    } else if (gOutputLang() == "jax") {
         res = InstBuilder::genLoadArrayStackVar("inputs", InstBuilder::genInt32NumInst(idx));
     } else if (global::config().gOneSampleControl) {
         res = InstBuilder::genLoadStructVar(subst("input$0", T(idx)));
@@ -1490,7 +1494,7 @@ ValueInst* InstructionsCompiler::generateTable(Tree sig, Tree tsize, Tree conten
             obj));
 
         // HACK for Rust and Julia backends
-        if (global::config().gOutputLang != "rust" && global::config().gOutputLang != "julia") {
+        if (gOutputLang() != "rust" && gOutputLang() != "julia") {
             // Delete object
             Values args3;
             args3.push_back(signame);
@@ -1564,7 +1568,7 @@ ValueInst* InstructionsCompiler::generateStaticTable(Tree sig, Tree tsize, Tree 
                 obj));
 
             // HACK for Rust and Julia backends
-            if (global::config().gOutputLang != "rust" && global::config().gOutputLang != "julia") {
+            if (gOutputLang() != "rust" && gOutputLang() != "julia") {
                 // Delete object
                 Values args3;
                 args3.push_back(signame);
@@ -1707,7 +1711,7 @@ ValueInst* InstructionsCompiler::generateSigGen(Tree sig, Tree content)
         signame, InstBuilder::genNamedTyped(cname, InstBuilder::genBasicTyped(Typed::kObj_ptr)), obj));
 
     // HACK for Rust an Julia backends
-    if (global::config().gOutputLang != "rust" && global::config().gOutputLang != "julia") {
+    if (gOutputLang() != "rust" && gOutputLang() != "julia") {
         // Delete object
         Values args3;
         args3.push_back(InstBuilder::genLoadStackVar(signame));
@@ -1741,7 +1745,7 @@ ValueInst* InstructionsCompiler::generateStaticSigGen(Tree sig, Tree content)
         signame, InstBuilder::genNamedTyped(cname, InstBuilder::genBasicTyped(Typed::kObj_ptr)), obj));
 
     // HACK for Rust and Julia backends
-    if (global::config().gOutputLang != "rust" && global::config().gOutputLang != "julia") {
+    if (gOutputLang() != "rust" && gOutputLang() != "julia") {
         // Delete object
         Values args3;
         args3.push_back(InstBuilder::genLoadStackVar(signame));
@@ -2342,7 +2346,7 @@ void InstructionsCompiler::generateUserInterfaceTree(Tree t, bool root)
         // At rool level and if label is empty, use the name kept in "metadata" (either the one coded in 'declare name
         // "XXX";' line, or the filename)
         std::string group = (root && (simplifiedLabel == ""))
-                           ? unquote(tree2str(*(global::config().gMetaDataSet[tree("name")].begin())))
+                           ? unquote(tree2str(*(gMetaDataSet()[tree("name")].begin())))
                            : checkNullLabel(t, simplifiedLabel);
 
         pushUserInterfaceMethod(InstBuilder::genOpenboxInst(group, orient));

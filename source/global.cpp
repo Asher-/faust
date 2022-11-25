@@ -37,6 +37,7 @@
 #include "signals.hh"
 #include "global.hh"
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/symbols.hh"
 
@@ -46,14 +47,16 @@
 #include "faust/primitive/type/value.hh"
 #include "faust/primitive/type/vectorability.hh"
 
+#include "compiler/parser/implementation.hh"
+#include "compiler/signals/ppsig.hh"
+
+#include "compiler/block_diagram/boxes/ppbox.hh"
+
 using Availability = ::Faust::Primitive::Type::Availability;
 using Precision = ::Faust::Primitive::Type::Precision;
 using Priority = ::Faust::Primitive::Type::Priority;
 using Value = ::Faust::Primitive::Type::Value;
 using Vectorability = ::Faust::Primitive::Type::Vectorability;
-
-// Garbageable globals
-bool                    global::gHeapCleanup = false;
 
 global* gGlobal = nullptr;
 
@@ -213,8 +216,6 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
 
     gFileNum = 0;
 
-    gBoxCounter    = 0;
-    gSignalCounter = 0;
 
     gCountInferences = 0;
     gCountMaximal    = 0;
@@ -230,28 +231,6 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
     gOccurrences = nullptr; // FIX - only used for Draw
     gFoldingFlag = false;
     gDevSuffix   = nullptr;
-
-    gMachineFloatSize      = sizeof(float);
-    gMachineInt32Size      = sizeof(int);
-    gMachineInt64Size      = sizeof(long int);
-    gMachineDoubleSize     = sizeof(double);
-    gMachineQuadSize       = sizeof(long double);
-    gMachineFixedPointSize = gMachineFloatSize;
-    gMachineBoolSize       = sizeof(bool);
-
-    // Assuming we are compiling for a 64 bits machine
-    gMachinePtrSize = sizeof(nullptr);
-#if defined(ANDROID) && INTPTR_MAX == INT32_MAX
-    // Hack for 32Bit Android Architectures ; sizeof(nullptr) == 4 but LLVM DataLayout.GetPointerSize() == 8
-    gMachinePtrSize *= 2;
-#endif
-
-    gMachineMaxStackSize = MAX_MACHINE_STACK_SIZE;
-
-#ifdef TEMPLATE_BUILD
-    gTemplateVisitor = nullptr;    // Will be (possibly) allocated in Template backend
-#endif
-    gOutputLang          = "";
 
     gHelpSwitch       = false;
     gVersionSwitch    = false;
@@ -280,7 +259,7 @@ global::global() : TABBER(1), gLoopDetector(1024, 400), gStackOverflowDetector(M
     gErrorMessage = "";
     
     // By default use "cpp" output
-    gOutputLang = (getenv("FAUST_DEFAULT_BACKEND")) ? string(getenv("FAUST_DEFAULT_BACKEND")) : "cpp";
+    gOutputLang() = (getenv("FAUST_DEFAULT_BACKEND")) ? string(getenv("FAUST_DEFAULT_BACKEND")) : "cpp";
 }
 
 // Done after contructor since part of the following allocations need the "global" object to be fully built
@@ -313,27 +292,6 @@ void global::init()
 
     // Predefined nil tree
     nil = tree(::Faust::Primitive::Symbols::internal().symbol("nil"));
-
-    BOXTYPEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("boxTypeProp"));
-    NUMERICPROPERTY  = tree(::Faust::Primitive::Symbols::internal().symbol("NUMERICPROPERTY"));
-    DEFLINEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("DefLineProp"));
-    USELINEPROP      = tree(::Faust::Primitive::Symbols::internal().symbol("UseLineProp"));
-    SIMPLIFIED       = tree(::Faust::Primitive::Symbols::internal().symbol("sigSimplifiedProp"));
-    DOCTABLES        = tree(::Faust::Primitive::Symbols::internal().symbol("DocTablesProp"));
-    NULLENV          = tree(::Faust::Primitive::Symbols::internal().symbol("NullRenameEnv"));
-    COLORPROPERTY    = tree(::Faust::Primitive::Symbols::internal().symbol("ColorProperty"));
-    ORDERPROP        = tree(::Faust::Primitive::Symbols::internal().symbol("OrderProp"));
-    RECURSIVNESS     = tree(::Faust::Primitive::Symbols::internal().symbol("RecursivnessProp"));
-    NULLTYPEENV      = tree(::Faust::Primitive::Symbols::internal().symbol("NullTypeEnv"));
-    RECDEF           = tree(::Faust::Primitive::Symbols::internal().symbol("RECDEF"));
-    DEBRUIJN2SYM     = tree(::Faust::Primitive::Symbols::internal().symbol("deBruijn2Sym"));
-    NORMALFORM       = tree(::Faust::Primitive::Symbols::internal().symbol("NormalForm"));
-    DEFNAMEPROPERTY  = tree(::Faust::Primitive::Symbols::internal().symbol("DEFNAMEPROPERTY"));
-    NICKNAMEPROPERTY = tree(::Faust::Primitive::Symbols::internal().symbol("NICKNAMEPROPERTY"));
-    BCOMPLEXITY      = tree("BCOMPLEXITY");
-    LETRECBODY       = boxIdent("RECURSIVEBODY");
-
-    PROPAGATEPROPERTY = ::Faust::Primitive::Symbols::internal().symbol("PropagateProperty");
 
     gLatexheaderfilename = "latexheader.tex";
     gDocTextsDefaultFile = "mathdoctexts-default.txt";
@@ -376,7 +334,7 @@ void global::init()
     gMathForeignFunctions["atanh"]  = true;
     gMathForeignFunctions["atanhl"] = true;
 
-    gMathForeignFunctions["coshf"] = true;
+    gMathForeignFunctions["c oshf"] = true;
     gMathForeignFunctions["cosh"]  = true;
     gMathForeignFunctions["coshl"] = true;
 
@@ -431,13 +389,13 @@ void global::printCompilationOptions(stringstream& dst, bool backend)
     if (gArchFile != "") dst << "-a " << gArchFile << " ";
     if (backend) {
 #ifdef LLVM_BUILD
-        if (gOutputLang == "llvm") {
-            dst << "-lang " << gOutputLang << " " << LLVM_VERSION << " ";
+        if (gOutputLang() == "llvm") {
+            dst << "-lang " << gOutputLang() << " " << LLVM_VERSION << " ";
         } else {
-            dst << "-lang " << gOutputLang << " ";
+            dst << "-lang " << gOutputLang() << " ";
         }
 #else
-        dst << "-lang " << gOutputLang << " ";
+        dst << "-lang " << gOutputLang() << " ";
 #endif
     }
     if (gInlineArchSwitch) dst << "-i ";
@@ -482,55 +440,55 @@ string global::printCompilationOptions1()
 void global::initTypeSizeMap()
 {
     // Init type size table (in bytes)
-    gTypeSizeMap[Typed::kFloat]         = gMachineFloatSize;
-    gTypeSizeMap[Typed::kFloat_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kFloat_ptr_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kFloat_vec]     = gMachineFloatSize * gVecSize;
-    gTypeSizeMap[Typed::kFloat_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kFloat]         = ::Faust::Primitive::Math::gMachineFloatSize;
+    gTypeSizeMap[Typed::kFloat_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kFloat_ptr_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kFloat_vec]     = ::Faust::Primitive::Math::gMachineFloatSize * gVecSize;
+    gTypeSizeMap[Typed::kFloat_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kDouble]         = gMachineDoubleSize;
-    gTypeSizeMap[Typed::kDouble_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kDouble_ptr_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kDouble_vec]     = gMachineDoubleSize * gVecSize;
-    gTypeSizeMap[Typed::kDouble_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kDouble]         = ::Faust::Primitive::Math::gMachineDoubleSize;
+    gTypeSizeMap[Typed::kDouble_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kDouble_ptr_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kDouble_vec]     = ::Faust::Primitive::Math::gMachineDoubleSize * gVecSize;
+    gTypeSizeMap[Typed::kDouble_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kQuad]         = gMachineQuadSize;
-    gTypeSizeMap[Typed::kQuad_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kQuad_ptr_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kQuad_vec]     = gMachineQuadSize * gVecSize;
-    gTypeSizeMap[Typed::kQuad_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kQuad]         = ::Faust::Primitive::Math::gMachineQuadSize;
+    gTypeSizeMap[Typed::kQuad_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kQuad_ptr_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kQuad_vec]     = ::Faust::Primitive::Math::gMachineQuadSize * gVecSize;
+    gTypeSizeMap[Typed::kQuad_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kFixedPoint]         = gMachineFixedPointSize;
-    gTypeSizeMap[Typed::kFixedPoint_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kFixedPoint_ptr_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kFixedPoint_vec]     = gMachineFixedPointSize * gVecSize;
-    gTypeSizeMap[Typed::kFixedPoint_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kFixedPoint]         = ::Faust::Primitive::Math::gMachineFixedPointSize;
+    gTypeSizeMap[Typed::kFixedPoint_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kFixedPoint_ptr_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kFixedPoint_vec]     = ::Faust::Primitive::Math::gMachineFixedPointSize * gVecSize;
+    gTypeSizeMap[Typed::kFixedPoint_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kInt32]         = gMachineInt32Size;
-    gTypeSizeMap[Typed::kInt32_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kInt32_vec]     = gMachineInt32Size * gVecSize;
-    gTypeSizeMap[Typed::kInt32_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kInt32]         = ::Faust::Primitive::Math::gMachineInt32Size;
+    gTypeSizeMap[Typed::kInt32_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kInt32_vec]     = ::Faust::Primitive::Math::gMachineInt32Size * gVecSize;
+    gTypeSizeMap[Typed::kInt32_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kInt64]         = gMachineInt64Size;
-    gTypeSizeMap[Typed::kInt64_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kInt64_vec]     = gMachineInt64Size * gVecSize;
-    gTypeSizeMap[Typed::kInt64_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kInt64]         = ::Faust::Primitive::Math::gMachineInt64Size;
+    gTypeSizeMap[Typed::kInt64_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kInt64_vec]     = ::Faust::Primitive::Math::gMachineInt64Size * gVecSize;
+    gTypeSizeMap[Typed::kInt64_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kBool]         = gMachineBoolSize;
-    gTypeSizeMap[Typed::kBool_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kBool_vec]     = gMachineBoolSize * gVecSize;
-    gTypeSizeMap[Typed::kBool_vec_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kBool]         = ::Faust::Primitive::Math::gMachineBoolSize;
+    gTypeSizeMap[Typed::kBool_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kBool_vec]     = ::Faust::Primitive::Math::gMachineBoolSize * gVecSize;
+    gTypeSizeMap[Typed::kBool_vec_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
     // Takes the type of internal real
     gTypeSizeMap[Typed::kFloatMacro]         = gTypeSizeMap[itfloat()];
-    gTypeSizeMap[Typed::kFloatMacro_ptr]     = gMachinePtrSize;
-    gTypeSizeMap[Typed::kFloatMacro_ptr_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kFloatMacro_ptr]     = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kFloatMacro_ptr_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kVoid_ptr] = gMachinePtrSize;
+    gTypeSizeMap[Typed::kVoid_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
 
-    gTypeSizeMap[Typed::kObj_ptr]   = gMachinePtrSize;
-    gTypeSizeMap[Typed::kSound_ptr] = gMachinePtrSize;
-    gTypeSizeMap[Typed::kUint_ptr]  = gMachinePtrSize;
+    gTypeSizeMap[Typed::kObj_ptr]   = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kSound_ptr] = ::Faust::Primitive::Math::gMachinePtrSize;
+    gTypeSizeMap[Typed::kUint_ptr]  = ::Faust::Primitive::Math::gMachinePtrSize;
 }
 
 int global::audioSampleSize()
@@ -546,15 +504,15 @@ bool global::hasForeignFunction(const string& name, const string& inc_file)
     bool                       is_inc   = find(begin(inc_list), end(inc_list), inc_file) != inc_list.end();
     // or custom added ones
     bool is_ff       = llvm_dsp_factory_aux::gForeignFunctions.count(name) > 0;
-    bool is_linkable = (gOutputLang == "llvm") && (is_inc || is_ff);
+    bool is_linkable = (gOutputLang() == "llvm") && (is_inc || is_ff);
 #else
     bool is_linkable = false;
 #endif
     bool internal_math_ff =
-        ((gOutputLang == "llvm") || startWith(gOutputLang, "wast") || startWith(gOutputLang, "wasm") ||
-         (gOutputLang == "interp") || startWith(gOutputLang, "cmajor") || (gOutputLang == "dlang") ||
-         (gOutputLang == "csharp") || (gOutputLang == "rust") || (gOutputLang == "julia") ||
-         (gOutputLang == "jax"));
+        ((gOutputLang() == "llvm") || startWith(gOutputLang(), "wast") || startWith(gOutputLang(), "wasm") ||
+         (gOutputLang() == "interp") || startWith(gOutputLang(), "soul") || (gOutputLang() == "dlang") ||
+         (gOutputLang() == "csharp") || (gOutputLang() == "rust") || (gOutputLang() == "julia") ||
+         (gOutputLang() == "jax"));
 
     return (internal_math_ff && (gMathForeignFunctions.find(name) != gMathForeignFunctions.end())) || is_linkable;
 }
@@ -683,72 +641,15 @@ bool global::isDebug(const string& debug_val)
     return debug_var == debug_val;
 }
 
-// Memory management
-void Garbageable::cleanup()
-{
-    list<Garbageable*>::iterator it;
-
-    // Here removing the deleted pointer from the list is pointless
-    // and takes time, thus we don't do it.
-    global::gHeapCleanup = true;
-    for (it = global::gObjectTable.begin(); it != global::gObjectTable.end(); it++) {
-#ifdef _WIN32
-        // Hack : "this" and actual pointer are not the same: destructor cannot be called...
-        Garbageable::operator delete(*it);
-#else
-        delete (*it);
-#endif
-    }
-
-    // Reset to default state
-    global::gObjectTable.clear();
-    global::gHeapCleanup = false;
-}
-
 // For box/sig generation
 void global::clear()
 {
     gBoxCounter = 0;
-    gBoxTable.clear();
-    gBoxTrace.clear();
+    gBoxTable().clear();
+    gBoxTrace().clear();
 
     gSignalCounter = 0;
-    gSignalTable.clear();
-    gSignalTrace.clear();
+    gSignalTable().clear();
+    gSignalTrace().clear();
 }
 
-void* Garbageable::operator new(size_t size)
-{
-    // HACK : add 16 bytes to avoid unsolved memory smashing bug...
-    Garbageable* res = (Garbageable*)malloc(size + 16);
-    global::getObjectTable().push_front(res);
-    return res;
-}
-
-void Garbageable::operator delete(void* ptr)
-{
-    // We may have cases when a pointer will be deleted during
-    // a compilation, thus the pointer has to be removed from the list.
-    if (!global::gHeapCleanup) {
-        global::gObjectTable.remove(static_cast<Garbageable*>(ptr));
-    }
-    free(ptr);
-}
-
-void* Garbageable::operator new[](size_t size)
-{
-    // HACK : add 16 bytes to avoid unsolved memory smashing bug...
-    Garbageable* res = (Garbageable*)malloc(size + 16);
-    global::gObjectTable.push_front(res);
-    return res;
-}
-
-void Garbageable::operator delete[](void* ptr)
-{
-    // We may have cases when a pointer will be deleted during
-    // a compilation, thus the pointer has to be removed from the list.
-    if (!global::gHeapCleanup) {
-        global::gObjectTable.remove(static_cast<Garbageable*>(ptr));
-    }
-    free(ptr);
-}

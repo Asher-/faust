@@ -31,6 +31,7 @@
 #include "target/fir/fir_to_fir.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 using namespace std;
 

@@ -43,10 +43,14 @@
 #include "compiler/instruction_compiler/instruction_compiler.hh"
 #include "documentator/doc.hh"
 
+#include "compiler/parser/implementation.hh"
+
+#include "faust/primitive/symbols/as_tree.hh"
 
 #ifdef DLANG_BUILD
 #include "target/language/dlang/dlang_code_container.hh"
 #endif
+
 
 namespace Faust {
   namespace Compiler {
@@ -123,7 +127,7 @@ namespace Faust {
 
       static void printDeclareHeader(ostream& dst)
       {
-          for (const auto& i : global::config().gMetaDataSet) {
+          for (const auto& i : gMetaDataSet()) {
               if (i.first != tree("author")) {
                   dst << "declare ";
                   stringstream key;
@@ -165,7 +169,7 @@ namespace Faust {
           ofstream xout(subst("$0.xml", global::config().makeDrawPath()).c_str());
 
           set<Tree>::const_iterator   it2;
-          for (const auto& it1 : global::config().gMetaDataSet) {
+          for (const auto& it1 : gMetaDataSet()) {
               const string key = tree2str(it1.first);
               for (it2 = it1.second.begin(); it2 != it1.second.end(); ++it2) {
                   const string value = tree2str(*it2);
@@ -245,7 +249,7 @@ namespace Faust {
           if (global::config().gErrorCount > 0) {
               stringstream error;
               error << "ERROR : total of " << global::config().gErrorCount << " errors during the compilation of "
-                    << global::config().gMasterDocument << endl;
+                    << gMasterDocument() << endl;
               throw faustexception(error.str());
           }
 
@@ -294,7 +298,7 @@ namespace Faust {
           startTiming("parser");
 
           std::list<string>::iterator s;
-          global::config().gResult2 = global::config().nil;
+          global::config().gResult2 = ::Faust::Primitive::Symbols::asTree().nil;
           global::config().gReader.init();
 
           if (!global::config().gInjectFlag && global::config().gInputFiles.begin() == global::config().gInputFiles.end()) {
@@ -303,7 +307,7 @@ namespace Faust {
 
           for (s = global::config().gInputFiles.begin(); s != global::config().gInputFiles.end(); s++) {
               if (s == global::config().gInputFiles.begin()) {
-                  global::config().gMasterDocument = *s;
+                  gMasterDocument() = *s;
               }
               global::config().gResult2 = cons(importFile(tree(s->c_str())), global::config().gResult2);
           }
@@ -470,7 +474,7 @@ namespace Faust {
       {
           try {
               global::config().gLsignalsTree =
-                  boxPropagateSig(global::config().nil, global::config().gProcessTree, makeSigInputList(global::config().gNumInputs));
+                  boxPropagateSig(::Faust::Primitive::Symbols::asTree().nil, global::config().gProcessTree, makeSigInputList(global::config().gNumInputs));
           } catch (faustexception& e) {
               global::config().gErrorMessage = e.Message();
           }
@@ -625,7 +629,7 @@ namespace Faust {
            5 - preparation of the signal tree and translate output signals
            **************************************************************************/
 
-          global::config().gMetaDataSet[tree("name")].insert(tree(quote(name)));
+          gMetaDataSet()[tree("name")].insert(tree(quote(name)));
           compileCode(signals, numInputs, numOutputs);
       }
 
@@ -634,10 +638,10 @@ namespace Faust {
         unique_ptr<ifstream> enrobage;
           if (global::config().gArchFile != "") {
               if ((enrobage = openArchStream(global::config().gArchFile.c_str()))) {
-                  if (global::config().gNameSpace != "" && global::config().gOutputLang == "cpp")
+                  if (global::config().gNameSpace != "" && gOutputLang() == "cpp")
                       *dst.get() << "namespace " << global::config().gNameSpace << " {" << endl;
       #ifdef DLANG_BUILD
-                  else if (global::config().gOutputLang == "dlang") {
+                  else if (gOutputLang() == "dlang") {
                       DLangCodeContainer::printDRecipeComment(*dst.get(), this->_codeContainer->getClassName());
                       DLangCodeContainer::printDModuleStmt(*dst.get(), this->_codeContainer->getClassName());
                   }
@@ -680,7 +684,7 @@ namespace Faust {
                       global::config().gDSPFactory->write(&cout, false, false);
                   }
 
-                  if (global::config().gNameSpace != "" && global::config().gOutputLang == "cpp") {
+                  if (global::config().gNameSpace != "" && gOutputLang() == "cpp") {
                       *dst.get() << "} // namespace " << global::config().gNameSpace << endl;
                   }
 

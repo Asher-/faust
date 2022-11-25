@@ -29,6 +29,7 @@
 #include <ostream>
 #include "compiler/errors/exception.hh"
 #include "global.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using namespace std;
 
@@ -50,13 +51,13 @@ static int computeBoxComplexity(Tree box);
  */
 int boxComplexity(Tree box)
 {
-    Tree prop = box->getProperty(global::config().BCOMPLEXITY);
+    Tree prop = box->getProperty(::Faust::Primitive::Symbols::asTree().BCOMPLEXITY);
 
     if (prop) {
         return tree2int(prop);
     } else {
         int v = computeBoxComplexity(box);
-        box->setProperty(global::config().BCOMPLEXITY, tree(v));
+        box->setProperty(::Faust::Primitive::Symbols::asTree().BCOMPLEXITY, tree(v));
         return v;
     }
 }

@@ -31,6 +31,7 @@
 #include "faust/primitive/symbols.hh"
 
 #include "faust/primitive/type/priority.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using Priority = ::Faust::Primitive::Type::Priority;
 
@@ -133,13 +134,13 @@ void old_OccMarkup::mark(Tree root)
     if (isList(root)) {
         while (isList(root)) {
             // incOcc(Priority::Samp, 1, hd(root));
-            incOcc(global::config().nil, Priority::Samp, 0, 0, global::config().nil, hd(root));
+            incOcc(::Faust::Primitive::Symbols::asTree().nil, Priority::Samp, 0, 0, ::Faust::Primitive::Symbols::asTree().nil, hd(root));
             root = tl(root);
         }
         // cerr << "END OF LIST IS " << *root << endl;
     } else {
         // incOcc(Priority::Samp, 1, root);
-        incOcc(global::config().nil, Priority::Samp, 0, 0, global::config().nil, root);
+        incOcc(::Faust::Primitive::Symbols::asTree().nil, Priority::Samp, 0, 0, ::Faust::Primitive::Symbols::asTree().nil, root);
     }
 }
 
@@ -169,7 +170,7 @@ void old_OccMarkup::incOcc(
         const Priority&  v0 = ty->priority();
         int  r0 = getRecursivness(t);
         // fConditions may have been initialized empty
-        Tree c0 = (fConditions.find(t) == fConditions.end()) ? global::config().nil : fConditions[t];        
+        Tree c0 = (fConditions.find(t) == fConditions.end()) ? ::Faust::Primitive::Symbols::asTree().nil : fConditions[t];        
         occ     = new old_Occurences(v0, r0, c0);
         setOcc(t, occ);
 

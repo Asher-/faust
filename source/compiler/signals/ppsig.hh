@@ -43,8 +43,14 @@ using namespace std;
 
 class ppsig : public virtual Garbageable {
    public:
-    ppsig(Tree s);
-    ppsig(Tree s, Tree env, int priority = 0) : fSig(s), fEnv(env), fPriority(priority), fHideRecursion(false) {}
+    ppsig(Tree s)
+    : fSig(s), fEnv(::Faust::Primitive::Symbols::asTree().nil), fPriority(0), fHideRecursion(false)
+    {}
+    
+    ppsig(Tree s, Tree env, int priority = 0)
+    : fSig(s), fEnv(env), fPriority(priority), fHideRecursion(false)
+    {}
+    
     virtual ostream& print(ostream& fout) const;
 
    protected:
@@ -115,5 +121,16 @@ class ppsigShared final : public ppsig {
     
         static void printIDs(ostream& fout);
 };
+
+// ------------
+// ppsigShared
+// ------------
+// Tree is used to identify the same nodes during Signal tree traversal,
+// but gSignalCounter is then used to generate unique IDs
+extern std::map<Tree, std::pair<int, std::string>> gSignalTable();
+extern int                                         gSignalCounter;
+
+// To keep the signal tree traversing trace
+extern std::vector<std::string>& gSignalTrace();
 
 #endif

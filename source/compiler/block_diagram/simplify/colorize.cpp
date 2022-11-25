@@ -28,6 +28,8 @@
 #include "global.hh"
 #include "compiler/signals/signals.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 using namespace std;
 
 // static funvtions needed to implement splitDependance
@@ -142,7 +144,7 @@ void listMultiColoredExp(Tree exp, set<Tree>& lst)
  */
 void setColorProperty(Tree sig, set<int>* colorset)
 {
-    setProperty(sig, global::config().COLORPROPERTY, tree((void*)colorset));
+    setProperty(sig, ::Faust::Primitive::Symbols::asTree().COLORPROPERTY, tree((void*)colorset));
 }
 
 /**
@@ -152,7 +154,7 @@ void setColorProperty(Tree sig, set<int>* colorset)
 set<int>* getColorProperty(Tree sig)
 {
     Tree tt;
-    if (!getProperty(sig, global::config().COLORPROPERTY, tt)) {
+    if (!getProperty(sig, ::Faust::Primitive::Symbols::asTree().COLORPROPERTY, tt)) {
         return 0;
     } else {
         return (set<int>*)tree2ptr(tt);

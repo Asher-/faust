@@ -24,7 +24,7 @@
 
 #include <string>
 
-#include "compiler/parser/abstract/implementation.hh"
+#include "compiler/parser/bison/implementation.hh"
 #include "compiler/parser/lexer/location/implementation.hh"
 
 #include "tlib/tree.hh"
@@ -44,7 +44,7 @@ namespace Faust {
         struct Implementation : FaustAbstractFlexLexer
         {
           using Self = ::Faust::Compiler::Parser::Implementation;
-          using Parser = ::Faust::Compiler::Parser::AbstractImplementation;
+          using Parser = ::Faust::Compiler::Parser::BisonImplementation;
           using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
           using symbol_type = typename Parser::symbol_type;
 
@@ -79,7 +79,7 @@ namespace Faust {
           
 
           typename Parser::symbol_type
-          lex( Self& self, symbol_type& yyla );
+          lex( Self& self );
           
           Self& self;
           

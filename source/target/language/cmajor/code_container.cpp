@@ -27,8 +27,11 @@
 #include "target/language/cmajor/vector/code_container.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using Precision = ::Faust::Primitive::Type::Precision;
 

@@ -37,8 +37,11 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "simplify.hh"
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/symbols.hh"
+
+#include "faust/primitive/symbols/as_tree.hh"
 
 #undef TRACE
 
@@ -75,7 +78,7 @@ static Tree traced_simplification(Tree sig)
 
 Tree simplify(Tree sig)
 {
-    return sigMap(global::config().SIMPLIFIED, traced_simplification, sig);
+    return sigMap(::Faust::Primitive::Symbols::asTree().SIMPLIFIED, traced_simplification, sig);
 }
 
 // Implementation
@@ -216,7 +219,7 @@ static Tree sigMap(Tree key, tfun f, Tree t)
         return (isNil(p)) ? t : p;  // trick to avoid loops
 
     } else if (isRec(t, id, body)) {
-        setProperty(t, key, global::config().nil);  // avoid infinite loop
+        setProperty(t, key, ::Faust::Primitive::Symbols::asTree().nil);  // avoid infinite loop
         return rec(id, sigMap(key, f, body));
 
     } else {
@@ -230,7 +233,7 @@ static Tree sigMap(Tree key, tfun f, Tree t)
 
         Tree r2 = f(r1);
         if (r2 == t) {
-            setProperty(t, key, global::config().nil);
+            setProperty(t, key, ::Faust::Primitive::Symbols::asTree().nil);
         } else {
             setProperty(t, key, r2);
         }
@@ -276,7 +279,7 @@ static Tree sigMapRename(Tree key, Tree env, tfun f, Tree t)
 
         Tree r2 = f(r1);
         if (r2 == t) {
-            setProperty(t, key, global::config().nil);
+            setProperty(t, key, ::Faust::Primitive::Symbols::asTree().nil);
         } else {
             setProperty(t, key, r2);
         }
@@ -297,7 +300,7 @@ static void eraseProperties(Tree key, Tree t)
 		t->clearProperties();
         Tree r = rec(id, body);
         faustassert(r==t);
-		setProperty(t, key, global::config().nil);	// avoid infinite loop
+		setProperty(t, key, ::Faust::Primitive::Symbols::asTree().nil);	// avoid infinite loop
 		eraseProperties(key, body);
 
 	} else {
@@ -325,7 +328,7 @@ static Tree docTableConverter(Tree sig);
 
 Tree docTableConvertion(Tree sig)
 {
-    Tree r = sigMapRename(global::config().DOCTABLES, global::config().NULLENV, docTableConverter, sig);
+    Tree r = sigMapRename(::Faust::Primitive::Symbols::asTree().DOCTABLES, ::Faust::Primitive::Symbols::asTree().NULLENV, docTableConverter, sig);
     return r;
 }
 

@@ -31,6 +31,8 @@
 #include "normalform.hh"
 #include "labels.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 LIBFAUST_API std::string createSourceFromSignals(const std::string& name_app, tvec signals,
                                                  const std::string& lang,
                                                  int argc, const char* argv[],
@@ -84,42 +86,42 @@ LIBFAUST_API Tree sigFVar(SType type, const string& name, const string& file)
 
 LIBFAUST_API Tree sigButton(const std::string& label)
 {
-    return sigButton(normalizePath(cons(tree(label), global::config().nil)));
+    return sigButton(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)));
 }
 
 LIBFAUST_API Tree sigCheckbox(const std::string& label)
 {
-    return sigCheckbox(normalizePath(cons(tree(label), global::config().nil)));
+    return sigCheckbox(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)));
 }
 
 LIBFAUST_API Tree sigVSlider(const std::string& label, Tree cur, Tree min, Tree max, Tree step)
 {
-    return sigVSlider(normalizePath(cons(tree(label), global::config().nil)), cur, min, max, step);
+    return sigVSlider(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)), cur, min, max, step);
 }
 
 LIBFAUST_API Tree sigHSlider(const std::string& label, Tree cur, Tree min, Tree max, Tree step)
 {
-    return sigHSlider(normalizePath(cons(tree(label), global::config().nil)), cur, min, max, step);
+    return sigHSlider(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)), cur, min, max, step);
 }
 
 LIBFAUST_API Tree sigNumEntry(const std::string& label, Tree cur, Tree min, Tree max, Tree step)
 {
-    return sigNumEntry(normalizePath(cons(tree(label), global::config().nil)), cur, min, max, step);
+    return sigNumEntry(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)), cur, min, max, step);
 }
 
 LIBFAUST_API Tree sigVBargraph(const std::string& label, Tree min, Tree max, Tree x)
 {
-    return sigVBargraph(normalizePath(cons(tree(label), global::config().nil)), min, max, x);
+    return sigVBargraph(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)), min, max, x);
 }
 
 LIBFAUST_API Tree sigHBargraph(const std::string& label, Tree min, Tree max, Tree x)
 {
-    return sigHBargraph(normalizePath(cons(tree(label), global::config().nil)), min, max, x);
+    return sigHBargraph(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)), min, max, x);
 }
 
 LIBFAUST_API Tree sigSoundfile(const std::string& label)
 {
-    return sigSoundfile(normalizePath(cons(tree(label), global::config().nil)));
+    return sigSoundfile(normalizePath(cons(tree(label), ::Faust::Primitive::Symbols::asTree().nil)));
 }
 
 LIBFAUST_API Tree sigSelf()
@@ -131,8 +133,8 @@ LIBFAUST_API Tree sigSelf()
 
 LIBFAUST_API Tree sigRecursion(Tree s)
 {
-    // return sigDelay0(sigProj(0, rec(cons(liftn(s, 0), global::config().nil))));
-    return sigDelay0(sigProj(0, rec(cons(s, global::config().nil))));
+    // return sigDelay0(sigProj(0, rec(cons(liftn(s, 0), ::Faust::Primitive::Symbols::asTree().nil))));
+    return sigDelay0(sigProj(0, rec(cons(s, ::Faust::Primitive::Symbols::asTree().nil))));
 }
 
 // Global context, to be used in C and C++ API

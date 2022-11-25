@@ -104,4 +104,16 @@ inline ostream &operator<<(ostream &file, const envpp &epp)
     return epp.print(file);
 }
 
+    // ------------
+    // boxppShared
+    // ------------
+
+    // Tree is used to identify the same nodes during Box tree traversal,
+    // but gBoxCounter is then used to generate unique IDs
+    extern std::map<Tree, std::pair<int, std::string>> gBoxTable();
+    extern int                                         gBoxCounter;
+
+    // To keep the box tree traversing trace
+    extern std::vector<std::string>& gBoxTrace();
+
 #endif

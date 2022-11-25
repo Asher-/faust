@@ -36,15 +36,18 @@
  *  parallel (,), split (<:), merge (:>), and recursive (~).
  */
 
-#include "compiler/block_diagram/boxes/boxes.hh"
 #include <stdio.h>
 #include <string.h>
-#include "compiler/errors/exception.hh"
+
 #include "global.hh"
+
+#include "compiler/errors/exception.hh"
+#include "compiler/block_diagram/boxes/boxes.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/signals/prim2.hh"
 
 #include "faust/primitive/symbols.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 /*****************************************************************************
                                     Identifiers
@@ -404,7 +407,7 @@ LIBFAUST_API bool isBoxWithLocalDef(Tree t, Tree& body, Tree& ldef)
 static Tree def2names(Tree ldef)
 {
     if (isNil(ldef)) {
-        return global::config().nil;
+        return ::Faust::Primitive::Symbols::asTree().nil;
     } else {
         Tree def = hd(ldef);
         return cons(hd(def), def2names(tl(ldef)));
@@ -415,7 +418,7 @@ static Tree def2names(Tree ldef)
 static Tree def2exp(Tree ldef)
 {
     if (isNil(ldef)) {
-        return global::config().nil;
+        return ::Faust::Primitive::Symbols::asTree().nil;
     } else {
         Tree def = hd(ldef);
         return cons(tl(def), def2exp(tl(ldef)));
@@ -462,7 +465,7 @@ static Tree makeRecProjectionsList(int n, int i, Tree lnames, Tree ldef)
     if (i == n) {
         return ldef;
     } else {
-        Tree sel = boxSeq(global::config().LETRECBODY, makeSelector(n, i));
+        Tree sel = boxSeq(::Faust::Primitive::Symbols::asTree().LETRECBODY, makeSelector(n, i));
         return cons(cons(hd(lnames), sel), makeRecProjectionsList(n, i + 1, tl(lnames), ldef));
     }
 }
@@ -470,10 +473,10 @@ static Tree makeRecProjectionsList(int n, int i, Tree lnames, Tree ldef)
 // buildRecursiveBodyDef(n,lnames,lexp) => "RECURSIVEBODY = \(lnames).(lexp) ~ bus(n);"
 static Tree buildRecursiveBodyDef(int n, Tree lnames, Tree lexp, Tree ldef2)
 {
-    if (ldef2 == global::config().nil) {
-        return cons(global::config().LETRECBODY, boxRec(makeBoxAbstr(lnames, makeParList(lexp)), makeBus(n)));
+    if (ldef2 == ::Faust::Primitive::Symbols::asTree().nil) {
+        return cons(::Faust::Primitive::Symbols::asTree().LETRECBODY, boxRec(makeBoxAbstr(lnames, makeParList(lexp)), makeBus(n)));
     } else {
-        return cons(global::config().LETRECBODY,
+        return cons(::Faust::Primitive::Symbols::asTree().LETRECBODY,
                     boxRec(makeBoxAbstr(lnames, boxWithLocalDef(makeParList(lexp), ldef2)), makeBus(n)));
     }
 }
@@ -500,7 +503,7 @@ Tree boxWithRecDef(Tree body, Tree ldef, Tree ldef2)
     int  n      = len(ldef);
 
     Tree rdef = buildRecursiveBodyDef(n, lnames, lexp, ldef2);
-    Tree lrp  = makeRecProjectionsList(n, 0, lnames, global::config().nil);
+    Tree lrp  = makeRecProjectionsList(n, 0, lnames, ::Faust::Primitive::Symbols::asTree().nil);
     Tree w    = boxWithLocalDef(body, cons(rdef, lrp));
     // cerr << "boxWithRecDef(" << boxpp(body) << ',' << *ldef << ") -> " << boxpp(w) << endl;
     return w;
@@ -1139,4 +1142,15 @@ bool isBoxPatternMatcher(Tree s, PM::Automaton*& a, int& state, Tree& env, Tree&
     } else {
         return false;
     }
+}
+
+/*****************************************************************************
+                             Math Primitives
+*****************************************************************************/
+
+Tree boxMathPrimitive( const std::string& symbol_name )
+{
+  Tree b = tree(::Faust::Primitive::Symbols::internal().symbol( symbol_name ));
+  faustassert(getUserData(b) != nullptr);
+  return b;
 }

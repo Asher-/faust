@@ -46,6 +46,8 @@ Compile a list of FAUST signals into a C++ class.
 #include "timing.hh"
 #include "global.hh"
 
+#include "compiler/parser/implementation.hh"
+
 /*****************************************************************************
 ******************************************************************************
 
@@ -135,7 +137,7 @@ static std::string wdel(const std::string& s)
 void Compiler::generateMetaData()
 {
     // Add global metadata
-    for (map<Tree, set<Tree> >::iterator i = global::config().gMetaDataSet.begin(); i != global::config().gMetaDataSet.end(); i++) {
+    for (map<Tree, set<Tree> >::iterator i = gMetaDataSet().begin(); i != gMetaDataSet().end(); i++) {
         if (i->first != tree("author")) {
             stringstream str1, str2;
             str1 << *(i->first);
@@ -197,7 +199,7 @@ void Compiler::generateUserInterfaceTree(Tree t, bool root)
         // At rool level and if label is empty, use the name kept in "metadata" (either the one coded in 'declare name
         // "XXX";' line, or the filename)
         string group = (root && (simplifiedLabel == ""))
-                           ? unquote(tree2str(*(global::config().gMetaDataSet[tree("name")].begin())))
+                           ? unquote(tree2str(*(gMetaDataSet()[tree("name")].begin())))
                            : checkNullLabel(t, simplifiedLabel);
         switch (orient) {
             case 0:

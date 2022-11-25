@@ -35,8 +35,11 @@
 #include "target/fir/visitor/loop_variable_renamer.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using Precision = ::Faust::Primitive::Type::Precision;
 
@@ -598,12 +601,12 @@ void CodeContainer::printMacros(ostream& fout, int n)
 {
     // generate user interface macros if needed
     if (global::config().gUIMacroSwitch) {
-        if (global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp") {
+        if (gOutputLang() == "c" || gOutputLang() == "cpp") {
             tab(n, fout);
             fout << "#ifdef FAUST_UIMACROS";
             tab(n + 1, fout);
             tab(n + 1, fout);
-            for (const auto& it : global::config().gMetaDataSet) {
+            for (const auto& it : gMetaDataSet()) {
                 if (it.first == tree("filename")) {
                     fout << "#define FAUST_FILE_NAME " << **(it.second.begin());
                     break;
@@ -638,7 +641,7 @@ void CodeContainer::printMacros(ostream& fout, int n)
                 tab(n, fout);
             }
             fout << "#endif" << endl;
-        } else if (global::config().gOutputLang == "rust") {
+        } else if (gOutputLang() == "rust") {
             fout << "pub const FAUST_INPUTS: i32 = " << fNumInputs << ";";
             tab(n, fout);
             fout << "pub const FAUST_OUTPUTS: i32 = " << fNumOutputs << ";";
@@ -852,7 +855,7 @@ DeclareFunInst* CodeContainer::generateFillFun(const std::string& name, const st
     BlockInst* block = InstBuilder::genBlockInst();
     block->pushBackInst(fComputeBlockInstructions);
     // Hack for Julia
-    if (global::config().gOutputLang == "julia" || global::config().gOutputLang == "jax") {
+    if (gOutputLang() == "julia" || gOutputLang() == "jax") {
         block->pushBackInst(fCurLoop->generateSimpleScalarLoop("count"));
     } else {
         block->pushBackInst(fCurLoop->generateScalarLoop("count"));

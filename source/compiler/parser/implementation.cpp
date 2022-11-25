@@ -22,18 +22,41 @@
 #include <filesystem>
 
 #include "compiler/parser/implementation.hh"
-#include "global.hh"
 #include "tlib/compatibility.hh"
 #include "compiler/block_diagram/boxes/boxes.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
 #include "compiler/type_manager/Text.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 #include "faust/primitive/symbols.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using namespace ::Faust::Compiler::Parser;
 
-Tree Implementation::_nil = tree(Faust::Primitive::Symbols::internal().symbol("nil"));
+std::string& gMasterDocument()
+{
+  static std::string g_master_document;
+  return g_master_document;
+}
+
+MetaDataSet& gMetaDataSet()
+{
+  static MetaDataSet g_meta_data_set;
+  return g_meta_data_set;
+}
+
+FunMDSet& gFunMDSet()
+{
+  static FunMDSet g_fun_md_set;
+  return g_fun_md_set;
+}
+
+std::string& gOutputLang()
+{
+  static std::string g_output_lang;
+  return g_output_lang;
+}
 
 Tree Implementation::checkRulelist(Tree lr)
 {
@@ -67,16 +90,16 @@ string Implementation::printPatternError(Tree symbol, Tree lhs1, Tree rhs1, Tree
 
     if (!symbol) {
         error << "ERROR : inconsistent number of parameters in pattern-matching rule: "
-        << boxpp(reverse(lhs2)) << " => " << boxpp(rhs2) << ";"
+        << ::boxpp(reverse(lhs2)) << " => " << ::boxpp(rhs2) << ";"
         << " previous rule was: "
-        << boxpp(reverse(lhs1)) << " => " << boxpp(rhs1) << ";"
+        << ::boxpp(reverse(lhs1)) << " => " << ::boxpp(rhs1) << ";"
         << endl;
     } else {
-        error << "ERROR (file " << this->_streamName << ":" << this->_lexer->lineno() << ") : in the definition of " << boxpp(symbol) << endl
+        error << "ERROR (file " << this->_streamName << ":" << this->_lexer->lineno() << ") : in the definition of " << ::boxpp(symbol) << endl
         << "Inconsistent number of parameters in pattern-matching rule: "
-        << boxpp(reverse(lhs2)) << " => " << boxpp(rhs2) << ";"
+        << ::boxpp(reverse(lhs2)) << " => " << ::boxpp(rhs2) << ";"
         << " previous rule was: "
-        << boxpp(reverse(lhs1)) << " => " << boxpp(rhs1) << ";"
+        << ::boxpp(reverse(lhs1)) << " => " << ::boxpp(rhs1) << ";"
         << endl;
     }
 
@@ -87,14 +110,14 @@ string Implementation::printRedefinitionError(Tree symbol, std::list<Tree>& vari
 {
     stringstream error;
 
-    error << "ERROR (file " << this->_streamName << ":" << this->_lexer->lineno() << ") : multiple definitions of symbol " << boxpp(symbol) << endl;
+    error << "ERROR (file " << this->_streamName << ":" << this->_lexer->lineno() << ") : multiple definitions of symbol " << ::boxpp(symbol) << endl;
     for (const auto& p : variants) {
         Tree params = hd(p);
         Tree body = tl(p);
         if (isNil(params)) {
-            error << boxpp(symbol) << " = " << boxpp(body) << ";" << endl;
+            error << ::boxpp(symbol) << " = " << ::boxpp(body) << ";" << endl;
         } else {
-            error << boxpp(symbol) << boxpp(params) << " = " << boxpp(body) << ";" << endl;
+            error << ::boxpp(symbol) << ::boxpp(params) << " = " << ::boxpp(body) << ";" << endl;
         }
     }
 
@@ -103,34 +126,34 @@ string Implementation::printRedefinitionError(Tree symbol, std::list<Tree>& vari
 
 void Implementation::checkName()
 {
-    if (global::config().gMasterDocument == this->_streamName) {
+    if (gMasterDocument() == this->_streamName) {
         Tree name = tree("name");
-        if (global::config().gMetaDataSet.find(name) == global::config().gMetaDataSet.end()) {
-            global::config().gMetaDataSet[name].insert(tree(quote(this->stripEnd(std::filesystem::path(this->_streamName).filename(), ".dsp"))));
+        if (gMetaDataSet().find(name) == gMetaDataSet().end()) {
+            gMetaDataSet()[name].insert(tree(quote(this->stripEnd(std::filesystem::path(this->_streamName).filename(), ".dsp"))));
         }
-        global::config().gMetaDataSet[tree("filename")].insert(tree(quote(std::filesystem::path(this->_streamName).filename())));
+        gMetaDataSet()[tree("filename")].insert(tree(quote(std::filesystem::path(this->_streamName).filename())));
     }
 }
 
 void Implementation::declareMetadata(Tree key, Tree value)
 {
-    if (global::config().gMasterDocument == this->_streamName) {
+    if (gMasterDocument() == this->_streamName) {
         // Inside master document, no prefix needed to declare metadata
-        global::config().gMetaDataSet[key].insert(value);
+        gMetaDataSet()[key].insert(value);
     } else {
         string fkey(this->_streamName);
         if (fkey != "") {
             fkey += "/";
         }
         fkey += tree2str(key);
-        global::config().gMetaDataSet[tree(fkey.c_str())].insert(value);
+        gMetaDataSet()[tree(fkey.c_str())].insert(value);
     }
 }
 
 /*
 fun -> (file*fun -> {key*value,...})
 
-global::config().gFunMetaDataSet[fun].insert(file*fun*key*value);
+gFunMDSet()[fun].insert(file*fun*key*value);
 gFunMetaDataSet = map<tree, tuple<Tree,Tree,Tree,Tree>>
 */
 
@@ -142,7 +165,7 @@ void Implementation::declareDefinitionMetadata(Tree id, Tree key, Tree value)
     string fullkey = fullkeystream.str();
     Tree md = cons(tree(fullkey), value);
     //cout << "Creation of a function metadata : " << *md << endl;
-    global::config().gFunMDSet[boxIdent(tree2str(id).c_str())].insert(md);
+    gFunMDSet()[boxIdent(tree2str(id).c_str())].insert(md);
 }
 
 /**
@@ -165,10 +188,10 @@ Tree Implementation::makeDefinition(Tree symbol, std::list<Tree>& variants)
     } else if (standardArgList(args)) {
       return buildBoxAbstr(args, body);
     } else {
-      return boxCase(cons(rhs,global::config().nil));
+      return boxCase(cons(rhs,::Faust::Primitive::Symbols::asTree().nil));
     }
   } else {
-    Tree l = global::config().nil;
+    Tree l = ::Faust::Primitive::Symbols::asTree().nil;
     Tree prev = *variants.begin();
     int npat = len(hd(prev));
 
@@ -201,7 +224,7 @@ Tree Implementation::formatDefinitions(Tree rldef)
 {
     map<Tree, list<Tree> > dic;
     map<Tree, list<Tree> >::iterator p;
-    Tree ldef2 = global::config().nil;
+    Tree ldef2 = ::Faust::Primitive::Symbols::asTree().nil;
     Tree file;
 
     // Collects the definitions in a dictionnary
@@ -286,7 +309,7 @@ int Implementation::str2int(const char* str)
 // characters from string. Returns a Tree
 //----------------------------------------------------------
 
-Tree Implementation::unquote(const char* str)
+std::string Implementation::unquote(const char* str)
 {
     size_t size = strlen(str) + 1;
 
@@ -308,11 +331,11 @@ Tree Implementation::unquote(const char* str)
     }
     buf[j] = 0;
 
-    return tree(buf);
+    return std::string(buf);
     //----------------------------------------------
 }
 
-void AbstractImplementation::error (
+void BisonImplementation::error (
   const location_type& loc,
   const std::string& msg
 ) {

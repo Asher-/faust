@@ -30,6 +30,7 @@ namespace Faust {
 
           constexpr const char EvalProperty[] = "EvalProperty\0";
           constexpr const char PMPROPERTY[] = "PMPROPERTY\0";
+          constexpr const char BCOMPLEXITY[] = "BCOMPLEXITY\0";
           constexpr const char BoxIdent[] = "BoxIdent\0";
           constexpr const char BoxCut[] = "BoxCut\0";
           constexpr const char BoxWaveform[] = "BoxWaveform\0";
@@ -93,6 +94,7 @@ namespace Faust {
           constexpr const char uiFolder[] = "uiFolder\0";
           constexpr const char uiWidget[] = "uiWidget\0";
           constexpr const char ForeignFunction[] = "ForeignFunction\0";
+          constexpr const char RECURSIVEBODY[] = "RECURSIVEBODY\0";
           constexpr const char SigInput[] = "SigInput\0";
           constexpr const char SigOutput[] = "SigOutput\0";
           constexpr const char SigDelay1[] = "SigDelay1\0";

@@ -26,6 +26,8 @@
 #include "compiler/signals/signals.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 /********************************************************************
 SignalConstantPropagation::transformation(Tree sig) :
 
@@ -121,7 +123,7 @@ Tree SignalConstantPropagation::transformation(Tree sig)
         } else {
             cerr << "ERROR : SignalConstantPropagation::transformation : " << *sig << endl;
             faustassert(false);
-            return global::config().nil;  // Fake return to silence warnings
+            return ::Faust::Primitive::Symbols::asTree().nil;  // Fake return to silence warnings
         }
 
     } else {

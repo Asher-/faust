@@ -33,9 +33,13 @@
 #include "compiler/type_manager/Text.hh"
 #include "tlib/compatibility.hh"
 #include "compiler/types/floats.hh"
-#include "global.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+
+#include "compiler/parser/implementation.hh"
+
+using namespace std;
 
 static std::string substitution(const std::string& model, const vector<std::string>& args)
 {
@@ -202,7 +206,7 @@ static std::string encodeJuliaFloat(const std::string& c, bool& need_suffix)
 
 static std::string addSuffix(const std::string& num)
 {
-    if (global::config().gOutputLang == "julia") {
+    if (gOutputLang() == "julia") {
         bool need_suffix = true;
         string res = encodeJuliaFloat(num, need_suffix);
         return (need_suffix) ? (res + inumix()) : res;

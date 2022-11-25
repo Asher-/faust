@@ -31,6 +31,8 @@
 
 #include "faust/primitive/type/precision.hh"
 
+#include "compiler/parser/implementation.hh"
+
 using Precision = ::Faust::Primitive::Type::Precision;
 
 using namespace std;
@@ -309,7 +311,7 @@ FIRMetaBlockInstruction* InterpreterCodeContainer<REAL>::produceMetadata(string&
     FIRMetaBlockInstruction* block = new FIRMetaBlockInstruction();
 
     // Add global metadata
-    for (const auto& it : global::config().gMetaDataSet) {
+    for (const auto& it : gMetaDataSet()) {
         if (it.first != tree("author")) {
             stringstream str1, str2;
             str1 << *(it.first);

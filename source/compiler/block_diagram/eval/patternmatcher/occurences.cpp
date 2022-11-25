@@ -32,6 +32,7 @@
 #include "faust/primitive/symbols.hh"
 
 #include "faust/primitive/type/priority.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using Priority = ::Faust::Primitive::Type::Priority;
 
@@ -114,13 +115,13 @@ void OccMarkup::mark(Tree root)
     if (isList(root)) {
         while (isList(root)) {
             // incOcc(Priority::Samp, 1, hd(root));
-            incOcc(global::config().nil, Priority::Samp, 0, 0, hd(root));
+            incOcc(::Faust::Primitive::Symbols::asTree().nil, Priority::Samp, 0, 0, hd(root));
             root = tl(root);
         }
         // cerr << "END OF LIST IS " << *root << endl;
     } else {
         // incOcc(Priority::Samp, 1, root);
-        incOcc(global::config().nil, Priority::Samp, 0, 0, root);
+        incOcc(::Faust::Primitive::Symbols::asTree().nil, Priority::Samp, 0, 0, root);
     }
 }
 

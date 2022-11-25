@@ -26,6 +26,8 @@
 #include "global.hh"
 #include "compiler/signals/ppsig.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 /*
  * Dcond are conditions, boolean expressions in disjunctive normal form implemented
  * as set of set of Tree
@@ -89,7 +91,7 @@ Tree cnfOr(Tree c1, Tree c2)
                 }
             }
         }
-        Tree c3 = global::config().nil;
+        Tree c3 = ::Faust::Primitive::Symbols::asTree().nil;
         for (auto t1 : A) { c3 = addElement(t1,c3); }
         return c3;
     }
@@ -128,7 +130,7 @@ Tree cnfOr(Tree c1, Tree c2)
             }
         }
 
-        Tree c3 = global::config().nil;
+        Tree c3 = ::Faust::Primitive::Symbols::asTree().nil;
         for (auto t1 : A) {
             c3 = addElement(t1, c3);
         }
@@ -174,7 +176,7 @@ Tree cnfAnd(Tree c1, Tree c2)
         }
 
         // compute the resulting expression
-        Tree c3 = global::config().nil;
+        Tree c3 = ::Faust::Primitive::Symbols::asTree().nil;
         for (int i = 0; i < n; i++) {
             c3 = addElement(A[i], c3);
         }
@@ -225,7 +227,7 @@ Tree TRACE_dnfAnd(Tree c1, Tree c2)
         }
 
         // compute the resulting expression
-        Tree c3 = global::config().nil;
+        Tree c3 = ::Faust::Primitive::Symbols::asTree().nil;
         for (int i = 0; i < n; i++) {
             c3 = addElement(A[i], c3);
         }
@@ -277,7 +279,7 @@ Tree TRACE_dnfOr(Tree c1, Tree c2)
             }
         }
         // compute the resulting expression
-        Tree c3 = global::config().nil;
+        Tree c3 = ::Faust::Primitive::Symbols::asTree().nil;
         for (int i = 0; i < n; i++) {
             c3 = addElement(A[i], c3);
         }

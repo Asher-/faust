@@ -31,6 +31,8 @@
 #include "recursivness.hh"
 #include "compiler/signals/signals.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 using namespace std;
 
 /**
@@ -56,7 +58,7 @@ static int position(Tree env, Tree t, int p = 1);
  */
 void recursivnessAnnotation(Tree sig)
 {
-    annotate(global::config().nil, sig);
+    annotate(::Faust::Primitive::Symbols::asTree().nil, sig);
 }
 
 /**
@@ -69,7 +71,7 @@ void recursivnessAnnotation(Tree sig)
 int getRecursivness(Tree sig)
 {
     Tree tr;
-    if (!getProperty(sig, global::config().RECURSIVNESS, tr)) {
+    if (!getProperty(sig, ::Faust::Primitive::Symbols::asTree().RECURSIVNESS, tr)) {
         cerr << "ERROR : getRecursivness of " << *sig << endl;
         faustassert(false);
     }
@@ -87,7 +89,7 @@ static int annotate(Tree env, Tree sig)
 {
     Tree tr, var, body;
 
-    if (getProperty(sig, global::config().RECURSIVNESS, tr)) {
+    if (getProperty(sig, ::Faust::Primitive::Symbols::asTree().RECURSIVNESS, tr)) {
         return tree2int(tr);  // already annotated
     } else if (isRec(sig, var, body)) {
         int p = position(env, sig);
@@ -96,7 +98,7 @@ static int annotate(Tree env, Tree sig)
         } else {
             int r = annotate(cons(sig, env), body) - 1;
             if (r < 0) r = 0;
-            setProperty(sig, global::config().RECURSIVNESS, tree(r));
+            setProperty(sig, ::Faust::Primitive::Symbols::asTree().RECURSIVNESS, tree(r));
             return r;
         }
     } else {
@@ -107,7 +109,7 @@ static int annotate(Tree env, Tree sig)
             int r = annotate(env, v[i]);
             if (r > rmax) rmax = r;
         }
-        setProperty(sig, global::config().RECURSIVNESS, tree(rmax));
+        setProperty(sig, ::Faust::Primitive::Symbols::asTree().RECURSIVNESS, tree(rmax));
         return rmax;
     }
 }
@@ -143,7 +145,7 @@ static Tree symlistVisit(Tree sig, set<Tree>& visited)
     if (global::config().gSymListProp->get(sig, S)) {
         return S;
     } else if (visited.count(sig) > 0) {
-        return global::config().nil;
+        return ::Faust::Primitive::Symbols::asTree().nil;
     } else {
         visited.insert(sig);
         Tree id, body;
@@ -156,7 +158,7 @@ static Tree symlistVisit(Tree sig, set<Tree>& visited)
         } else {
             vector<Tree> subsigs;
             int          n = getSubSignals(sig, subsigs, true);  // tables have to be visited also
-            Tree         U = global::config().nil;
+            Tree         U = ::Faust::Primitive::Symbols::asTree().nil;
             for (int i = 0; i < n; i++) {
                 U = setUnion(U, symlistVisit(subsigs[i], visited));
             }

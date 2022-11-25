@@ -31,6 +31,8 @@
 #include "compiler/signals/sigtyperules.hh"
 #include "timing.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 // Implementation
 static Tree simplifyToNormalFormAux(Tree LS)
 {
@@ -100,14 +102,14 @@ static Tree simplifyToNormalFormAux(Tree LS)
 LIBFAUST_API Tree simplifyToNormalForm(Tree t)
 {
     if (isList(t)) {
-        Tree t2 = t->getProperty(global::config().NORMALFORM);
+        Tree t2 = t->getProperty(::Faust::Primitive::Symbols::asTree().NORMALFORM);
         if (!t2) {
             t2 = simplifyToNormalFormAux(t);
-            t->setProperty(global::config().NORMALFORM, t2);
+            t->setProperty(::Faust::Primitive::Symbols::asTree().NORMALFORM, t2);
         }
         return t2;
     } else {
-        return simplifyToNormalForm(cons(t, global::config().nil));
+        return simplifyToNormalForm(cons(t, ::Faust::Primitive::Symbols::asTree().nil));
     }
 }
 

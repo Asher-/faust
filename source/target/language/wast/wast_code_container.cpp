@@ -28,6 +28,7 @@
 #include "target/fir/visitor/loop_variable_renamer.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
 
@@ -462,7 +463,7 @@ WASTVectorCodeContainer::WASTVectorCodeContainer(const string& name, int numInpu
     : VectorCodeContainer(numInputs, numOutputs), WASTCodeContainer(name, numInputs, numOutputs, out, internal_memory)
 {
     // No array on stack, move all of them in struct
-    global::config().gMachineMaxStackSize = -1;
+    ::Faust::Primitive::Math::gMachineMaxStackSize = -1;
 }
 
 void WASTVectorCodeContainer::generateCompute(int n)

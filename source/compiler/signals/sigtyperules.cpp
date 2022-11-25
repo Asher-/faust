@@ -46,6 +46,8 @@
 
 #include "faust/primitive/audio/simple_types.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 using Availability = ::Faust::Primitive::Type::Availability;
 using Precision = ::Faust::Primitive::Type::Precision;
 using Priority = ::Faust::Primitive::Type::Priority;
@@ -213,7 +215,7 @@ void updateRecTypes(vector<Tree>& vrec, const vector<Tree>& vdef, const vector<i
 
     // cerr << "compute recursive types" << endl;
     for (int i = 0; i < n; i++) {
-        newType = T(vdef[i], global::config().NULLTYPEENV);
+        newType = T(vdef[i], ::Faust::Primitive::Symbols::asTree().NULLTYPEENV);
         newTuplet.clear();
         oldRecType = derefRecCert(getSigType(vrec[i]));
         newRecType = derefRecCert(newType);
@@ -347,7 +349,7 @@ void typeAnnotation(Tree sig, bool causality)
         }
     }
     // type full term
-    T(sig, global::config().NULLTYPEENV);
+    T(sig, ::Faust::Primitive::Symbols::asTree().NULLTYPEENV);
     TRACE(cerr << "type success : " << endl << "BYE" << endl;)
 }
 
@@ -702,7 +704,7 @@ static Type infereSigType(Tree sig, Tree env)
         return infereReadTableType(T(s1, env), T(s2, env));
 
     else if (isSigGen(sig, s1))
-        return T(s1, global::config().NULLTYPEENV);
+        return T(s1, ::Faust::Primitive::Symbols::asTree().NULLTYPEENV);
 
     else if (isSigDocConstantTbl(sig, x, y))
         return infereDocConstantTblType(T(x, env), T(y, env));

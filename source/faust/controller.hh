@@ -25,6 +25,8 @@
 #include "tlib/compatibility.hh"
 #include "compiler/util/exepath.hh"
 
+#include "compiler/parser/implementation.hh"
+
 namespace Faust {
 
   struct Controller
@@ -57,15 +59,15 @@ namespace Faust {
     static void initDocumentNames()
     {
         if (global::config().gInputFiles.empty()) {
-            global::config().gMasterDocument  = "Unknown";
+            gMasterDocument()  = "Unknown";
             global::config().gMasterDirectory = ".";
             global::config().gMasterName      = "faustfx";
             global::config().gDocName         = "faustdoc";
         } else {
-            global::config().gMasterDocument  = *global::config().gInputFiles.begin();
-            global::config().gMasterDirectory = fileDirname(global::config().gMasterDocument);
-            global::config().gMasterName      = fxName(global::config().gMasterDocument);
-            global::config().gDocName         = fxName(global::config().gMasterDocument);
+            gMasterDocument()  = *global::config().gInputFiles.begin();
+            global::config().gMasterDirectory = fileDirname(gMasterDocument());
+            global::config().gMasterName      = fxName(gMasterDocument());
+            global::config().gDocName         = fxName(gMasterDocument());
         }
 
         // Add gMasterDirectory in gImportDirList and gArchitectureDirList

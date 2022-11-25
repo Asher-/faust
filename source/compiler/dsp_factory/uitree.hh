@@ -26,8 +26,9 @@
 
 #include "global.hh"
 #include "tlib/tlib.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
-Tree uiFolder(Tree label, Tree elements = global::config().nil);
+Tree uiFolder(Tree label, Tree elements = ::Faust::Primitive::Symbols::asTree().nil);
 Tree uiWidget(Tree label, Tree varname, Tree sig);
 
 bool isUiFolder(Tree t);

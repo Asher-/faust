@@ -27,8 +27,11 @@
 #include "global.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using Precision = ::Faust::Primitive::Type::Precision;
 
@@ -369,7 +372,7 @@ void RustCodeContainer::produceMetadata(int n)
     *fOut << "fn metadata(&self, m: &mut dyn Meta) { ";
 
     // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : global::config().gMetaDataSet) {
+    for (const auto& i : gMetaDataSet()) {
         if (i.first != tree("author")) {
             tab(n + 1, *fOut);
             *fOut << "m.declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

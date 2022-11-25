@@ -50,20 +50,7 @@
                               Doc Types Creation & Test
 *****************************************************************************/
 
-Tree docTxt(const char*);
-Tree docEqn(Tree x);
-Tree docDgm(Tree x);
-Tree docNtc();
-Tree docLst();
-Tree docMtd(Tree x);
-
-bool isDocTxt(Tree t);
-bool isDocTxt(Tree t, const char**);
-bool isDocEqn(Tree t, Tree& x);
-bool isDocDgm(Tree t, Tree& x);
-bool isDocNtc(Tree t);
-bool isDocLst(Tree t);
-bool isDocMtd(Tree t);
+#include "documentator/tree.hh"
 
 /*****************************************************************************
                               Printing Public Function

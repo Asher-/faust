@@ -31,6 +31,9 @@
 #include "faust/compiler/generator/common.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+
+#include "compiler/parser/implementation.hh"
 
 // Timing can be used outside of the scope of 'gGlobal'
 extern bool gTimingSwitch;
@@ -55,7 +58,7 @@ namespace Faust {
 
       ::Faust::Controller::initFaustDirectories( _argv[0] );
       parseArgs();
-      ::Faust::Compiler::Common* compiler = ::Faust::Compiler::Common::compiler( global::config().gOutputLang );
+      ::Faust::Compiler::Common* compiler = ::Faust::Compiler::Common::compiler( gOutputLang() );
       resolveParsedState( compiler );
       ::Faust::Type::Float::init();
       compiler->_compileOptions = reorganizeCompilationOptions(_argc, _argv);
@@ -363,7 +366,7 @@ namespace Faust {
                 i += 1;
 
             } else if (isCmd(_argv[i], "-lang", "--language") && (i + 1 < _argc)) {
-                global::config().gOutputLang = _argv[i + 1];
+                gOutputLang() = _argv[i + 1];
                 i += 2;
 
             } else if (isCmd(_argv[i], "-v", "--version")) {
@@ -814,12 +817,12 @@ namespace Faust {
         }
 
     #if 0
-        if (global::config().gOutputLang == "ocpp" && global::config().gVectorSwitch) {
+        if (gOutputLang() == "ocpp" && global::config().gVectorSwitch) {
             throw faustexception("ERROR : 'ocpp' backend can only be used in scalar mode\n");
         }
     #endif
-        if (global::config().gOneSample >= 0 && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "c" &&
-            global::config().gOutputLang != "dlang" && !startWith(global::config().gOutputLang, "soul") && global::config().gOutputLang != "fir") {
+        if (global::config().gOneSample >= 0 && gOutputLang() != "cpp" && gOutputLang() != "c" &&
+            gOutputLang() != "dlang" && !startWith(gOutputLang(), "soul") && gOutputLang() != "fir") {
             throw faustexception("ERROR : '-os' option cannot only be used with 'cpp', 'c', 'fir' or 'soul' backends\n");
         }
 
@@ -827,7 +830,7 @@ namespace Faust {
             throw faustexception("ERROR : '-os' option cannot only be used in scalar mode\n");
         }
 
-        if (::Faust::Primitive::Math::FTZMode == 2 && global::config().gOutputLang == "soul") {
+        if (::Faust::Primitive::Math::FTZMode == 2 && gOutputLang() == "soul") {
             throw faustexception("ERROR : '-ftz 2' option cannot be used in 'soul' backend\n");
         }
 
@@ -844,63 +847,63 @@ namespace Faust {
         }
 
         if (global::config().gFunTaskSwitch) {
-            if (!(global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp" || global::config().gOutputLang == "llvm" ||
-                  global::config().gOutputLang == "fir")) {
+            if (!(gOutputLang() == "c" || gOutputLang() == "cpp" || gOutputLang() == "llvm" ||
+                  gOutputLang() == "fir")) {
                 throw faustexception("ERROR : -fun can only be used with 'c', 'cpp', 'llvm' or 'fir' backends\n");
             }
         }
 
         if (global::config().gFastMath) {
-            if (!(global::config().gOutputLang == "c" || global::config().gOutputLang == "cpp" || global::config().gOutputLang == "llvm" ||
-                  startWith(global::config().gOutputLang, "wast") || startWith(global::config().gOutputLang, "wasm"))) {
+            if (!(gOutputLang() == "c" || gOutputLang() == "cpp" || gOutputLang() == "llvm" ||
+                  startWith(gOutputLang(), "wast") || startWith(gOutputLang(), "wasm"))) {
                 throw faustexception("ERROR : -fm can only be used with 'c', 'cpp', 'llvm' or 'wast/wast' backends\n");
             }
         }
 
-        if (global::config().gNameSpace != "" && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "dlang") {
+        if (global::config().gNameSpace != "" && gOutputLang() != "cpp" && gOutputLang() != "dlang") {
             throw faustexception("ERROR : -ns can only be used with the 'cpp' or 'dlang' backend\n");
         }
 
-        if (global::config().gMaskDelayLineThreshold < INT_MAX && (global::config().gVectorSwitch || (global::config().gOutputLang == "ocpp"))) {
+        if (global::config().gMaskDelayLineThreshold < INT_MAX && (global::config().gVectorSwitch || (gOutputLang() == "ocpp"))) {
             throw faustexception(
                 "ERROR : '-dlt < INT_MAX' option can only be used in scalar mode and not with the 'ocpp' backend\n");
         }
 
         // gComputeMix check
-        if (global::config().gComputeMix && global::config().gOutputLang == "ocpp") {
+        if (global::config().gComputeMix && gOutputLang() == "ocpp") {
             throw faustexception("ERROR : -cm cannot be used with the 'ocpp' backend\n");
         }
 
-        if (global::config().gComputeMix && global::config().gOutputLang == "interp") {
+        if (global::config().gComputeMix && gOutputLang() == "interp") {
             throw faustexception("ERROR : -cm cannot be used with the 'interp' backend\n");
         }
 
-        if (global::config().gComputeMix && global::config().gOutputLang == "soul") {
+        if (global::config().gComputeMix && gOutputLang() == "soul") {
             throw faustexception("ERROR : -cm cannot be used with the 'soul' backend\n");
         }
 
-        if (::Faust::Primitive::Math::floatSize == 4 && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
-            global::config().gOutputLang != "c") {
+        if (::Faust::Primitive::Math::floatSize == 4 && gOutputLang() != "cpp" && gOutputLang() != "ocpp" &&
+            gOutputLang() != "c") {
             throw faustexception("ERROR : -fx can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }
 
-        if (global::config().gClang && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
-            global::config().gOutputLang != "c") {
+        if (global::config().gClang && gOutputLang() != "cpp" && gOutputLang() != "ocpp" &&
+            gOutputLang() != "c") {
             throw faustexception("ERROR : -clang can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }
 
-        if (global::config().gNoVirtual && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp" &&
-            global::config().gOutputLang != "c") {
+        if (global::config().gNoVirtual && gOutputLang() != "cpp" && gOutputLang() != "ocpp" &&
+            gOutputLang() != "c") {
             throw faustexception("ERROR : -nvi can only be used with 'c', 'cpp' or 'ocpp' backends\n");
         }
 
-        if (global::config().gMemoryManager && global::config().gOutputLang != "cpp" && global::config().gOutputLang != "ocpp") {
+        if (global::config().gMemoryManager && gOutputLang() != "cpp" && gOutputLang() != "ocpp") {
             throw faustexception("ERROR : -mem can only be used with 'cpp' or 'ocpp' backends\n");
         }
 
         if (global::config().gArchFile != "" &&
-            ((global::config().gOutputLang == "wast") || (global::config().gOutputLang == "wasm") || (global::config().gOutputLang == "interp") ||
-             (global::config().gOutputLang == "llvm") || (global::config().gOutputLang == "fir"))) {
+            ((gOutputLang() == "wast") || (gOutputLang() == "wasm") || (gOutputLang() == "interp") ||
+             (gOutputLang() == "llvm") || (gOutputLang() == "fir"))) {
             throw faustexception("ERROR : -a can only be used with 'c', 'cpp', 'ocpp', 'rust' and 'soul' backends\n");
         }
 

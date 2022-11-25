@@ -30,6 +30,7 @@
 #include "compiler/signals/sigtyperules.hh"
 
 #include "faust/primitive/symbols.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 /*****************************************************************************
                          privatise : compile a list of signals
@@ -90,7 +91,7 @@ static Tree privatisation(const Tree& k, const Tree& t)
         if (v != t) {
             setProperty(t, k, v);
         } else {
-            setProperty(t, k, global::config().nil);
+            setProperty(t, k, ::Faust::Primitive::Symbols::asTree().nil);
         }
         return v;
     }
@@ -125,7 +126,7 @@ static Tree computePrivatisation(const Tree& k, const Tree& exp)
         /*
          We do not visit the contents of the tables.
          */
-        setProperty(exp, k, global::config().nil);
+        setProperty(exp, k, ::Faust::Primitive::Symbols::asTree().nil);
         return rec(var, privatisation(k, body));
 
     } else {

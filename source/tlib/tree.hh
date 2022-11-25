@@ -77,8 +77,7 @@
 #include "tlib/node.hh"
 #include "faust/primitive/symbols.hh"
 
-namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
-using xtended = ::Faust::Primitive::Math::xtended;
+#include "compiler/parser/lexer/location/implementation.hh"
 
 //---------------------------------API---------------------------------------
 
@@ -87,6 +86,8 @@ typedef CTree* Tree;
 
 typedef map<Tree, Tree> plist;
 typedef vector<Tree>    tvec;
+
+namespace Faust { namespace Primitive { namespace Math { class xtended; } } }
 
 /**
  * A CTree = (Node x [CTree]) is the association of a content Node and a list of subtrees
@@ -111,6 +112,8 @@ class LIBFAUST_API CTree : public virtual Garbageable {
     static Tree      gHashTable[kHashTableSize];  ///< hash table used for "hash consing"
 
    public:
+    
+    using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
 
     static bool         gDetails;    ///< Ctree::print() print with more details when true
     static unsigned int gVisitTime;  ///< Should be incremented for each new visit to keep track of visited tree
@@ -126,6 +129,9 @@ class LIBFAUST_API CTree : public virtual Garbageable {
     int          fAperture;    ///< how "open" is a tree (synthezised field)
     unsigned int fVisitTime;   ///< keep track of visits
     tvec         fBranch;      ///< the subtrees
+    Location     _location;
+
+    const Location& location() const { return _location; }
 
     CTree(size_t hk, const Node& n, const tvec& br);  ///< construction is private, uses tree::make instead
 
@@ -149,6 +155,8 @@ class LIBFAUST_API CTree : public virtual Garbageable {
     virtual size_t      serial() const { return fSerial; }             ///< return the serial of the tree
     virtual int         aperture() const { return fAperture; }  ///< return how "open" is a tree in terms of free variables
     virtual void        setAperture(int a) { fAperture = a; }   ///< modify the aperture of a tree
+
+    virtual Location& location() { return _location; }
 
     // Print a tree and the hash table (for debugging purposes)
     virtual ostream&    print(ostream& fout) const;  ///< print recursively the content of a tree on a stream
@@ -232,7 +240,7 @@ double      tree2double(Tree t);  ///< if t has a node of type float, return it 
 LIBFAUST_API const std::string& tree2str(Tree t);     ///< if t has a node of type symbol, return its name otherwise error
 string      tree2quotedstr(Tree t);
 void*       tree2ptr(Tree t);     ///< if t has a node of type ptr, return it otherwise error
-LIBFAUST_API xtended* getUserData(Tree t);  ///< if t has a node of type symbol, return the associated user data
+LIBFAUST_API ::Faust::Primitive::Math::xtended* getUserData(Tree t);  ///< if t has a node of type symbol, return the associated user data
 
 // pattern matching
 bool isTree(const Tree& t, const Node& n);

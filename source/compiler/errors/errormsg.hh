@@ -24,26 +24,17 @@
 
 #include "tlib/tlib.hh"
 
-// associate and retrieve file and line properties to a symbol definition
-void setDefProp(Tree sym, const char* filename, int lineno);
-bool hasDefProp(Tree sym);
-
-const std::string& getDefFileProp(Tree sym);
-int         getDefLineProp(Tree sym);
-
-// associate and retrieve file and line properties to a symbol usage
-void        setUseProp(Tree sym, const char* filename, int lineno);
-const std::string& getUseFileProp(Tree sym);
-int         getUseLineProp(Tree sym);
-
-// Parsing error
-void lexerror(const char* msg);
-void yyerror(const char* msg);
+#include "compiler/parser/lexer/location/implementation.hh"
 
 // three levels or errors, warnings and remarks are provided during evaluation
 void evalerror(const std::string& filename, int linenum, const char* msg, Tree exp);
 void evalerrorbox(const std::string& filename, int linenum, const char* msg, Tree exp);
 void evalwarning(const std::string& filename, int linenum, const char* msg, Tree exp);
 void evalremark(const std::string& filename, int linenum, const char* msg, Tree exp);
+
+void evalerror(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
+void evalerrorbox(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
+void evalwarning(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
+void evalremark(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
 
 #endif

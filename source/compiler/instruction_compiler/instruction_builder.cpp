@@ -22,6 +22,7 @@
 #include "compiler/instruction_compiler/instruction_builder.hh"
 #include "compiler/types/floats.hh"
 #include "global.hh"
+#include "faust/primitive/math.hh"
 
 BasicTyped* InstBuilder::genItFloatTyped() { return genBasicTyped(itfloat()); }
 
@@ -35,7 +36,7 @@ ValueInst* InstBuilder::genTypedZero(Typed::VarType type)
         return genRealNumInst(type, 0.0);
     } else {
         // Pointer type
-        if (global::config().gMachinePtrSize == 4) {
+        if (::Faust::Primitive::Math::gMachinePtrSize == 4) {
             return genInt32NumInst(0);
         } else {
             return genInt64NumInst(0);

@@ -22,29 +22,6 @@
 #ifndef __FAUST__PRIMITIVE__MATH__HH__
 #define __FAUST__PRIMITIVE__MATH__HH__
 
-#include "faust/primitive/math/functions/absprim.hh"
-#include "faust/primitive/math/functions/acosprim.hh"
-#include "faust/primitive/math/functions/asinprim.hh"
-#include "faust/primitive/math/functions/atan2prim.hh"
-#include "faust/primitive/math/functions/atanprim.hh"
-#include "faust/primitive/math/functions/ceilprim.hh"
-#include "faust/primitive/math/functions/cosprim.hh"
-#include "faust/primitive/math/functions/exp10prim.hh"
-#include "faust/primitive/math/functions/expprim.hh"
-#include "faust/primitive/math/functions/floorprim.hh"
-#include "faust/primitive/math/functions/fmodprim.hh"
-#include "faust/primitive/math/functions/ftzprim.hh"
-#include "faust/primitive/math/functions/log10prim.hh"
-#include "faust/primitive/math/functions/logprim.hh"
-#include "faust/primitive/math/functions/maxprim.hh"
-#include "faust/primitive/math/functions/minprim.hh"
-#include "faust/primitive/math/functions/powprim.hh"
-#include "faust/primitive/math/functions/remainderprim.hh"
-#include "faust/primitive/math/functions/rintprim.hh"
-#include "faust/primitive/math/functions/sinprim.hh"
-#include "faust/primitive/math/functions/sqrtprim.hh"
-#include "faust/primitive/math/functions/tanprim.hh"
-
 namespace Faust {
   namespace Primitive {
     namespace Math {
@@ -58,57 +35,16 @@ namespace Faust {
       extern bool  approx;       // Simpler/faster versions of 'floor/fmod/remainder' functions
       extern int   FTZMode;
 
-      struct Functions {
+      extern int gMachineFloatSize;
+      extern int gMachineInt32Size;
+      extern int gMachineInt64Size;
+      extern int gMachineDoubleSize;
+      extern int gMachineQuadSize;
+      extern int gMachineFixedPointSize;
+      extern int gMachineBoolSize;
+      extern int gMachinePtrSize;
+      extern int gMachineMaxStackSize;
 
-        Abs abs;
-
-        Acos acos;
-
-        Tan tan;
-
-        Sqrt sqrt;
-
-        Sin sin;
-
-        Rint rint;
-
-        Remainder remainder;
-
-        Pow pow;
-
-        Min min;
-
-        Max max;
-
-        Log log;
-
-        Log10 log10;
-
-        Fmod fmod;
-
-        Floor floor;
-
-        Exp exp;
-
-        Exp10 exp10;
-
-        Cos cos;
-
-        Ceil ceil;
-
-        Atan atan;
-
-        Atan2 atan2;
-
-        Asin asin;
-
-        Ftz ftz;
-
-
-      };
-      
-      Functions& functions();
- 
     };
   };
 };

@@ -339,6 +339,12 @@ Tree boxMetadata(Tree exp, Tree mdlist);
 LIBFAUST_API bool isBoxMetadata(Tree s, Tree& exp, Tree& mdlist);
 
 /*****************************************************************************
+                             Math Primitives
+*****************************************************************************/
+
+Tree boxMathPrimitive( const std::string& symbol_name );
+
+/*****************************************************************************
 ******************************************************************************
 
                                 Box Algorithms
@@ -348,5 +354,7 @@ LIBFAUST_API bool isBoxMetadata(Tree s, Tree& exp, Tree& mdlist);
 
 // Return the number of inputs and outputs
 LIBFAUST_API bool getBoxType(Tree box, int* inum, int* onum);
+
+
 
 #endif

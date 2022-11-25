@@ -24,14 +24,11 @@
 #include "compiler/type_manager/Text.hh"
 #include "compiler/signals/binop.hh"
 #include "compiler/errors/exception.hh"
-#include "global.hh"
 #include "compiler/signals/prim2.hh"
 #include "recursivness.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
-ppsig::ppsig(Tree s) : fSig(s), fEnv(global::config().nil), fPriority(0), fHideRecursion(false)
-{
-}
+#include "faust/primitive/symbols/as_tree.hh"
 
 ostream& ppsig::printinfix(ostream& fout, const string& opname, int priority, Tree x, Tree y) const
 {
@@ -295,14 +292,14 @@ ostream& ppsig::print(ostream& fout) const
 }
 
 #define SIG_INSERT_ID(exp) \
-    if (global::config().gSignalTable.find(fSig) == global::config().gSignalTable.end()) { \
+    if (gSignalTable().find(fSig) == gSignalTable().end()) { \
         stringstream s; \
         (exp); \
-        global::config().gSignalTable[fSig] = std::make_pair(global::config().gSignalCounter, s.str()); \
-        global::config().gSignalTrace.push_back("ID_" + std::to_string(global::config().gSignalCounter) + " = " + s.str() + ";\n"); \
-        global::config().gSignalCounter++;\
+        gSignalTable()[fSig] = std::make_pair(gSignalCounter, s.str()); \
+        gSignalTrace().push_back("ID_" + std::to_string(gSignalCounter) + " = " + s.str() + ";\n"); \
+        gSignalCounter++;\
     } \
-    fout << "ID_" << global::config().gSignalTable[fSig].first; \
+    fout << "ID_" << gSignalTable()[fSig].first; \
 
 ostream& ppsigShared::printinfix(ostream& fout, const string& opname, int priority, Tree x, Tree y) const
 {
@@ -555,7 +552,21 @@ ostream& ppsigShared::print(ostream& fout) const
 
 void ppsigShared::printIDs(ostream& fout)
 {
-    for (const auto& it : global::config().gSignalTrace) {
+    for (const auto& it : gSignalTrace()) {
         fout << it;
     }
+}
+
+std::vector<std::string>& gSignalTrace()
+{
+  static std::vector<std::string> g_signal_trace;
+  return g_signal_trace;
+}
+
+int gSignalCounter = 0;
+
+std::map<Tree, std::pair<int, std::string>> gSignalTable()
+{
+  static std::map<Tree, std::pair<int, std::string>> g_signal_table;
+  return g_signal_table;
 }

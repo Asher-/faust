@@ -27,14 +27,14 @@
 #include "compiler/parser/lexer/implementation.hh"
 #include "compiler/parser/lexer/location/implementation.hh"
 
-using Parser = ::Faust::Compiler::Parser::AbstractImplementation;
+using Parser = ::Faust::Compiler::Parser::BisonImplementation;
 using Self = ::Faust::Compiler::Parser::Implementation;
 using Lexer = ::Faust::Compiler::Parser::Lexer::Implementation;
 using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
 using symbol_type = typename Parser::symbol_type;
 
 #undef YY_DECL
-#define YY_DECL symbol_type Lexer::lex( Self&, symbol_type& )
+#define YY_DECL symbol_type Lexer::lex( Self& )
 
 #include "tlib/tree.hh"
 
@@ -51,7 +51,6 @@ using symbol_type = typename Parser::symbol_type;
   #else
     #include "tlib/compatibility.hh"
     #include "compiler/errors/errormsg.hh"
-    #define YY_FATAL_ERROR lexerror
 #endif
 
 #define register		// suppress the deprecated 'register' warning

@@ -36,7 +36,7 @@ struct ParserTest
     ()
     {
       /* Uncomment for Bison/Flex trace output */
-      parser._traceParsing = true;
+      parser.setTraceParsing();
       parser._traceScanning = false;
     }
 
@@ -70,9 +70,9 @@ struct ParserTest
 //}
 
 TEST_F( ParserTest, function ) {
-  std::string source = R""""(somename(y)=x*y;)"""";
+  std::string source = R""""(somename(y)=x*y)"""";
   Tree ast = parser.parseString( source, "function.dsp" );
-  ASSERT_EQ( ast, nullptr );
+  ASSERT_NE( ast, nullptr );
   std::stringstream pprint;
   pprint << boxpp(ast);
   std::cout << pprint.str();

@@ -30,6 +30,8 @@
 #include "compiler/compile/compile_sched.hh"
 #include "compiler/compile/compile_vect.hh"
 
+#include "compiler/parser/implementation.hh"
+
 namespace Faust {
   namespace Compiler {
 
@@ -54,7 +56,7 @@ namespace Faust {
           selectedKeys.insert(tree("version"));
 
           dst << "//----------------------------------------------------------" << endl;
-          for (const auto& i : global::config().gMetaDataSet) {
+          for (const auto& i : gMetaDataSet()) {
               if (selectedKeys.count(i.first)) {
                   dst << "// " << *(i.first);
                   const char* sep = ": ";

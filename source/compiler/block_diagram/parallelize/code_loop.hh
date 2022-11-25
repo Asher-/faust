@@ -33,6 +33,7 @@
 #include "tlib/list.hh"
 #include "tlib/tree.hh"
 #include "global.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 // Loop internal code
 
@@ -122,7 +123,7 @@ class CodeLoop : public virtual Garbageable {
     ///< create a non recursive loop
     CodeLoop(CodeLoop* encl, const std::string& index_name, int size = 0)
         : fIsRecursive(false),
-          fRecSymbolSet(global::config().nil),
+          fRecSymbolSet(::Faust::Primitive::Symbols::asTree().nil),
           fEnclosingLoop(encl),
           fSize(size),
           fOrder(-1),

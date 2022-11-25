@@ -29,6 +29,7 @@
 #include "target/language/jax/jax_code_container.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 namespace Faust {
   namespace Compiler {

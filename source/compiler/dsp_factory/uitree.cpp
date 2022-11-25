@@ -55,14 +55,14 @@ static bool findKey(Tree pl, Tree key, Tree& val)
 
 static Tree updateKey(Tree pl, Tree key, Tree val)
 {
-	if (isNil(pl)) 				return cons ( cons(key,val), global::config().nil );
+	if (isNil(pl)) 				return cons ( cons(key,val), ::Faust::Primitive::Symbols::asTree().nil );
 	if (left(hd(pl)) == key) 	return cons ( cons(key,val), tl(pl) );
 	/*  left(hd(pl)) != key	*/	return cons ( hd(pl), updateKey( tl(pl), key, val ));
 }
 
 static Tree removeKey(Tree pl, Tree key)
 {
-	if (isNil(pl)) 				return global::config().nil;
+	if (isNil(pl)) 				return ::Faust::Primitive::Symbols::asTree().nil;
 	if (left(hd(pl)) == key) 	return tl(pl);
 	/*  left(hd(pl)) != key	*/	return cons (hd(pl), removeKey(tl(pl), key));
 }
@@ -106,7 +106,7 @@ static bool findKey(Tree pl, Tree key, Tree& val)
 
 static Tree updateKey(Tree pl, Tree key, Tree val)
 {
-    if (isNil(pl)) return cons(cons(key, val), global::config().nil);
+    if (isNil(pl)) return cons(cons(key, val), ::Faust::Primitive::Symbols::asTree().nil);
     if (left(hd(pl)) == key) return cons(cons(key, val), tl(pl));
     if (isBefore(left(hd(pl)), key)) return cons(hd(pl), updateKey(tl(pl), key, val));
     return cons(cons(key, val), pl);
@@ -117,7 +117,7 @@ static Tree updateKey(Tree pl, Tree key, Tree val)
  */
 static Tree addKey(Tree pl, Tree key, Tree val)
 {
-    if (isNil(pl)) return cons(cons(key, val), global::config().nil);
+    if (isNil(pl)) return cons(cons(key, val), ::Faust::Primitive::Symbols::asTree().nil);
     if (isBefore(key, left(hd(pl)))) return cons(cons(key, val), pl);
     return cons(hd(pl), addKey(tl(pl), key, val));
 }
@@ -125,7 +125,7 @@ static Tree addKey(Tree pl, Tree key, Tree val)
 #if 0
 static Tree removeKey(Tree pl, Tree key)
 {
-	if (isNil(pl)) 					return global::config().nil;
+	if (isNil(pl)) 					return ::Faust::Primitive::Symbols::asTree().nil;
 	if (left(hd(pl)) == key) 		return tl(pl);
 	if (isBefore(left(hd(pl)),key))	return cons (hd(pl), removeKey(tl(pl), key));
 	return pl;
@@ -191,7 +191,7 @@ Tree getFolder(Tree folder, Tree ilabel)
     if (findKey(content, ilabel, item)) {
         return item;
     } else {
-        return global::config().nil;
+        return ::Faust::Primitive::Symbols::asTree().nil;
     }
 }
 
@@ -201,7 +201,7 @@ Tree makeSubFolderChain(Tree path, Tree elem)
     if (isNil(path)) {
         return elem;
     } else {
-        return putFolder(uiFolder(hd(path), global::config().nil), makeSubFolderChain(tl(path), elem));
+        return putFolder(uiFolder(hd(path), ::Faust::Primitive::Symbols::asTree().nil), makeSubFolderChain(tl(path), elem));
     }
 }
 

@@ -90,15 +90,12 @@ extern bool           gAllWarning;
 // Global singleton like compiler state
 struct global {
 
-    static std::list<Garbageable*>& objectTable();
     static global& config();
     static std::string& locale();
     
     bool _initialized = false;
 
     ::Faust::Compiler::Common* compiler = nullptr;
-
-    ::Faust::Compiler::Parser::Implementation gParser;
 
     Tree gResult;
     Tree gResult2;
@@ -250,7 +247,6 @@ struct global {
     std::string gProcessName;     // name of the entry point of the Faust program, by default 'process'
 
     // Backend configuration
-    std::string gOutputLang;            // Chosen backend
     bool   gAllowForeignFunction;  // Can use foreign functions
     bool   gAllowForeignConstant;  // Can use foreign constant
     bool   gAllowForeignVar;       // Can use foreign variable
@@ -388,17 +384,6 @@ struct global {
     loopDetector          gLoopDetector;
     stackOverflowDetector gStackOverflowDetector;
 
-    int gMachineFloatSize;
-    int gMachineInt32Size;
-    int gMachineInt64Size;
-    int gMachineDoubleSize;
-    int gMachineQuadSize;
-    int gMachineFixedPointSize;
-    int gMachineBoolSize;
-    int gMachinePtrSize;
-
-    int gMachineMaxStackSize;
-
     // To generate unique identifiers
     map<string, int> gIDCounters;
 
@@ -481,9 +466,6 @@ struct global {
     int    gNumInputs;
     int    gNumOutputs;
     std::string gErrorMessage;
-
-    // GC
-    static bool               gHeapCleanup;
 
     global();
     ~global();

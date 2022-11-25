@@ -51,6 +51,7 @@
 
 #include "faust/primitive/type/precision.hh"
 #include "faust/primitive/type/priority.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using namespace std;
 
@@ -171,10 +172,10 @@ Tree ScalarCompiler::prepare2(Tree L0)
 
 string ScalarCompiler::dnf2code(Tree cc)
 {
-    if (cc == global::config().nil) return "";
+    if (cc == ::Faust::Primitive::Symbols::asTree().nil) return "";
     Tree c1 = hd(cc);
     cc      = tl(cc);
-    if (cc == global::config().nil) {
+    if (cc == ::Faust::Primitive::Symbols::asTree().nil) {
         return and2code(c1);
     } else {
         return subst("($0 || $1)", and2code(c1), dnf2code(cc));
@@ -183,10 +184,10 @@ string ScalarCompiler::dnf2code(Tree cc)
 
 string ScalarCompiler::and2code(Tree cs)
 {
-    if (cs == global::config().nil) return "";
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) return "";
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == global::config().nil) {
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) {
         return CS(c1);
     } else {
         return subst("($0 && $1)", CS(c1), and2code(cs));
@@ -195,10 +196,10 @@ string ScalarCompiler::and2code(Tree cs)
 
 string ScalarCompiler::cnf2code(Tree cs)
 {
-    if (cs == global::config().nil) return "";
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) return "";
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == global::config().nil) {
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) {
         return or2code(c1);
     } else {
         return subst("(($0) && $1)", or2code(c1), cnf2code(cs));
@@ -207,10 +208,10 @@ string ScalarCompiler::cnf2code(Tree cs)
 
 string ScalarCompiler::or2code(Tree cs)
 {
-    if (cs == global::config().nil) return "";
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) return "";
     Tree c1 = hd(cs);
     cs      = tl(cs);
-    if (cs == global::config().nil) {
+    if (cs == ::Faust::Primitive::Symbols::asTree().nil) {
         return CS(c1);
     } else {
         return subst("($0 || $1)", CS(c1), or2code(cs));
@@ -227,7 +228,7 @@ string ScalarCompiler::or2code(Tree cs)
 string ScalarCompiler::getConditionCode(Tree sig)
 {
     Tree cc = fConditionProperty[sig];
-    if ((cc != 0) && (cc != global::config().nil)) {
+    if ((cc != 0) && (cc != ::Faust::Primitive::Symbols::asTree().nil)) {
         return CND2CODE(cc);
     } else {
         return "";

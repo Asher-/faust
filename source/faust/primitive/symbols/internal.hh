@@ -37,6 +37,7 @@ namespace Faust {
           <
             Name::EvalProperty,
             Name::PMPROPERTY,
+            Name::BCOMPLEXITY,
             Name::BoxIdent,
             Name::BoxCut,
             Name::BoxWaveform,
@@ -100,6 +101,7 @@ namespace Faust {
             Name::uiFolder,
             Name::uiWidget,
             Name::ForeignFunction,
+            Name::RECURSIVEBODY,
             Name::SigInput,
             Name::SigOutput,
             Name::SigDelay1,

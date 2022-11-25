@@ -39,6 +39,8 @@
 
 #include "faust/primitive/type/precision.hh"
 
+#include "compiler/parser/implementation.hh"
+
 
 namespace Faust {
   namespace Primitive {
@@ -178,7 +180,7 @@ class CodeContainer : public virtual Garbageable {
         selectedKeys.insert(tree("version"));
 
         dst << "/* ------------------------------------------------------------" << endl;
-        for (const auto& i : global::config().gMetaDataSet) {
+        for (const auto& i : gMetaDataSet()) {
             if (selectedKeys.count(i.first)) {
                 dst << *(i.first);
                 const char* sep = ": ";
@@ -323,7 +325,7 @@ class CodeContainer : public virtual Garbageable {
     void generateMetaData(JSONUIReal<REAL>* json)
     {
         // Add global metadata
-        for (const auto& i : global::config().gMetaDataSet) {
+        for (const auto& i : gMetaDataSet()) {
             if (i.first != tree("author")) {
                 stringstream str1, str2;
                 str1 << *(i.first);

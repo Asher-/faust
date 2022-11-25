@@ -28,6 +28,7 @@
 #include "target/interpreter/interpreter_code_container.cpp"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 namespace Faust {
   namespace Compiler {

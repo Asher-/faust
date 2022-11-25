@@ -33,6 +33,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include <execinfo.h>
 #endif
 
+#include "faust/export.h"
+
 class faustexception : public std::runtime_error {
    public:
 #ifdef EMCC
@@ -68,6 +70,28 @@ inline void stacktrace(std::stringstream& str, int val)
 }
 
 #define faustassert(cond) faustassertaux((cond), __FILE__, __LINE__)
-void faustassertaux(bool cond, const std::string& file, int line);
+inline void faustassertaux(bool cond, const std::string& file, int line)
+{
+    if (!cond) {
+        std::stringstream str;
+#ifdef EMCC
+        str << "ASSERT : please report this message and the failing DSP file to Faust developers (";
+#else
+        str << "ASSERT : please report this message, the stack trace, and the failing DSP file to Faust developers (";
+#endif
+        str << "file: " << file.substr(file.find_last_of('/') + 1) << ", line: " << line << ", ";
+        str << "version: " << FAUSTVERSION;
+//        if (gGlobal) {
+//            str << ", options: ";
+//            global::config().printCompilationOptions(str);
+//        }
+        str << ")\n";
+#ifndef EMCC
+        stacktrace(str, 20);
+#endif
+         throw faustexception(str.str());
+    }
+}
+
 
 #endif

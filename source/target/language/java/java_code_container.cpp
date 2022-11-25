@@ -25,8 +25,11 @@
 #include "compiler/types/floats.hh"
 #include "global.hh"
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using Precision = ::Faust::Primitive::Type::Precision;
 
@@ -205,7 +208,7 @@ void JAVACodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "public void metadata(Meta m) { ";
 
-    for (const auto& i : global::config().gMetaDataSet) {
+    for (const auto& i : gMetaDataSet()) {
         if (i.first != tree("author")) {
             tab(n + 2, *fOut);
             *fOut << "m.declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

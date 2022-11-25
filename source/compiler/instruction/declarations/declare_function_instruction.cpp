@@ -23,6 +23,8 @@
 #include "compiler/types/function_typed.hh"
 #include "global.hh"
 
+#include "compiler/parser/implementation.hh"
+
 // Function types (return type) are kept in the global name <===> type table
 DeclareFunInst::DeclareFunInst(const std::string& name, FunTyped* type, BlockInst* code)
     : fName(name), fType(type), _code(code)
@@ -33,7 +35,7 @@ DeclareFunInst::DeclareFunInst(const std::string& name, FunTyped* type, BlockIns
         FunTyped* fun_type = static_cast<FunTyped*>(global::config().gVarTypeTable[name]);
         // If same result type
         if (fun_type->getTyped() == type->getTyped()) {
-            if ((global::config().gOutputLang == "llvm") && (fun_type->getPrototype() != type->getPrototype())) {
+            if ((gOutputLang() == "llvm") && (fun_type->getPrototype() != type->getPrototype())) {
                 std::stringstream str;
                 str << "ERROR : foreign function '" << name
                     << "' conflicts with another (possibly compiler internally defined) function with a different "

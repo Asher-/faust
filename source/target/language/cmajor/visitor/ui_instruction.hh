@@ -24,6 +24,8 @@
 
 #include <vector>
 
+#include "compiler/parser/implementation.hh"
+
 extern std::vector<char> gReplace;
 
 struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
@@ -68,7 +70,7 @@ struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
 
     virtual void visit(AddButtonInst* inst)
     {
-        if (global::config().gOutputLang == "soul-poly") {
+        if (gOutputLang() == "soul-poly") {
             fOut << "input event " << fTypeManager.fTypeDirectTable[itfloat()]
             << " event_" << replaceCharList(inst->fLabel, gReplace, '_')
             << " [[ name: " << quote(inst->fLabel)
@@ -80,7 +82,7 @@ struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
             << ", boolean";
             addMeta();
             fOut << " ]];";
-        } else if (global::config().gOutputLang == "soul-hybrid") {
+        } else if (gOutputLang() == "soul-hybrid") {
             string soul_meta = getSoulMatadata();
             fOut << "input event " << fTypeManager.fTypeDirectTable[itfloat()]
             << " " << ((soul_meta != "") ? soul_meta : replaceCharList(inst->fLabel, gReplace, '_'))
@@ -111,7 +113,7 @@ struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
 
     virtual void visit(AddSliderInst* inst)
     {
-        if (global::config().gOutputLang == "soul-poly") {
+        if (gOutputLang() == "soul-poly") {
             fOut << "input event " << fTypeManager.fTypeDirectTable[itfloat()]
             << " event_" << replaceCharList(inst->fLabel, gReplace, '_')
             << " [[ name: " << quote(inst->fLabel)
@@ -122,7 +124,7 @@ struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
             << ", step: " << checkReal(inst->fStep);
             addMeta();
             fOut << " ]];";
-        } else if (global::config().gOutputLang == "soul-hybrid") {
+        } else if (gOutputLang() == "soul-hybrid") {
             string soul_meta = getSoulMatadata();
             fOut << "input event " << fTypeManager.fTypeDirectTable[itfloat()]
             << " " << ((soul_meta != "") ? soul_meta : replaceCharList(inst->fLabel, gReplace, '_'))
@@ -154,7 +156,7 @@ struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
         // We have bargraphs
         fHasBargraph = true;
 
-        if (global::config().gOutputLang == "soul-poly") {
+        if (gOutputLang() == "soul-poly") {
             fOut << "output event " << fTypeManager.fTypeDirectTable[itfloat()]
             << " event_" << quote(replaceCharList(inst->fLabel, gReplace, '_'))
             << " [[ name: " << quote(inst->fLabel)
@@ -163,7 +165,7 @@ struct SOULInstUIVisitor : public DispatchVisitor, public PathBuilder {
             << ", max: " << checkReal(inst->fMax);
             addMeta();
             fOut << " ]];";
-        } else if (global::config().gOutputLang == "soul-hybrid") {
+        } else if (gOutputLang() == "soul-hybrid") {
             string soul_meta = getSoulMatadata();
             fOut << "output event " << fTypeManager.fTypeDirectTable[itfloat()]
             << " " << ((soul_meta != "") ? soul_meta : replaceCharList(inst->fLabel, gReplace, '_'))

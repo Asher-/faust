@@ -27,6 +27,8 @@
 #include "variable_mover.hh"
 #include "compiler/visitor/remover_clone_visitor.hh"
 
+#include "faust/primitive/math.hh"
+
 using namespace std;
 
 void VectorCodeContainer::moveStack2Struct()
@@ -209,7 +211,7 @@ void VectorCodeContainer::processFIR(void)
         fComputeBlockInstructions = remover.getCode(fComputeBlockInstructions);
     }
 
-    if (counter.fSizeBytes > global::config().gMachineMaxStackSize) {
+    if (counter.fSizeBytes > ::Faust::Primitive::Math::gMachineMaxStackSize) {
         // Transform stack array variables in struct variables
         moveStack2Struct();
     } else {

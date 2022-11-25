@@ -46,6 +46,7 @@ Compile a list of FAUST signals into a C++ class.
 #include "global.hh"
 
 #include "faust/primitive/type/priority.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using Priority = ::Faust::Primitive::Type::Priority;
 
@@ -166,7 +167,7 @@ void ScalarCompiler::conditionStatistics(Tree l)
 void ScalarCompiler::conditionAnnotation(Tree l)
 {
     while (isList(l)) {
-        conditionAnnotation(hd(l), global::config().nil);
+        conditionAnnotation(hd(l), ::Faust::Primitive::Symbols::asTree().nil);
         l = tl(l);
     }
 }

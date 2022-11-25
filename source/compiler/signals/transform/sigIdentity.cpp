@@ -29,6 +29,8 @@
 #include "compiler/signals/ppsig.hh"
 #include "compiler/type_manager/Text.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 //-------------------------SignalIdentity-------------------------------
 // An identity transformation on signals. Can be used to test
 // that everything works, and as a pattern for real transformations.
@@ -128,7 +130,7 @@ Tree SignalIdentity::transformation(Tree sig)
             return sig;
         } else {
             // first visit
-            rec(var, global::config().nil);  // to avoid infinite recursions
+            rec(var, ::Faust::Primitive::Symbols::asTree().nil);  // to avoid infinite recursions
             return rec(var, mapself(le));
         }
     }

@@ -109,6 +109,7 @@ This file contains several extensions to the tree library :
 #include "tlib/property.hh"
 
 #include "faust/primitive/symbols.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 Tree cons(Tree a, Tree b)
 {
@@ -116,7 +117,7 @@ Tree cons(Tree a, Tree b)
 }
 Tree list0()
 {
-    return global::config().nil;
+    return ::Faust::Primitive::Symbols::asTree().nil;
 }
 
 LIBFAUST_API bool isNil(Tree l)
@@ -204,7 +205,7 @@ Tree nth(Tree l, int i)
         l = tl(l);
         i--;
     }
-    return global::config().nil;
+    return ::Faust::Primitive::Symbols::asTree().nil;
 }
 
 Tree replace(Tree l, int i, Tree e)
@@ -242,7 +243,7 @@ Tree concat(Tree l, Tree q)
 
 Tree lrange(Tree l, int i, int j)
 {
-    Tree r = global::config().nil;
+    Tree r = ::Faust::Primitive::Symbols::asTree().nil;
     int  c = j;
     while (c > i) r = cons(nth(l, --c), r);
     return r;
@@ -254,7 +255,7 @@ Tree lrange(Tree l, int i, int j)
 
 static Tree rmap(tfun f, Tree l)
 {
-    Tree r = global::config().nil;
+    Tree r = ::Faust::Primitive::Symbols::asTree().nil;
     while (isList(l)) {
         r = cons(f(hd(l)), r);
         l = tl(l);
@@ -264,7 +265,7 @@ static Tree rmap(tfun f, Tree l)
 
 Tree reverse(Tree l)
 {
-    Tree r = global::config().nil;
+    Tree r = ::Faust::Primitive::Symbols::asTree().nil;
     while (isList(l)) {
         r = cons(hd(l), r);
         l = tl(l);
@@ -307,7 +308,7 @@ Tree addElement(Tree e, Tree l)
             return cons(hd(l), addElement(e, tl(l)));
         }
     } else {
-        return cons(e, global::config().nil);
+        return cons(e, ::Faust::Primitive::Symbols::asTree().nil);
     }
 }
 
@@ -322,7 +323,7 @@ Tree remElement(Tree e, Tree l)
             return cons(hd(l), remElement(e, tl(l)));
         }
     } else {
-        return global::config().nil;
+        return ::Faust::Primitive::Symbols::asTree().nil;
     }
 }
 
@@ -333,7 +334,7 @@ Tree singleton(Tree e)
 
 Tree list2set(Tree l)
 {
-    Tree s = global::config().nil;
+    Tree s = ::Faust::Primitive::Symbols::asTree().nil;
     while (isList(l)) {
         s = addElement(hd(l), s);
         l = tl(l);
@@ -405,14 +406,14 @@ static bool findKey (Tree pl, Tree key, Tree& val)
 
 static Tree updateKey (Tree pl, Tree key, Tree val)
 {
-	if (isNil(pl)) 				return cons ( cons(key,val), global::config().nil );
+	if (isNil(pl)) 				return cons ( cons(key,val), ::Faust::Primitive::Symbols::asTree().nil );
 	if (left(hd(pl)) == key) 	return cons ( cons(key,val), tl(pl) );
 	/*  left(hd(pl)) != key	*/	return cons ( hd(pl), updateKey( tl(pl), key, val ));
 }
 
 static Tree removeKey (Tree pl, Tree key)
 {
-	if (isNil(pl)) 				return global::config().nil;
+	if (isNil(pl)) 				return ::Faust::Primitive::Symbols::asTree().nil;
 	if (left(hd(pl)) == key) 	return tl(pl);
 	/*  left(hd(pl)) != key	*/	return cons (hd(pl), removeKey(tl(pl), key));
 }
@@ -424,7 +425,7 @@ void setProperty (Tree t, Tree key, Tree val)
 {
 	CTree* pl = t->attribut();
 	if (pl) t->attribut(updateKey(pl, key, val)); 
-	else 	t->attribut(updateKey(global::config().nil, key, val));
+	else 	t->attribut(updateKey(::Faust::Primitive::Symbols::asTree().nil, key, val));
 }
 
 void remProperty (Tree t, Tree key)
@@ -488,7 +489,7 @@ Tree tmap(Tree key, tfun f, Tree t)
 
         Tree r2 = f(r1);
         if (r2 == t) {
-            setProperty(t, key, global::config().nil);
+            setProperty(t, key, ::Faust::Primitive::Symbols::asTree().nil);
         } else {
             setProperty(t, key, r2);
         }
@@ -532,7 +533,7 @@ static Tree subst(Tree t, Tree propkey, Tree id, Tree val)
         Tree r = tree(t->node(), br);
 
         if (r == t) {
-            setProperty(t, propkey, global::config().nil);
+            setProperty(t, propkey, ::Faust::Primitive::Symbols::asTree().nil);
         } else {
             setProperty(t, propkey, r);
         }

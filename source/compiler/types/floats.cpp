@@ -27,6 +27,9 @@
 #include "global.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using namespace std;
 
@@ -57,7 +60,7 @@ void ::Faust::Type::Float::init()
     mathsuffix[4] = "";
 
     // Specific for Rust backend
-    if (global::config().gOutputLang == "rust") {
+    if (gOutputLang() == "rust") {
         numsuffix[0] = "";
         numsuffix[1] = "";
         numsuffix[2] = "";
@@ -95,7 +98,7 @@ void ::Faust::Type::Float::init()
         floatmin[4] = FLT_MIN;
 
     // Specific for Julia backend
-    } else  if (global::config().gOutputLang == "julia") {
+    } else  if (gOutputLang() == "julia") {
         numsuffix[0] = "";
         numsuffix[1] = "f0";
         numsuffix[2] = "";
@@ -133,7 +136,7 @@ void ::Faust::Type::Float::init()
         floatmin[4] = FLT_MIN;
 
     // Specific for JAX backend
-    } else  if (global::config().gOutputLang == "jax") {
+    } else  if (gOutputLang() == "jax") {
         numsuffix[0] = "";
         numsuffix[1] = "";
         numsuffix[2] = "";
@@ -171,7 +174,7 @@ void ::Faust::Type::Float::init()
         floatmin[4] = FLT_MIN;
 
     // Specific for D backend
-    } else if (global::config().gOutputLang == "dlang") {
+    } else if (gOutputLang() == "dlang") {
         numsuffix[0] = "";
         numsuffix[1] = "";
         numsuffix[2] = "";
@@ -299,13 +302,13 @@ int ifloatsize()
 {
     switch (::Faust::Primitive::Math::floatSize) {
         case 1:
-            return global::config().gMachineFloatSize;
+            return ::Faust::Primitive::Math::gMachineFloatSize;
         case 2:
-            return global::config().gMachineDoubleSize;
+            return ::Faust::Primitive::Math::gMachineDoubleSize;
         case 3:
-            return global::config().gMachineQuadSize;
+            return ::Faust::Primitive::Math::gMachineQuadSize;
         case 4:
-            return global::config().gMachineFixedPointSize;
+            return ::Faust::Primitive::Math::gMachineFixedPointSize;
         default:
             faustassert(false);
             return 0;

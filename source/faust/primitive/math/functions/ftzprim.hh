@@ -32,6 +32,8 @@
 
 #include "faust/primitive/type/precision.hh"
 
+#include "target/code_container.hh"
+
 namespace Faust {
   namespace Primitive {
     namespace Math {

@@ -22,6 +22,7 @@
 #include "faust/primitive/math/functions/xtended.hh"
 #include "compiler/types/floats.hh"
 #include "target/code_container.hh"
+#include "target/fir/fir_index.hh"
 
 namespace Faust {
   namespace Primitive {

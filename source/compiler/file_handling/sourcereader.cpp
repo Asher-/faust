@@ -51,7 +51,11 @@
 
 #include "compiler/parser/implementation.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 extern global* gGlobal;
+
+using Parser = ::Faust::Compiler::Parser::Implementation;
 
 using namespace std;
 
@@ -212,22 +216,19 @@ Tree SourceReader::parseFile(const char* fname)
     }
 }
 
-void declareDoc(Tree t)
-{
-	global::config().gDocVector.push_back(t);
-}
-
 Tree SourceReader::parseString(const char* stream_name)
 {
     // Clear global "inputstring" so that imported files will be correctly parsed with "parse"
-    std::string parse_string( global::config().gInputString );
+    std::string source_string( global::config().gInputString );
     global::config().gInputString = nullptr;
+    
+    Parser parser;
+    parser.parseString( source_string, stream_name );
 
-    global::config().gParser.parseString(parse_string, stream_name);
     /* We have parsed a valid file */
-    fFilePathnames.push_back(global::config().gParser._streamName);
-    global::config().gResult = global::config().gParser._ast;
-    return global::config().gParser._ast;
+    fFilePathnames.push_back(stream_name);
+    global::config().gResult = parser._ast;
+    return parser._ast;
 }
 
 Tree SourceReader::parseString(const char* buffer, const char* stream_name)
@@ -240,11 +241,14 @@ Tree SourceReader::parseString(const char* buffer, const char* stream_name)
 
 Tree SourceReader::parseLocal(const char* fname)
 {
-    global::config().gParser.parseFile(fname);
+    Parser parser;
+
+    parser.parseFile(fname);
+
     /* We have parsed a valid file */
-    fFilePathnames.push_back(global::config().gParser._streamName);
-    global::config().gResult = global::config().gParser._ast;
-    return global::config().gParser._ast;
+    fFilePathnames.push_back(fname);
+    global::config().gResult = parser._ast;
+    return parser._ast;
 }
 
 /**
@@ -262,7 +266,7 @@ bool SourceReader::cached(string fname)
 // Add function metadata (using a boxMetadata construction) to a list of definitions
 static Tree addFunctionMetadata(Tree ldef, FunMDSet& M)
 {
-    Tree lresult = global::config().nil; // the transformed list of definitions
+    Tree lresult = ::Faust::Primitive::Symbols::asTree().nil; // the transformed list of definitions
 
     // for each definition def of ldef
     for (; !isNil(ldef); ldef = tl(ldef)) {
@@ -449,7 +453,7 @@ Tree SourceReader::getList(const char* fname)
         global::config().gFunMDSet.clear();
         Tree ldef = (global::config().gInputString.length()) ? parseString(fname) : parseFile(fname);
         // Definitions with metadata have to be wrapped into a boxMetadata construction
-        fFileCache[fname] = addFunctionMetadata(ldef, global::config().gFunMDSet);
+        fFileCache[fname] = addFunctionMetadata(ldef, gFunMDSet());
 	}
     return fFileCache[fname];
 }
@@ -488,7 +492,7 @@ vector<string> SourceReader::listLibraryFiles()
 Tree SourceReader::expandList(Tree ldef)
 {
 	set<string> visited;
-	return expandRec(ldef, visited, global::config().nil);
+	return expandRec(ldef, visited, ::Faust::Primitive::Symbols::asTree().nil);
 }
 
 Tree SourceReader::expandRec(Tree ldef, set<string>& visited, Tree lresult)

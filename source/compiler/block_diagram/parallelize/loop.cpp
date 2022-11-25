@@ -22,6 +22,7 @@
 #include "compiler/block_diagram/parallelize/loop.hh"
 #include "compiler/type_manager/Text.hh"
 #include "global.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 using namespace std;
 
@@ -95,7 +96,7 @@ Loop::Loop(Tree recsymbol, Loop* encl, const std::string& size)
  */
 Loop::Loop(Loop* encl, const std::string& size)
     : fIsRecursive(false),
-      fRecSymbolSet(global::config().nil),
+      fRecSymbolSet(::Faust::Primitive::Symbols::asTree().nil),
       fEnclosingLoop(encl),
       fSize(size),
       fOrder(-1),

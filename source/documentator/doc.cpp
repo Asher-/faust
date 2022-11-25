@@ -77,6 +77,11 @@
 #include "sigprint.hh"
 #include "simplify.hh"
 #include "compiler/file_handling/sourcereader.hh"
+#include "documentator/tree.hh"
+
+#include "faust/primitive/symbols/as_tree.hh"
+
+#include "compiler/parser/implementation.hh"
 
 #define MAXIDCHARS 10  ///< max numbers (characters) to represent ids (e.g. for directories).
 
@@ -138,75 +143,6 @@ static void     printdocCodeSlices(const string& code, ostream& docout);
 static bool     doesFileBeginWithCode(const string& faustfile);
 
 /*****************************************************************************
-                    Types of Documentation Elements
- *****************************************************************************/
-
-Tree docTxt(const char* name)
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("DocTxt"), tree(::Faust::Primitive::Symbols::runtime().insert(name, false)));
-}
-bool isDocTxt(Tree t)
-{
-    return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("DocTxt"));
-}
-bool isDocTxt(Tree t0, const char** str)
-{
-    Tree t1;
-    Sym  s;
-    if (isTree(t0, ::Faust::Primitive::Symbols::internal().symbol("DocTxt"), t1) && isSym(t1->node(), &s)) {
-        *str = s->name().c_str();
-        return true;
-    } else {
-        return false;
-    }
-}
-
-Tree docEqn(Tree x)
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("DocEqn"), x);
-}
-bool isDocEqn(Tree t, Tree& x)
-{
-    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocEqn"), x);
-}
-
-Tree docDgm(Tree x)
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("DocDgm"), x);
-}
-bool isDocDgm(Tree t, Tree& x)
-{
-    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocDgm"), x);
-}
-
-Tree docNtc()
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("DocNtc"));
-}
-bool isDocNtc(Tree t)
-{
-    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocNtc"));
-}
-
-Tree docLst()
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("DocLst"));
-}
-bool isDocLst(Tree t)
-{
-    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocLst"));
-}
-
-Tree docMtd(Tree x)
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("DocMtd"), x);
-}
-bool isDocMtd(Tree t, Tree& x)
-{
-    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocMtd"), x);
-}
-
-/*****************************************************************************
                 Main Printing Function for the Documentation
  *****************************************************************************/
 
@@ -258,7 +194,7 @@ void printDoc(const char* projname, const char* docdev, const char* faustversion
     loadTranslationFile(global::config().gDocLang);
 
     /** Simulate a default doc if no <mdoc> tag detected. */
-    if (global::config().gDocVector.empty()) {
+    if (docVector().empty()) {
         declareAutoDoc();
     }
 
@@ -266,7 +202,7 @@ void printDoc(const char* projname, const char* docdev, const char* faustversion
     printFaustdocStamp(faustversion, docout);  ///< Faust version and compilation date (comment).
     unique_ptr<istream> latexheader = openArchFile(global::config().gLatexheaderfilename);
     printLatexHeader(*latexheader, faustversion, docout);  ///< Static LaTeX header (packages and setup).
-    printDocContent(svgTopDir.c_str(), global::config().gDocVector, faustversion,
+    printDocContent(svgTopDir.c_str(), docVector(), faustversion,
                     docout);   ///< Generate math contents (main stuff!).
     printLatexFooter(docout);  ///< Static LaTeX footer.
 }
@@ -288,7 +224,7 @@ static void printLatexHeader(istream& latexheader, const string& faustversion, o
     while (getline(latexheader, s)) docout << s << endl;
 
     /** Specific LaTeX macros for Faust */
-    docout << "\\newcommand{\\faustfilename}{" << global::config().gMasterDocument << "}" << endl;
+    docout << "\\newcommand{\\faustfilename}{" << gMasterDocument() << "}" << endl;
     docout << "\\newcommand{\\faustdocdir}{" << global::config().gMasterName << "-mdoc}" << endl;
     docout << "\\newcommand{\\faustprogname}{" << global::config().gMasterName << "}" << endl;
     docout << "\\newcommand{\\faustversion}{" << faustversion << "}" << endl;
@@ -311,9 +247,9 @@ static void printLatexHeader(istream& latexheader, const string& faustversion, o
  */
 static void printDocMetadata(const Tree expr, ostream& docout)
 {
-    if (global::config().gMetaDataSet.count(expr)) {
+    if (gMetaDataSet().count(expr)) {
         string    sep  = "";
-        set<Tree> mset = global::config().gMetaDataSet[expr];
+        set<Tree> mset = gMetaDataSet()[expr];
         for (set<Tree>::iterator j = mset.begin(); j != mset.end(); j++) {
             docout << sep << unquote(tree2str(*j));
             sep = ", ";
@@ -329,13 +265,13 @@ static void printDocMetadata(const Tree expr, ostream& docout)
  */
 static void printFaustListings(ostream& docout)
 {
-    if (global::config().gParser._lstDependenciesSwitch) {
+    if (global::config().gReader.listSrcFiles().size()) {
         vector<string> pathnames = global::config().gReader.listSrcFiles();
         for (unsigned int i = 0; i < pathnames.size(); i++) {
             printFaustListing(pathnames[i], docout);
         }
     } else {
-        printFaustListing(global::config().gMasterDocument, docout);
+        printFaustListing(gMasterDocument(), docout);
     }
 }
 
@@ -407,6 +343,12 @@ static void printFaustdocStamp(const string& faustversion, ostream& docout)
     docout << "%% https://faust.grame.fr" << endl << endl;
 }
 
+bool isDocMtd(Tree t, Tree& x)
+{
+    return isTree(t, ::Faust::Primitive::Symbols::internal().symbol("DocMtd"), x);
+}
+
+
 /*****************************************************************************
             Main loop : launches prepare, evaluate, and print functions
  *****************************************************************************/
@@ -414,7 +356,7 @@ static void printFaustdocStamp(const string& faustversion, ostream& docout)
 /**
  * @brief Main documentator loop.
  *
- * First loop on global::config().global::config().gDocVector, which contains the faust <mdoc> trees.
+ * First loop on global::config().gDocVector, which contains the faust <mdoc> trees.
  * Second loop for each of these <mdoc> trees, which contain parsed input expressions of 3 types :
  * ::Faust::Primitive::Symbols::internal().symbol("DocEqn") for <equation> tags, ::Faust::Primitive::Symbols::internal().symbol("DocDgm") for <diagram> tags, and ::Faust::Primitive::Symbols::internal().symbol("DocTxt") for direct LaTeX text
  *(no tag).
@@ -441,14 +383,14 @@ static void printDocContent(const char* svgTopDir, const vector<Tree>& docVector
     int dgmIndex = 1;  ///< For diagram directories numbering.
 
     vector<string> docMasterCodeMap;
-    docMasterCodeMap = docCodeSlicer(global::config().gMasterDocument, docMasterCodeMap);
+    docMasterCodeMap = docCodeSlicer(gMasterDocument(), docMasterCodeMap);
 
     vector<Tree>::const_iterator   doc;
     vector<string>::const_iterator code;
     code = docMasterCodeMap.begin();
 
-    if (doesFileBeginWithCode(global::config().gMasterDocument) && (!docMasterCodeMap.empty()) &&
-        global::config().gParser._lstDistributedSwitch) {
+    if (doesFileBeginWithCode(gMasterDocument()) && (!docMasterCodeMap.empty()) &&
+        global::config().gReader.listSrcFiles().size()) {
         printdocCodeSlices(*code, docout);
         code++;
     }
@@ -480,7 +422,7 @@ static void printDocContent(const char* svgTopDir, const vector<Tree>& docVector
         }
         // cerr << " ...end of <mdoc> parsing." << endl;
 
-        if (code != docMasterCodeMap.end() && global::config().gParser._lstDistributedSwitch) {
+        if (code != docMasterCodeMap.end() && global::config().gReader.listSrcFiles().size()) {
             printdocCodeSlices(*code, docout);
         }
     }
@@ -653,7 +595,7 @@ static void mapPrepareEqSig(const vector<Tree>& evalEqBoxes, vector<int>& eqInpu
         eqInputs.push_back(numInputs);
         eqOutputs.push_back(numOutputs);
 
-        Tree lsig1 = boxPropagateSig(global::config().nil, *eq, makeSigInputList(numInputs));
+        Tree lsig1 = boxPropagateSig(::Faust::Primitive::Symbols::asTree().nil, *eq, makeSigInputList(numInputs));
         // cerr << "output signals are : " << endl;  printSignal(lsig1, stderr);
 
         Tree lsig2 = deBruijn2Sym(lsig1);  ///< Convert debruijn recursion into symbolic recursion
@@ -696,7 +638,7 @@ static void collectEqSigs(const vector<Tree>& eqSigs, Tree& superEqList)
 {
     // cerr << "###\n# Documentator : collectEqSigs" << endl;
 
-    superEqList = global::config().nil;
+    superEqList = ::Faust::Primitive::Symbols::asTree().nil;
 
     for (vector<Tree>::const_iterator it = eqSigs.begin(); it < eqSigs.end(); ++it) {
         superEqList = cons(*it, superEqList);

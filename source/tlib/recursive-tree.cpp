@@ -30,6 +30,8 @@
 
 #include "faust/primitive/symbols.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 // Declaration of implementation
 static Tree calcDeBruijn2Sym(Tree t);
 static Tree substitute(Tree t, int n, Tree id);
@@ -79,14 +81,14 @@ bool isRef(Tree t, int& level)
 Tree rec(Tree var, Tree body)
 {
     Tree t = tree(::Faust::Primitive::Symbols::internal().symbol("SYMREC"), var);
-    t->setProperty(global::config().RECDEF, body);
+    t->setProperty(::Faust::Primitive::Symbols::asTree().RECDEF, body);
     return t;
 }
 
 bool LIBFAUST_API isRec(Tree t, Tree& var, Tree& body)
 {
     if (isTree(t, ::Faust::Primitive::Symbols::internal().symbol("SYMREC"), var)) {
-        body = t->getProperty(global::config().RECDEF);
+        body = t->getProperty(::Faust::Primitive::Symbols::asTree().RECDEF);
         return true;
     } else {
         return false;
@@ -209,11 +211,11 @@ static Tree calcliftn(Tree t, int threshold)
 Tree deBruijn2Sym(Tree t)
 {
     faustassert(isClosed(t));
-    Tree t2 = t->getProperty(global::config().DEBRUIJN2SYM);
+    Tree t2 = t->getProperty(::Faust::Primitive::Symbols::asTree().DEBRUIJN2SYM);
 
     if (!t2) {
         t2 = calcDeBruijn2Sym(t);
-        t->setProperty(global::config().DEBRUIJN2SYM, t2);
+        t->setProperty(::Faust::Primitive::Symbols::asTree().DEBRUIJN2SYM, t2);
     }
     return t2;
 }

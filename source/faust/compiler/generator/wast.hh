@@ -29,6 +29,9 @@
 #include "target/language/wast/wast_code_container.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+
+#include "compiler/parser/implementation.hh"
 
 namespace Faust {
   namespace Compiler {
@@ -57,7 +60,7 @@ namespace Faust {
           // the 'i' variable used in the scalar loop moves by bytes instead of frames
           global::config().gLoopVarInBytes   = true;
           global::config().gWaveformInDSP    = true;   // waveform are allocated in the DSP and not as global data
-          global::config().gMachinePtrSize   = 4;      // WASM is currently 32 bits
+          ::Faust::Primitive::Math::gMachinePtrSize   = 4;      // WASM is currently 32 bits
           ::Faust::Primitive::Math::needManualPow    = false;  // Standard pow function will be used in pow(x,y) when Y in an integer
           global::config().gRemoveVarAddress = true;   // To be used in -vec mode
                                                // global::config().gHasTeeLocal = true;     // combined store/load
@@ -69,7 +72,7 @@ namespace Faust {
 
           this->_codeContainer =
               WASTCodeContainer::createContainer(global::config().gClassName, numInputs, numOutputs, out,
-                                                 ((global::config().gOutputLang == "wast") || (global::config().gOutputLang == "wast-i")));
+                                                 ((gOutputLang() == "wast") || (gOutputLang() == "wast-i")));
           this->createHelperFile(outpath);
 
           if (global::config().gVectorSwitch) {

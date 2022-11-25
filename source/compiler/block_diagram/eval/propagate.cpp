@@ -32,6 +32,8 @@
 #include "simplify.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 ////////////////////////////////////////////////////////////////////////
 /**
@@ -146,7 +148,7 @@ static siglist listLift(const siglist& l)
  */
 static void setPropagateProperty(Tree args, const siglist& lsig)
 {
-    setProperty(args, tree(global::config().PROPAGATEPROPERTY), listConvert(lsig));
+    setProperty(args, tree(::Faust::Primitive::Symbols::internal().symbol("PropagateProperty")), listConvert(lsig));
 }
 
 /**
@@ -158,7 +160,7 @@ static void setPropagateProperty(Tree args, const siglist& lsig)
 static bool getPropagateProperty(Tree args, siglist& lsig)
 {
     Tree value;
-    if (getProperty(args, tree(global::config().PROPAGATEPROPERTY), value)) {
+    if (getProperty(args, tree(::Faust::Primitive::Symbols::internal().symbol("PropagateProperty")), value)) {
         treelist2siglist(value, lsig);
         return true;
     } else {
@@ -188,7 +190,7 @@ static siglist realPropagate(Tree slotenv, Tree path, Tree box, const siglist& l
 
 siglist propagate(Tree slotenv, Tree path, Tree box, const siglist& lsig)
 {
-    Tree    args = tree(global::config().PROPAGATEPROPERTY, slotenv, path, box, listConvert(lsig));
+    Tree    args = tree(::Faust::Primitive::Symbols::internal().symbol("PropagateProperty"), slotenv, path, box, listConvert(lsig));
     siglist result;
     if (!getPropagateProperty(args, result)) {
         result = realPropagate(slotenv, path, box, lsig);
@@ -612,5 +614,5 @@ siglist makeSigInputList(int n)
 
 Tree boxPropagateSig(Tree path, Tree box, const siglist& lsig)
 {
-    return listConvert(propagate(global::config().nil, path, box, lsig));
+    return listConvert(propagate(::Faust::Primitive::Symbols::asTree().nil, path, box, lsig));
 }

@@ -24,20 +24,20 @@
 
 #include <vector>
 
-#include "compiler/type_manager/garbageable.hh"
+#include "documentator/lateq.hh"
+//
 #include "compiler/instruction/instructions.hh"
 #include "compiler/dsp_factory/klass.hh"
-#include "documentator/lateq.hh"
 #include "compiler/signals/sigtype.hh"
-#include "tlib/tlib.hh"
 #include "compiler/signals/ppsig.hh"
-
-#include "target/fir/fir_to_fir.hh"
 
 #include "faust/primitive/symbols.hh"
 #include "faust/primitive/symbol/abstract/data.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+//#include "tlib/tlib.hh"
+//#include "target/fir/fir_to_fir.hh"
 
 class CodeContainer;
 

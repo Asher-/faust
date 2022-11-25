@@ -26,6 +26,7 @@
 #include "compiler/signals/signals.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 using namespace std;
 

@@ -28,6 +28,8 @@
 
 #include "faust/primitive/type/precision.hh"
 
+#include "compiler/parser/implementation.hh"
+
 using Precision = ::Faust::Primitive::Type::Precision;
 
 using namespace std;
@@ -309,7 +311,7 @@ void JuliaCodeContainer::produceMetadata(int tabs)
     *fOut << "function metadata!(dsp::" << fKlassName << "{T}, m::FMeta) where {T}";
 
         // We do not want to accumulate metadata from all hierachical levels, so the upper level only is kept
-    for (const auto& i : global::config().gMetaDataSet) {
+    for (const auto& i : gMetaDataSet()) {
         if (i.first != tree("author")) {
             tab(tabs + 1, *fOut);
             *fOut << "declare!(m, \"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

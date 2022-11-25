@@ -26,11 +26,13 @@
 #include <fstream>
 #include <map>
 #include <list>
+#include <set>
 
 #include "tlib/tree.hh"
 #include "faust/primitive/symbols.hh"
 
 #include "compiler/parser/lexer/implementation.hh"
+#include "compiler/parser/bison/implementation.hh"
 #include "compiler/parser/abstract/implementation.hh"
 
 #include "compiler/block_diagram/boxes/boxes.hh"
@@ -42,8 +44,10 @@ namespace Faust {
     namespace Parser {
     
       struct Implementation
+      :
+        ::Faust::Compiler::Parser::Abstract::Implementation
       {
-        using AbstractParser = ::Faust::Compiler::Parser::AbstractImplementation;
+        using AbstractParser = ::Faust::Compiler::Parser::BisonImplementation;
         using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
         using Lexer = ::Faust::Compiler::Parser::Lexer::Implementation;
         using symbol_type = typename AbstractParser::symbol_type;
@@ -56,28 +60,44 @@ namespace Faust {
           _location("Scanner")
         {
         }
-
-        int
-        scan()
+        
+        void setTraceParsing( const bool& true_or_false = true )
         {
-          _parser.set_debug_level( _traceParsing );
-          int result_state = _parser();
-          return result_state;
+          _traceParsing = true_or_false;
+        }
+
+        const bool& traceParsing()
+        const
+        {
+          return _traceParsing;
+        }
+
+        void setTraceScanning( const bool& true_or_false = true )
+        {
+          _traceScanning = true_or_false;
+        }
+
+        const bool& traceScanning()
+        const
+        {
+          return _traceScanning;
         }
 
         Tree parseStream(
           std::istream& in,
           const std::string& stream_name
-        ) {
+        )
+        override
+        {
           _streamName = stream_name;
 
           Lexer lexer( *this, &in );
           _lexer = &lexer;
           _lexer->set_debug( _traceScanning );
 
-          AbstractParser parser(*this);
-          parser.set_debug_level( _traceParsing );
-          _result = parser();
+          _parser.set_debug_level( _traceParsing );
+
+          _result = _parser();
           _lexer = nullptr;
 
           if (_result) {
@@ -95,7 +115,9 @@ namespace Faust {
         Tree
         parseFile(
           const std::string& filename
-        ) {
+        )
+        override
+        {
           std::ifstream in(filename.c_str());
           if (!in.good()) return nullptr;
           return parseStream(in, filename);
@@ -105,7 +127,9 @@ namespace Faust {
         parseString(
           const std::string& input,
           const std::string& stream_name
-        ) {
+        )
+        override
+        {
           std::istringstream iss(input);
           return parseStream(iss, stream_name);
         }
@@ -165,7 +189,7 @@ namespace Faust {
         /*
         fun -> (file*fun -> {key*value,...})
 
-        global::config().gFunMetaDataSet[fun].insert(file*fun*key*value);
+        gFunMDSet()[fun].insert(file*fun*key*value);
         gFunMetaDataSet = map<tree, tuple<Tree,Tree,Tree,Tree>>
         */
 
@@ -207,10 +231,10 @@ namespace Faust {
 
         //----------------------------------------------------------
         // unquote() : remove enclosing quotes and carriage return
-        // characters from string. Returns a Tree
+        // characters from string.
         //----------------------------------------------------------
 
-        Tree unquote(const char* str);
+        std::string unquote(const char* str);
 
 
         char replaceCR(char c);
@@ -226,6 +250,12 @@ namespace Faust {
         // greater than 2^31 (= 2147483648)
         //----------------------------------------------------------
         int str2int(const char* str);
+        
+        Location& location() { return _location; }
+        const Location& location() const { return _location; }
+        
+
+
 
         std::string _streamName;
         
@@ -242,18 +272,30 @@ namespace Faust {
 
         using Sym = ::Faust::Primitive::Symbol::Abstract::Implementation*;
 
-        static Sym NIL;
-        static Tree _nil;
         bool _stripDocSwitch = true;
         bool _lstDependenciesSwitch = true;
         bool _lstDistributedSwitch = true;
 
         
       };
-      
+
+
     };
   };
 };
+
+struct comp_str {
+    bool operator()(Tree s1, Tree s2) const { return tree2str(s1) == tree2str(s2); }
+};
+
+typedef map<Tree, set<Tree>> FunMDSet;  // foo -> {(file/foo/key,value)...}
+typedef map<Tree, std::set<Tree>, comp_str> MetaDataSet;
+
+std::string& gMasterDocument();
+MetaDataSet& gMetaDataSet();
+FunMDSet& gFunMDSet();
+
+std::string& gOutputLang();
 
 #endif
 

@@ -28,6 +28,7 @@
 #include "target/fir/visitor/move_variables_in_front_3.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
 

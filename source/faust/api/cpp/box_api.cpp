@@ -29,6 +29,9 @@
 #include "faust/api/c/signal_api.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
+
+#include "faust/primitive/symbols/as_tree.hh"
 
 // ============
 // Box C++ API
@@ -44,7 +47,7 @@ tvec boxesToSignalsAux(Tree box)
         throw faustexception(error.str());
     }
 
-    Tree outputs   = boxPropagateSig(global::config().nil, box, makeSigInputList(numInputs));
+    Tree outputs   = boxPropagateSig(::Faust::Primitive::Symbols::asTree().nil, box, makeSigInputList(numInputs));
     Tree ouputs_nf = simplifyToNormalForm(outputs);
     return treeConvert(ouputs_nf);
 }

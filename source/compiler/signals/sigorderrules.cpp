@@ -46,6 +46,8 @@
 #include "tlib/tlib.hh"
 #include "faust/primitive/math/functions/xtended.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 static int infereSigOrder(Tree sig);
 
 /**
@@ -61,11 +63,11 @@ static int infereSigOrder(Tree sig);
 int getSigOrder(Tree sig)
 {
     Tree tt;
-    if (getProperty(sig, global::config().ORDERPROP, tt)) {
+    if (getProperty(sig, ::Faust::Primitive::Symbols::asTree().ORDERPROP, tt)) {
         return tree2int(tt);
     } else {
         int order = infereSigOrder(sig);
-        setProperty(sig, global::config().ORDERPROP, tree(order));
+        setProperty(sig, ::Faust::Primitive::Symbols::asTree().ORDERPROP, tree(order));
         return order;
     }
 }

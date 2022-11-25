@@ -187,7 +187,7 @@ inline Tree right(Tree t)
 }
 
 // Environment : stack of pairs key value)
-// Tree 	pushEnv (Tree key, Tree val, Tree env=global::config().nil);
+// Tree 	pushEnv (Tree key, Tree val, Tree env=::Faust::Primitive::Symbols::asTree().nil);
 Tree pushEnv(Tree key, Tree val, Tree env);
 bool searchEnv(Tree key, Tree& v, Tree env);
 

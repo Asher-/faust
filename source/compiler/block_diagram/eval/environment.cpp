@@ -28,6 +28,7 @@
 #include "compiler/block_diagram/boxes/ppbox.hh"
 
 #include "faust/primitive/symbols.hh"
+#include "faust/primitive/symbols/as_tree.hh"
 
 //----------------------- New environment management --------------------------
 //
@@ -88,10 +89,10 @@ static void addLayerDef(Tree id, Tree def, Tree lenv)
     Tree olddef = nullptr;
     if (getProperty(lenv, id, olddef)) {
         if (def == olddef) {
-            // evalwarning(getDefFileProp(id), getDefLineProp(id), "equivalent re-definitions of", id);
+            // evalwarning(id->location(), "equivalent re-definitions of", id);
         } else {
             stringstream error;
-            error << getDefFileProp(id) << ':' << getDefLineProp(id)
+            error << id->location()
                   << " ERROR : redefinition of symbols are not allowed : " << boxpp(id) << endl;
             global::config().gErrorCount++;
             throw faustexception(error.str());
@@ -128,7 +129,7 @@ Tree pushMultiClosureDefs(Tree ldefs, Tree visited, Tree lenv)
         Tree         def = hd(ldefs);
         Tree         id  = hd(def);
         Tree         rhs = tl(def);
-        Tree         cl  = closure(tl(def), global::config().nil, visited, lenv2);
+        Tree         cl  = closure(tl(def), ::Faust::Primitive::Symbols::asTree().nil, visited, lenv2);
         stringstream s;
         s << boxpp(id);
         if (!isBoxCase(rhs)) setDefNameProperty(cl, s.str());
@@ -200,7 +201,7 @@ Tree copyEnvReplaceDefs(Tree anEnv, Tree ldefs, Tree visited, Tree curEnv)
         Tree         def = hd(ldefs);
         Tree         id  = hd(def);
         Tree         rhs = tl(def);
-        Tree         cl  = closure(rhs, global::config().nil, visited, curEnv);
+        Tree         cl  = closure(rhs, ::Faust::Primitive::Symbols::asTree().nil, visited, curEnv);
         stringstream s;
         s << boxpp(id);
         if (!isBoxCase(rhs)) setDefNameProperty(cl, s.str());

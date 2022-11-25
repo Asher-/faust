@@ -29,8 +29,11 @@
 #include "target/fir/visitor/loop_variable_renamer.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using Precision = ::Faust::Primitive::Type::Precision;
 
@@ -378,7 +381,7 @@ void WASMCodeContainer::produceClass()
     tab(n, fHelper);
     fHelper << "}\n";
 
-    if (global::config().gOutputLang == "wasm-ib" || global::config().gOutputLang == "wasm-eb") {
+    if (gOutputLang() == "wasm-ib" || gOutputLang() == "wasm-eb") {
         /*
         // Write binary as an array
         fHelper << showbase         // show the 0x prefix
@@ -464,7 +467,7 @@ WASMVectorCodeContainer::WASMVectorCodeContainer(const string& name, int numInpu
     : VectorCodeContainer(numInputs, numOutputs), WASMCodeContainer(name, numInputs, numOutputs, out, internal_memory)
 {
     // No array on stack, move all of them in struct
-    global::config().gMachineMaxStackSize = -1;
+    ::Faust::Primitive::Math::gMachineMaxStackSize = -1;
 }
 
 void WASMVectorCodeContainer::generateCompute()

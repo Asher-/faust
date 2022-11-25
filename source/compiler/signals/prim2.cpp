@@ -22,23 +22,13 @@
 #include <stdlib.h>
 
 #include "compiler/signals/prim2.hh"
-#include "global.hh"
 
 #include "faust/primitive/math.hh"
-
-Tree ffunction(Tree signature, Tree incfile, Tree libfile)
-{
-    return tree(::Faust::Primitive::Symbols::internal().symbol("ForeignFunction"), signature, incfile, libfile);
-}
+#include "faust/primitive/math/functions.hh"
 
 bool isffunction(Tree t)
 {
     return t->node() == Node(::Faust::Primitive::Symbols::internal().symbol("ForeignFunction"));
-}
-
-Tree ffsignature(Tree ff)
-{
-    return ff->branch(0);
 }
 
 std::string ffincfile(Tree ff)
@@ -56,11 +46,6 @@ int ffrestype(Tree t)
     return tree2int(hd(ffsignature(t)));
 }
 
-std::string ffname(Tree t)
-{
-    Tree namelist = nth(ffsignature(t), 1);
-    return tree2str(nth(namelist, ::Faust::Primitive::Math::floatSize - 1));
-}
 
 int ffarity(Tree t)
 {

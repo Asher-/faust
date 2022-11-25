@@ -30,6 +30,8 @@
 
 #include "faust/primitive/math.hh"
 
+#include "faust/primitive/math/functions/xtended.hh"
+
 using namespace std;
 
 const char* prim0name(CTree *(*ptr)())
@@ -380,14 +382,14 @@ ostream& boxpp::print(ostream& fout) const
 }
 
 #define BOX_INSERT_ID(exp) \
-    if (global::config().gBoxTable.find(fBox) == global::config().gBoxTable.end()) { \
+    if (gBoxTable().find(fBox) == gBoxTable().end()) { \
         stringstream s; \
         (exp); \
-        global::config().gBoxTable[fBox] = std::make_pair(global::config().gBoxCounter, s.str()); \
-        global::config().gBoxTrace.push_back("ID_" + std::to_string(global::config().gBoxCounter) + " = " + s.str() + ";\n"); \
-        global::config().gBoxCounter++;\
+        gBoxTable()[fBox] = std::make_pair(::gBoxCounter, s.str()); \
+        gBoxTrace().push_back("ID_" + std::to_string(::gBoxCounter) + " = " + s.str() + ";\n"); \
+        ::gBoxCounter++;\
     } \
-    fout << "ID_" << global::config().gBoxTable[fBox].first; \
+    fout << "ID_" << gBoxTable()[fBox].first; \
 
 ostream& boxppShared::print(ostream& fout) const
 {
@@ -441,7 +443,7 @@ ostream& boxppShared::print(ostream& fout) const
         BOX_INSERT_ID(s << boxppShared(body) << " with { " << envpp(ldef) << " }");
     // Foreign elements
     } else if (isBoxFFun(fBox, ff)) {
-        if (global::config().gBoxTable.find(fBox) == global::config().gBoxTable.end()) {
+        if (gBoxTable().find(fBox) == gBoxTable().end()) {
             stringstream s;
 
             s << "ffunction(" << type2str(ffrestype(ff));
@@ -459,12 +461,12 @@ ostream& boxppShared::print(ostream& fout) const
             s << ')';
             s << ',' << ffincfile(ff) << ',' << fflibfile(ff) << ')';
 
-            global::config().gBoxTable[fBox] = std::make_pair(global::config().gBoxCounter, s.str());
-            global::config().gBoxTrace.push_back("ID_" + std::to_string(global::config().gBoxCounter) + " = " + s.str() + ";\n");
-            global::config().gBoxCounter++;
+            gBoxTable()[fBox] = std::make_pair(::gBoxCounter, s.str());
+            gBoxTrace().push_back("ID_" + std::to_string(::gBoxCounter) + " = " + s.str() + ";\n");
+            ::gBoxCounter++;
         }
-        // global::config().gBoxCounter used a ID
-        fout << "ID_" << global::config().gBoxTable[fBox].first;
+        // ::gBoxCounter used a ID
+        fout << "ID_" << gBoxTable()[fBox].first;
     } else if (isBoxFConst(fBox, type, name, file)) {
         BOX_INSERT_ID(s << "fconstant(" << type2str(tree2int(type)) << ' ' << tree2str(name) << ", " << tree2str(file) << ')');
     } else if (isBoxFVar(fBox, type, name, file)) {
@@ -524,7 +526,7 @@ ostream& boxppShared::print(ostream& fout) const
     else if (isNil(fBox)) {
         fout << "()";
     } else if (isList(fBox)) {
-        if (global::config().gBoxTable.find(fBox) == global::config().gBoxTable.end()) {
+        if (gBoxTable().find(fBox) == gBoxTable().end()) {
             stringstream s;
             Tree l   = fBox;
             char sep = '(';
@@ -536,14 +538,14 @@ ostream& boxppShared::print(ostream& fout) const
             } while (isList(l));
 
             s << ')';
-            global::config().gBoxTable[fBox] = std::make_pair(global::config().gBoxCounter, s.str());
-            global::config().gBoxTrace.push_back("ID_" + std::to_string(global::config().gBoxCounter) + " = " + s.str() + ";\n");
-            global::config().gBoxCounter++;
+            gBoxTable()[fBox] = std::make_pair(::gBoxCounter, s.str());
+            gBoxTrace().push_back("ID_" + std::to_string(::gBoxCounter) + " = " + s.str() + ";\n");
+            ::gBoxCounter++;
         }
-        // global::config().gBoxCounter used a ID
-        fout << "ID_" << global::config().gBoxTable[fBox].first;
+        // ::gBoxCounter used a ID
+        fout << "ID_" << gBoxTable()[fBox].first;
     } else if (isBoxWaveform(fBox)) {
-        if (global::config().gBoxTable.find(fBox) == global::config().gBoxTable.end()) {
+        if (gBoxTable().find(fBox) == gBoxTable().end()) {
             stringstream s;
             s << "waveform";
             char sep = '{';
@@ -552,12 +554,12 @@ ostream& boxppShared::print(ostream& fout) const
                 sep = ',';
             }
             s << '}';
-            global::config().gBoxTable[fBox] = std::make_pair(global::config().gBoxCounter, s.str());
-            global::config().gBoxTrace.push_back("ID_" + std::to_string(global::config().gBoxCounter) + " = " + s.str() + ";\n");
-            global::config().gBoxCounter++;
+            gBoxTable()[fBox] = std::make_pair(::gBoxCounter, s.str());
+            gBoxTrace().push_back("ID_" + std::to_string(::gBoxCounter) + " = " + s.str() + ";\n");
+            ::gBoxCounter++;
         }
-        // global::config().gBoxCounter used a ID
-        fout << "ID_" << global::config().gBoxTable[fBox].first;
+        // ::gBoxCounter used a ID
+        fout << "ID_" << gBoxTable()[fBox].first;
     } else if (isBoxEnvironment(fBox)) {
         fout << "environment";
     } else if (isClosure(fBox, abstr, genv, vis, lenv)) {
@@ -621,7 +623,7 @@ ostream& boxppShared::print(ostream& fout) const
 
 void boxppShared::printIDs(ostream& fout)
 {
-    for (const auto& it : global::config().gBoxTrace) {
+    for (const auto& it : gBoxTrace()) {
         fout << it;
     }
 }
@@ -643,4 +645,18 @@ ostream& envpp::print(ostream& fout) const
     }
     fout << '}';
     return fout;
+}
+
+std::vector<std::string>& gBoxTrace()
+{
+  static std::vector<std::string> g_box_trace;
+  return g_box_trace;
+}
+
+int gBoxCounter = 0;
+
+std::map<Tree, std::pair<int, std::string>> gBoxTable()
+{
+  static std::map<Tree, std::pair<int, std::string>> g_box_table;
+  return g_box_table;
 }

@@ -27,19 +27,9 @@
 
 // Foreign functions management functions (ffun) (external C functions)
 
-Tree ffunction(Tree signature, Tree incfile, Tree libfile);
 
 bool isffunction(Tree t);
 
-Tree ffsignature(Tree t);
-
-/**
- *  Return the name parameter of a foreign function.
- *
- * @param  t - the signal
- * @return the name
- */
-LIBFAUST_API std::string ffname(Tree t);
 
 /**
  *  Return the arity of a foreign function
@@ -47,7 +37,7 @@ LIBFAUST_API std::string ffname(Tree t);
  * @param  s - the signal
  * @return the name
  */
-LIBFAUST_API int ffarity(Tree t);
+LIBFAUST_API int ffarity(Tree s);
 
 int         ffrestype(Tree t);
 int         ffargtype(Tree t, int i);

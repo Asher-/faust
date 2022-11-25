@@ -27,8 +27,11 @@
 #include "global.hh"
 
 #include "faust/primitive/math.hh"
+#include "faust/primitive/math/functions.hh"
 
 #include "faust/primitive/type/precision.hh"
+
+#include "compiler/parser/implementation.hh"
 
 using Precision = ::Faust::Primitive::Type::Precision;
 
@@ -229,7 +232,7 @@ void CSharpCodeContainer::produceClass()
     tab(n + 1, *fOut);
     *fOut << "{";
 
-    for (auto& i : global::config().gMetaDataSet) {
+    for (auto& i : gMetaDataSet()) {
         if (i.first != tree("author")) {
             tab(n + 2, *fOut);
             *fOut << "MetaData.Declare(\"" << *(i.first) << "\", " << **(i.second.begin()) << ");";

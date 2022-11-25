@@ -32,6 +32,8 @@
 #include "faust/gui/PathBuilder.h"
 #include "target/language/soul/type_manager/string.hh"
 
+#include "compiler/parser/implementation.hh"
+
 using namespace std;
 
 extern std::vector<char> gReplace;

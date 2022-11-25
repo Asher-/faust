@@ -33,6 +33,8 @@
 #include "compiler/signals/ppsig.hh"
 #include "tlib/property.hh"
 
+#include "faust/primitive/symbols/as_tree.hh"
+
 // History
 // 2009/09/08 : get/setDefNameProperty
 
@@ -46,7 +48,7 @@
 void setDefNameProperty(Tree t, Tree id)
 {
     // cerr << "setDefNameProperty : " << *id << " FOR " << t << "#" << boxpp(t) << endl;
-    setProperty(t, global::config().DEFNAMEPROPERTY, id);
+    setProperty(t, ::Faust::Primitive::Symbols::asTree().DEFNAMEPROPERTY, id);
 }
 
 void setDefNameProperty(Tree t, const string& name)
@@ -72,16 +74,16 @@ void setDefNameProperty(Tree t, const string& name)
             buf[i] = name[c];
         }
         buf[i] = 0;
-        setProperty(t, global::config().DEFNAMEPROPERTY, tree(buf));
+        setProperty(t, ::Faust::Primitive::Symbols::asTree().DEFNAMEPROPERTY, tree(buf));
     } else {
-        setProperty(t, global::config().DEFNAMEPROPERTY, tree(name.c_str()));
+        setProperty(t, ::Faust::Primitive::Symbols::asTree().DEFNAMEPROPERTY, tree(name.c_str()));
     }
 }
 
 LIBFAUST_API bool getDefNameProperty(Tree t, Tree& id)
 {
     // cerr << "getDefNameProperty of : " << t << endl;
-    return getProperty(t, global::config().DEFNAMEPROPERTY, id);
+    return getProperty(t, ::Faust::Primitive::Symbols::asTree().DEFNAMEPROPERTY, id);
 }
 
 /**
@@ -101,9 +103,9 @@ void setSigNickname(Tree t, const string& id)
 {
     Tree s, d;
     if (isSigDelay(t, s, d) && isZero(d)) {
-        setProperty(s, global::config().NICKNAMEPROPERTY, tree(id));
+        setProperty(s, ::Faust::Primitive::Symbols::asTree().NICKNAMEPROPERTY, tree(id));
     } else {
-        setProperty(t, global::config().NICKNAMEPROPERTY, tree(id));
+        setProperty(t, ::Faust::Primitive::Symbols::asTree().NICKNAMEPROPERTY, tree(id));
     }
 }
 
@@ -112,7 +114,7 @@ void setSigNickname(Tree t, const string& id)
  */
 bool getSigNickname(Tree t, Tree& id)
 {
-    bool r = getProperty(t, global::config().NICKNAMEPROPERTY, id);
+    bool r = getProperty(t, ::Faust::Primitive::Symbols::asTree().NICKNAMEPROPERTY, id);
     return r;
 }
 

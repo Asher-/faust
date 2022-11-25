@@ -30,42 +30,7 @@
 #include <iostream>
 using namespace std;
 
-void faustassertaux(bool cond, const string& file, int line)
-{
-    if (!cond) {
-        stringstream str;
-#ifdef EMCC
-        str << "ASSERT : please report this message and the failing DSP file to Faust developers (";
-#else
-        str << "ASSERT : please report this message, the stack trace, and the failing DSP file to Faust developers (";
-#endif
-        str << "file: " << file.substr(file.find_last_of('/') + 1) << ", line: " << line << ", ";
-        str << "version: " << FAUSTVERSION;
-        if (gGlobal) {
-            str << ", options: ";
-            global::config().printCompilationOptions(str);
-        }
-        str << ")\n";
-#ifndef EMCC
-        stacktrace(str, 20);
-#endif
-         throw faustexception(str.str());
-    }
-}
-
-void lexerror(const char* msg)
-{
-    string fullmsg = "ERROR : " + string(msg) + '\n';
-    throw faustexception(fullmsg);
-}
-
-void yyerror(const char* msg)
-{
-    stringstream error;
-    error << global::config().gParser._streamName << " : " << global::config().gParser._lexer->lineno() << " : ERROR : " << msg << endl;
-    global::config().gErrorCount++;
-    throw faustexception(error.str());
-}
+using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
 
 void evalerror(const std::string& filename, int linenum, const char* msg, Tree exp)
 {
@@ -97,58 +62,33 @@ void evalremark(const std::string& filename, int linenum, const char* msg, Tree 
     global::config().gErrorMessage = error.str();
 }
 
-void setDefProp(Tree sym, const char* filename, int lineno)
+void evalerror(const Location& location, const char* msg, Tree exp)
 {
-    setProperty(sym, global::config().DEFLINEPROP, cons(tree(filename), tree(lineno)));
+    stringstream error;
+    error << location << " : ERROR : " << msg << " : " << boxpp(exp) << endl;
+    global::config().gErrorCount++;
+    throw faustexception(error.str());
 }
 
-bool hasDefProp(Tree sym)
+void evalerrorbox(const Location& location, const char* msg, Tree exp)
 {
-    Tree n;
-    return getProperty(sym, global::config().DEFLINEPROP, n);
+    stringstream error;
+    error << location << " : ERROR : " << msg << " : " << boxpp(exp) << endl;
+    global::config().gErrorCount++;
+    throw faustexception(error.str());
 }
 
-const std::string& getDefFileProp(Tree sym)
+void evalwarning(const Location& location, const char* msg, Tree exp)
 {
-    Tree n;
-    if (getProperty(sym, global::config().DEFLINEPROP, n)) {
-        return hd(n)->node().getSym()->name();
-    } else {
-        return ::Faust::Primitive::Symbols::internal().symbol("????")->name();
-    }
+    stringstream error;
+    error << location << " : WARNING : " << msg << " : " << boxpp(exp) << endl;
+    global::config().gErrorMsg = error.str();
 }
 
-int getDefLineProp(Tree sym)
+void evalremark(const Location& location, const char* msg, Tree exp)
 {
-    Tree n;
-    if (getProperty(sym, global::config().DEFLINEPROP, n)) {
-        return tl(n)->node().getInt();
-    } else {
-        return -1;
-    }
+    stringstream error;
+    error << location << " : REMARK : " << msg << " : " << boxpp(exp) << endl;
+    global::config().gErrorMsg = error.str();
 }
 
-void setUseProp(Tree sym, const char* filename, int lineno)
-{
-    setProperty(sym, global::config().USELINEPROP, cons(tree(filename), tree(lineno)));
-}
-
-const std::string& getUseFileProp(Tree sym)
-{
-    Tree n;
-    if (getProperty(sym, global::config().USELINEPROP, n)) {
-        return hd(n)->node().getSym()->name();
-    } else {
-        return ::Faust::Primitive::Symbols::internal().symbol("????")->name();
-    }
-}
-
-int getUseLineProp(Tree sym)
-{
-    Tree n;
-    if (getProperty(sym, global::config().USELINEPROP, n)) {
-        return tl(n)->node().getInt();
-    } else {
-        return -1;
-    }
-}

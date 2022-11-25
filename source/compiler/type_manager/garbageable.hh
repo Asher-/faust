@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <new>
+#include <list>
 
 #include "compiler/errors/exception.hh"
 #include "faust/export.h"
@@ -46,6 +47,9 @@ class LIBFAUST_API Garbageable {
     void  operator delete[](void* ptr);
 
     static void cleanup();
+
+    static std::list<Garbageable*>& objectTable();
+    static bool gHeapCleanup;
 };
 
 template <class P>
