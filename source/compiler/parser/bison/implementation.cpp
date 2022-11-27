@@ -242,18 +242,16 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
       case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_233_primitive_type_number_float_list_member: // primitive.type.number.float.list.member
         value.YY_MOVE_OR_COPY< FloatType > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
-      case symbol_kind::S_298_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_299_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_300_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_301_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
         value.YY_MOVE_OR_COPY< IntType > (YY_MOVE (that.value));
         break;
 
@@ -329,70 +327,68 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
       case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
       case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_229_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_237_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_240_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_241_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_242_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_243_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_244_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_245_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_246_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_247_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_248_primitive_signal_source_waveform_int_as_tree: // primitive.signal.source.waveform.int.as.tree
-      case symbol_kind::S_249_primitive_signal_source_waveform_float_as_tree: // primitive.signal.source.waveform.float.as.tree
-      case symbol_kind::S_250_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_251_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_252_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_253_primitive_ui: // primitive.ui
-      case symbol_kind::S_254_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_255_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_256_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_257_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_258_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_259_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_260_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_261_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_262_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_263_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_264_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_265_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_266_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_267_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_268_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_269_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_241_primitive_ui: // primitive.ui
+      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_271_statement_definition: // statement.definition
-      case symbol_kind::S_272_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_277_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_279_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_280_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_281_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_282_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_283_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_284_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_285_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_286_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_287_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_288_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_289_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_290_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_291_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_292_statement_import: // statement.import
-      case symbol_kind::S_293_statement_list: // statement.list
-      case symbol_kind::S_294_statement_list_start: // statement.list.start
-      case symbol_kind::S_295_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_296_statement_list_append: // statement.list.append
-      case symbol_kind::S_297_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_302_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_303_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_304_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_305_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_259_statement_definition: // statement.definition
+      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_279_statement_import: // statement.import
+      case symbol_kind::S_280_statement_list: // statement.list
+      case symbol_kind::S_281_statement_list_start: // statement.list.start
+      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_283_statement_list_append: // statement.list.append
+      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.YY_MOVE_OR_COPY< Tree > (YY_MOVE (that.value));
         break;
 
@@ -544,24 +540,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_232_primitive_type_number_float_list: // primitive.type.number.float.list
-      case symbol_kind::S_234_primitive_type_number_float_list_start: // primitive.type.number.float.list.start
-      case symbol_kind::S_235_primitive_type_number_float_list_append: // primitive.type.number.float.list.append
-        value.YY_MOVE_OR_COPY< std::vector<FloatType> > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_224_primitive_type_number_int_list: // primitive.type.number.int.list
-      case symbol_kind::S_226_primitive_type_number_int_list_start: // primitive.type.number.int.list.start
-      case symbol_kind::S_227_primitive_type_number_int_list_append: // primitive.type.number.int.list.append
-        value.YY_MOVE_OR_COPY< std::vector<IntType> > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_228_primitive_type_number_int_list_as_tree: // primitive.type.number.int.list.as.tree
-      case symbol_kind::S_230_primitive_type_number_int_list_start_as_tree: // primitive.type.number.int.list.start.as.tree
-      case symbol_kind::S_231_primitive_type_number_int_list_append_as_tree: // primitive.type.number.int.list.append.as.tree
-      case symbol_kind::S_236_primitive_type_number_float_list_as_tree: // primitive.type.number.float.list.as.tree
-      case symbol_kind::S_238_primitive_type_number_float_list_start_as_tree: // primitive.type.number.float.list.start.as.tree
-      case symbol_kind::S_239_primitive_type_number_float_list_append_as_tree: // primitive.type.number.float.list.append.as.tree
+      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.YY_MOVE_OR_COPY< std::vector<Tree> > (YY_MOVE (that.value));
         break;
 
@@ -583,18 +564,16 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
       case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_233_primitive_type_number_float_list_member: // primitive.type.number.float.list.member
         value.move< FloatType > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
-      case symbol_kind::S_298_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_299_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_300_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_301_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< IntType > (YY_MOVE (that.value));
         break;
 
@@ -670,70 +649,68 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
       case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
       case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_229_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_237_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_240_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_241_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_242_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_243_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_244_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_245_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_246_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_247_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_248_primitive_signal_source_waveform_int_as_tree: // primitive.signal.source.waveform.int.as.tree
-      case symbol_kind::S_249_primitive_signal_source_waveform_float_as_tree: // primitive.signal.source.waveform.float.as.tree
-      case symbol_kind::S_250_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_251_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_252_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_253_primitive_ui: // primitive.ui
-      case symbol_kind::S_254_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_255_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_256_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_257_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_258_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_259_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_260_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_261_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_262_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_263_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_264_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_265_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_266_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_267_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_268_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_269_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_241_primitive_ui: // primitive.ui
+      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_271_statement_definition: // statement.definition
-      case symbol_kind::S_272_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_277_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_279_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_280_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_281_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_282_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_283_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_284_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_285_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_286_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_287_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_288_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_289_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_290_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_291_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_292_statement_import: // statement.import
-      case symbol_kind::S_293_statement_list: // statement.list
-      case symbol_kind::S_294_statement_list_start: // statement.list.start
-      case symbol_kind::S_295_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_296_statement_list_append: // statement.list.append
-      case symbol_kind::S_297_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_302_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_303_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_304_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_305_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_259_statement_definition: // statement.definition
+      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_279_statement_import: // statement.import
+      case symbol_kind::S_280_statement_list: // statement.list
+      case symbol_kind::S_281_statement_list_start: // statement.list.start
+      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_283_statement_list_append: // statement.list.append
+      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.move< Tree > (YY_MOVE (that.value));
         break;
 
@@ -885,24 +862,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.move< std::string > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_232_primitive_type_number_float_list: // primitive.type.number.float.list
-      case symbol_kind::S_234_primitive_type_number_float_list_start: // primitive.type.number.float.list.start
-      case symbol_kind::S_235_primitive_type_number_float_list_append: // primitive.type.number.float.list.append
-        value.move< std::vector<FloatType> > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_224_primitive_type_number_int_list: // primitive.type.number.int.list
-      case symbol_kind::S_226_primitive_type_number_int_list_start: // primitive.type.number.int.list.start
-      case symbol_kind::S_227_primitive_type_number_int_list_append: // primitive.type.number.int.list.append
-        value.move< std::vector<IntType> > (YY_MOVE (that.value));
-        break;
-
-      case symbol_kind::S_228_primitive_type_number_int_list_as_tree: // primitive.type.number.int.list.as.tree
-      case symbol_kind::S_230_primitive_type_number_int_list_start_as_tree: // primitive.type.number.int.list.start.as.tree
-      case symbol_kind::S_231_primitive_type_number_int_list_append_as_tree: // primitive.type.number.int.list.append.as.tree
-      case symbol_kind::S_236_primitive_type_number_float_list_as_tree: // primitive.type.number.float.list.as.tree
-      case symbol_kind::S_238_primitive_type_number_float_list_start_as_tree: // primitive.type.number.float.list.start.as.tree
-      case symbol_kind::S_239_primitive_type_number_float_list_append_as_tree: // primitive.type.number.float.list.append.as.tree
+      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.move< std::vector<Tree> > (YY_MOVE (that.value));
         break;
 
@@ -924,18 +886,16 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
       case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_233_primitive_type_number_float_list_member: // primitive.type.number.float.list.member
         value.copy< FloatType > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
-      case symbol_kind::S_298_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_299_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_300_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_301_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
         value.copy< IntType > (that.value);
         break;
 
@@ -1011,70 +971,68 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
       case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
       case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_229_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_237_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_240_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_241_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_242_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_243_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_244_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_245_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_246_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_247_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_248_primitive_signal_source_waveform_int_as_tree: // primitive.signal.source.waveform.int.as.tree
-      case symbol_kind::S_249_primitive_signal_source_waveform_float_as_tree: // primitive.signal.source.waveform.float.as.tree
-      case symbol_kind::S_250_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_251_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_252_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_253_primitive_ui: // primitive.ui
-      case symbol_kind::S_254_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_255_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_256_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_257_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_258_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_259_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_260_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_261_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_262_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_263_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_264_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_265_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_266_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_267_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_268_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_269_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_241_primitive_ui: // primitive.ui
+      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_271_statement_definition: // statement.definition
-      case symbol_kind::S_272_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_277_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_279_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_280_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_281_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_282_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_283_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_284_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_285_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_286_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_287_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_288_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_289_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_290_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_291_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_292_statement_import: // statement.import
-      case symbol_kind::S_293_statement_list: // statement.list
-      case symbol_kind::S_294_statement_list_start: // statement.list.start
-      case symbol_kind::S_295_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_296_statement_list_append: // statement.list.append
-      case symbol_kind::S_297_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_302_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_303_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_304_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_305_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_259_statement_definition: // statement.definition
+      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_279_statement_import: // statement.import
+      case symbol_kind::S_280_statement_list: // statement.list
+      case symbol_kind::S_281_statement_list_start: // statement.list.start
+      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_283_statement_list_append: // statement.list.append
+      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.copy< Tree > (that.value);
         break;
 
@@ -1226,24 +1184,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.copy< std::string > (that.value);
         break;
 
-      case symbol_kind::S_232_primitive_type_number_float_list: // primitive.type.number.float.list
-      case symbol_kind::S_234_primitive_type_number_float_list_start: // primitive.type.number.float.list.start
-      case symbol_kind::S_235_primitive_type_number_float_list_append: // primitive.type.number.float.list.append
-        value.copy< std::vector<FloatType> > (that.value);
-        break;
-
-      case symbol_kind::S_224_primitive_type_number_int_list: // primitive.type.number.int.list
-      case symbol_kind::S_226_primitive_type_number_int_list_start: // primitive.type.number.int.list.start
-      case symbol_kind::S_227_primitive_type_number_int_list_append: // primitive.type.number.int.list.append
-        value.copy< std::vector<IntType> > (that.value);
-        break;
-
-      case symbol_kind::S_228_primitive_type_number_int_list_as_tree: // primitive.type.number.int.list.as.tree
-      case symbol_kind::S_230_primitive_type_number_int_list_start_as_tree: // primitive.type.number.int.list.start.as.tree
-      case symbol_kind::S_231_primitive_type_number_int_list_append_as_tree: // primitive.type.number.int.list.append.as.tree
-      case symbol_kind::S_236_primitive_type_number_float_list_as_tree: // primitive.type.number.float.list.as.tree
-      case symbol_kind::S_238_primitive_type_number_float_list_start_as_tree: // primitive.type.number.float.list.start.as.tree
-      case symbol_kind::S_239_primitive_type_number_float_list_append_as_tree: // primitive.type.number.float.list.append.as.tree
+      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.copy< std::vector<Tree> > (that.value);
         break;
 
@@ -1264,18 +1207,16 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
       case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_233_primitive_type_number_float_list_member: // primitive.type.number.float.list.member
         value.move< FloatType > (that.value);
         break;
 
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
-      case symbol_kind::S_298_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_299_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_300_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_301_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< IntType > (that.value);
         break;
 
@@ -1351,70 +1292,68 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
       case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
       case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_229_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_237_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_240_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_241_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_242_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_243_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_244_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_245_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_246_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_247_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_248_primitive_signal_source_waveform_int_as_tree: // primitive.signal.source.waveform.int.as.tree
-      case symbol_kind::S_249_primitive_signal_source_waveform_float_as_tree: // primitive.signal.source.waveform.float.as.tree
-      case symbol_kind::S_250_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_251_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_252_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_253_primitive_ui: // primitive.ui
-      case symbol_kind::S_254_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_255_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_256_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_257_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_258_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_259_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_260_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_261_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_262_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_263_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_264_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_265_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_266_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_267_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_268_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_269_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_241_primitive_ui: // primitive.ui
+      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_271_statement_definition: // statement.definition
-      case symbol_kind::S_272_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_277_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_279_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_280_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_281_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_282_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_283_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_284_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_285_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_286_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_287_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_288_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_289_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_290_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_291_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_292_statement_import: // statement.import
-      case symbol_kind::S_293_statement_list: // statement.list
-      case symbol_kind::S_294_statement_list_start: // statement.list.start
-      case symbol_kind::S_295_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_296_statement_list_append: // statement.list.append
-      case symbol_kind::S_297_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_302_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_303_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_304_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_305_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_259_statement_definition: // statement.definition
+      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_279_statement_import: // statement.import
+      case symbol_kind::S_280_statement_list: // statement.list
+      case symbol_kind::S_281_statement_list_start: // statement.list.start
+      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_283_statement_list_append: // statement.list.append
+      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.move< Tree > (that.value);
         break;
 
@@ -1566,24 +1505,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         value.move< std::string > (that.value);
         break;
 
-      case symbol_kind::S_232_primitive_type_number_float_list: // primitive.type.number.float.list
-      case symbol_kind::S_234_primitive_type_number_float_list_start: // primitive.type.number.float.list.start
-      case symbol_kind::S_235_primitive_type_number_float_list_append: // primitive.type.number.float.list.append
-        value.move< std::vector<FloatType> > (that.value);
-        break;
-
-      case symbol_kind::S_224_primitive_type_number_int_list: // primitive.type.number.int.list
-      case symbol_kind::S_226_primitive_type_number_int_list_start: // primitive.type.number.int.list.start
-      case symbol_kind::S_227_primitive_type_number_int_list_append: // primitive.type.number.int.list.append
-        value.move< std::vector<IntType> > (that.value);
-        break;
-
-      case symbol_kind::S_228_primitive_type_number_int_list_as_tree: // primitive.type.number.int.list.as.tree
-      case symbol_kind::S_230_primitive_type_number_int_list_start_as_tree: // primitive.type.number.int.list.start.as.tree
-      case symbol_kind::S_231_primitive_type_number_int_list_append_as_tree: // primitive.type.number.int.list.append.as.tree
-      case symbol_kind::S_236_primitive_type_number_float_list_as_tree: // primitive.type.number.float.list.as.tree
-      case symbol_kind::S_238_primitive_type_number_float_list_start_as_tree: // primitive.type.number.float.list.start.as.tree
-      case symbol_kind::S_239_primitive_type_number_float_list_append_as_tree: // primitive.type.number.float.list.append.as.tree
+      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.move< std::vector<Tree> > (that.value);
         break;
 
@@ -1866,18 +1790,16 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_FLOAT: // FLOAT
       case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
       case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
-      case symbol_kind::S_233_primitive_type_number_float_list_member: // primitive.type.number.float.list.member
         yylhs.value.emplace< FloatType > ();
         break;
 
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_225_primitive_type_number_int_list_member: // primitive.type.number.int.list.member
-      case symbol_kind::S_298_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_299_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_300_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_301_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
         yylhs.value.emplace< IntType > ();
         break;
 
@@ -1953,70 +1875,68 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
       case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
       case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_229_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_237_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_240_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_241_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_242_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_243_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_244_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_245_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_246_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_247_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_248_primitive_signal_source_waveform_int_as_tree: // primitive.signal.source.waveform.int.as.tree
-      case symbol_kind::S_249_primitive_signal_source_waveform_float_as_tree: // primitive.signal.source.waveform.float.as.tree
-      case symbol_kind::S_250_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_251_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_252_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_253_primitive_ui: // primitive.ui
-      case symbol_kind::S_254_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_255_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_256_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_257_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_258_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_259_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_260_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_261_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_262_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_263_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_264_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_265_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_266_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_267_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_268_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_269_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_241_primitive_ui: // primitive.ui
+      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_271_statement_definition: // statement.definition
-      case symbol_kind::S_272_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_273_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_274_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_275_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_276_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_277_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_278_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_279_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_280_statement_definition_error: // statement.definition.error
-      case symbol_kind::S_281_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_282_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_283_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_284_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_285_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_286_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_287_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_288_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_289_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_290_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_291_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_292_statement_import: // statement.import
-      case symbol_kind::S_293_statement_list: // statement.list
-      case symbol_kind::S_294_statement_list_start: // statement.list.start
-      case symbol_kind::S_295_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_296_statement_list_append: // statement.list.append
-      case symbol_kind::S_297_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_302_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_303_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_304_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_305_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_259_statement_definition: // statement.definition
+      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_279_statement_import: // statement.import
+      case symbol_kind::S_280_statement_list: // statement.list
+      case symbol_kind::S_281_statement_list_start: // statement.list.start
+      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_283_statement_list_append: // statement.list.append
+      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         yylhs.value.emplace< Tree > ();
         break;
 
@@ -2168,24 +2088,9 @@ namespace Faust { namespace Compiler { namespace Parser {
         yylhs.value.emplace< std::string > ();
         break;
 
-      case symbol_kind::S_232_primitive_type_number_float_list: // primitive.type.number.float.list
-      case symbol_kind::S_234_primitive_type_number_float_list_start: // primitive.type.number.float.list.start
-      case symbol_kind::S_235_primitive_type_number_float_list_append: // primitive.type.number.float.list.append
-        yylhs.value.emplace< std::vector<FloatType> > ();
-        break;
-
-      case symbol_kind::S_224_primitive_type_number_int_list: // primitive.type.number.int.list
-      case symbol_kind::S_226_primitive_type_number_int_list_start: // primitive.type.number.int.list.start
-      case symbol_kind::S_227_primitive_type_number_int_list_append: // primitive.type.number.int.list.append
-        yylhs.value.emplace< std::vector<IntType> > ();
-        break;
-
-      case symbol_kind::S_228_primitive_type_number_int_list_as_tree: // primitive.type.number.int.list.as.tree
-      case symbol_kind::S_230_primitive_type_number_int_list_start_as_tree: // primitive.type.number.int.list.start.as.tree
-      case symbol_kind::S_231_primitive_type_number_int_list_append_as_tree: // primitive.type.number.int.list.append.as.tree
-      case symbol_kind::S_236_primitive_type_number_float_list_as_tree: // primitive.type.number.float.list.as.tree
-      case symbol_kind::S_238_primitive_type_number_float_list_start_as_tree: // primitive.type.number.float.list.start.as.tree
-      case symbol_kind::S_239_primitive_type_number_float_list_append_as_tree: // primitive.type.number.float.list.append.as.tree
+      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         yylhs.value.emplace< std::vector<Tree> > ();
         break;
 
@@ -2683,8 +2588,8 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 84: // expression.infix.prefix: expression.infix LPAR expression.composition.parallel RPAR
-                                                                       {
+  case 84: // expression.infix.prefix: expression.infix LPAR statement.definition.function.args RPAR
+                                                                         {
         yylhs.value.as < Tree > () = ::buildBoxAppl(yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
         yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
@@ -3521,132 +3426,64 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 213: // primitive.type.number.int.list: primitive.type.number.int.list.start
-        { yylhs.value.as < std::vector<IntType> > () = yystack_[0].value.as < std::vector<IntType> > (); }
-    break;
-
-  case 214: // primitive.type.number.int.list: primitive.type.number.int.list.append
-        { yylhs.value.as < std::vector<IntType> > () = yystack_[0].value.as < std::vector<IntType> > (); }
-    break;
-
-  case 215: // primitive.type.number.int.list.member: primitive.type.number.int
-          { yylhs.value.as < IntType > () = yystack_[0].value.as < IntType > (); }
-    break;
-
-  case 216: // primitive.type.number.int.list.member: expression.math.scalar.int
-          { yylhs.value.as < IntType > () = yystack_[0].value.as < IntType > (); }
-    break;
-
-  case 217: // primitive.type.number.int.list.start: primitive.type.number.int.list.member
-                                              {
-          yylhs.value.as < std::vector<IntType> > ().push_back( yystack_[0].value.as < IntType > () );
-        }
-    break;
-
-  case 218: // primitive.type.number.int.list.append: primitive.type.number.int.list COMMA primitive.type.number.int.list.member
-                                                                                   {
-          yylhs.value.as < std::vector<IntType> > ().push_back( yystack_[0].value.as < IntType > () );
-        }
-    break;
-
-  case 219: // primitive.type.number.int.list.as.tree: primitive.type.number.int.list.start.as.tree
-        { yylhs.value.as < std::vector<Tree> > () = yystack_[0].value.as < std::vector<Tree> > (); }
-    break;
-
-  case 220: // primitive.type.number.int.list.as.tree: primitive.type.number.int.list.append.as.tree
-        { yylhs.value.as < std::vector<Tree> > () = yystack_[0].value.as < std::vector<Tree> > (); }
-    break;
-
-  case 221: // primitive.type.number.int.list.member.as.tree: primitive.type.number.int.as.tree
+  case 213: // primitive.type.number.int.list.member.as.tree: primitive.type.number.int.as.tree
           { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 222: // primitive.type.number.int.list.member.as.tree: expression.math.scalar.int.as.tree
+  case 214: // primitive.type.number.int.list.member.as.tree: expression.math.scalar.int.as.tree
           { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 223: // primitive.type.number.int.list.start.as.tree: primitive.type.number.int.list.member.as.tree
-                                                      {
+  case 215: // primitive.type.number.list.as.tree: primitive.type.number.list.start.as.tree
+        { yylhs.value.as < std::vector<Tree> > () = yystack_[0].value.as < std::vector<Tree> > (); }
+    break;
+
+  case 216: // primitive.type.number.list.as.tree: primitive.type.number.list.append.as.tree
+        { yylhs.value.as < std::vector<Tree> > () = yystack_[0].value.as < std::vector<Tree> > (); }
+    break;
+
+  case 217: // primitive.type.number.list.member.as.tree: primitive.type.number.int.list.member.as.tree
+          { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
+    break;
+
+  case 218: // primitive.type.number.list.member.as.tree: primitive.type.number.float.list.member.as.tree
+          { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
+    break;
+
+  case 219: // primitive.type.number.list.start.as.tree: primitive.type.number.list.member.as.tree
+                                                  {
           yylhs.value.as < std::vector<Tree> > ().push_back( yystack_[0].value.as < Tree > () );
         }
     break;
 
-  case 224: // primitive.type.number.int.list.append.as.tree: primitive.type.number.int.list COMMA primitive.type.number.int.list.member.as.tree
+  case 220: // primitive.type.number.list.append.as.tree: primitive.type.number.list.as.tree COMMA primitive.type.number.list.member.as.tree
                                                                                            {
           yylhs.value.as < std::vector<Tree> > ().push_back( yystack_[0].value.as < Tree > () );
         }
     break;
 
-  case 225: // primitive.type.number.float.list: primitive.type.number.float.list.start
-        { yylhs.value.as < std::vector<FloatType> > () = yystack_[0].value.as < std::vector<FloatType> > (); }
-    break;
-
-  case 226: // primitive.type.number.float.list: primitive.type.number.float.list.append
-        { yylhs.value.as < std::vector<FloatType> > () = yystack_[0].value.as < std::vector<FloatType> > (); }
-    break;
-
-  case 227: // primitive.type.number.float.list.member: primitive.type.number.float
-          { yylhs.value.as < FloatType > () = yystack_[0].value.as < FloatType > (); }
-    break;
-
-  case 228: // primitive.type.number.float.list.member: expression.math.scalar.float
-          { yylhs.value.as < FloatType > () = yystack_[0].value.as < FloatType > (); }
-    break;
-
-  case 229: // primitive.type.number.float.list.start: primitive.type.number.float.list.member
-                                                {
-          yylhs.value.as < std::vector<FloatType> > ().push_back( yystack_[0].value.as < FloatType > () );
-        }
-    break;
-
-  case 230: // primitive.type.number.float.list.append: primitive.type.number.float.list COMMA primitive.type.number.float.list.member
-                                                                                       {
-          yylhs.value.as < std::vector<FloatType> > ().push_back( yystack_[0].value.as < FloatType > () );
-        }
-    break;
-
-  case 231: // primitive.type.number.float.list.as.tree: primitive.type.number.float.list.start.as.tree
-        { yylhs.value.as < std::vector<Tree> > () = yystack_[0].value.as < std::vector<Tree> > (); }
-    break;
-
-  case 232: // primitive.type.number.float.list.as.tree: primitive.type.number.float.list.append.as.tree
-        { yylhs.value.as < std::vector<Tree> > () = yystack_[0].value.as < std::vector<Tree> > (); }
-    break;
-
-  case 233: // primitive.type.number.float.list.member.as.tree: primitive.type.number.float.as.tree
+  case 221: // primitive.type.number.float.list.member.as.tree: primitive.type.number.float.as.tree
           { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 234: // primitive.type.number.float.list.member.as.tree: expression.math.scalar.float.as.tree
+  case 222: // primitive.type.number.float.list.member.as.tree: expression.math.scalar.float.as.tree
           { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 235: // primitive.type.number.float.list.start.as.tree: primitive.type.number.float.list.member.as.tree
-                                                        {
-          yylhs.value.as < std::vector<Tree> > ().push_back( yystack_[0].value.as < Tree > () );
-        }
-    break;
-
-  case 236: // primitive.type.number.float.list.append.as.tree: primitive.type.number.float.list COMMA primitive.type.number.float.list.member.as.tree
-                                                                                               {
-          yylhs.value.as < std::vector<Tree> > ().push_back( yystack_[0].value.as < Tree > () );
-        }
-    break;
-
-  case 237: // primitive.signal.route: primitive.signal.route.implied.outputs
+  case 223: // primitive.signal.route: primitive.signal.route.implied.outputs
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 238: // primitive.signal.route: primitive.signal.route.implied.connections
+  case 224: // primitive.signal.route: primitive.signal.route.implied.connections
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 239: // primitive.signal.route: primitive.signal.route.explicit
+  case 225: // primitive.signal.route: primitive.signal.route.explicit
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 240: // primitive.signal.route.implied.outputs: ROUTE LPAR expression.composition.serial RPAR
-                                                                     {
+  case 226: // primitive.signal.route.implied.outputs: ROUTE LPAR statement.definition.function.arg RPAR
+                                                                         {
             yylhs.value.as < Tree > () = ::boxRoute(
               yystack_[1].value.as < Tree > (),
               yystack_[1].value.as < Tree > (),
@@ -3656,8 +3493,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 241: // primitive.signal.route.implied.connections: ROUTE LPAR expression.composition.serial COMMA expression.composition.serial RPAR
-                                                                                                             {
+  case 227: // primitive.signal.route.implied.connections: ROUTE LPAR statement.definition.function.arg COMMA statement.definition.function.arg RPAR
+                                                                                                                     {
             yylhs.value.as < Tree > () = ::boxRoute(
               yystack_[3].value.as < Tree > (),
               yystack_[1].value.as < Tree > (),
@@ -3667,8 +3504,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 242: // primitive.signal.route.explicit: ROUTE LPAR expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.parallel RPAR
-                                                                                                                                                   {
+  case 228: // primitive.signal.route.explicit: ROUTE LPAR statement.definition.function.arg COMMA statement.definition.function.arg COMMA expression RPAR
+                                                                                                                                      {
             yylhs.value.as < Tree > () = boxRoute(
               yystack_[5].value.as < Tree > (),
               yystack_[3].value.as < Tree > (),
@@ -3678,77 +3515,62 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 243: // primitive.signal.source: primitive.signal.source.waveform.as.tree
+  case 229: // primitive.signal.source: primitive.signal.source.waveform.as.tree
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 244: // primitive.signal.source: primitive.signal.source.soundfile
+  case 230: // primitive.signal.source: primitive.signal.source.soundfile
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 245: // primitive.signal.source: primitive.signal.source.table
+  case 231: // primitive.signal.source: primitive.signal.source.table
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 246: // primitive.signal.source.table: RDTBL
+  case 232: // primitive.signal.source.table: RDTBL
                 {
             yylhs.value.as < Tree > () = ::boxPrim3(sigReadOnlyTable);
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 247: // primitive.signal.source.table: RWTBL
+  case 233: // primitive.signal.source.table: RWTBL
                 {
             yylhs.value.as < Tree > () = ::boxPrim5(sigWriteReadTable);
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 248: // primitive.signal.source.soundfile: SOUNDFILE LPAR primitive.string.unquoted.as.tree COMMA expression.composition RPAR
+  case 234: // primitive.signal.source.soundfile: SOUNDFILE LPAR primitive.string.unquoted.as.tree COMMA expression.composition RPAR
                                                                                              {
             yylhs.value.as < Tree > () = ::boxSoundfile( yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > () );
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 249: // primitive.signal.source.waveform.as.tree: primitive.signal.source.waveform.int.as.tree
-        { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
-    break;
-
-  case 250: // primitive.signal.source.waveform.as.tree: primitive.signal.source.waveform.float.as.tree
-        { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
-    break;
-
-  case 251: // primitive.signal.source.waveform.int.as.tree: WAVEFORM LBRAQ primitive.type.number.int.list.as.tree RBRAQ
-                                                                    {
+  case 235: // primitive.signal.source.waveform.as.tree: WAVEFORM LBRAQ primitive.type.number.list.as.tree RBRAQ
+                                                                {
           yylhs.value.as < Tree > () = ::boxWaveform( yystack_[1].value.as < std::vector<Tree> > () );
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 252: // primitive.signal.source.waveform.float.as.tree: WAVEFORM LBRAQ primitive.type.number.float.list.as.tree RBRAQ
-                                                                      {
-          yylhs.value.as < Tree > () = ::boxWaveform( yystack_[1].value.as < std::vector<Tree> > () );
-          yylhs.value.as < Tree > ()->location() = yylhs.location;
-        }
-    break;
-
-  case 253: // primitive.type.list: primitive.type.list.start
+  case 236: // primitive.type.list: primitive.type.list.start
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 254: // primitive.type.list: primitive.type.list.append
+  case 237: // primitive.type.list: primitive.type.list.append
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 255: // primitive.type.list.start: primitive.type
+  case 238: // primitive.type.list.start: primitive.type
                          {
             yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),::Faust::Primitive::Symbols::asTree().nil);
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 256: // primitive.type.list.append: primitive.type.list COMMA primitive.type
+  case 239: // primitive.type.list.append: primitive.type.list COMMA primitive.type
                                                    {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[0].value.as < Tree > (),
@@ -3758,117 +3580,117 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 257: // primitive.ui: primitive.ui.button
+  case 240: // primitive.ui: primitive.ui.button
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 258: // primitive.ui: primitive.ui.checkbox
+  case 241: // primitive.ui: primitive.ui.checkbox
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 259: // primitive.ui: primitive.ui.vslider
+  case 242: // primitive.ui: primitive.ui.vslider
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 260: // primitive.ui: primitive.ui.hslider
+  case 243: // primitive.ui: primitive.ui.hslider
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 261: // primitive.ui: primitive.ui.nentry
+  case 244: // primitive.ui: primitive.ui.nentry
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 262: // primitive.ui: primitive.ui.vgroup
+  case 245: // primitive.ui: primitive.ui.vgroup
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 263: // primitive.ui: primitive.ui.hgroup
+  case 246: // primitive.ui: primitive.ui.hgroup
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 264: // primitive.ui: primitive.ui.tgroup
+  case 247: // primitive.ui: primitive.ui.tgroup
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 265: // primitive.ui: primitive.ui.vbargraph
+  case 248: // primitive.ui: primitive.ui.vbargraph
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 266: // primitive.ui: primitive.ui.hbargraph
+  case 249: // primitive.ui: primitive.ui.hbargraph
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 267: // primitive.ui.button: BUTTON LPAR primitive.string.unquoted.as.tree RPAR
+  case 250: // primitive.ui.button: BUTTON LPAR primitive.string.unquoted.as.tree RPAR
                                                            {
           yylhs.value.as < Tree > () = ::boxButton(yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 268: // primitive.ui.checkbox: CHECKBOX LPAR primitive.string.unquoted.as.tree RPAR
+  case 251: // primitive.ui.checkbox: CHECKBOX LPAR primitive.string.unquoted.as.tree RPAR
                                                              {
           yylhs.value.as < Tree > () = ::boxCheckbox(yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 269: // primitive.ui.vslider: VSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
+  case 252: // primitive.ui.vslider: VSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                                                                                                     {
           yylhs.value.as < Tree > () = ::boxVSlider(yystack_[9].value.as < Tree > (),yystack_[7].value.as < Tree > (),yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 270: // primitive.ui.hslider: HSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
+  case 253: // primitive.ui.hslider: HSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                                                                                                     {
           yylhs.value.as < Tree > () = ::boxHSlider(yystack_[9].value.as < Tree > (),yystack_[7].value.as < Tree > (),yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 271: // primitive.ui.nentry: NENTRY LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
+  case 254: // primitive.ui.nentry: NENTRY LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                                                                                                    {
           yylhs.value.as < Tree > () = ::boxNumEntry(yystack_[9].value.as < Tree > (),yystack_[7].value.as < Tree > (),yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 272: // primitive.ui.vgroup: VGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
+  case 255: // primitive.ui.vgroup: VGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
                                                                             {
           yylhs.value.as < Tree > () = ::boxVGroup(yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 273: // primitive.ui.hgroup: HGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
+  case 256: // primitive.ui.hgroup: HGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
                                                                             {
           yylhs.value.as < Tree > () = ::boxHGroup(yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 274: // primitive.ui.tgroup: TGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
+  case 257: // primitive.ui.tgroup: TGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR
                                                                             {
           yylhs.value.as < Tree > () = ::boxTGroup(yystack_[3].value.as < Tree > (), yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 275: // primitive.ui.vbargraph: VBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial RPAR
+  case 258: // primitive.ui.vbargraph: VBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                   {
           yylhs.value.as < Tree > () = ::boxVBargraph(yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 276: // primitive.ui.hbargraph: HBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial RPAR
+  case 259: // primitive.ui.hbargraph: HBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial COMMA expression.composition.serial RPAR
                                                                                                                                                   {
           yylhs.value.as < Tree > () = ::boxHBargraph(yystack_[5].value.as < Tree > (),yystack_[3].value.as < Tree > (),yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 277: // primitive.foreign.function: FFUNCTION LPAR primitive.foreign.function.signature COMMA primitive.string.tag.as.tree COMMA primitive.string.unquoted.as.tree RPAR
+  case 260: // primitive.foreign.function: FFUNCTION LPAR primitive.foreign.function.signature COMMA primitive.string.tag.as.tree COMMA primitive.string.unquoted.as.tree RPAR
                                                                                                                                             {
           yylhs.value.as < Tree > () = ::boxFFun(
             ::ffunction(
@@ -3881,8 +3703,8 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 278: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
-                                                                                                                         {
+  case 261: // primitive.foreign.function.signature: primitive.type.cast.number statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
+                                                                                                                      {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[4].value.as < Tree > (),
               ::cons(
@@ -3898,8 +3720,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 279: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
-                                                                                                                                                                                 {
+  case 262: // primitive.foreign.function.signature: primitive.type.cast.number statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
+                                                                                                                                                                              {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[6].value.as < Tree > (),
               ::cons(
@@ -3917,8 +3739,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 280: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
-                                                                                                                                                                                                                                        {
+  case 263: // primitive.foreign.function.signature: primitive.type.cast.number statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR primitive.type.list RPAR
+                                                                                                                                                                                                                                     {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[8].value.as < Tree > (),
               ::cons(
@@ -3936,8 +3758,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 281: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree LPAR RPAR
-                                                                                                     {
+  case 264: // primitive.foreign.function.signature: primitive.type.cast.number statement.foreign.function.identifier.as.tree LPAR RPAR
+                                                                                                  {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[3].value.as < Tree > (),
               ::cons(
@@ -3955,8 +3777,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 282: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR RPAR
-                                                                                                                                                             {
+  case 265: // primitive.foreign.function.signature: primitive.type.cast.number statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR RPAR
+                                                                                                                                                          {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[5].value.as < Tree > (),
               ::cons(
@@ -3974,8 +3796,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 283: // primitive.foreign.function.signature: primitive.type.number.as.tree statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR RPAR
-                                                                                                                                                                                                                    {
+  case 266: // primitive.foreign.function.signature: primitive.type.cast.number statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree OR statement.foreign.function.identifier.as.tree LPAR RPAR
+                                                                                                                                                                                                                 {
             yylhs.value.as < Tree > () = ::cons(
               yystack_[7].value.as < Tree > (),
               ::cons(
@@ -3993,8 +3815,8 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 284: // primitive.foreign.constant: FCONSTANT LPAR primitive.type.number.as.tree statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR
-                                                                                                                          {
+  case 267: // primitive.foreign.constant: FCONSTANT LPAR primitive.type.cast.number statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR
+                                                                                                                       {
           yylhs.value.as < Tree > () = ::boxFConst(
             yystack_[4].value.as < Tree > (),
             yystack_[3].value.as < Tree > (),
@@ -4004,8 +3826,8 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 285: // primitive.foreign.variable: FVARIABLE LPAR primitive.type.number.as.tree statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR
-                                                                                                                          {
+  case 268: // primitive.foreign.variable: FVARIABLE LPAR primitive.type.cast.number statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR
+                                                                                                                       {
           yylhs.value.as < Tree > () = ::boxFVar(
             yystack_[4].value.as < Tree > (),
             yystack_[3].value.as < Tree > (),
@@ -4015,65 +3837,61 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 286: // primitive.signal.inputs: INPUTS LPAR expression RPAR
+  case 269: // primitive.signal.inputs: INPUTS LPAR expression RPAR
                                     {
           yylhs.value.as < Tree > () = ::boxInputs(yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 287: // primitive.signal.outputs: OUTPUTS LPAR expression RPAR
+  case 270: // primitive.signal.outputs: OUTPUTS LPAR expression RPAR
                                      {
           yylhs.value.as < Tree > () = ::boxOutputs(yystack_[1].value.as < Tree > ());
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 288: // statement: statement.definition
+  case 271: // statement: statement.definition
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 289: // statement: statement.declare.metadata
+  case 272: // statement: statement.declare.metadata
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 290: // statement: statement.declare.feature.metadata
+  case 273: // statement: statement.declare.feature.metadata
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 291: // statement: statement.declare.doc
+  case 274: // statement: statement.declare.doc
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 292: // statement: statement.import
+  case 275: // statement: statement.import
     { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 293: // statement.definition: statement.definition.function
+  case 276: // statement.definition: statement.definition.function
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 294: // statement.definition: statement.definition.assignment
+  case 277: // statement.definition: statement.definition.assignment
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 295: // statement.definition: statement.definition.error
+  case 278: // statement.definition.function.arg: expression.composition.serial
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 296: // statement.definition.function.arg: expression.composition.serial
+  case 279: // statement.definition.function.args: statement.definition.function.args.start
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 297: // statement.definition.function.args: statement.definition.function.args.start
+  case 280: // statement.definition.function.args: statement.definition.function.args.append
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 298: // statement.definition.function.args: statement.definition.function.args.append
-      { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
-    break;
-
-  case 299: // statement.definition.function.args.start: statement.definition.function.arg
+  case 281: // statement.definition.function.args.start: statement.definition.function.arg
                                         {
         yylhs.value.as < Tree > () = ::cons(
           yystack_[0].value.as < Tree > (),
@@ -4083,7 +3901,7 @@ namespace Faust { namespace Compiler { namespace Parser {
      }
     break;
 
-  case 300: // statement.definition.function.args.append: statement.definition.function.args COMMA statement.definition.function.arg
+  case 282: // statement.definition.function.args.append: statement.definition.function.args COMMA statement.definition.function.arg
                                                                                  {
         yylhs.value.as < Tree > () = ::cons(
           yystack_[0].value.as < Tree > (),
@@ -4093,7 +3911,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 301: // statement.definition.function.declaration: statement.box.identifier.as.tree LPAR statement.definition.function.args RPAR DEF expression
+  case 283: // statement.definition.function.declaration: statement.box.identifier.as.tree LPAR statement.definition.function.args RPAR DEF expression
                                                                                                    {
         yylhs.value.as < Tree > () = cons(
           yystack_[5].value.as < Tree > (),
@@ -4103,28 +3921,28 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 302: // statement.definition.function: statement.definition.function.declaration ENDDEF
+  case 284: // statement.definition.function: statement.definition.function.declaration ENDDEF
                                                          {
           yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 303: // statement.definition.function: statement.definition.function.declaration ENDOFINPUT
+  case 285: // statement.definition.function: statement.definition.function.declaration ENDOFINPUT
                                                              {
           yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 304: // statement.definition.function: statement.definition.function.declaration ENDL
+  case 286: // statement.definition.function: statement.definition.function.declaration ENDL
                                                        {
           yylhs.value.as < Tree > () = yystack_[1].value.as < Tree > ();
           yylhs.value.as < Tree > ()->location() = yylhs.location;
         }
     break;
 
-  case 305: // statement.definition.function: ENDDEF error
+  case 287: // statement.definition.function: ENDDEF error
                      {
         yyerrok;
         yyclearin;
@@ -4133,7 +3951,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 306: // statement.definition.assignment: statement.box.identifier.as.tree DEF expression ENDDEF
+  case 288: // statement.definition.assignment: statement.box.identifier.as.tree DEF expression ENDDEF
                                                                {
           yylhs.value.as < Tree > () = cons(
             yystack_[3].value.as < Tree > (),
@@ -4143,7 +3961,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 307: // statement.definition.with: expression WITH LBRAQ statement.definition.list RBRAQ
+  case 289: // statement.definition.with: expression WITH LBRAQ statement.definition.list RBRAQ
                                                             {
         yylhs.value.as < Tree > () = ::boxWithLocalDef(
           yystack_[4].value.as < Tree > (),
@@ -4153,41 +3971,33 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 308: // statement.definition.error: error ENDDEF
-                     {
-          yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
-          self._lexer->LexerError("Error in definition.");
-          yylhs.value.as < Tree > ()->location() = yylhs.location;
-        }
-    break;
-
-  case 309: // statement.definition.list: statement.definition.list.start
+  case 290: // statement.definition.list: statement.definition.list.start
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 310: // statement.definition.list: statement.definition.list.start.qualified
+  case 291: // statement.definition.list: statement.definition.list.start.qualified
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 311: // statement.definition.list: statement.definition.list.append
+  case 292: // statement.definition.list: statement.definition.list.append
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 312: // statement.definition.list: statement.definition.list.append.qualified
+  case 293: // statement.definition.list: statement.definition.list.append.qualified
         { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 313: // statement.definition.list.start: statement.definition
+  case 294: // statement.definition.list.start: statement.definition
                                {
             yylhs.value.as < Tree > () = ::cons(
-              yylhs.value.as < Tree > (),
+              yystack_[0].value.as < Tree > (),
               ::Faust::Primitive::Symbols::asTree().nil
             );
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 314: // statement.definition.list.start.qualified: statement.math.precision.list statement.definition
+  case 295: // statement.definition.list.start.qualified: statement.math.precision.list statement.definition
                                                              {
             if (self.acceptdefinition(yystack_[1].value.as < IntType > ()))
               yylhs.value.as < Tree > () = ::cons( yystack_[0].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil );
@@ -4197,24 +4007,24 @@ namespace Faust { namespace Compiler { namespace Parser {
           }
     break;
 
-  case 315: // statement.definition.list.append: statement.definition.list statement.definition
+  case 296: // statement.definition.list.append: statement.definition.list statement.definition
                                                          {
-            yylhs.value.as < Tree > () = cons (yystack_[0].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+            yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),yystack_[1].value.as < Tree > ());
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 316: // statement.definition.list.append.qualified: statement.definition.list statement.math.precision.list statement.definition
+  case 297: // statement.definition.list.append.qualified: statement.definition.list statement.math.precision.list statement.definition
                                                                                        {
             if (self.acceptdefinition(yystack_[1].value.as < IntType > ()))
-              yylhs.value.as < Tree > () = cons (yystack_[0].value.as < Tree > (),yystack_[2].value.as < Tree > ());
+              yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),yystack_[2].value.as < Tree > ());
             else
               yylhs.value.as < Tree > () = yystack_[2].value.as < Tree > ();
             yylhs.value.as < Tree > ()->location() = yylhs.location;
           }
     break;
 
-  case 317: // statement.declare.metadata: DECLARE statement.identifier.as.tree primitive.string.quoted.as.tree ENDDEF
+  case 298: // statement.declare.metadata: DECLARE statement.identifier.as.tree primitive.string.quoted.as.tree ENDDEF
                                                                                               {
         self.declareMetadata(yystack_[2].value.as < Tree > (),yystack_[1].value.as < Tree > ());
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
@@ -4222,7 +4032,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 318: // statement.declare.feature.metadata: DECLARE statement.identifier.as.tree statement.identifier.as.tree primitive.string.quoted.as.tree ENDDEF
+  case 299: // statement.declare.feature.metadata: DECLARE statement.identifier.as.tree statement.identifier.as.tree primitive.string.quoted.as.tree ENDDEF
                                                                                                                                     {
         self.declareDefinitionMetadata( yystack_[3].value.as < Tree > (), yystack_[2].value.as < Tree > (), yystack_[1].value.as < Tree > () );
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
@@ -4230,7 +4040,7 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 319: // statement.declare.doc: BDOC doc EDOC
+  case 300: // statement.declare.doc: BDOC doc EDOC
                           {
         ::declareDoc(yystack_[1].value.as < Tree > ());
         yylhs.value.as < Tree > () = ::Faust::Primitive::Symbols::asTree().nil;
@@ -4238,51 +4048,51 @@ namespace Faust { namespace Compiler { namespace Parser {
       }
     break;
 
-  case 320: // statement.identifier.as.tree: IDENT
+  case 301: // statement.identifier.as.tree: IDENT
             {
         yylhs.value.as < Tree > () = ::tree(self._lexer->YYText());
         yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
-  case 321: // statement.box.identifier.as.tree: IDENT
+  case 302: // statement.box.identifier.as.tree: IDENT
             {
         yylhs.value.as < Tree > () = ::boxIdent(self._lexer->YYText());
         yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
-  case 322: // statement.foreign.function.identifier.as.tree: IDENT
+  case 303: // statement.foreign.function.identifier.as.tree: IDENT
             {
         yylhs.value.as < Tree > () = ::tree(self._lexer->YYText());
         yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
-  case 323: // statement.import: IMPORT LPAR primitive.string.unquoted.as.tree RPAR ENDDEF
+  case 304: // statement.import: IMPORT LPAR primitive.string.unquoted.as.tree RPAR ENDDEF
                                                                           {
         yylhs.value.as < Tree > () = ::importFile(yystack_[2].value.as < Tree > ());
         yylhs.value.as < Tree > ()->location() = yylhs.location;
       }
     break;
 
-  case 324: // statement.list: statement.list.start
+  case 305: // statement.list: statement.list.start
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 325: // statement.list: statement.list.start.qualified
+  case 306: // statement.list: statement.list.start.qualified
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 326: // statement.list: statement.list.append
+  case 307: // statement.list: statement.list.append
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 327: // statement.list: statement.list.append.qualified
+  case 308: // statement.list: statement.list.append.qualified
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 328: // statement.list.start: statement
+  case 309: // statement.list.start: statement
                   {
           if ( yystack_[0].value.as < Tree > () != ::Faust::Primitive::Symbols::asTree().nil ) {
             yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (), ::Faust::Primitive::Symbols::asTree().nil);
@@ -4294,7 +4104,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 329: // statement.list.start.qualified: statement.math.precision.list statement
+  case 310: // statement.list.start.qualified: statement.math.precision.list statement
                                                 {
           if ( yystack_[0].value.as < Tree > () != ::Faust::Primitive::Symbols::asTree().nil
             && self.acceptdefinition(yystack_[1].value.as < IntType > ()))
@@ -4305,7 +4115,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 330: // statement.list.append: statement.list statement
+  case 311: // statement.list.append: statement.list statement
                                  {
           if ( yystack_[0].value.as < Tree > () != ::Faust::Primitive::Symbols::asTree().nil ) {
             yylhs.value.as < Tree > () = ::cons(yystack_[0].value.as < Tree > (),yystack_[1].value.as < Tree > ());
@@ -4317,7 +4127,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 331: // statement.list.append.qualified: statement.list statement.math.precision.list statement
+  case 312: // statement.list.append.qualified: statement.list statement.math.precision.list statement
                                                                {
           if ( yystack_[0].value.as < Tree > () != ::Faust::Primitive::Symbols::asTree().nil
             && self.acceptdefinition(yystack_[1].value.as < IntType > ())) {
@@ -4330,61 +4140,63 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 332: // statement.math.precision: FLOATMODE
+  case 313: // statement.math.precision: FLOATMODE
                   {
           yylhs.value.as < IntType > () = 1;
         }
     break;
 
-  case 333: // statement.math.precision: DOUBLEMODE
+  case 314: // statement.math.precision: DOUBLEMODE
                    {
           yylhs.value.as < IntType > () = 2;
         }
     break;
 
-  case 334: // statement.math.precision: QUADMODE
+  case 315: // statement.math.precision: QUADMODE
                  {
           yylhs.value.as < IntType > () = 4;
         }
     break;
 
-  case 335: // statement.math.precision: FIXEDPOINTMODE
+  case 316: // statement.math.precision: FIXEDPOINTMODE
                        {
           yylhs.value.as < IntType > () = 8;
         }
     break;
 
-  case 336: // statement.math.precision.list: statement.math.precision.list.start
+  case 317: // statement.math.precision.list: statement.math.precision.list.start
           { yylhs.value.as < IntType > () = yystack_[0].value.as < IntType > (); }
     break;
 
-  case 337: // statement.math.precision.list: statement.math.precision.list.append
+  case 318: // statement.math.precision.list: statement.math.precision.list.append
           { yylhs.value.as < IntType > () = yystack_[0].value.as < IntType > (); }
     break;
 
-  case 338: // statement.math.precision.list.start: statement.math.precision
+  case 319: // statement.math.precision.list.start: statement.math.precision
             { yylhs.value.as < IntType > () = yystack_[0].value.as < IntType > (); }
     break;
 
-  case 339: // statement.math.precision.list.append: statement.math.precision.list statement.math.precision
+  case 320: // statement.math.precision.list.append: statement.math.precision.list statement.math.precision
                                                                    {
               yylhs.value.as < IntType > () = yystack_[1].value.as < IntType > () | yystack_[0].value.as < IntType > ();
             }
     break;
 
-  case 340: // statement.signal.pattern.rule: LPAR expression.composition.parallel RPAR ARROW expression ENDDEF
-                                                                        { yylhs.value.as < Tree > () = ::cons(yystack_[4].value.as < Tree > (),yystack_[1].value.as < Tree > ()); }
+  case 321: // statement.signal.pattern.rule: LPAR statement.definition.function.args RPAR ARROW expression ENDDEF
+                                                                           {
+        yylhs.value.as < Tree > () = ::cons(yystack_[4].value.as < Tree > (),yystack_[1].value.as < Tree > ());
+      }
     break;
 
-  case 341: // statement.signal.pattern.rule.list: statement.signal.pattern.rule.list.start
+  case 322: // statement.signal.pattern.rule.list: statement.signal.pattern.rule.list.start
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 342: // statement.signal.pattern.rule.list: statement.signal.pattern.rule.list.append
+  case 323: // statement.signal.pattern.rule.list: statement.signal.pattern.rule.list.append
       { yylhs.value.as < Tree > () = yystack_[0].value.as < Tree > (); }
     break;
 
-  case 343: // statement.signal.pattern.rule.list.start: statement.signal.pattern.rule
+  case 324: // statement.signal.pattern.rule.list.start: statement.signal.pattern.rule
                                       {
           yylhs.value.as < Tree > () = ::cons(
             yystack_[0].value.as < Tree > (),
@@ -4394,7 +4206,7 @@ namespace Faust { namespace Compiler { namespace Parser {
         }
     break;
 
-  case 344: // statement.signal.pattern.rule.list.append: statement.signal.pattern.rule.list statement.signal.pattern.rule
+  case 325: // statement.signal.pattern.rule.list.append: statement.signal.pattern.rule.list statement.signal.pattern.rule
                                                                          {
           yylhs.value.as < Tree > () = ::cons(
             yystack_[0].value.as < Tree > (),
@@ -4893,459 +4705,443 @@ namespace Faust { namespace Compiler { namespace Parser {
   }
 
 
-  const short BisonImplementation::yypact_ninf_ = -497;
+  const short BisonImplementation::yypact_ninf_ = -436;
 
-  const short BisonImplementation::yytable_ninf_ = -229;
+  const signed char BisonImplementation::yytable_ninf_ = -1;
 
   const short
   BisonImplementation::yypact_[] =
   {
-      50,   -21,    98,   -13,  -497,     3,  -497,  -497,  -497,  -497,
-     387,   113,  -497,  -497,    16,  -497,  -497,  -497,  -497,  -497,
-    -497,    -2,  -497,    65,  -497,  -497,  -497,  -497,  -497,    95,
-    -497,  -497,  -497,  -497,    12,  -497,   -68,   554,   554,   107,
-       3,  -497,  -497,    27,    -9,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,   554,   554,  -497,    95,  -497,  -497,
-    -497,  -497,    93,  -497,  -497,    61,    74,  -497,  -497,  -497,
-    -497,  -497,  -497,    58,     2,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,   102,
-     105,   126,   169,   192,   226,   231,   237,   256,   261,   269,
-     276,   294,   305,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-     331,  -497,  -497,   554,   336,   337,   114,   209,   365,  -497,
-    -497,   366,   367,   373,   415,   426,   430,   290,  -497,  -497,
-    -497,    51,  -497,  -497,  -497,   511,  -497,  -497,  -497,  -497,
-    -497,   657,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,    24,  -497,   284,
-     333,   386,   137,  -497,   270,  -497,  -497,   511,  -497,    22,
-    -497,  -497,    81,  -497,   141,  -497,   434,  -497,  -497,  -497,
-    -497,  -497,   151,   151,   151,    12,    12,    12,    12,    12,
-      12,    12,    12,    12,    12,    12,   417,    59,    12,    12,
-      95,   278,   554,   417,   417,   417,   417,   554,   554,   444,
-     450,   452,   554,  -497,   554,   554,   554,   554,   554,   554,
-     554,   554,   554,   554,   554,   554,   554,   554,   554,   554,
-     554,   554,   554,   554,   554,   554,  -497,   417,   554,   122,
-    -497,   398,   401,   405,  -497,  -497,  -497,   554,   454,  -497,
-    -497,  -497,   440,   535,     3,     3,   464,   465,   546,   547,
-     553,   574,   575,   580,   625,   626,   633,    48,  -497,  -497,
-    -497,  -497,   560,   561,    21,    58,   158,   649,  -497,   652,
-    -497,   653,   655,  -497,  -497,   728,  -497,  -497,  -497,   656,
-    -497,  -497,  -497,   729,  -497,  -497,  -497,   675,  -497,  -497,
-    -497,   282,   731,   733,   752,   753,    67,    79,   554,  -497,
-       9,  -497,  -497,   122,    33,   765,   511,   378,    85,  -497,
-     677,   696,   416,   769,   785,   800,   813,   438,   463,   835,
-     451,   849,   820,   862,   340,   424,   475,   277,  -497,   330,
-     576,  -497,    90,  -497,  -497,  -497,  -497,   122,   129,   129,
-     129,  -497,   554,  -497,    46,   241,   766,   767,  -497,  -497,
-     554,   554,   554,   554,   554,   554,   554,   554,   554,   417,
-     747,  -497,  -497,  -497,   142,  -497,    56,  -497,   554,  -497,
-     554,   554,   554,   554,  -497,  -497,   697,  -497,  -497,   150,
-     699,   417,  -497,    32,  -497,  -497,  -497,   692,  -497,  -497,
-    -497,   122,  -497,  -497,  -497,   715,   716,   717,   330,   440,
-     281,  -497,  -497,  -497,   857,   241,   241,   374,   544,   631,
-     117,   139,   211,   721,   726,   786,  -497,   788,   793,   805,
-    -497,  -497,   807,   808,  -497,  -497,   315,   738,   743,   748,
-     758,   771,  -497,  -497,  -497,  -497,   122,  -497,   554,  -497,
-    -497,  -497,  -497,   104,  -497,  -497,  -497,  -497,  -497,    70,
-    -497,  -497,    12,   802,   810,   554,   554,   554,  -497,  -497,
-    -497,   554,   554,  -497,   554,   554,  -497,   554,   554,   554,
-     554,   554,   195,    94,   440,   338,   327,  -497,   811,  -497,
-    -497,   763,   901,   906,   247,   292,   214,   814,   220,   243,
-     264,   274,   328,  -497,  -497,   816,  -497,    80,  -497,  -497,
-     554,   554,   554,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,   344,  -497,   916,   930,   961,  -497,   116,   554,
-     554,   554,  -497,   321,   334,   342,  -497,  -497,  -497
+     759,    32,   -28,  -436,   -44,  -436,  -436,  -436,  -436,   361,
+      87,  -436,  -436,     9,  -436,  -436,  -436,  -436,  -436,    68,
+    -436,   759,  -436,  -436,  -436,  -436,  -436,   759,  -436,  -436,
+    -436,     8,  -436,   101,   529,   529,    86,   -44,  -436,  -436,
+      37,     6,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,   529,   529,  -436,   759,  -436,  -436,  -436,  -436,    89,
+    -436,  -436,    80,    79,  -436,  -436,  -436,  -436,  -436,  -436,
+      -8,   121,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,   113,   127,   136,   154,
+     176,   181,   193,   208,   210,   225,   232,   234,   247,   260,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,   261,  -436,  -436,
+     529,   262,   265,   177,   264,   267,  -436,  -436,   297,   299,
+     305,   306,   308,   309,   314,  -436,  -436,  -436,    44,  -436,
+    -436,  -436,   418,  -436,  -436,  -436,  -436,  -436,   341,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,    22,  -436,   257,   270,   271,   184,  -436,   272,
+    -436,  -436,   418,  -436,    12,  -436,  -436,   137,  -436,   133,
+    -436,   349,  -436,  -436,  -436,  -436,  -436,   168,   168,   168,
+       8,     8,     8,     8,     8,     8,     8,     8,     8,     8,
+       8,   315,    54,     8,     8,   759,   198,   529,   315,   315,
+     315,   315,   529,   529,   365,   372,   373,   529,  -436,   529,
+     529,   529,   529,   529,   529,   529,   529,   529,   529,   529,
+     529,   529,   529,   529,   529,   529,   529,   529,   529,   529,
+     529,  -436,   315,   529,   765,  -436,   321,   322,   345,  -436,
+    -436,  -436,   529,   389,  -436,  -436,  -436,   378,   477,   -44,
+     -44,   408,   410,   485,   487,   488,   492,   496,   507,   508,
+     513,   515,    15,  -436,  -436,  -436,  -436,   442,   443,   626,
+      -8,   235,  -436,  -436,  -436,  -436,  -436,    51,  -436,  -436,
+    -436,  -436,    95,   519,   524,   525,   549,    60,    66,   529,
+    -436,    21,  -436,  -436,   765,    28,   550,   418,   227,   215,
+    -436,   632,   651,   669,   742,   758,   773,   786,   390,   441,
+     808,   416,   226,   259,   406,   213,   238,   298,   124,  -436,
+     108,  -436,   633,  -436,  -436,  -436,  -436,   765,   201,   201,
+     201,  -436,   529,  -436,    42,   166,   555,   600,  -436,  -436,
+     529,   529,   529,   529,   529,   529,   529,   529,   529,   315,
+     580,  -436,  -436,  -436,   198,  -436,   529,  -436,   529,   529,
+     529,   529,  -436,  -436,   109,  -436,  -436,   415,   537,   315,
+    -436,    23,  -436,  -436,  -436,   530,  -436,  -436,  -436,   765,
+    -436,  -436,  -436,   481,   497,   499,   195,   378,   263,  -436,
+    -436,  -436,   624,   166,   166,   222,   296,   445,    69,    72,
+      75,   505,   606,   195,   554,  -436,   557,  -436,   110,   694,
+     715,   720,   854,   595,  -436,  -436,  -436,  -436,   765,  -436,
+     529,  -436,  -436,  -436,  -436,    77,  -436,  -436,  -436,  -436,
+    -436,   129,  -436,  -436,     8,   625,   627,   529,   529,   529,
+    -436,  -436,  -436,   529,   529,  -436,   529,   529,  -436,   529,
+     529,   529,   529,   529,   737,   158,   378,   303,   288,  -436,
+     629,  -436,  -436,   877,   907,   912,   115,   120,    78,    81,
+      88,    96,   105,   111,   164,  -436,  -436,   635,  -436,   131,
+    -436,  -436,   529,   529,   529,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,   339,  -436,   917,   922,   927,  -436,
+     139,   529,   529,   529,  -436,   125,   174,   179,  -436,  -436,
+    -436
   };
 
   const short
   BisonImplementation::yydefact_[] =
   {
-       0,     0,     0,     0,   321,     0,   332,   333,   334,   335,
-      10,     0,   328,   288,     0,   293,   294,   295,   289,   290,
-     291,     0,   292,     0,   324,   325,   326,   327,   338,     0,
-     336,   337,   308,   305,     0,   320,     0,     0,     0,     0,
-       0,    11,    15,     0,     4,     5,     6,     7,     9,     8,
-       1,   303,   302,   304,     0,     0,   330,     0,   329,   339,
-     193,   194,     0,   191,   192,     0,     0,   112,   113,   116,
-     114,   115,   117,   130,   131,   172,   132,   133,   134,   171,
-     173,   138,   139,   143,   170,   168,   169,   210,   211,     0,
+       3,     0,     0,   302,     0,   313,   314,   315,   316,    10,
+       0,   309,   271,     0,   276,   277,   272,   273,   274,     0,
+     275,     2,   305,   306,   307,   308,   319,     0,   317,   318,
+     287,     0,   301,     0,     0,     0,     0,     0,    11,    15,
+       0,     4,     5,     6,     7,     9,     8,     1,   285,   284,
+     286,     0,     0,   311,     0,   310,   320,   193,   194,     0,
+     191,   192,     0,     0,   112,   113,   116,   114,   115,   117,
+     130,   131,   172,   132,   133,   134,   171,   173,   138,   139,
+     143,   170,   168,   169,   210,   211,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,   165,   154,   155,   156,   157,   158,   159,
-     160,   140,   141,   142,   144,   145,   118,   119,   120,   135,
-     136,   121,   122,   126,   246,   247,   174,   175,   187,   188,
-       0,   204,   205,     0,     0,     0,     0,     0,     0,   166,
-     167,     0,     0,     0,     0,     0,     0,     0,   123,   124,
-     125,     0,    48,    28,    31,    30,    35,    36,    33,    34,
-      49,    37,    43,    44,    45,    63,    64,    65,    66,    47,
-      46,    50,    51,    52,    53,    54,    27,    55,    56,   109,
-     111,   107,   127,   128,   129,   108,   150,   146,   153,   147,
-     110,    57,    58,   162,   163,   164,    60,   177,   178,   189,
-     190,   185,   186,   180,   199,   200,   179,   208,   209,   202,
-     237,   238,   239,   203,   245,   244,   243,   249,   250,   181,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   266,
-     183,   182,   184,   198,   201,    26,    59,     0,    18,     0,
-       0,     0,     0,    19,     0,   319,    12,   296,   299,     0,
-     297,   298,     0,   331,     0,   317,     0,   148,   151,   149,
-     152,   137,     0,     0,     0,     0,     0,     0,     0,     0,
+     165,   154,   155,   156,   157,   158,   159,   160,   140,   141,
+     142,   144,   145,   118,   119,   120,   135,   136,   121,   122,
+     126,   232,   233,   174,   175,   187,   188,     0,   204,   205,
+       0,     0,     0,     0,     0,     0,   166,   167,     0,     0,
+       0,     0,     0,     0,     0,   123,   124,   125,     0,    48,
+      28,    31,    30,    35,    36,    33,    34,    49,    37,    43,
+      44,    45,    63,    64,    65,    66,    47,    46,    50,    51,
+      52,    53,    54,    27,    55,    56,   109,   111,   107,   127,
+     128,   129,   108,   150,   146,   153,   147,   110,    57,    58,
+     162,   163,   164,    60,   177,   178,   189,   190,   185,   186,
+     180,   199,   200,   179,   208,   209,   202,   223,   224,   225,
+     203,   231,   230,   229,   181,   240,   241,   242,   243,   244,
+     245,   246,   247,   248,   249,   183,   182,   184,   198,   201,
+      26,    59,     0,    18,     0,     0,     0,     0,    19,     0,
+     300,    12,   278,   281,     0,   279,   280,     0,   312,     0,
+     298,     0,   148,   151,   149,   152,   137,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    13,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,    13,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    86,     0,     0,     0,
-      14,     0,     0,     0,    17,    20,    16,     0,     0,   306,
-     323,   318,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    92,    93,
-      94,   161,     0,     0,     0,     0,     0,   150,   222,   153,
-     234,   189,   190,   221,   233,     0,   217,   213,   214,     0,
-     223,   219,   220,     0,   229,   225,   226,     0,   235,   231,
-     232,     0,     0,     0,     0,     0,     0,     0,     0,   343,
-       0,   341,   342,     0,     0,    32,    41,    38,    40,    39,
-      73,    74,    77,    75,    76,    78,    67,    68,    80,    69,
-      70,    71,    79,    81,    82,    83,    72,    85,    62,     0,
-      31,   313,     0,   309,   310,   311,   312,     0,     0,     0,
-       0,   300,     0,   322,     0,     0,     0,     0,   267,   268,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    29,   106,    42,     0,   251,     0,   252,     0,   240,
-       0,     0,     0,     0,   286,   287,    31,   176,   344,     0,
-       0,     0,    96,     0,    99,   100,   101,     0,    84,    61,
-     315,     0,   314,    24,    25,     0,     0,     0,   301,     0,
-       0,   195,   196,   197,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    28,    95,     0,     0,     0,
-     218,   224,     0,     0,   230,   236,     0,     0,     0,     0,
-       0,     0,   307,   104,   105,    97,     0,   102,     0,   316,
-      21,    22,    23,     0,   212,   281,   255,   206,   207,     0,
-     253,   254,     0,     0,     0,     0,     0,     0,   272,   273,
-     274,     0,     0,   248,     0,     0,   241,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   278,     0,   284,
-     285,     0,     0,     0,     0,     0,     0,    31,     0,     0,
-       0,     0,     0,    98,   103,     0,   282,     0,   256,   277,
-       0,     0,     0,   276,   275,    91,   242,    87,    88,    89,
-      90,   340,     0,   279,     0,     0,     0,   283,     0,     0,
-       0,     0,   280,     0,     0,     0,   269,   270,   271
+       0,    86,     0,     0,     0,    14,     0,     0,     0,    17,
+      20,    16,     0,     0,   288,   304,   299,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    92,    93,    94,   161,     0,     0,     0,
+       0,     0,   214,   222,   213,   221,   217,     0,   219,   215,
+     216,   218,     0,     0,     0,     0,     0,     0,     0,     0,
+     324,     0,   322,   323,     0,     0,    32,    41,    38,    40,
+      39,    73,    74,    77,    75,    76,    78,    67,    68,    80,
+      69,    70,    71,    79,    81,    82,    83,    72,    85,    62,
+       0,   294,     0,   290,   291,   292,   293,     0,     0,     0,
+       0,   282,     0,   303,     0,     0,     0,     0,   250,   251,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,    29,   106,    42,     0,   235,     0,   226,     0,     0,
+       0,     0,   269,   270,     0,   176,   325,     0,     0,     0,
+      96,     0,    99,   100,   101,     0,    84,    61,   296,     0,
+     295,    24,    25,     0,     0,     0,   283,     0,     0,   195,
+     196,   197,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,    28,    95,     0,   220,     0,     0,
+       0,     0,     0,     0,   289,   104,   105,    97,     0,   102,
+       0,   297,    21,    22,    23,     0,   212,   264,   238,   206,
+     207,     0,   236,   237,     0,     0,     0,     0,     0,     0,
+     255,   256,   257,     0,     0,   234,     0,     0,   227,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,   261,
+       0,   267,   268,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    98,   103,     0,   265,     0,
+     239,   260,     0,     0,     0,   259,   258,    91,   228,    87,
+      88,    89,    90,   321,     0,   262,     0,     0,     0,   266,
+       0,     0,     0,     0,   263,     0,     0,     0,   252,   253,
+     254
   };
 
   const short
   BisonImplementation::yypgoto_[] =
   {
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-     658,   -38,   -30,  -497,   447,  -307,   -52,  -497,  -497,  -497,
-    -497,  -497,   650,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,   429,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -263,  -262,  -269,  -268,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,   136,  -261,  -267,
-    -260,  -266,  -497,   833,  -497,  -226,  -497,   -91,  -497,  -497,
-    -497,   351,  -454,  -497,  -497,  -497,  -497,   449,  -497,  -497,
-    -497,   472,  -497,  -497,  -497,   448,  -497,  -497,  -497,   462,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -496,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,   -19,  -313,   592,  -497,  -497,  -497,  -497,  -497,
-    -497,  -497,  -497,  -376,  -497,  -497,  -497,  -497,  -497,  -497,
-    -497,   -31,     0,  -463,  -497,   647,  -497,  -497,  -497,  -497,
-     -26,     1,  -497,  -497,   538,  -497,  -497,  -497
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+     469,   -76,   -24,  -436,   280,  -436,   -45,  -436,  -436,  -436,
+    -436,  -436,   601,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,   279,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -261,  -436,  -260,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -259,  -258,  -436,   655,  -436,  -224,  -436,  -135,  -436,  -436,
+    -436,   196,  -245,  -436,  -436,  -436,  -436,  -436,   301,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -409,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+    -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,  -436,
+     -19,  -309,  -267,  -279,  -436,  -436,  -436,  -436,  -436,  -436,
+    -355,  -436,  -436,  -436,  -436,  -436,  -436,  -436,   -30,     0,
+    -435,  -436,   439,  -436,  -436,  -436,  -436,   -23,     1,  -436,
+    -436,   366,  -436,  -436,  -436
   };
 
   const short
   BisonImplementation::yydefgoto_[] =
   {
-       0,    11,    43,    44,    45,    46,    47,    48,    49,   242,
-     243,   485,   419,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   175,   347,   348,   349,
-     176,   473,   474,   475,   476,   477,   177,   178,   179,   180,
-     181,   182,   183,   184,   185,   186,   187,   188,   189,   190,
-     191,   192,   193,   194,   195,   196,   197,   198,   199,   200,
-     201,   202,    64,    65,    61,    62,   493,   494,   203,   204,
-     205,   536,   206,   207,   208,   538,   365,   366,   367,   368,
-     369,   370,   371,   372,   373,   374,   375,   376,   377,   378,
-     379,   380,   209,   210,   211,   212,   213,   214,   215,   216,
-     217,   218,   539,   540,   541,   219,   220,   221,   222,   223,
-     224,   225,   226,   227,   228,   229,   230,   333,   231,   232,
-     233,   234,    12,    13,   248,   249,   250,   251,    14,    15,
-      16,   235,    17,   422,   423,   424,   425,   426,    18,    19,
-      20,    36,   236,   434,    22,    23,    24,    25,    26,    27,
-      28,   427,    30,    31,   389,   390,   391,   392
+       0,    10,    40,    41,    42,    43,    44,    45,    46,   237,
+     238,   463,   148,   149,   150,   151,   152,   153,   154,   155,
+     156,   157,   158,   159,   160,   161,   162,   163,   164,   165,
+     166,   167,   168,   169,   170,   171,   172,   342,   343,   344,
+     173,   451,   452,   453,   454,   455,   174,   175,   176,   177,
+     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
+     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
+     198,   199,    61,    62,    58,    59,   471,   472,   200,   201,
+     202,   508,   203,   204,   205,   510,   356,   357,   358,   359,
+     360,   361,   206,   207,   208,   209,   210,   211,   212,   213,
+     511,   512,   513,   214,   215,   216,   217,   218,   219,   220,
+     221,   222,   223,   224,   225,   328,   226,   227,   228,   229,
+      11,    12,   243,   244,   245,   246,    13,    14,    15,   230,
+     402,   403,   404,   405,   406,    16,    17,    18,    33,   231,
+     414,    20,    21,    22,    23,    24,    25,    26,   407,    28,
+      29,   370,   371,   372,   373
   };
 
   const short
   BisonImplementation::yytable_[] =
   {
-      21,    29,   247,    59,    56,    66,   421,   151,   237,   244,
-      58,   420,   359,   360,   362,   364,    51,   469,   357,   358,
-     361,   363,     1,    21,    57,   252,   533,   290,   291,    21,
-     327,    59,   292,   470,   470,    63,   537,    35,   253,   336,
-     337,   338,   339,   340,   341,   342,   343,   344,   345,   346,
-      -3,     1,   352,   353,   290,   291,   449,    21,    32,   292,
-     471,   471,   290,   291,   489,    -2,     1,   292,    34,   587,
-     290,   291,   512,   513,   261,   292,   259,   260,   566,    54,
-     421,   466,   290,   291,   290,   291,    55,   292,   566,   292,
-     388,     1,   296,   467,   297,    52,     1,   290,   291,    33,
-       2,   585,   292,   277,   328,   453,   608,     4,    35,   480,
-       3,   537,   537,    50,   482,    60,   525,   472,   246,   526,
-     290,   291,   564,     1,   566,   292,     4,   490,     5,     2,
-     450,   129,   257,   258,     6,     7,     8,     9,    10,     3,
-     255,   351,   290,   291,     2,   245,   320,   292,   537,   464,
-     562,     1,   567,    53,     3,     4,   480,     5,   508,   509,
-     329,   465,   603,     6,     7,     8,     9,    10,   529,     2,
-       4,   293,     5,   584,     2,   254,   479,    63,     6,     7,
-       8,     9,    10,   262,     3,   565,   263,   359,   360,   362,
-     364,   357,   358,   361,   363,     4,     1,   280,   612,   548,
-       4,     2,     5,     6,     7,     8,     9,   264,     6,     7,
-       8,     9,    10,   421,   290,   291,   128,   290,   291,   292,
-     330,   549,   292,   290,   291,   128,   129,     4,   292,     2,
-     381,   238,   259,   260,   522,     6,     7,     8,     9,   239,
-     240,   241,   396,   397,   398,   399,   290,   291,   577,   480,
-     265,   292,   294,   295,   296,     4,   297,   386,   387,   483,
-     484,   324,   395,     6,     7,     8,     9,   290,   291,   239,
-     240,   241,   292,   266,     2,   247,   350,   290,   291,   583,
-      21,    29,   292,   382,   383,   384,   385,   294,   295,   296,
-     458,   297,   281,   550,   355,   356,   595,   294,   295,   296,
-       4,   297,   597,   436,   437,   316,   317,   267,     6,     7,
-       8,     9,   268,    87,    88,   534,   568,   418,   269,    21,
-     294,   295,   296,   555,   297,   598,   294,   295,   296,   593,
-     297,   290,   291,   290,   291,    56,   292,   270,   292,   294,
-     295,   296,   271,   297,   491,   492,   599,   294,   295,   296,
-     272,   297,   128,   129,    21,    57,   600,   273,   318,    87,
-      88,   534,   319,   535,   459,   313,   314,   315,   316,   317,
-      87,    88,   534,   289,   594,   274,    87,    88,   534,   294,
-     295,   296,   545,   297,   295,   296,   275,   297,   497,   498,
-     499,   486,   487,    21,   503,   504,   326,   556,   332,   334,
-     335,    59,   488,   616,   543,   544,   516,   601,   517,   518,
-     519,   520,   276,   500,   501,   502,   617,   278,   279,   321,
-     586,   318,    21,   481,   618,   319,   607,    21,  -229,   301,
+      19,    27,    53,    63,    56,   401,   242,   239,    55,    48,
+     362,   232,   327,   329,   330,   352,   353,   354,   355,   447,
+     322,    19,    54,   429,   448,   285,   286,    19,   247,   448,
+     287,    56,   505,    30,   400,   248,   331,   332,   333,   334,
+     335,   336,   337,   338,   339,   340,   341,   285,   286,   347,
+     348,   449,   287,    31,    19,   411,   449,   285,   286,   434,
+     467,    32,   287,   285,   286,   401,   252,   253,   287,   285,
+     286,   256,   285,   286,   287,   285,   286,   287,   285,   286,
+     287,   285,   286,   287,   285,   286,   287,    47,    49,   287,
+     444,   285,   286,   458,   323,   536,   287,   430,   460,   285,
+     286,   557,   369,   436,   287,   445,   272,   497,   285,   286,
+     498,    57,   450,   287,   285,   286,   322,   322,   527,   287,
+     289,   290,   291,   468,   292,   289,   290,   291,   559,   292,
+     289,   290,   291,   241,   292,   435,   346,   538,   458,   538,
+     285,   286,   442,   534,   315,   287,    50,   538,   443,    51,
+     501,   520,   311,   312,   521,   240,    52,   522,   537,   250,
+     567,   285,   286,   568,   288,   580,   287,   285,   286,   488,
+     569,   249,   287,   352,   353,   354,   355,   437,   570,   289,
+     290,   291,    60,   292,   289,   290,   291,   571,   292,   401,
+     456,   493,   528,   572,   257,   254,   255,   565,   285,   286,
+      84,    85,   566,   287,    60,   313,    32,   588,   258,   314,
+     233,   539,   325,   575,   350,   351,   324,   259,   234,   235,
+     236,   584,   291,   509,   292,   458,     3,   289,   290,   291,
+     517,   292,   242,   290,   291,   260,   292,   556,   308,   309,
+     310,   311,   312,   573,   377,   378,   379,   380,   305,   306,
+     307,   308,   309,   310,   311,   312,   589,   261,   367,   368,
+     275,   590,   262,   376,   309,   310,   311,   312,   242,   469,
+     470,   345,   125,   126,   263,    19,    27,   242,   363,   364,
+     365,   366,   306,   307,   308,   309,   310,   311,   312,   264,
+     540,   265,   509,   509,   313,    84,    85,   506,   314,   416,
+     417,   289,   290,   291,   518,   292,   266,   313,   319,   254,
+     255,   314,   399,   267,    19,   268,   234,   235,   236,   313,
+      84,    85,   506,   314,   242,   310,   311,   312,   269,   509,
+      53,   461,   462,   464,   465,    84,    85,   506,   515,   516,
+     313,   270,   271,   273,   314,   507,   274,   276,   277,    19,
+      54,   293,   294,   295,   296,   297,   298,   299,   300,   301,
      302,   303,   304,   305,   306,   307,   308,   309,   310,   311,
-     312,   313,   314,   315,   316,   317,   282,   283,   284,   506,
-     314,   315,   316,   317,   285,    59,   306,   307,   308,   309,
-     310,   311,   312,   313,   314,   315,   316,   317,   322,    21,
-     481,   524,   309,   310,   311,   312,   313,   314,   315,   316,
-     317,    21,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   571,   572,   573,   286,   318,   563,   574,
-     575,   319,   315,   316,   317,   318,    37,   287,    38,   319,
-      39,   288,    40,   331,    41,    42,   294,   295,   296,   318,
-     297,   323,     4,   319,   576,   388,    21,   578,   579,   580,
-     581,   582,   318,   393,   428,   394,   319,   429,   604,   605,
-     606,   430,   432,   435,   318,   433,   438,   439,   319,   294,
-     295,   296,   546,   297,   440,   441,   318,   613,   614,   615,
-     319,   442,    21,   481,    67,    68,    69,    70,    71,    72,
-      73,    74,    75,    76,    77,    78,    79,    80,    81,    82,
-      83,    84,   443,   444,    85,    86,    87,    88,   445,    89,
-      90,    91,    92,    93,    94,    95,    96,    97,    98,    99,
-     100,   101,   102,   103,   104,   105,   106,   107,   108,   109,
-     110,   111,   112,   113,   114,   115,   116,   117,   118,   119,
-     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
-     130,   131,   132,   446,   447,   133,   294,   295,   296,   547,
-     297,   448,   451,   452,   134,   135,   136,   137,   138,   139,
-     140,   141,   142,   143,   144,   145,   146,  -216,   478,     4,
-    -228,  -215,   147,  -227,   148,   149,   150,   298,   299,   300,
-     301,   302,   303,   304,   305,   306,   307,   308,   309,   310,
-     311,   312,   313,   314,   315,   316,   317,  -229,   299,   300,
-     301,   302,   303,   304,   305,   306,   307,   308,   309,   310,
-     311,   312,   313,   314,   315,   316,   317,  -229,   300,   301,
-     302,   303,   304,   305,   306,   307,   308,   309,   310,   311,
-     312,   313,   314,   315,   316,   317,   294,   295,   296,   551,
-     297,   294,   295,   296,   552,   297,   454,   456,   318,   460,
-     455,   461,   319,   294,   295,   296,   557,   297,   294,   295,
-     296,   558,   297,   294,   295,   296,   559,   297,   318,   457,
-     462,   463,   319,   294,   295,   296,   560,   297,   294,   295,
-     296,   590,   297,   292,   495,   496,   507,   318,   523,   521,
-     528,   319,  -229,   302,   303,   304,   305,   306,   307,   308,
-     309,   310,   311,   312,   313,   314,   315,   316,   317,  -229,
+     312,    84,    85,   506,    19,   475,   476,   477,   278,   313,
+     279,   481,   482,   314,    56,   558,   280,   281,   466,   282,
+     283,   242,   316,   489,   490,   491,   492,   284,   321,   478,
+     479,   480,    19,   459,   483,   317,   318,    19,   301,   302,
      303,   304,   305,   306,   307,   308,   309,   310,   311,   312,
-     313,   314,   315,   316,   317,  -229,   304,   305,   306,   307,
-     308,   309,   310,   311,   312,   313,   314,   315,   316,   317,
-     305,   306,   307,   308,   309,   310,   311,   312,   313,   314,
-     315,   316,   317,   311,   312,   313,   314,   315,   316,   317,
-     318,   530,   531,   532,   319,   308,   309,   310,   311,   312,
-     313,   314,   315,   316,   317,   542,   318,   257,   553,   554,
-     319,   310,   311,   312,   313,   314,   315,   316,   317,   259,
-     561,   318,   258,   260,   569,   319,   312,   313,   314,   315,
-     316,   317,   570,   589,   318,   505,   596,   602,   319,   256,
-     325,   318,   527,   510,   514,   319,   294,   295,   296,   591,
-     297,   294,   295,   296,   592,   297,   318,   588,   515,   431,
-     319,   294,   295,   296,   609,   297,   511,   354,   468,     0,
-     318,     0,     0,     0,   319,   294,   295,   296,   610,   297,
-       0,     0,     0,   318,     0,     0,     0,   319,   400,   401,
-     402,   403,   404,   405,   406,   407,   408,   409,   410,   411,
-     412,   413,   414,   415,   416,   417,   294,   295,   296,   611,
-     297
+       3,   579,   313,   289,   290,   291,   314,   292,   326,   485,
+     307,   308,   309,   310,   311,   312,    56,   304,   305,   306,
+     307,   308,   309,   310,   311,   312,   369,    19,   459,   496,
+     289,   290,   291,   519,   292,   374,   375,   408,   409,    19,
+     302,   303,   304,   305,   306,   307,   308,   309,   310,   311,
+     312,   313,   543,   544,   545,   314,   535,   412,   546,   547,
+      34,   410,    35,   413,    36,   415,    37,   313,    38,    39,
+     418,   314,   419,   420,     1,   421,   422,   313,    19,   494,
+     423,   314,   548,   549,   424,   550,   551,   552,   553,   554,
+     289,   290,   291,   523,   292,   425,   426,   576,   577,   578,
+       3,   427,   313,   428,   431,   432,   314,   438,     5,     6,
+       7,     8,   439,   440,    19,   459,   585,   586,   587,    64,
+      65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
+      75,    76,    77,    78,    79,    80,    81,   441,   287,    82,
+      83,    84,    85,   473,    86,    87,    88,    89,    90,    91,
+      92,    93,    94,    95,    96,    97,    98,    99,   100,   101,
+     102,   103,   104,   105,   106,   107,   108,   109,   110,   111,
+     112,   113,   114,   115,   116,   117,   118,   119,   120,   121,
+     122,   123,   124,   125,   126,   127,   128,   129,   474,   486,
+     130,   289,   290,   291,   524,   292,   495,   502,   500,   131,
+     132,   133,   134,   135,   136,   137,   138,   139,   140,   141,
+     142,   143,   514,   503,     3,   504,   525,   144,   526,   145,
+     146,   147,    -1,   294,   295,   296,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307,   308,   309,   310,
+     311,   312,    -1,   295,   296,   297,   298,   299,   300,   301,
+     302,   303,   304,   305,   306,   307,   308,   309,   310,   311,
+     312,    -1,   296,   297,   298,   299,   300,   301,   302,   303,
+     304,   305,   306,   307,   308,   309,   310,   311,   312,   289,
+     290,   291,   529,   292,   533,     1,   320,   541,   484,   542,
+     433,   561,     1,   313,   349,     2,   574,   314,   251,   457,
+     289,   290,   291,   530,   292,   289,   290,   291,   531,   292,
+     499,     3,   313,     4,   560,   487,   314,   446,     3,     5,
+       6,     7,     8,     9,     0,     0,     5,     6,     7,     8,
+     313,     0,     0,     0,   314,    -1,   297,   298,   299,   300,
+     301,   302,   303,   304,   305,   306,   307,   308,   309,   310,
+     311,   312,    -1,   298,   299,   300,   301,   302,   303,   304,
+     305,   306,   307,   308,   309,   310,   311,   312,    -1,   299,
+     300,   301,   302,   303,   304,   305,   306,   307,   308,   309,
+     310,   311,   312,   300,   301,   302,   303,   304,   305,   306,
+     307,   308,   309,   310,   311,   312,     1,     0,     0,     0,
+       0,   555,     0,   313,     0,     0,     0,   314,   303,   304,
+     305,   306,   307,   308,   309,   310,   311,   312,     1,   313,
+       0,     0,     3,   314,     1,     0,     0,     0,     2,     0,
+       5,     6,     7,     8,   313,     0,     0,     0,   314,   289,
+     290,   291,   532,   292,     3,     0,     4,   313,     0,     0,
+       3,   314,     5,     6,     7,     8,     9,     0,     5,     6,
+       7,     8,   289,   290,   291,   562,   292,     0,     0,   313,
+       0,     0,     0,   314,   381,   382,   383,   384,   385,   386,
+     387,   388,   389,   390,   391,   392,   393,   394,   395,   396,
+     397,   398,   289,   290,   291,   563,   292,   289,   290,   291,
+     564,   292,   289,   290,   291,   581,   292,   289,   290,   291,
+     582,   292,   289,   290,   291,   583,   292
   };
 
   const short
   BisonImplementation::yycheck_[] =
   {
-       0,     0,    54,    29,    23,    36,   319,    37,    38,    40,
-      29,   318,   281,   281,   281,   281,     0,   393,   281,   281,
-     281,   281,     1,    23,    23,    55,   489,     3,     4,    29,
-       8,    57,     8,     1,     1,   103,   490,   105,    57,   265,
-     266,   267,   268,   269,   270,   271,   272,   273,   274,   275,
-       0,     1,   278,   279,     3,     4,     8,    57,    79,     8,
-      28,    28,     3,     4,    18,     0,     1,     8,    81,   565,
-       3,     4,    16,    17,    74,     8,    74,    75,     8,    81,
-     393,   388,     3,     4,     3,     4,    88,     8,     8,     8,
-      81,     1,     7,    84,     9,    79,     1,     3,     4,     1,
-      79,   564,     8,   133,    82,    84,   602,   105,   105,   422,
-      89,   565,   566,     0,   427,   103,    84,    84,   127,    87,
-       3,     4,    18,     1,     8,     8,   105,    81,   107,    79,
-      82,    75,    74,    75,   113,   114,   115,   116,   117,    89,
-      79,    82,     3,     4,    79,   118,   122,     8,   602,    82,
-     526,     1,    82,   137,    89,   105,   469,   107,    16,    17,
-      79,    82,    82,   113,   114,   115,   116,   117,   481,    79,
-     105,   120,   107,    79,    79,    82,    86,   103,   113,   114,
-     115,   116,   117,    81,    89,    81,    81,   456,   456,   456,
-     456,   454,   454,   454,   454,   105,     1,    83,    82,    82,
-     105,    79,   107,   113,   114,   115,   116,    81,   113,   114,
-     115,   116,   117,   526,     3,     4,    74,     3,     4,     8,
-      79,    82,     8,     3,     4,    74,    75,   105,     8,    79,
-     282,   124,    74,    75,    84,   113,   114,   115,   116,   132,
-     133,   134,   294,   295,   296,   297,     3,     4,   555,   562,
-      81,     8,     5,     6,     7,   105,     9,   287,   288,   130,
-     131,   124,   292,   113,   114,   115,   116,     3,     4,   132,
-     133,   134,     8,    81,    79,   327,   276,     3,     4,    84,
-     280,   280,     8,   283,   284,   285,   286,     5,     6,     7,
-       8,     9,    83,    82,    16,    17,    82,     5,     6,     7,
-     105,     9,    82,   334,   335,    28,    29,    81,   113,   114,
-     115,   116,    81,    32,    33,    34,   542,   317,    81,   319,
-       5,     6,     7,     8,     9,    82,     5,     6,     7,    82,
-       9,     3,     4,     3,     4,   354,     8,    81,     8,     5,
-       6,     7,    81,     9,   103,   104,    82,     5,     6,     7,
-      81,     9,    74,    75,   354,   354,    82,    81,    81,    32,
-      33,    34,    85,    82,    82,    25,    26,    27,    28,    29,
-      32,    33,    34,    83,    82,    81,    32,    33,    34,     5,
-       6,     7,     8,     9,     6,     7,    81,     9,   440,   441,
-     442,   429,   430,   393,   446,   447,   126,    82,   262,   263,
-     264,   427,   432,    82,   495,   496,   458,    79,   460,   461,
-     462,   463,    81,   443,   444,   445,    82,    81,    81,   135,
-      82,    81,   422,   422,    82,    85,    82,   427,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,    81,    81,    81,   449,
-      26,    27,    28,    29,    81,   481,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,   135,   469,
-     469,   471,    21,    22,    23,    24,    25,    26,    27,    28,
-      29,   481,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,   545,   546,   547,    81,    81,   528,   551,
-     552,    85,    27,    28,    29,    81,   119,    81,   121,    85,
-     123,    81,   125,    79,   127,   128,     5,     6,     7,    81,
-       9,   135,   105,    85,   554,    81,   526,   557,   558,   559,
-     560,   561,    81,    83,   136,    83,    85,   136,   590,   591,
-     592,   136,    88,     8,    81,   105,    82,    82,    85,     5,
-       6,     7,     8,     9,     8,     8,    81,   609,   610,   611,
-      85,     8,   562,   562,    10,    11,    12,    13,    14,    15,
-      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-      26,    27,     8,     8,    30,    31,    32,    33,     8,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,     8,     8,    81,     5,     6,     7,     8,
-       9,     8,    82,    82,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,     8,    82,   105,
-       8,     8,   108,     8,   110,   111,   112,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    28,    29,    11,    12,    13,
-      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
-      24,    25,    26,    27,    28,    29,     5,     6,     7,     8,
-       9,     5,     6,     7,     8,     9,     8,     8,    81,     8,
-      84,     8,    85,     5,     6,     7,     8,     9,     5,     6,
-       7,     8,     9,     5,     6,     7,     8,     9,    81,    84,
-       8,     8,    85,     5,     6,     7,     8,     9,     5,     6,
-       7,     8,     9,     8,     8,     8,    29,    81,    79,    82,
-      88,    85,    13,    14,    15,    16,    17,    18,    19,    20,
-      21,    22,    23,    24,    25,    26,    27,    28,    29,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    15,    16,    17,    18,    19,
+       0,     0,    21,    33,    27,   314,    51,    37,    27,     0,
+     277,    35,   257,   258,   259,   276,   276,   276,   276,   374,
+       8,    21,    21,     8,     1,     3,     4,    27,    52,     1,
+       8,    54,   467,     1,   313,    54,   260,   261,   262,   263,
+     264,   265,   266,   267,   268,   269,   270,     3,     4,   273,
+     274,    28,     8,    81,    54,   322,    28,     3,     4,     8,
+      18,   105,     8,     3,     4,   374,    74,    75,     8,     3,
+       4,    71,     3,     4,     8,     3,     4,     8,     3,     4,
+       8,     3,     4,     8,     3,     4,     8,     0,    79,     8,
+     369,     3,     4,   402,    82,    18,     8,    82,   407,     3,
+       4,   536,    81,     8,     8,    84,   130,    84,     3,     4,
+      87,   103,    84,     8,     3,     4,     8,     8,     8,     8,
+       5,     6,     7,    81,     9,     5,     6,     7,   537,     9,
+       5,     6,     7,   127,     9,    84,    82,     8,   447,     8,
+       3,     4,    82,   498,   122,     8,   137,     8,    82,    81,
+     459,    82,    28,    29,    82,   118,    88,    82,    81,    79,
+      82,     3,     4,    82,   120,   574,     8,     3,     4,   436,
+      82,    82,     8,   434,   434,   434,   434,    82,    82,     5,
+       6,     7,   103,     9,     5,     6,     7,    82,     9,   498,
+      82,    82,    82,    82,    81,    74,    75,    82,     3,     4,
+      32,    33,    82,     8,   103,    81,   105,    82,    81,    85,
+     124,    82,    79,    82,    16,    17,    79,    81,   132,   133,
+     134,    82,     7,   468,     9,   534,   105,     5,     6,     7,
+       8,     9,   277,     6,     7,    81,     9,    79,    25,    26,
+      27,    28,    29,    79,   289,   290,   291,   292,    22,    23,
+      24,    25,    26,    27,    28,    29,    82,    81,   282,   283,
+      83,    82,    81,   287,    26,    27,    28,    29,   313,   103,
+     104,   271,    74,    75,    81,   275,   275,   322,   278,   279,
+     280,   281,    23,    24,    25,    26,    27,    28,    29,    81,
+     514,    81,   537,   538,    81,    32,    33,    34,    85,   329,
+     330,     5,     6,     7,     8,     9,    81,    81,   124,    74,
+      75,    85,   312,    81,   314,    81,   132,   133,   134,    81,
+      32,    33,    34,    85,   369,    27,    28,    29,    81,   574,
+     349,   130,   131,   409,   410,    32,    33,    34,   473,   474,
+      81,    81,    81,    81,    85,    82,    81,    83,    81,   349,
+     349,    10,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    32,    33,    34,   374,   420,   421,   422,    81,    81,
+      81,   426,   427,    85,   407,    82,    81,    81,   412,    81,
+      81,   436,   135,   438,   439,   440,   441,    83,   126,   423,
+     424,   425,   402,   402,   428,   135,   135,   407,    18,    19,
       20,    21,    22,    23,    24,    25,    26,    27,    28,    29,
+     105,    82,    81,     5,     6,     7,    85,     9,    79,   429,
+      24,    25,    26,    27,    28,    29,   459,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    81,   447,   447,   449,
+       5,     6,     7,     8,     9,    83,    83,   136,   136,   459,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    81,   517,   518,   519,    85,   500,    88,   523,   524,
+     119,   136,   121,   105,   123,     8,   125,    81,   127,   128,
+      82,    85,    82,     8,    79,     8,     8,    81,   498,    84,
+       8,    85,   526,   527,     8,   529,   530,   531,   532,   533,
+       5,     6,     7,     8,     9,     8,     8,   562,   563,   564,
+     105,     8,    81,     8,    82,    82,    85,     8,   113,   114,
+     115,   116,     8,     8,   534,   534,   581,   582,   583,    10,
+      11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,     8,     8,    30,
+      31,    32,    33,     8,    35,    36,    37,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
+      51,    52,    53,    54,    55,    56,    57,    58,    59,    60,
+      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
+      71,    72,    73,    74,    75,    76,    77,    78,     8,    29,
+      81,     5,     6,     7,     8,     9,    79,   136,    88,    90,
+      91,    92,    93,    94,    95,    96,    97,    98,    99,   100,
+     101,   102,     8,   136,   105,   136,    82,   108,    81,   110,
+     111,   112,    10,    11,    12,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    29,    11,    12,    13,    14,    15,    16,    17,    18,
+      19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
+      29,    12,    13,    14,    15,    16,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    26,    27,    28,    29,     5,
+       6,     7,     8,     9,   109,    79,   237,    82,   428,    82,
+      84,    82,    79,    81,   275,    89,    81,    85,    63,    86,
+       5,     6,     7,     8,     9,     5,     6,     7,     8,     9,
+     451,   105,    81,   107,   538,   434,    85,   371,   105,   113,
+     114,   115,   116,   117,    -1,    -1,   113,   114,   115,   116,
+      81,    -1,    -1,    -1,    85,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    26,    27,
+      28,    29,    14,    15,    16,    17,    18,    19,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    15,    16,
       17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-      27,    28,    29,    23,    24,    25,    26,    27,    28,    29,
-      81,   136,   136,   136,    85,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,     8,    81,    74,    82,    81,
-      85,    22,    23,    24,    25,    26,    27,    28,    29,    74,
-     109,    81,    75,    75,    82,    85,    24,    25,    26,    27,
-      28,    29,    82,    82,    81,   448,    82,    81,    85,    66,
-     242,    81,   473,   454,   456,    85,     5,     6,     7,     8,
-       9,     5,     6,     7,     8,     9,    81,   566,   456,   327,
-      85,     5,     6,     7,     8,     9,   454,   280,   390,    -1,
-      81,    -1,    -1,    -1,    85,     5,     6,     7,     8,     9,
-      -1,    -1,    -1,    81,    -1,    -1,    -1,    85,   298,   299,
-     300,   301,   302,   303,   304,   305,   306,   307,   308,   309,
-     310,   311,   312,   313,   314,   315,     5,     6,     7,     8,
-       9
+      27,    28,    29,    17,    18,    19,    20,    21,    22,    23,
+      24,    25,    26,    27,    28,    29,    79,    -1,    -1,    -1,
+      -1,    84,    -1,    81,    -1,    -1,    -1,    85,    20,    21,
+      22,    23,    24,    25,    26,    27,    28,    29,    79,    81,
+      -1,    -1,   105,    85,    79,    -1,    -1,    -1,    89,    -1,
+     113,   114,   115,   116,    81,    -1,    -1,    -1,    85,     5,
+       6,     7,     8,     9,   105,    -1,   107,    81,    -1,    -1,
+     105,    85,   113,   114,   115,   116,   117,    -1,   113,   114,
+     115,   116,     5,     6,     7,     8,     9,    -1,    -1,    81,
+      -1,    -1,    -1,    85,   293,   294,   295,   296,   297,   298,
+     299,   300,   301,   302,   303,   304,   305,   306,   307,   308,
+     309,   310,     5,     6,     7,     8,     9,     5,     6,     7,
+       8,     9,     5,     6,     7,     8,     9,     5,     6,     7,
+       8,     9,     5,     6,     7,     8,     9
   };
 
   const short
   BisonImplementation::yystos_[] =
   {
-       0,     1,    79,    89,   105,   107,   113,   114,   115,   116,
-     117,   139,   270,   271,   276,   277,   278,   280,   286,   287,
-     288,   290,   292,   293,   294,   295,   296,   297,   298,   299,
-     300,   301,    79,     1,    81,   105,   289,   119,   121,   123,
-     125,   127,   128,   140,   141,   142,   143,   144,   145,   146,
-       0,     0,    79,   137,    81,    88,   270,   299,   270,   298,
-     103,   212,   213,   103,   210,   211,   289,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,    19,    20,    21,    22,
-      23,    24,    25,    26,    27,    30,    31,    32,    33,    35,
-      36,    37,    38,    39,    40,    41,    42,    43,    44,    45,
-      46,    47,    48,    49,    50,    51,    52,    53,    54,    55,
-      56,    57,    58,    59,    60,    61,    62,    63,    64,    65,
-      66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,    81,    90,    91,    92,    93,    94,    95,
-      96,    97,    98,    99,   100,   101,   102,   108,   110,   111,
-     112,   150,   151,   152,   153,   154,   155,   156,   157,   158,
-     159,   160,   161,   162,   163,   164,   165,   166,   167,   168,
-     169,   170,   171,   172,   173,   174,   178,   184,   185,   186,
-     187,   188,   189,   190,   191,   192,   193,   194,   195,   196,
-     197,   198,   199,   200,   201,   202,   203,   204,   205,   206,
-     207,   208,   209,   216,   217,   218,   220,   221,   222,   240,
-     241,   242,   243,   244,   245,   246,   247,   248,   249,   253,
-     254,   255,   256,   257,   258,   259,   260,   261,   262,   263,
-     264,   266,   267,   268,   269,   279,   290,   150,   124,   132,
-     133,   134,   147,   148,   289,   118,   127,   154,   272,   273,
-     274,   275,   150,   270,    82,    79,   211,    74,    75,    74,
-      75,   290,    81,    81,    81,    81,    81,    81,    81,    81,
-      81,    81,    81,    81,    81,    81,    81,   150,    81,    81,
-      83,    83,    81,    81,    81,    81,    81,    81,    81,    83,
-       3,     4,     8,   120,     5,     6,     7,     9,    10,    11,
-      12,    13,    14,    15,    16,    17,    18,    19,    20,    21,
-      22,    23,    24,    25,    26,    27,    28,    29,    81,    85,
-     122,   135,   135,   135,   124,   148,   126,     8,    82,    79,
-      79,    79,   205,   265,   205,   205,   213,   213,   213,   213,
-     213,   213,   213,   213,   213,   213,   213,   175,   176,   177,
-     290,    82,   213,   213,   293,    16,    17,   193,   194,   195,
-     196,   206,   207,   208,   209,   224,   225,   226,   227,   228,
-     229,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   154,   290,   290,   290,   290,   150,   150,    81,   302,
-     303,   304,   305,    83,    83,   150,   154,   154,   154,   154,
-     160,   160,   160,   160,   160,   160,   160,   160,   160,   160,
-     160,   160,   160,   160,   160,   160,   160,   160,   290,   150,
-     153,   271,   281,   282,   283,   284,   285,   299,   136,   136,
-     136,   272,    88,   105,   291,     8,   289,   289,    82,    82,
+       0,    79,    89,   105,   107,   113,   114,   115,   116,   117,
+     139,   258,   259,   264,   265,   266,   273,   274,   275,   277,
+     279,   280,   281,   282,   283,   284,   285,   286,   287,   288,
+       1,    81,   105,   276,   119,   121,   123,   125,   127,   128,
+     140,   141,   142,   143,   144,   145,   146,     0,     0,    79,
+     137,    81,    88,   258,   286,   258,   285,   103,   212,   213,
+     103,   210,   211,   276,    10,    11,    12,    13,    14,    15,
+      16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
+      26,    27,    30,    31,    32,    33,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
+      49,    50,    51,    52,    53,    54,    55,    56,    57,    58,
+      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
+      69,    70,    71,    72,    73,    74,    75,    76,    77,    78,
+      81,    90,    91,    92,    93,    94,    95,    96,    97,    98,
+      99,   100,   101,   102,   108,   110,   111,   112,   150,   151,
+     152,   153,   154,   155,   156,   157,   158,   159,   160,   161,
+     162,   163,   164,   165,   166,   167,   168,   169,   170,   171,
+     172,   173,   174,   178,   184,   185,   186,   187,   188,   189,
+     190,   191,   192,   193,   194,   195,   196,   197,   198,   199,
+     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
+     216,   217,   218,   220,   221,   222,   230,   231,   232,   233,
+     234,   235,   236,   237,   241,   242,   243,   244,   245,   246,
+     247,   248,   249,   250,   251,   252,   254,   255,   256,   257,
+     267,   277,   150,   124,   132,   133,   134,   147,   148,   276,
+     118,   127,   154,   260,   261,   262,   263,   150,   258,    82,
+      79,   211,    74,    75,    74,    75,   277,    81,    81,    81,
+      81,    81,    81,    81,    81,    81,    81,    81,    81,    81,
+      81,    81,   150,    81,    81,    83,    83,    81,    81,    81,
+      81,    81,    81,    81,    83,     3,     4,     8,   120,     5,
+       6,     7,     9,    10,    11,    12,    13,    14,    15,    16,
+      17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+      27,    28,    29,    81,    85,   122,   135,   135,   135,   124,
+     148,   126,     8,    82,    79,    79,    79,   220,   253,   220,
+     220,   213,   213,   213,   213,   213,   213,   213,   213,   213,
+     213,   213,   175,   176,   177,   277,    82,   213,   213,   280,
+      16,    17,   194,   196,   208,   209,   224,   225,   226,   227,
+     228,   229,   260,   277,   277,   277,   277,   150,   150,    81,
+     289,   290,   291,   292,    83,    83,   150,   154,   154,   154,
+     154,   160,   160,   160,   160,   160,   160,   160,   160,   160,
+     160,   160,   160,   160,   160,   160,   160,   160,   160,   277,
+     261,   259,   268,   269,   270,   271,   272,   286,   136,   136,
+     136,   260,    88,   105,   278,     8,   276,   276,    82,    82,
        8,     8,     8,     8,     8,     8,     8,     8,     8,     8,
-      82,    82,    82,    84,     8,    84,     8,    84,     8,    82,
-       8,     8,     8,     8,    82,    82,   153,    84,   302,   281,
-       1,    28,    84,   179,   180,   181,   182,   183,    82,    86,
-     271,   299,   271,   130,   131,   149,   149,   149,   150,    18,
-      81,   103,   104,   214,   215,     8,     8,   154,   154,   154,
-     150,   150,   150,   154,   154,   152,   290,    29,    16,    17,
-     225,   229,    16,    17,   233,   237,   154,   154,   154,   154,
-     154,    82,    84,    79,   290,    84,    87,   182,    88,   271,
-     136,   136,   136,   291,    34,    82,   219,   220,   223,   250,
-     251,   252,     8,   215,   215,     8,     8,     8,    82,    82,
-      82,     8,     8,    82,    81,     8,    82,     8,     8,     8,
-       8,   109,   281,   150,    18,    81,     8,    82,   213,    82,
-      82,   154,   154,   154,   154,   154,   150,   153,   150,   150,
-     150,   150,   150,    84,    79,   291,    82,   250,   219,    82,
-       8,     8,     8,    82,    82,    82,    82,    82,    82,    82,
-      82,    79,    81,    82,   154,   154,   154,    82,   250,     8,
-       8,     8,    82,   154,   154,   154,    82,    82,    82
+      82,    82,    82,    84,     8,    84,     8,    82,     8,     8,
+       8,     8,    82,    82,   261,    84,   289,   268,     1,    28,
+      84,   179,   180,   181,   182,   183,    82,    86,   259,   286,
+     259,   130,   131,   149,   149,   149,   150,    18,    81,   103,
+     104,   214,   215,     8,     8,   154,   154,   154,   150,   150,
+     150,   154,   154,   150,   152,   277,    29,   226,   260,   154,
+     154,   154,   154,    82,    84,    79,   277,    84,    87,   182,
+      88,   259,   136,   136,   136,   278,    34,    82,   219,   220,
+     223,   238,   239,   240,     8,   215,   215,     8,     8,     8,
+      82,    82,    82,     8,     8,    82,    81,     8,    82,     8,
+       8,     8,     8,   109,   268,   150,    18,    81,     8,    82,
+     213,    82,    82,   154,   154,   154,   154,   154,   150,   150,
+     150,   150,   150,   150,   150,    84,    79,   278,    82,   238,
+     219,    82,     8,     8,     8,    82,    82,    82,    82,    82,
+      82,    82,    82,    79,    81,    82,   154,   154,   154,    82,
+     238,     8,     8,     8,    82,   154,   154,   154,    82,    82,
+      82
   };
 
   const short
@@ -5372,20 +5168,18 @@ namespace Faust { namespace Compiler { namespace Parser {
      203,   203,   204,   204,   204,   205,   205,   206,   207,   208,
      209,   210,   211,   212,   213,   214,   214,   215,   216,   216,
      216,   216,   216,   216,   217,   218,   219,   219,   220,   220,
-     221,   222,   223,   224,   224,   225,   225,   226,   227,   228,
-     228,   229,   229,   230,   231,   232,   232,   233,   233,   234,
-     235,   236,   236,   237,   237,   238,   239,   240,   240,   240,
-     241,   242,   243,   244,   244,   244,   245,   245,   246,   247,
-     247,   248,   249,   250,   250,   251,   252,   253,   253,   253,
-     253,   253,   253,   253,   253,   253,   253,   254,   255,   256,
-     257,   258,   259,   260,   261,   262,   263,   264,   265,   265,
-     265,   265,   265,   265,   266,   267,   268,   269,   270,   270,
-     270,   270,   270,   271,   271,   271,   272,   273,   273,   274,
-     275,   276,   277,   277,   277,   277,   278,   279,   280,   281,
-     281,   281,   281,   282,   283,   284,   285,   286,   287,   288,
-     289,   290,   291,   292,   293,   293,   293,   293,   294,   295,
-     296,   297,   298,   298,   298,   298,   299,   299,   300,   301,
-     302,   303,   303,   304,   305
+     221,   222,   223,   224,   224,   225,   225,   226,   226,   227,
+     228,   229,   229,   230,   230,   230,   231,   232,   233,   234,
+     234,   234,   235,   235,   236,   237,   238,   238,   239,   240,
+     241,   241,   241,   241,   241,   241,   241,   241,   241,   241,
+     242,   243,   244,   245,   246,   247,   248,   249,   250,   251,
+     252,   253,   253,   253,   253,   253,   253,   254,   255,   256,
+     257,   258,   258,   258,   258,   258,   259,   259,   260,   261,
+     261,   262,   263,   264,   265,   265,   265,   265,   266,   267,
+     268,   268,   268,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   277,   278,   279,   280,   280,   280,   280,   281,
+     282,   283,   284,   285,   285,   285,   285,   286,   286,   287,
+     288,   289,   290,   290,   291,   292
   };
 
   const signed char
@@ -5412,20 +5206,18 @@ namespace Faust { namespace Compiler { namespace Parser {
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     1,     3,     1,
-       1,     1,     1,     1,     3,     1,     1,     1,     1,     1,
-       3,     1,     1,     1,     1,     1,     3,     1,     1,     1,
-       4,     6,     8,     1,     1,     1,     1,     1,     6,     1,
-       1,     4,     4,     1,     1,     1,     3,     1,     1,     1,
-       1,     1,     1,     1,     1,     1,     1,     4,     4,    12,
-      12,    12,     6,     6,     6,     8,     8,     8,     5,     7,
-       9,     4,     6,     8,     7,     7,     4,     4,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       3,     6,     2,     2,     2,     2,     4,     5,     2,     1,
-       1,     1,     1,     1,     2,     2,     3,     4,     5,     3,
-       1,     1,     1,     5,     1,     1,     1,     1,     1,     2,
-       2,     3,     1,     1,     1,     1,     1,     1,     1,     2,
-       6,     1,     1,     1,     2
+       3,     1,     1,     1,     1,     1,     4,     6,     8,     1,
+       1,     1,     1,     1,     6,     4,     1,     1,     1,     3,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       4,     4,    12,    12,    12,     6,     6,     6,     8,     8,
+       8,     5,     7,     9,     4,     6,     8,     7,     7,     4,
+       4,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     3,     6,     2,     2,     2,     2,     4,     5,
+       1,     1,     1,     1,     1,     2,     2,     3,     4,     5,
+       3,     1,     1,     1,     5,     1,     1,     1,     1,     1,
+       2,     2,     3,     1,     1,     1,     1,     1,     1,     1,
+       2,     6,     1,     1,     1,     2
   };
 
 
@@ -5493,29 +5285,18 @@ namespace Faust { namespace Compiler { namespace Parser {
   "primitive.signal.input.wire", "primitive.signal.input.terminate",
   "primitive.type", "primitive.type.cast.number",
   "primitive.type.cast.number.int", "primitive.type.cast.number.float",
-  "primitive.type.cast.any", "primitive.type.number.int.list",
-  "primitive.type.number.int.list.member",
-  "primitive.type.number.int.list.start",
-  "primitive.type.number.int.list.append",
-  "primitive.type.number.int.list.as.tree",
+  "primitive.type.cast.any",
   "primitive.type.number.int.list.member.as.tree",
-  "primitive.type.number.int.list.start.as.tree",
-  "primitive.type.number.int.list.append.as.tree",
-  "primitive.type.number.float.list",
-  "primitive.type.number.float.list.member",
-  "primitive.type.number.float.list.start",
-  "primitive.type.number.float.list.append",
-  "primitive.type.number.float.list.as.tree",
+  "primitive.type.number.list.as.tree",
+  "primitive.type.number.list.member.as.tree",
+  "primitive.type.number.list.start.as.tree",
+  "primitive.type.number.list.append.as.tree",
   "primitive.type.number.float.list.member.as.tree",
-  "primitive.type.number.float.list.start.as.tree",
-  "primitive.type.number.float.list.append.as.tree",
   "primitive.signal.route", "primitive.signal.route.implied.outputs",
   "primitive.signal.route.implied.connections",
   "primitive.signal.route.explicit", "primitive.signal.source",
   "primitive.signal.source.table", "primitive.signal.source.soundfile",
-  "primitive.signal.source.waveform.as.tree",
-  "primitive.signal.source.waveform.int.as.tree",
-  "primitive.signal.source.waveform.float.as.tree", "primitive.type.list",
+  "primitive.signal.source.waveform.as.tree", "primitive.type.list",
   "primitive.type.list.start", "primitive.type.list.append",
   "primitive.ui", "primitive.ui.button", "primitive.ui.checkbox",
   "primitive.ui.vslider", "primitive.ui.hslider", "primitive.ui.nentry",
@@ -5530,8 +5311,8 @@ namespace Faust { namespace Compiler { namespace Parser {
   "statement.definition.function.args.append",
   "statement.definition.function.declaration",
   "statement.definition.function", "statement.definition.assignment",
-  "statement.definition.with", "statement.definition.error",
-  "statement.definition.list", "statement.definition.list.start",
+  "statement.definition.with", "statement.definition.list",
+  "statement.definition.list.start",
   "statement.definition.list.start.qualified",
   "statement.definition.list.append",
   "statement.definition.list.append.qualified",
@@ -5555,41 +5336,39 @@ namespace Faust { namespace Compiler { namespace Parser {
   const short
   BisonImplementation::yyrline_[] =
   {
-       0,   442,   442,   447,   461,   464,   468,   472,   476,   480,
-     484,   490,   493,   498,   504,   510,   515,   523,   526,   531,
-     534,   539,   543,   549,   555,   558,   567,   568,   569,   574,
-     582,   583,   586,   592,   593,   594,   595,   596,   599,   605,
-     611,   617,   625,   633,   634,   635,   636,   637,   638,   639,
-     640,   641,   642,   643,   644,   645,   646,   647,   648,   649,
-     650,   653,   662,   668,   669,   670,   671,   674,   678,   682,
-     686,   690,   694,   700,   704,   708,   712,   716,   720,   726,
-     730,   734,   740,   744,   750,   756,   760,   768,   778,   788,
-     798,   810,   819,   820,   823,   832,   843,   851,   859,   871,
-     872,   875,   884,   893,   903,   910,   919,   927,   928,   929,
-     930,   931,   934,   938,   942,   946,   950,   954,   960,   964,
-     968,   972,   976,   980,   984,   988,   992,   998,   999,  1000,
-    1003,  1007,  1011,  1015,  1019,  1023,  1027,  1031,  1043,  1047,
-    1053,  1057,  1061,  1065,  1069,  1073,  1079,  1080,  1083,  1086,
-    1091,  1097,  1100,  1105,  1111,  1115,  1119,  1123,  1127,  1131,
-    1135,  1143,  1151,  1152,  1153,  1156,  1160,  1164,  1170,  1174,
-    1178,  1184,  1188,  1192,  1196,  1200,  1204,  1214,  1215,  1216,
-    1217,  1218,  1223,  1224,  1225,  1230,  1231,  1234,  1239,  1244,
-    1250,  1258,  1263,  1269,  1274,  1280,  1283,  1288,  1296,  1297,
-    1298,  1299,  1300,  1301,  1304,  1310,  1316,  1317,  1322,  1323,
-    1326,  1332,  1338,  1346,  1347,  1350,  1351,  1354,  1359,  1364,
-    1365,  1368,  1369,  1372,  1377,  1384,  1385,  1388,  1389,  1392,
-    1397,  1402,  1403,  1406,  1407,  1410,  1415,  1422,  1423,  1424,
-    1427,  1437,  1447,  1459,  1460,  1461,  1464,  1468,  1474,  1480,
-    1481,  1484,  1490,  1498,  1499,  1502,  1508,  1520,  1521,  1522,
-    1523,  1524,  1525,  1526,  1527,  1528,  1529,  1532,  1538,  1544,
-    1550,  1556,  1562,  1568,  1574,  1580,  1586,  1594,  1606,  1620,
-    1636,  1652,  1668,  1684,  1702,  1712,  1724,  1730,  1741,  1742,
-    1743,  1744,  1745,  1750,  1751,  1752,  1755,  1758,  1759,  1762,
-    1771,  1780,  1789,  1793,  1797,  1801,  1809,  1818,  1827,  1836,
-    1837,  1838,  1839,  1842,  1851,  1860,  1866,  1877,  1884,  1891,
-    1900,  1906,  1912,  1920,  1928,  1929,  1930,  1931,  1934,  1945,
-    1955,  1966,  1980,  1983,  1986,  1989,  1996,  1997,  2000,  2003,
-    2010,  2015,  2016,  2019,  2028
+       0,   429,   429,   434,   448,   451,   455,   459,   463,   467,
+     471,   477,   480,   485,   491,   497,   502,   510,   513,   518,
+     521,   526,   530,   536,   542,   545,   554,   555,   556,   561,
+     569,   570,   573,   579,   580,   581,   582,   583,   586,   592,
+     598,   604,   612,   620,   621,   622,   623,   624,   625,   626,
+     627,   628,   629,   630,   631,   632,   633,   634,   635,   636,
+     637,   640,   649,   655,   656,   657,   658,   661,   665,   669,
+     673,   677,   681,   687,   691,   695,   699,   703,   707,   713,
+     717,   721,   727,   731,   737,   743,   747,   755,   765,   775,
+     785,   797,   806,   807,   810,   819,   830,   838,   846,   858,
+     859,   862,   871,   880,   890,   897,   906,   914,   915,   916,
+     917,   918,   921,   925,   929,   933,   937,   941,   947,   951,
+     955,   959,   963,   967,   971,   975,   979,   985,   986,   987,
+     990,   994,   998,  1002,  1006,  1010,  1014,  1018,  1030,  1034,
+    1040,  1044,  1048,  1052,  1056,  1060,  1066,  1067,  1070,  1073,
+    1078,  1084,  1087,  1092,  1098,  1102,  1106,  1110,  1114,  1118,
+    1122,  1130,  1138,  1139,  1140,  1143,  1147,  1151,  1157,  1161,
+    1165,  1171,  1175,  1179,  1183,  1187,  1191,  1201,  1202,  1203,
+    1204,  1205,  1210,  1211,  1212,  1217,  1218,  1221,  1226,  1231,
+    1237,  1245,  1250,  1256,  1261,  1267,  1270,  1275,  1283,  1284,
+    1285,  1286,  1287,  1288,  1291,  1297,  1303,  1304,  1309,  1310,
+    1313,  1319,  1325,  1333,  1334,  1337,  1338,  1341,  1342,  1345,
+    1350,  1357,  1358,  1363,  1364,  1365,  1368,  1378,  1388,  1400,
+    1401,  1402,  1405,  1409,  1415,  1421,  1429,  1430,  1433,  1439,
+    1451,  1452,  1453,  1454,  1455,  1456,  1457,  1458,  1459,  1460,
+    1463,  1469,  1475,  1481,  1487,  1493,  1499,  1505,  1511,  1517,
+    1525,  1537,  1551,  1567,  1583,  1599,  1615,  1633,  1643,  1655,
+    1661,  1672,  1673,  1674,  1675,  1676,  1681,  1682,  1685,  1688,
+    1689,  1692,  1701,  1710,  1719,  1723,  1727,  1731,  1739,  1748,
+    1759,  1760,  1761,  1762,  1765,  1774,  1783,  1789,  1800,  1807,
+    1814,  1823,  1829,  1835,  1843,  1851,  1852,  1853,  1854,  1857,
+    1868,  1878,  1889,  1903,  1906,  1909,  1912,  1919,  1920,  1923,
+    1926,  1933,  1940,  1941,  1944,  1953
   };
 
   void

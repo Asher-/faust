@@ -125,8 +125,7 @@ namespace Faust {
             
             Bucket& bucket{ _buckets[index] };
 
-            AbstractSymbol* symbol = bucket.template insert<RuntimeSymbol>( name, hash, throw_if_exists );
-            ++_symbolCount;
+            AbstractSymbol* symbol = bucket.template insert<RuntimeSymbol>( name, hash, _symbolCount, throw_if_exists );
             return symbol;
           }
 

@@ -1151,6 +1151,5 @@ bool isBoxPatternMatcher(Tree s, PM::Automaton*& a, int& state, Tree& env, Tree&
 Tree boxMathPrimitive( const std::string& symbol_name )
 {
   Tree b = tree(::Faust::Primitive::Symbols::internal().symbol( symbol_name ));
-  faustassert(getUserData(b) != nullptr);
   return b;
 }

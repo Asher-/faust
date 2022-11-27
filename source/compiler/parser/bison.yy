@@ -337,22 +337,12 @@
 %type <FloatType> primitive.type.number.float
 %type <Tree> primitive.type.number.int.as.tree
 %type <Tree> primitive.type.number.float.as.tree
-%type <std::vector<FloatType>> primitive.type.number.float.list
-%type <std::vector<FloatType>> primitive.type.number.float.list.start
-%type <std::vector<FloatType>> primitive.type.number.float.list.append
-%type <FloatType> primitive.type.number.float.list.member
-%type <std::vector<Tree>> primitive.type.number.float.list.as.tree
-%type <std::vector<Tree>> primitive.type.number.float.list.start.as.tree
-%type <std::vector<Tree>> primitive.type.number.float.list.append.as.tree
 %type <Tree> primitive.type.number.float.list.member.as.tree
-%type <std::vector<IntType>> primitive.type.number.int.list
-%type <std::vector<IntType>> primitive.type.number.int.list.start
-%type <std::vector<IntType>> primitive.type.number.int.list.append
-%type <IntType> primitive.type.number.int.list.member
-%type <std::vector<Tree>> primitive.type.number.int.list.as.tree
-%type <std::vector<Tree>> primitive.type.number.int.list.start.as.tree
-%type <std::vector<Tree>> primitive.type.number.int.list.append.as.tree
 %type <Tree> primitive.type.number.int.list.member.as.tree
+%type <std::vector<Tree>> primitive.type.number.list.as.tree
+%type <std::vector<Tree>> primitive.type.number.list.start.as.tree
+%type <std::vector<Tree>> primitive.type.number.list.append.as.tree
+%type <Tree> primitive.type.number.list.member.as.tree
 %type <Tree> primitive.signal.outputs
 %type <Tree> primitive.signal
 %type <Tree> primitive.signal.route
@@ -363,8 +353,6 @@
 %type <Tree> primitive.signal.source.soundfile
 %type <Tree> primitive.signal.source.table
 %type <Tree> primitive.signal.source.waveform.as.tree
-%type <Tree> primitive.signal.source.waveform.float.as.tree
-%type <Tree> primitive.signal.source.waveform.int.as.tree
 %type <std::string> primitive.string.quoted
 %type <Tree> primitive.string.quoted.as.tree
 %type <std::string> primitive.string.tag
@@ -398,7 +386,6 @@
 %type <Tree> statement.box.identifier.as.tree
 %type <Tree> statement.definition
 %type <Tree> statement.definition.assignment
-%type <Tree> statement.definition.error
 %type <Tree> statement.definition.function
 %type <Tree> statement.definition.function.arg
 %type <Tree> statement.definition.function.args
@@ -747,8 +734,8 @@ expression:
       }
 
   expression.infix.prefix:
-      expression.infix[lhs] LPAR  expression.composition.parallel RPAR {
-        $$ = ::buildBoxAppl($lhs,$[expression.composition.parallel]);
+      expression.infix[lhs] LPAR statement.definition.function.args RPAR {
+        $$ = ::buildBoxAppl($lhs,$[statement.definition.function.args]);
         $$->location() = @$;
       }
   
@@ -1342,79 +1329,33 @@ primitive:
 
     /*------------------- type.number.list.int -------------------*/
 
-    primitive.type.number.int.list:
-        primitive.type.number.int.list.start
-      | primitive.type.number.int.list.append
-
-      primitive.type.number.int.list.member:
-          primitive.type.number.int
-        | expression.math.scalar.int
-
-      primitive.type.number.int.list.start:
-        primitive.type.number.int.list.member {
-          $$.push_back( $[primitive.type.number.int.list.member] );
-        }
-        
-      primitive.type.number.int.list.append:
-        primitive.type.number.int.list COMMA primitive.type.number.int.list.member {
-          $$.push_back( $[primitive.type.number.int.list.member] );
-        }
-
-    primitive.type.number.int.list.as.tree:
-        primitive.type.number.int.list.start.as.tree
-      | primitive.type.number.int.list.append.as.tree
-
       primitive.type.number.int.list.member.as.tree:
           primitive.type.number.int.as.tree
         | expression.math.scalar.int.as.tree
 
-      primitive.type.number.int.list.start.as.tree:
-        primitive.type.number.int.list.member.as.tree {
-          $$.push_back( $[primitive.type.number.int.list.member.as.tree] );
+    primitive.type.number.list.as.tree:
+        primitive.type.number.list.start.as.tree
+      | primitive.type.number.list.append.as.tree
+
+      primitive.type.number.list.member.as.tree:
+          primitive.type.number.int.list.member.as.tree
+        | primitive.type.number.float.list.member.as.tree
+
+      primitive.type.number.list.start.as.tree:
+        primitive.type.number.list.member.as.tree {
+          $$.push_back( $[primitive.type.number.list.member.as.tree] );
         }
 
-      primitive.type.number.int.list.append.as.tree:
-        primitive.type.number.int.list COMMA primitive.type.number.int.list.member.as.tree {
-          $$.push_back( $[primitive.type.number.int.list.member.as.tree] );
+      primitive.type.number.list.append.as.tree:
+        primitive.type.number.list.as.tree COMMA primitive.type.number.list.member.as.tree {
+          $$.push_back( $[primitive.type.number.list.member.as.tree] );
         }
 
     /*------------------- type.number.list.float -------------------*/
 
-    primitive.type.number.float.list:
-        primitive.type.number.float.list.start
-      | primitive.type.number.float.list.append
-
-      primitive.type.number.float.list.member:
-          primitive.type.number.float
-        | expression.math.scalar.float
-
-      primitive.type.number.float.list.start:
-        primitive.type.number.float.list.member {
-          $$.push_back( $[primitive.type.number.float.list.member] );
-        }
-        
-      primitive.type.number.float.list.append:
-        primitive.type.number.float.list COMMA primitive.type.number.float.list.member {
-          $$.push_back( $[primitive.type.number.float.list.member] );
-        }
-
-    primitive.type.number.float.list.as.tree:
-        primitive.type.number.float.list.start.as.tree
-      | primitive.type.number.float.list.append.as.tree
-
       primitive.type.number.float.list.member.as.tree:
           primitive.type.number.float.as.tree
         | expression.math.scalar.float.as.tree
-
-      primitive.type.number.float.list.start.as.tree:
-        primitive.type.number.float.list.member.as.tree {
-          $$.push_back( $[primitive.type.number.float.list.member.as.tree] );
-        }
-        
-      primitive.type.number.float.list.append.as.tree:
-        primitive.type.number.float.list COMMA primitive.type.number.float.list.member.as.tree {
-          $$.push_back( $[primitive.type.number.float.list.member.as.tree] );
-        }
 
     /******************** Route ********************/
 
@@ -1424,7 +1365,7 @@ primitive:
     | primitive.signal.route.explicit
 
       primitive.signal.route.implied.outputs:
-          ROUTE LPAR expression.composition.serial[connections] RPAR {
+          ROUTE LPAR statement.definition.function.arg[connections] RPAR {
             $$ = ::boxRoute(
               $connections,
               $connections,
@@ -1434,7 +1375,7 @@ primitive:
           }
 
       primitive.signal.route.implied.connections:
-          ROUTE LPAR expression.composition.serial[inputs] COMMA expression.composition.serial[outputs] RPAR {
+          ROUTE LPAR statement.definition.function.arg[inputs] COMMA statement.definition.function.arg[outputs] RPAR {
             $$ = ::boxRoute(
               $inputs,
               $outputs,
@@ -1444,11 +1385,11 @@ primitive:
           }
 
       primitive.signal.route.explicit:
-          ROUTE LPAR expression.composition.serial[inputs] COMMA expression.composition.serial[outputs] COMMA expression.composition.parallel RPAR {
+          ROUTE LPAR statement.definition.function.arg[inputs] COMMA statement.definition.function.arg[outputs] COMMA expression RPAR {
             $$ = boxRoute(
               $inputs,
               $outputs,
-              $[expression.composition.parallel]
+              $[expression]
             );
             $$->location() = @$;
           }
@@ -1477,18 +1418,8 @@ primitive:
           }
         
       primitive.signal.source.waveform.as.tree:
-        primitive.signal.source.waveform.int.as.tree
-      | primitive.signal.source.waveform.float.as.tree
-
-      primitive.signal.source.waveform.int.as.tree:
-        WAVEFORM LBRAQ primitive.type.number.int.list.as.tree RBRAQ {
-          $$ = ::boxWaveform( $[primitive.type.number.int.list.as.tree] );
-          $$->location() = @$;
-        }
-
-      primitive.signal.source.waveform.float.as.tree:
-        WAVEFORM LBRAQ primitive.type.number.float.list.as.tree RBRAQ {
-          $$ = ::boxWaveform( $[primitive.type.number.float.list.as.tree] );
+        WAVEFORM LBRAQ primitive.type.number.list.as.tree RBRAQ {
+          $$ = ::boxWaveform( $[primitive.type.number.list.as.tree] );
           $$->location() = @$;
         }
 
@@ -1603,9 +1534,9 @@ primitive:
         }
 
       primitive.foreign.function.signature:
-          primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun] LPAR primitive.type.list RPAR {
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun] LPAR primitive.type.list RPAR {
             $$ = ::cons(
-              $[primitive.type.number.as.tree],
+              $[primitive.type.cast.number],
               ::cons(
                 ::cons(
                   $fun,
@@ -1617,9 +1548,9 @@ primitive:
             );
             $$->location() = @$;
           }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR primitive.type.list RPAR {
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR primitive.type.list RPAR {
             $$ = ::cons(
-              $[primitive.type.number.as.tree],
+              $[primitive.type.cast.number],
               ::cons(
                 ::cons(
                   $fun1,
@@ -1633,9 +1564,9 @@ primitive:
             );
             $$->location() = @$;
           }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR primitive.type.list RPAR {
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR primitive.type.list RPAR {
             $$ = ::cons(
-              $[primitive.type.number.as.tree],
+              $[primitive.type.cast.number],
               ::cons(
                 ::cons(
                   $fun1,
@@ -1649,9 +1580,9 @@ primitive:
             );
             $$->location() = @$;
           }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun] LPAR RPAR {
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun] LPAR RPAR {
             $$ = ::cons(
-              $[primitive.type.number.as.tree],
+              $[primitive.type.cast.number],
               ::cons(
                 ::cons(
                   $fun,
@@ -1665,9 +1596,9 @@ primitive:
             );
             $$->location() = @$;
           }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR RPAR {
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR RPAR {
             $$ = ::cons(
-              $[primitive.type.number.as.tree],
+              $[primitive.type.cast.number],
               ::cons(
                 ::cons(
                   $fun1,
@@ -1681,9 +1612,9 @@ primitive:
             );
             $$->location() = @$;
           }
-        | primitive.type.number.as.tree statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR RPAR {
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR RPAR {
             $$ = ::cons(
-              $[primitive.type.number.as.tree],
+              $[primitive.type.cast.number],
               ::cons(
                 ::cons(
                   $fun1,
@@ -1699,9 +1630,9 @@ primitive:
           }
 
     primitive.foreign.constant:
-        FCONSTANT LPAR primitive.type.number.as.tree statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR {
+        FCONSTANT LPAR primitive.type.cast.number statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR {
           $$ = ::boxFConst(
-            $[primitive.type.number.as.tree],
+            $[primitive.type.cast.number],
             $[statement.identifier.as.tree],
             $[primitive.string.tag.as.tree]
           );
@@ -1709,9 +1640,9 @@ primitive:
         }
 
     primitive.foreign.variable:
-        FVARIABLE LPAR primitive.type.number.as.tree statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR {
+        FVARIABLE LPAR primitive.type.cast.number statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR {
           $$ = ::boxFVar(
-            $[primitive.type.number.as.tree],
+            $[primitive.type.cast.number],
             $[statement.identifier.as.tree],
             $[primitive.string.tag.as.tree]
           );
@@ -1749,7 +1680,6 @@ statement:
   statement.definition:
       statement.definition.function
     | statement.definition.assignment
-    | statement.definition.error
 
     statement.definition.function.arg:
       expression.composition.serial
@@ -1823,13 +1753,6 @@ statement:
         $$->location() = @$;
       }
 
-    statement.definition.error:
-        error ENDDEF {
-          $$ = ::Faust::Primitive::Symbols::asTree().nil;
-          self._lexer->LexerError("Error in definition.");
-          $$->location() = @$;
-        }
-
     /*------------------- statement.definition.list -------------------*/
 
     statement.definition.list:
@@ -1841,7 +1764,7 @@ statement:
       statement.definition.list.start:
           statement.definition {
             $$ = ::cons(
-              $[statement.definition.list.start],
+              $[statement.definition],
               ::Faust::Primitive::Symbols::asTree().nil
             );
             $$->location() = @$;
@@ -1858,14 +1781,14 @@ statement:
 
       statement.definition.list.append:
           statement.definition.list statement.definition {
-            $$ = cons ($[statement.definition],$[statement.definition.list]);
+            $$ = ::cons($[statement.definition],$[statement.definition.list]);
             $$->location() = @$;
           }
           
       statement.definition.list.append.qualified:
           statement.definition.list statement.math.precision.list statement.definition {
             if (self.acceptdefinition($[statement.math.precision.list]))
-              $$ = cons ($[statement.definition],$[statement.definition.list]);
+              $$ = ::cons($[statement.definition],$[statement.definition.list]);
             else
               $$ = $[statement.definition.list];
             $$->location() = @$;
@@ -2007,7 +1930,9 @@ statement:
   /******************** Rules ********************/
 
   statement.signal.pattern.rule:
-      LPAR expression.composition.parallel RPAR ARROW expression ENDDEF { $$ = ::cons($[expression.composition.parallel],$expression); }
+      LPAR statement.definition.function.args RPAR ARROW expression ENDDEF {
+        $$ = ::cons($[statement.definition.function.args],$expression);
+      }
 
   /*------------------- signal.pattern.rule.list -------------------*/
 

@@ -152,12 +152,14 @@ namespace Faust {
         insert(
           const std::string& name,
           const HashType& hash,
+          std::size_t& symbol_count,
           bool  throw_if_exists = true
         )
         {
           if ( ! _symbol ) {
             /* Bucket is empty - insert symbol. */
             _symbol = new RuntimeSymbolType( name, hash );
+            ++symbol_count;
             return _symbol;
           }
           else {
@@ -175,6 +177,7 @@ namespace Faust {
             } while (this_bucket->_next && (this_bucket = this_bucket->_next));
             /* Create new symbol at end of bucket's linked list. */
             Bucket* new_bucket = this_bucket->_next = new Bucket( new RuntimeSymbolType( name, hash ) );
+            ++symbol_count;
             return new_bucket->_symbol;
           }
         }
