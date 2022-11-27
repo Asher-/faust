@@ -162,7 +162,7 @@ namespace Faust {
                   initial_prefix_spacing = Leaf.size() + 1;
                 }
                 std::string position_string{ ( _location.begin() != _lastPrintedPosition )
-                                             ? static_cast<std::string>(_location.begin()) + " "
+                                             ? static_cast<std::string>((_lastPrintedPosition = _location.begin())) + " "
                                              : "" };
                 stack << position_string << _location.name() << std::endl;
                 _prefix.emplace_back( initial_prefix_spacing );
