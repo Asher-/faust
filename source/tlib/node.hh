@@ -95,7 +95,7 @@ class Node : public virtual Garbageable {
     Node(const string& name) : fType(kSymNode)
     {
         fData.f = 0;
-        fData.s = ::Faust::Primitive::symbols().symbol(name);
+        fData.s = ::Faust::Primitive::symbols().insert(name, false);
     }
     Node(Sym x) : fType(kSymNode)
     {

@@ -254,24 +254,20 @@ Tree Implementation::formatDefinitions(Tree rldef)
 
     // Produces the definitions
     map<Tree, list<Tree> >::iterator tree_iterator;
-    if ( statements.size() ) {
-      for ( tree_iterator = statements.begin();
-            tree_iterator != statements.end();
-            ++tree_iterator ) {
-          Tree definition = TREE_JOIN( "formatDefinitions().definition",
-            tree_iterator->first,
-            makeDefinition( tree_iterator->first, tree_iterator->second )
-          );
-          
-          ldef2 = TREE_JOIN( "formatDefinitions().list",
-            definition,
-            ldef2
-          );
-      }
-      return ldef2;
+    for ( tree_iterator = statements.begin();
+          tree_iterator != statements.end();
+          ++tree_iterator ) {
+        Tree definition = TREE_JOIN( "formatDefinitions().definition",
+          tree_iterator->first,
+          makeDefinition( tree_iterator->first, tree_iterator->second )
+        );
+        
+        ldef2 = TREE_JOIN( "formatDefinitions().list",
+          definition,
+          ldef2
+        );
     }
-    else
-      return nullptr;
+    return ldef2;
 
 }
 

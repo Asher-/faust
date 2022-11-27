@@ -25,7 +25,7 @@
 #include <string>
 
 #include "compiler/parser/bison/implementation.hh"
-#include "compiler/parser/lexer/location/implementation.hh"
+#include "compiler/parser/location/implementation.hh"
 
 #include "tlib/tree.hh"
 
@@ -45,7 +45,7 @@ namespace Faust {
         {
           using Self = ::Faust::Compiler::Parser::Implementation;
           using Parser = ::Faust::Compiler::Parser::BisonImplementation;
-          using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
+          using Location = ::Faust::Compiler::Parser::Location::Implementation;
           using symbol_type = typename Parser::symbol_type;
 
           Implementation

@@ -30,7 +30,7 @@
 #include <iostream>
 using namespace std;
 
-using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
+using Location = ::Faust::Compiler::Parser::Location::Implementation;
 
 void evalerror(const std::string& filename, int linenum, const char* msg, Tree exp)
 {

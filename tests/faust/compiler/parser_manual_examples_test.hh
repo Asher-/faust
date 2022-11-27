@@ -22,7 +22,7 @@
 #include <gtest/gtest.h>
 
 #include "compiler/parser/implementation.hh"
-#include "global.hh"
+#include "compiler/block_diagram/boxes/ppbox.hh"
 
 using Parser = ::Faust::Compiler::Parser::Implementation;
 
@@ -57,16 +57,20 @@ struct ParserTest
 //  Tree ast = parser.parseString( source, "Empty.dsp" );
 //  ASSERT_EQ( ast, nullptr );
 //}
-
-TEST_F( ParserTest, variants ) {
-  std::string source = R""""(
-    singleprecision one = 3.402823466e+38;
-    doubleprecision two = 1.7976931348623158e+308;
-  )"""";
-  Tree ast = parser.parseString( source, "variants.dsp" );
-  ASSERT_NE( ast, nullptr );
-}
-
+//
+//TEST_F( ParserTest, variants ) {
+//  std::string source = R""""(
+//    singleprecision one = 3.402823466e+38;
+//    doubleprecision two = 1.7976931348623158e+308;
+//  )"""";
+//  Tree ast = parser.parseString( source, "variants.dsp" );
+//  ASSERT_NE( ast, nullptr );
+//  std::stringstream pprint;
+//  pprint << boxpp(ast);
+//  std::string printed(pprint.str());
+//  std::cout << pprint.str() << std::endl;
+//}
+//
 //TEST_F( ParserTest, simpleProgram ) {
 //  std::string source = R""""(
 //    declare name "Noise";
@@ -80,20 +84,21 @@ TEST_F( ParserTest, variants ) {
 //  Tree ast = parser.parseString( source, "simpleProgram.dsp" );
 //  ASSERT_NE( ast, nullptr );
 //}
-//
-//TEST_F( ParserTest, globalMetadata ) {
-//  std::string source = R""""(
-//    declare name "Noise";
-//    declare name "MyProgram";
-//    declare author "MySelf";
-//    declare copyright "MyCompany";
-//    declare version "1.00";
-//    declare license "BSD";
-//  )"""";
-//  Tree ast = parser.parseString( source, "globalMetadata.dsp" );
-//  ASSERT_NE( ast, nullptr );
-//}
-//
+
+TEST_F( ParserTest, globalMetadata ) {
+  std::string source = R""""(
+    declare name "Noise";
+    declare name "MyProgram";
+    declare author "MySelf";
+    declare copyright "MyCompany";
+    declare version "1.00";
+    declare license "BSD";
+  )"""";
+  Tree ast = parser.parseString( source, "globalMetadata.dsp" );
+  ast->location().printStack(std::cout);
+  ASSERT_NE( ast, nullptr );
+}
+
 //TEST_F( ParserTest, functionMetadata ) {
 //  std::string source = R""""(
 //    declare add author "John Doe";

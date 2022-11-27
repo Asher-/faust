@@ -50,7 +50,7 @@ class FAUST_API PathBuilder {
         /**
          * @brief check if a character is acceptable for an ID
          *
-         * @param c
+         * @param c Character.
          * @return true is the character is acceptable for an ID
          */
         bool isIDChar(char c) const
@@ -61,7 +61,7 @@ class FAUST_API PathBuilder {
         /**
          * @brief remove all "/0x00" parts
          *
-         * @param src
+         * @param src Source string.
          * @return modified string
          */
         std::string remove0x00(const std::string& src) const
@@ -72,7 +72,7 @@ class FAUST_API PathBuilder {
         /**
          * @brief replace all non ID char with '_' (one '_' may replace several non ID char)
          *
-         * @param src
+         * @param src Source string.
          * @return modified string
          */
         std::string str2ID(const std::string& src) const
@@ -96,7 +96,7 @@ class FAUST_API PathBuilder {
         /**
          * @brief Keep only the last n slash-parts
          *
-         * @param src
+         * @param src Source string.
          * @param n : 1 indicates the last slash-part
          * @return modified string
          */

@@ -48,7 +48,7 @@
  /* Faust requires */
   #include <string>
   #include "compiler/parser/type/tokens.hh"
-  #include "compiler/parser/lexer/location/implementation.hh"
+  #include "compiler/parser/location/implementation.hh"
   namespace Faust { namespace Compiler { namespace Parser {
     struct Implementation;
     namespace Lexer { struct Implementation; }
@@ -753,7 +753,7 @@ namespace Faust { namespace Compiler { namespace Parser {
     typedef value_type semantic_type;
 
     /// Symbol locations.
-    typedef ::Faust::Compiler::Parser::Lexer::Location::Implementation location_type;
+    typedef ::Faust::Compiler::Parser::Location::Implementation location_type;
 
     /// Syntax errors thrown from user actions.
     struct syntax_error : std::runtime_error

@@ -1740,7 +1740,7 @@ namespace Faust { namespace Compiler { namespace Parser {
 
     // User initialization code.
 {
-  self._location.begin().streamName() = self._location.end().streamName() = self._streamName;
+  self._location.streamName() = self._streamName;
 }
 
 

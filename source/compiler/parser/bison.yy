@@ -11,7 +11,7 @@
 
 %define api.namespace {::Faust::Compiler::Parser}
 %define api.parser.class {BisonImplementation}
-%define api.location.type {::Faust::Compiler::Parser::Lexer::Location::Implementation}
+%define api.location.type {::Faust::Compiler::Parser::Location::Implementation}
 
 %define parse.assert /* runtime assertions to catch invalid uses */
 %define parse.trace /* set yydebug = 1 to print trace to stderr */
@@ -27,13 +27,13 @@
 
 %initial-action
 {
-  self._location.begin().streamName() = self._location.end().streamName() = self._streamName;
+  self._location.streamName() = self._streamName;
 };
 
 %code requires { /* Faust requires */
   #include <string>
   #include "compiler/parser/type/tokens.hh"
-  #include "compiler/parser/lexer/location/implementation.hh"
+  #include "compiler/parser/location/implementation.hh"
   namespace Faust { namespace Compiler { namespace Parser {
     struct Implementation;
     namespace Lexer { struct Implementation; }

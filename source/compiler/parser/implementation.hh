@@ -48,7 +48,7 @@ namespace Faust {
         ::Faust::Compiler::Parser::Abstract::Implementation
       {
         using AbstractParser = ::Faust::Compiler::Parser::BisonImplementation;
-        using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
+        using Location = ::Faust::Compiler::Parser::Location::Implementation;
         using Lexer = ::Faust::Compiler::Parser::Lexer::Implementation;
         using symbol_type = typename AbstractParser::symbol_type;
 
@@ -146,6 +146,7 @@ namespace Faust {
           RHSLocations&       rhs_locations
         ) {
           Location& location = symbol.location;
+          location.streamName() = _location.streamName();
           location.name() = _parser.symbol_name( symbol.kind() );
           if ( count ) {
             location.begin()   = rhs_locations[1].location.begin();
@@ -160,6 +161,7 @@ namespace Faust {
           else {
             location = _location;
           }
+          /* Advance our tracking location. */
           _location.begin() = _location.end() = location.end();
         }
 

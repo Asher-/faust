@@ -25,12 +25,12 @@
 
 #include "compiler/parser/implementation.hh"
 #include "compiler/parser/lexer/implementation.hh"
-#include "compiler/parser/lexer/location/implementation.hh"
+#include "compiler/parser/location/implementation.hh"
 
 using Parser = ::Faust::Compiler::Parser::BisonImplementation;
 using Self = ::Faust::Compiler::Parser::Implementation;
 using Lexer = ::Faust::Compiler::Parser::Lexer::Implementation;
-using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
+using Location = ::Faust::Compiler::Parser::Location::Implementation;
 using symbol_type = typename Parser::symbol_type;
 
 #undef YY_DECL

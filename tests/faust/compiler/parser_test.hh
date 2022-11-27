@@ -23,7 +23,6 @@
 
 #include "compiler/parser/implementation.hh"
 #include "compiler/block_diagram/boxes/ppbox.hh"
-#include "global.hh"
 
 using Parser = ::Faust::Compiler::Parser::Implementation;
 

@@ -77,7 +77,7 @@
 #include "tlib/node.hh"
 #include "faust/primitive/symbols.hh"
 
-#include "compiler/parser/lexer/location/implementation.hh"
+#include "compiler/parser/location/implementation.hh"
 
 //---------------------------------API---------------------------------------
 
@@ -113,7 +113,7 @@ class LIBFAUST_API CTree : public virtual Garbageable {
 
    public:
     
-    using Location = ::Faust::Compiler::Parser::Lexer::Location::Implementation;
+    using Location = ::Faust::Compiler::Parser::Location::Implementation;
 
     static bool         gDetails;    ///< Ctree::print() print with more details when true
     static unsigned int gVisitTime;  ///< Should be incremented for each new visit to keep track of visited tree

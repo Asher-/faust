@@ -24,7 +24,7 @@
 
 #include "tlib/tlib.hh"
 
-#include "compiler/parser/lexer/location/implementation.hh"
+#include "compiler/parser/location/implementation.hh"
 
 // three levels or errors, warnings and remarks are provided during evaluation
 void evalerror(const std::string& filename, int linenum, const char* msg, Tree exp);
@@ -32,9 +32,9 @@ void evalerrorbox(const std::string& filename, int linenum, const char* msg, Tre
 void evalwarning(const std::string& filename, int linenum, const char* msg, Tree exp);
 void evalremark(const std::string& filename, int linenum, const char* msg, Tree exp);
 
-void evalerror(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
-void evalerrorbox(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
-void evalwarning(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
-void evalremark(const ::Faust::Compiler::Parser::Lexer::Location::Implementation& location, const char* msg, Tree exp);
+void evalerror(const ::Faust::Compiler::Parser::Location::Implementation& location, const char* msg, Tree exp);
+void evalerrorbox(const ::Faust::Compiler::Parser::Location::Implementation& location, const char* msg, Tree exp);
+void evalwarning(const ::Faust::Compiler::Parser::Location::Implementation& location, const char* msg, Tree exp);
+void evalremark(const ::Faust::Compiler::Parser::Location::Implementation& location, const char* msg, Tree exp);
 
 #endif
