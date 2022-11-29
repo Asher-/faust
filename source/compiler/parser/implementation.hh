@@ -141,7 +141,7 @@ namespace Faust {
         >
         void
         tokenDidMatch(
-          StackSymbolType&  symbol,
+          StackSymbolType&    symbol,
           const std::size_t&  count,
           RHSLocations&       rhs_locations
         ) {
@@ -150,9 +150,9 @@ namespace Faust {
           location.name() = _parser.symbol_name( symbol.kind() );
           if ( count ) {
             location.begin()   = rhs_locations[1].location.begin();
-            location.end()     = rhs_locations[count].location.end();
-            for ( std::size_t index = 0 ; index < count ; ++index ) {
-              const StackSymbolType& this_symbol_part{rhs_locations[index+1]};
+            location.end()     = rhs_locations[count-1].location.end();
+            for ( std::size_t index = 0 ; index < count - 1 ; ++index ) {
+              const auto& this_symbol_part{rhs_locations[index+1]};
               Location this_location_part{this_symbol_part.location};
               this_location_part.name() = _parser.symbol_name( this_symbol_part.kind() );
               location.parts().push_back(this_location_part);
@@ -162,7 +162,29 @@ namespace Faust {
             location = _location;
           }
           /* Advance our tracking location. */
-          _location.begin() = _location.end() = location.end();
+          _location = location;
+          _location.begin() = _location.end();
+        }
+        
+        template <typename StackType>
+        void
+        copyStackToLocationParts(
+          StackType& stack,
+          Location& location
+        )
+        {
+          auto iterator = stack.begin() + 1;
+          auto iterator_last = stack.end() - 1;
+          location.begin()   = iterator->location.begin();
+          location.end()     = iterator_last->location.end();
+          location.streamName() = _location.streamName();
+          location.name() = _parser.symbol_name( iterator->kind() );
+          for ( ++iterator; iterator < stack.end() ; ++iterator ) {
+            const auto& this_symbol_part{*iterator};
+            Location this_location_part{this_symbol_part.location};
+            this_location_part.name() = _parser.symbol_name( this_symbol_part.kind() );
+            location.parts().push_back(this_location_part);
+          }
         }
 
         void
@@ -178,6 +200,45 @@ namespace Faust {
           std::cerr << m << std::endl;
         }
 
+        void
+        report_syntax_error (
+          const BisonImplementation::context& context
+        )
+        {
+          std::cerr << "Syntax error: " << std::endl;
+
+          auto& stack = _parser.yystack();
+          Location syntax_error;
+          copyStackToLocationParts( stack, syntax_error );
+
+          /* Ask Parser to provide expected tokens. */
+          int expected_token_count = context.expected_tokens( nullptr, 0 );
+          BisonImplementation::symbol_kind_type expected_tokens[expected_token_count];
+          context.expected_tokens(expected_tokens, expected_token_count);
+          
+
+          // now we want to create a fake location to append to parts
+          // it will hold all the possible matches we are looking for (from state)
+          
+          auto state = _parser.yy_lr_goto_state_( stack[2].state, _parser.yyr1()[expected_tokens[0]]);
+ 
+          auto symbol = YY_CAST(BisonImplementation::symbol_kind_type, _parser.yystos()[+state]);
+          auto symbol_name = _parser.symbol_name(symbol);
+          
+          syntax_error.printStack(std::cerr);
+          
+          constexpr std::array<std::string_view, 2> phrase{ ": expected ", " or " };
+          for ( int index = 0; index < expected_token_count; ++index ) {
+            std::cerr << phrase[!!index]
+                      << BisonImplementation::symbol_name( expected_tokens[index] );
+          }
+          BisonImplementation::symbol_kind_type token_type = context.token();
+          if ( token_type != BisonImplementation::symbol_kind::S_YYEMPTY ) {
+            std::cerr << " before " << BisonImplementation::symbol_name(token_type);
+          }
+          std::cerr << std::endl;
+        }
+        
         Tree checkRulelist(Tree lr);
 
         string printPatternError(Tree symbol, Tree lhs1, Tree rhs1, Tree lhs2, Tree rhs2);

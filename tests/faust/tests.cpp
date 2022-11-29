@@ -26,7 +26,7 @@
 
 /* Parser */
 #include "faust/compiler/parser_test.hh"
-#include "faust/compiler/parser_manual_examples_test.hh"
+//#include "faust/compiler/parser_manual_examples_test.hh"
 
 
 

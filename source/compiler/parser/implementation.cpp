@@ -366,3 +366,12 @@ void BisonImplementation::error (
     this->self.error( loc, msg );
 }
 
+void
+BisonImplementation::report_syntax_error (
+  const BisonImplementation::context& context
+)
+const
+{
+  this->self.report_syntax_error( context );
+}
+

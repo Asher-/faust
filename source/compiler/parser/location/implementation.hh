@@ -324,21 +324,11 @@ namespace Faust {
           printStack(
             std::basic_ostream<CharType>&  stack
           )
+          const
           {
             TreePrinter printer( *this );
             stack << printer;
             return stack;
-          }
-
-          template <typename StreamType>
-          StreamType&
-          printStackLinePrefix(
-            StreamType&                stack,
-            const Position&            previous_position,
-            std::vector<std::size_t>&  spacing,
-            std::vector<std::string>&  closing_strings
-          )
-          {
           }
 
 

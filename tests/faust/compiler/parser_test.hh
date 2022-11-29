@@ -36,7 +36,7 @@ struct ParserTest
     ()
     {
       /* Uncomment for Bison/Flex trace output */
-      parser._traceParsing = false;
+      parser._traceParsing = true;
       parser._traceScanning = false;
     }
 
@@ -53,34 +53,41 @@ struct ParserTest
 
 };
 
-TEST_F( ParserTest, empty ) {
-  std::string source = R""""()"""";
-  Tree ast = parser.parseString( source, "Empty.dsp" );
+//TEST_F( ParserTest, empty ) {
+//  std::string source = R""""()"""";
+//  Tree ast = parser.parseString( source, "Empty.dsp" );
+//  ASSERT_EQ( ast, nullptr );
+//}
+//
+//TEST_F( ParserTest, semicolon ) {
+//  std::string source = R""""(;)"""";
+//  Tree ast = parser.parseString( source, "semicolon.dsp" );
+//  ASSERT_EQ( ast, ::Faust::Primitive::Symbols::asTree().nil );
+//}
+//
+//TEST_F( ParserTest, identifier ) {
+//  std::string source = R""""(process=_;)"""";
+//  Tree ast = parser.parseString( source, "identity.dsp" );
+//  ASSERT_NE( ast, nullptr );
+//  std::stringstream pprint;
+//  pprint << boxpp(ast);
+//  std::string printed(pprint.str());
+//  std::cout << pprint.str() << std::endl;
+//}
+//
+//TEST_F( ParserTest, function ) {
+//  std::string source = R""""(somename(y)=x*y)"""";
+//  Tree ast = parser.parseString( source, "function.dsp" );
+//  ASSERT_NE( ast, nullptr );
+//  std::stringstream pprint;
+//  pprint << boxpp(ast);
+//  std::cout << pprint.str() << std::endl;
+//}
+
+/********** Errors **********/
+ 
+TEST_F( ParserTest, badExpression ) {
+  std::string source = R""""( process = )"""";
+  Tree ast = parser.parseString( source, "bad_expression.dsp" );
   ASSERT_EQ( ast, nullptr );
 }
-
-TEST_F( ParserTest, semicolon ) {
-  std::string source = R""""(;)"""";
-  Tree ast = parser.parseString( source, "semicolon.dsp" );
-  ASSERT_EQ( ast, ::Faust::Primitive::Symbols::asTree().nil );
-}
-
-TEST_F( ParserTest, identifier ) {
-  std::string source = R""""(process=_;)"""";
-  Tree ast = parser.parseString( source, "identity.dsp" );
-  ASSERT_NE( ast, nullptr );
-  std::stringstream pprint;
-  pprint << boxpp(ast);
-  std::string printed(pprint.str());
-  std::cout << pprint.str() << std::endl;
-}
-
-TEST_F( ParserTest, function ) {
-  std::string source = R""""(somename(y)=x*y)"""";
-  Tree ast = parser.parseString( source, "function.dsp" );
-  ASSERT_NE( ast, nullptr );
-  std::stringstream pprint;
-  pprint << boxpp(ast);
-  std::cout << pprint.str() << std::endl;
-}
-

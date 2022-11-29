@@ -15,7 +15,7 @@
 
 %define parse.assert /* runtime assertions to catch invalid uses */
 %define parse.trace /* set yydebug = 1 to print trace to stderr */
-%define parse.error verbose /* simple, detailed, verbose */
+%define parse.error custom /* simple, detailed, verbose, custom   */
 %define parse.lac full /* look-ahead correction (5.8.3 LAC) */
 
 %param {Implementation& self}
@@ -27,7 +27,7 @@
 
 %initial-action
 {
-  self._location.streamName() = self._streamName;
+  self.location().streamName() = self._streamName;
 };
 
 %code requires { /* Faust requires */
@@ -386,6 +386,8 @@
 %type <Tree> statement.box.identifier.as.tree
 %type <Tree> statement.definition
 %type <Tree> statement.definition.assignment
+%type <std::string> statement.definition.assignment.operator
+%type <std::string> statement.definition.assignment.terminal
 %type <Tree> statement.definition.function
 %type <Tree> statement.definition.function.arg
 %type <Tree> statement.definition.function.args
@@ -1735,8 +1737,16 @@ statement:
         $$->location() = @$;
       }
 
+    statement.definition.assignment.operator:
+        DEF
+
+    statement.definition.assignment.terminal:
+        ENDDEF
+
     statement.definition.assignment:
-        statement.box.identifier.as.tree DEF expression ENDDEF {
+        statement.box.identifier.as.tree
+        statement.definition.assignment.operator
+        expression statement.definition.assignment.terminal {
           $$ = cons(
             $[statement.box.identifier.as.tree],
             ::cons( ::Faust::Primitive::Symbols::asTree().nil, $expression )

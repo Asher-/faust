@@ -707,6 +707,8 @@ namespace Faust { namespace Compiler { namespace Parser {
       // primitive.string.quoted
       // primitive.string.unquoted
       // primitive.string.tag
+      // statement.definition.assignment.operator
+      // statement.definition.assignment.terminal
       char dummy5[sizeof (std::string)];
 
       // primitive.type.number.list.as.tree
@@ -1184,33 +1186,35 @@ namespace Faust { namespace Compiler { namespace Parser {
         S_263_statement_definition_function_args_append = 263, // statement.definition.function.args.append
         S_264_statement_definition_function_declaration = 264, // statement.definition.function.declaration
         S_265_statement_definition_function = 265, // statement.definition.function
-        S_266_statement_definition_assignment = 266, // statement.definition.assignment
-        S_267_statement_definition_with = 267,   // statement.definition.with
-        S_268_statement_definition_list = 268,   // statement.definition.list
-        S_269_statement_definition_list_start = 269, // statement.definition.list.start
-        S_270_statement_definition_list_start_qualified = 270, // statement.definition.list.start.qualified
-        S_271_statement_definition_list_append = 271, // statement.definition.list.append
-        S_272_statement_definition_list_append_qualified = 272, // statement.definition.list.append.qualified
-        S_273_statement_declare_metadata = 273,  // statement.declare.metadata
-        S_274_statement_declare_feature_metadata = 274, // statement.declare.feature.metadata
-        S_275_statement_declare_doc = 275,       // statement.declare.doc
-        S_276_statement_identifier_as_tree = 276, // statement.identifier.as.tree
-        S_277_statement_box_identifier_as_tree = 277, // statement.box.identifier.as.tree
-        S_278_statement_foreign_function_identifier_as_tree = 278, // statement.foreign.function.identifier.as.tree
-        S_279_statement_import = 279,            // statement.import
-        S_280_statement_list = 280,              // statement.list
-        S_281_statement_list_start = 281,        // statement.list.start
-        S_282_statement_list_start_qualified = 282, // statement.list.start.qualified
-        S_283_statement_list_append = 283,       // statement.list.append
-        S_284_statement_list_append_qualified = 284, // statement.list.append.qualified
-        S_285_statement_math_precision = 285,    // statement.math.precision
-        S_286_statement_math_precision_list = 286, // statement.math.precision.list
-        S_287_statement_math_precision_list_start = 287, // statement.math.precision.list.start
-        S_288_statement_math_precision_list_append = 288, // statement.math.precision.list.append
-        S_289_statement_signal_pattern_rule = 289, // statement.signal.pattern.rule
-        S_290_statement_signal_pattern_rule_list = 290, // statement.signal.pattern.rule.list
-        S_291_statement_signal_pattern_rule_list_start = 291, // statement.signal.pattern.rule.list.start
-        S_292_statement_signal_pattern_rule_list_append = 292 // statement.signal.pattern.rule.list.append
+        S_266_statement_definition_assignment_operator = 266, // statement.definition.assignment.operator
+        S_267_statement_definition_assignment_terminal = 267, // statement.definition.assignment.terminal
+        S_268_statement_definition_assignment = 268, // statement.definition.assignment
+        S_269_statement_definition_with = 269,   // statement.definition.with
+        S_270_statement_definition_list = 270,   // statement.definition.list
+        S_271_statement_definition_list_start = 271, // statement.definition.list.start
+        S_272_statement_definition_list_start_qualified = 272, // statement.definition.list.start.qualified
+        S_273_statement_definition_list_append = 273, // statement.definition.list.append
+        S_274_statement_definition_list_append_qualified = 274, // statement.definition.list.append.qualified
+        S_275_statement_declare_metadata = 275,  // statement.declare.metadata
+        S_276_statement_declare_feature_metadata = 276, // statement.declare.feature.metadata
+        S_277_statement_declare_doc = 277,       // statement.declare.doc
+        S_278_statement_identifier_as_tree = 278, // statement.identifier.as.tree
+        S_279_statement_box_identifier_as_tree = 279, // statement.box.identifier.as.tree
+        S_280_statement_foreign_function_identifier_as_tree = 280, // statement.foreign.function.identifier.as.tree
+        S_281_statement_import = 281,            // statement.import
+        S_282_statement_list = 282,              // statement.list
+        S_283_statement_list_start = 283,        // statement.list.start
+        S_284_statement_list_start_qualified = 284, // statement.list.start.qualified
+        S_285_statement_list_append = 285,       // statement.list.append
+        S_286_statement_list_append_qualified = 286, // statement.list.append.qualified
+        S_287_statement_math_precision = 287,    // statement.math.precision
+        S_288_statement_math_precision_list = 288, // statement.math.precision.list
+        S_289_statement_math_precision_list_start = 289, // statement.math.precision.list.start
+        S_290_statement_math_precision_list_append = 290, // statement.math.precision.list.append
+        S_291_statement_signal_pattern_rule = 291, // statement.signal.pattern.rule
+        S_292_statement_signal_pattern_rule_list = 292, // statement.signal.pattern.rule.list
+        S_293_statement_signal_pattern_rule_list_start = 293, // statement.signal.pattern.rule.list.start
+        S_294_statement_signal_pattern_rule_list_append = 294 // statement.signal.pattern.rule.list.append
       };
     };
 
@@ -1256,10 +1260,10 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_287_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_288_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_289_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_290_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< IntType > (std::move (that.value));
         break;
 
@@ -1374,29 +1378,29 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
       case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_279_statement_import: // statement.import
-      case symbol_kind::S_280_statement_list: // statement.list
-      case symbol_kind::S_281_statement_list_start: // statement.list.start
-      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_283_statement_list_append: // statement.list.append
-      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_269_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_270_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_271_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_272_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_273_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_274_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_275_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_276_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_277_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_278_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_279_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_280_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_281_statement_import: // statement.import
+      case symbol_kind::S_282_statement_list: // statement.list
+      case symbol_kind::S_283_statement_list_start: // statement.list.start
+      case symbol_kind::S_284_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_285_statement_list_append: // statement.list.append
+      case symbol_kind::S_286_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_291_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_292_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_293_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_294_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.move< Tree > (std::move (that.value));
         break;
 
@@ -1545,6 +1549,8 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_267_statement_definition_assignment_terminal: // statement.definition.assignment.terminal
         value.move< std::string > (std::move (that.value));
         break;
 
@@ -1694,10 +1700,10 @@ switch (yykind)
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_287_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_288_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_289_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_290_statement_math_precision_list_append: // statement.math.precision.list.append
         value.template destroy< IntType > ();
         break;
 
@@ -1812,29 +1818,29 @@ switch (yykind)
       case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
       case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_279_statement_import: // statement.import
-      case symbol_kind::S_280_statement_list: // statement.list
-      case symbol_kind::S_281_statement_list_start: // statement.list.start
-      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_283_statement_list_append: // statement.list.append
-      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_269_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_270_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_271_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_272_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_273_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_274_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_275_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_276_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_277_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_278_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_279_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_280_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_281_statement_import: // statement.import
+      case symbol_kind::S_282_statement_list: // statement.list
+      case symbol_kind::S_283_statement_list_start: // statement.list.start
+      case symbol_kind::S_284_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_285_statement_list_append: // statement.list.append
+      case symbol_kind::S_286_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_291_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_292_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_293_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_294_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.template destroy< Tree > ();
         break;
 
@@ -1983,6 +1989,8 @@ switch (yykind)
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_267_statement_definition_assignment_terminal: // statement.definition.assignment.terminal
         value.template destroy< std::string > ();
         break;
 
@@ -2000,7 +2008,7 @@ switch (yykind)
       }
 
       /// The user-facing name of this symbol.
-      std::string name () const YY_NOEXCEPT
+      const char *name () const YY_NOEXCEPT
       {
         return BisonImplementation::symbol_name (this->kind ());
       }
@@ -2175,7 +2183,7 @@ switch (yykind)
 
     /// The user-facing name of the symbol whose (internal) number is
     /// YYSYMBOL.  No bounds checking.
-    static std::string symbol_name (symbol_kind_type yysymbol);
+    static const char *symbol_name (symbol_kind_type yysymbol);
 
     // Implementation of make_symbol for each token kind.
 #if 201103L <= YY_CPLUSPLUS
@@ -4290,17 +4298,16 @@ switch (yykind)
     /// Stored state numbers (used for stacks).
     typedef short state_type;
 
-    /// The arguments of the error message.
-    int yy_syntax_error_arguments_ (const context& yyctx,
-                                    symbol_kind_type yyarg[], int yyargn) const;
-
-    /// Generate an error message.
+    /// Report a syntax error
     /// \param yyctx     the context in which the error occurred.
-    virtual std::string yysyntax_error_ (const context& yyctx) const;
+    void report_syntax_error (const context& yyctx) const;
     /// Compute post-reduction state.
     /// \param yystate   the current state
     /// \param yysym     the nonterminal to push on the stack
+    public:
     static state_type yy_lr_goto_state_ (state_type yystate, int yysym);
+    private:
+
 
     /// Whether the given \c yypact_ value indicates a defaulted state.
     /// \param yyvalue   the value to check
@@ -4318,11 +4325,6 @@ switch (yykind)
     /// are valid, yet not members of the token_kind_type enum.
     static symbol_kind_type yytranslate_ (int t) YY_NOEXCEPT;
 
-    /// Convert the symbol name \a n to a form suitable for a diagnostic.
-    static std::string yytnamerr_ (const char *yystr);
-
-    /// For a symbol, its name in clear.
-    static const char* const yytname_[];
 
 
     // Tables.
@@ -4351,9 +4353,17 @@ switch (yykind)
     // YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
     // state STATE-NUM.
     static const short yystos_[];
+    public:
+    static auto& yystos() { return yystos_; }
+    private:
+
 
     // YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.
     static const short yyr1_[];
+    public:
+    static auto& yyr1() { return yyr1_; }
+    private:
+
 
     // YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.
     static const signed char yyr2_[];
@@ -4566,6 +4576,11 @@ switch (yykind)
 
     /// The stack.
     stack_type yystack_;
+    public:
+    stack_type& yystack() { return yystack_; }
+    const stack_type& yystack() const { return yystack_; }
+    private:
+
     /// The stack for LAC.
     /// Logically, the yy_lac_stack's lifetime is confined to the function
     /// yy_lac_check_. We just store it as a member of this class to hold
@@ -4597,8 +4612,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 936,     ///< Last index in yytable_.
-      yynnts_ = 155,  ///< Number of nonterminal symbols.
+      yylast_ = 943,     ///< Last index in yytable_.
+      yynnts_ = 157,  ///< Number of nonterminal symbols.
       yyfinal_ = 47 ///< Termination state number.
     };
 
@@ -4633,10 +4648,10 @@ switch (yykind)
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_287_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_288_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_289_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_290_statement_math_precision_list_append: // statement.math.precision.list.append
         value.copy< IntType > (YY_MOVE (that.value));
         break;
 
@@ -4751,29 +4766,29 @@ switch (yykind)
       case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
       case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_279_statement_import: // statement.import
-      case symbol_kind::S_280_statement_list: // statement.list
-      case symbol_kind::S_281_statement_list_start: // statement.list.start
-      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_283_statement_list_append: // statement.list.append
-      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_269_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_270_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_271_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_272_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_273_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_274_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_275_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_276_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_277_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_278_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_279_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_280_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_281_statement_import: // statement.import
+      case symbol_kind::S_282_statement_list: // statement.list
+      case symbol_kind::S_283_statement_list_start: // statement.list.start
+      case symbol_kind::S_284_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_285_statement_list_append: // statement.list.append
+      case symbol_kind::S_286_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_291_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_292_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_293_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_294_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.copy< Tree > (YY_MOVE (that.value));
         break;
 
@@ -4922,6 +4937,8 @@ switch (yykind)
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_267_statement_definition_assignment_terminal: // statement.definition.assignment.terminal
         value.copy< std::string > (YY_MOVE (that.value));
         break;
 
@@ -4971,10 +4988,10 @@ switch (yykind)
       case symbol_kind::S_INT: // INT
       case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
       case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_285_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_286_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_287_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_288_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_287_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_288_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_289_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_290_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< IntType > (YY_MOVE (s.value));
         break;
 
@@ -5089,29 +5106,29 @@ switch (yykind)
       case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
       case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
       case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_266_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_267_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_268_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_269_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_270_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_271_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_272_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_273_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_274_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_275_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_276_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_277_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_278_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_279_statement_import: // statement.import
-      case symbol_kind::S_280_statement_list: // statement.list
-      case symbol_kind::S_281_statement_list_start: // statement.list.start
-      case symbol_kind::S_282_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_283_statement_list_append: // statement.list.append
-      case symbol_kind::S_284_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_289_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_290_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_291_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_269_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_270_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_271_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_272_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_273_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_274_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_275_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_276_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_277_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_278_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_279_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_280_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_281_statement_import: // statement.import
+      case symbol_kind::S_282_statement_list: // statement.list
+      case symbol_kind::S_283_statement_list_start: // statement.list.start
+      case symbol_kind::S_284_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_285_statement_list_append: // statement.list.append
+      case symbol_kind::S_286_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_291_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_292_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_293_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_294_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.move< Tree > (YY_MOVE (s.value));
         break;
 
@@ -5260,6 +5277,8 @@ switch (yykind)
       case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
       case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
       case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_267_statement_definition_assignment_terminal: // statement.definition.assignment.terminal
         value.move< std::string > (YY_MOVE (s.value));
         break;
 
