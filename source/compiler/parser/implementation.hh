@@ -34,6 +34,7 @@
 #include "compiler/parser/lexer/implementation.hh"
 #include "compiler/parser/bison/implementation.hh"
 #include "compiler/parser/abstract/implementation.hh"
+#include "compiler/parser/bison/transitions.hh"
 
 #include "compiler/block_diagram/boxes/boxes.hh"
 
@@ -220,7 +221,8 @@ namespace Faust {
           // now we want to create a fake location to append to parts
           // it will hold all the possible matches we are looking for (from state)
           
-          auto state = _parser.yy_lr_goto_state_( stack[2].state, _parser.yyr1()[expected_tokens[0]]);
+          auto state = stack[0].state;
+          const auto& transitions = ::Faust::Compiler::Parser::transitions().at(53);
  
           auto symbol = YY_CAST(BisonImplementation::symbol_kind_type, _parser.yystos()[+state]);
           auto symbol_name = _parser.symbol_name(symbol);
