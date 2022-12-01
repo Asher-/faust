@@ -27,6 +27,8 @@
 #include <map>
 #include <vector>
 
+#include "compiler/errors/exception.hh"
+
 namespace Faust {
   namespace Compiler {
     namespace Parser {
@@ -35,7 +37,7 @@ namespace Faust {
       {
         Context() = default;
         Context(
-          const std::string           in_symbol,
+          const std::string&               in_symbol,
           const std::vector<std::string>&  matched_parts,
           const std::vector<std::string>&  expected_parts
         )
@@ -52,6 +54,14 @@ namespace Faust {
       struct Transition
       {
         Transition() = default;
+        Transition( /* States with only error have no context (and should never match). */
+          const std::map<std::string, int>& tokens,
+          const std::map<std::string, int>& symbols
+        )
+        :
+          tokens( tokens ),
+          symbols( symbols )
+        { throw faustexception("Should never have gotten here."); }
         Transition(
           const std::vector<Context>&       contexts,
           const std::map<std::string, int>& tokens,

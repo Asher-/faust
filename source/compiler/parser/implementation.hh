@@ -98,12 +98,12 @@ namespace Faust {
 
           _parser.set_debug_level( _traceParsing );
 
-          _result = _parser();
+          _errorCount = _parser();
           _lexer = nullptr;
 
-          if (_result) {
+          if (_errorCount) {
               std::stringstream error;
-              error << "ERROR : parse code = " << _result << endl;
+              error << "ERROR : parse code = " << _errorCount << endl;
               throw faustexception(error.str());
           }
 
@@ -310,9 +310,30 @@ namespace Faust {
         //----------------------------------------------------------
         int str2int(const char* str);
         
+        std::string& streamName() { return _streamName; }
+        const std::string& streamName() const { return _streamName; }
+
+        Tree& ast() { return _ast; }
+        const Tree& ast() const { return _ast; }
+
+        Lexer*& lexer() { return _lexer; }
+        Lexer* const& lexer() const { return _lexer; }
+
         Location& location() { return _location; }
         const Location& location() const { return _location; }
-        
+
+        int& errorCount() { return _errorCount; }
+        const int& errorCount() const { return _errorCount; }
+
+        bool& stripDocSwitch() { return _stripDocSwitch; }
+        const bool& stripDocSwitch() const { return _stripDocSwitch; }
+
+        bool& lstDependenciesSwitch() { return _lstDependenciesSwitch; }
+        const bool& lstDependenciesSwitch() const { return _lstDependenciesSwitch; }
+
+        bool& lstDistributedSwitch() { return _lstDistributedSwitch; }
+        const bool& lstDistributedSwitch() const { return _lstDistributedSwitch; }
+
 
 
 
@@ -324,7 +345,7 @@ namespace Faust {
         Lexer* _lexer = nullptr;
         AbstractParser _parser;
         Location _location;
-        int _result = 0;
+        int _errorCount = 0;
         Tree _ast = nullptr;
     
         // From gGlobal - for now we simply mirror
@@ -335,7 +356,6 @@ namespace Faust {
         bool _lstDependenciesSwitch = true;
         bool _lstDistributedSwitch = true;
 
-        
       };
 
 

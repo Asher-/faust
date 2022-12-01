@@ -52,6 +52,8 @@ OUTPUT_CPP_TOP="
 
 =INCLUDE_GUARD_TOP=
 
+#include \"compiler/errors/exception.hh\"
+
 namespace Faust {
   namespace Compiler {
     namespace Parser {
@@ -70,7 +72,7 @@ TRANSITION_CLASS="
       {
         Context() = default;
         Context(
-          const std::string           in_symbol,
+          const std::string&               in_symbol,
           const std::vector<std::string>&  matched_parts,
           const std::vector<std::string>&  expected_parts
         )
@@ -87,6 +89,14 @@ TRANSITION_CLASS="
       struct Transition
       {
         Transition() = default;
+        Transition( /* States with only error have no context (and should never match). */
+          const std::map<std::string, int>& tokens,
+          const std::map<std::string, int>& symbols
+        )
+        :
+          tokens( tokens ),
+          symbols( symbols )
+        { throw faustexception(\"Should never have gotten here.\"); }
         Transition(
           const std::vector<Context>&       contexts,
           const std::map<std::string, int>& tokens,
@@ -104,7 +114,7 @@ TRANSITION_CLASS="
 "
 
 # Create transitions.hh with all %verbose .output lines that include "State" or "go to".
-${GGREP} -P '(?=State|•|go to)' ${BISON_DETAIL_OUTPUT} > ${TRANSITIONS_FILE_CPP}
+${GGREP} -P -v 'error' ${BISON_DETAIL_OUTPUT} | ${GGREP} -P '(?=State|•|go to)' > ${TRANSITIONS_FILE_CPP}
 echo "/* std::vector<std::map<std::string,int>> */" >> ${TRANSITIONS_FILE_CPP}
 # Add brackets to state description.
 ${PERL} -i -p0e  's/((^.*•.*\n)+)/  \{\n$1  \}\n/mg' ${TRANSITIONS_FILE_CPP}
@@ -128,6 +138,12 @@ ${PERL} -i -p0e  's/^\s+[0-9]+ ([A-Za-z0-9 \$\|\._]*)(:|\|) ([A-Za-z0-9 \._]*) ?
 ${PERL} -i -p0e  's/(\}\n)(?=State [0-9]+|\/\* std::vector<std::map<std::string,int>> \*\/)/$1\}\n$2/mg' ${TRANSITIONS_FILE_CPP}
 # Add State open bracket to each State
 ${PERL} -i -p0e  's/(State [0-9]+)/\{ \/\* $1 \*\//mg' ${TRANSITIONS_FILE_CPP}
+# Add empty Context to error states
+${PERL} -i -p0e  's/(\{ \/\* State [0-9]+ \*\/)(?!\n  \{\n    Context)/$1\n  \{\n    Context\(\n      \"error\",\n      \{\}\n      \{\}\n    \)\n  \}/mg' ${TRANSITIONS_FILE_CPP}
+# Add empty tokens and symbols to error states with neither.
+${PERL} -i -p0e  's/(\)\s+\})(?=\s+\{ \/\* State)/$1\n  \{\}\n  \{\}\n\}/mg' ${TRANSITIONS_FILE_CPP}
+# Add empty symbols to error states with only tokens.
+${PERL} -i -p0e  's/([A-Z0-9_]+\", [0-9]+\}\n\s+\}\n)(\})/$1  \{\}\n$2/mg' ${TRANSITIONS_FILE_CPP}
 # Reformat Context parts
 #   Convert spaced strings to quoted strings
 ${PERL} -i -p0e  's/([A-Za-z0-9\._]+)\s+(?=[A-Za-z0-9\s.Z_]*\")/"$1", /mg' ${TRANSITIONS_FILE_CPP}

@@ -525,6 +525,12 @@ namespace Faust { namespace Compiler { namespace Parser {
       // primitive.ui.vbargraph
       // primitive.ui.hbargraph
       // primitive.foreign.function
+      // primitive.foreign.function.signature.names.1.args.0
+      // primitive.foreign.function.signature.names.1.args.list
+      // primitive.foreign.function.signature.names.2.args.0
+      // primitive.foreign.function.signature.names.2.args.list
+      // primitive.foreign.function.signature.names.3.args.0
+      // primitive.foreign.function.signature.names.3.args.list
       // primitive.foreign.function.signature
       // primitive.foreign.constant
       // primitive.foreign.variable
@@ -565,6 +571,9 @@ namespace Faust { namespace Compiler { namespace Parser {
 
       // doc.list
       // doc.attribute.list
+      // doc.attribute.definition.dependencies
+      // doc.attribute.definition.doc.tags
+      // doc.attribute.definition.distributed
       // doc.attribute.definition
       // doc.attribute.value
       char dummy4[sizeof (bool)];
@@ -1068,153 +1077,162 @@ namespace Faust { namespace Compiler { namespace Parser {
         S_145_doc_metadata = 145,                // doc.metadata
         S_146_doc_list = 146,                    // doc.list
         S_147_doc_attribute_list = 147,          // doc.attribute.list
-        S_148_doc_attribute_definition = 148,    // doc.attribute.definition
-        S_149_doc_attribute_value = 149,         // doc.attribute.value
-        S_expression = 150,                      // expression
-        S_151_expression_component = 151,        // expression.component
-        S_152_expression_composition = 152,      // expression.composition
-        S_153_expression_composition_parallel = 153, // expression.composition.parallel
-        S_154_expression_composition_serial = 154, // expression.composition.serial
-        S_155_expression_composition_mix = 155,  // expression.composition.mix
-        S_156_expression_composition_recursive = 156, // expression.composition.recursive
-        S_157_expression_composition_sequence = 157, // expression.composition.sequence
-        S_158_expression_composition_split = 158, // expression.composition.split
-        S_159_expression_environment = 159,      // expression.environment
-        S_160_expression_infix = 160,            // expression.infix
-        S_161_expression_infix_definitions_substitution = 161, // expression.infix.definitions.substitution
-        S_162_expression_infix_environment_access = 162, // expression.infix.environment.access
-        S_163_expression_infix_math = 163,       // expression.infix.math
-        S_164_expression_infix_math_algebra = 164, // expression.infix.math.algebra
-        S_165_expression_infix_math_comparison = 165, // expression.infix.math.comparison
-        S_166_expression_infix_math_logic = 166, // expression.infix.math.logic
-        S_167_expression_infix_math_shift = 167, // expression.infix.math.shift
-        S_168_expression_infix_prefix = 168,     // expression.infix.prefix
-        S_169_expression_infix_signal_delay = 169, // expression.infix.signal.delay
-        S_170_expression_iterate_parallel = 170, // expression.iterate.parallel
-        S_171_expression_iterate_sequence = 171, // expression.iterate.sequence
-        S_172_expression_iterate_sum = 172,      // expression.iterate.sum
-        S_173_expression_iterate_product = 173,  // expression.iterate.product
-        S_174_expression_lambda = 174,           // expression.lambda
-        S_175_expression_lambda_params = 175,    // expression.lambda.params
-        S_176_expression_lambda_params_start = 176, // expression.lambda.params.start
-        S_177_expression_lambda_params_append = 177, // expression.lambda.params.append
-        S_178_expression_letrec = 178,           // expression.letrec
-        S_179_expression_letrec_list = 179,      // expression.letrec.list
-        S_180_expression_letrec_list_start = 180, // expression.letrec.list.start
-        S_181_expression_letrec_list_append = 181, // expression.letrec.list.append
-        S_182_expression_letrec_equation = 182,  // expression.letrec.equation
-        S_183_expression_letrec_equation_name = 183, // expression.letrec.equation.name
-        S_184_expression_library = 184,          // expression.library
-        S_185_expression_math = 185,             // expression.math
-        S_186_expression_math_comparison = 186,  // expression.math.comparison
-        S_187_expression_math_rounding = 187,    // expression.math.rounding
-        S_188_expression_math_signal = 188,      // expression.math.signal
-        S_189_expression_math_signal_algebra = 189, // expression.math.signal.algebra
-        S_190_expression_math_signal_shift = 190, // expression.math.signal.shift
-        S_191_expression_math_signal_power = 191, // expression.math.signal.power
-        S_192_expression_math_scalar_as_tree = 192, // expression.math.scalar.as.tree
-        S_193_expression_math_scalar_int = 193,  // expression.math.scalar.int
-        S_194_expression_math_scalar_int_as_tree = 194, // expression.math.scalar.int.as.tree
-        S_195_expression_math_scalar_float = 195, // expression.math.scalar.float
-        S_196_expression_math_scalar_float_as_tree = 196, // expression.math.scalar.float.as.tree
-        S_197_expression_math_trigonometry_as_tree = 197, // expression.math.trigonometry.as.tree
-        S_198_expression_parenthesis = 198,      // expression.parenthesis
-        S_199_expression_signal = 199,           // expression.signal
-        S_200_expression_signal_control = 200,   // expression.signal.control
-        S_201_expression_signal_delay = 201,     // expression.signal.delay
-        S_202_expression_signal_logic = 202,     // expression.signal.logic
-        S_primitive = 203,                       // primitive
-        S_204_primitive_foreign = 204,           // primitive.foreign
-        S_205_primitive_type_number_as_tree = 205, // primitive.type.number.as.tree
-        S_206_primitive_type_number_int = 206,   // primitive.type.number.int
-        S_207_primitive_type_number_float = 207, // primitive.type.number.float
-        S_208_primitive_type_number_int_as_tree = 208, // primitive.type.number.int.as.tree
-        S_209_primitive_type_number_float_as_tree = 209, // primitive.type.number.float.as.tree
-        S_210_primitive_string_quoted = 210,     // primitive.string.quoted
-        S_211_primitive_string_quoted_as_tree = 211, // primitive.string.quoted.as.tree
-        S_212_primitive_string_unquoted = 212,   // primitive.string.unquoted
-        S_213_primitive_string_unquoted_as_tree = 213, // primitive.string.unquoted.as.tree
-        S_214_primitive_string_tag = 214,        // primitive.string.tag
-        S_215_primitive_string_tag_as_tree = 215, // primitive.string.tag.as.tree
-        S_216_primitive_signal = 216,            // primitive.signal
-        S_217_primitive_signal_input_wire = 217, // primitive.signal.input.wire
-        S_218_primitive_signal_input_terminate = 218, // primitive.signal.input.terminate
-        S_219_primitive_type = 219,              // primitive.type
-        S_220_primitive_type_cast_number = 220,  // primitive.type.cast.number
-        S_221_primitive_type_cast_number_int = 221, // primitive.type.cast.number.int
-        S_222_primitive_type_cast_number_float = 222, // primitive.type.cast.number.float
-        S_223_primitive_type_cast_any = 223,     // primitive.type.cast.any
-        S_224_primitive_type_number_int_list_member_as_tree = 224, // primitive.type.number.int.list.member.as.tree
-        S_225_primitive_type_number_list_as_tree = 225, // primitive.type.number.list.as.tree
-        S_226_primitive_type_number_list_member_as_tree = 226, // primitive.type.number.list.member.as.tree
-        S_227_primitive_type_number_list_start_as_tree = 227, // primitive.type.number.list.start.as.tree
-        S_228_primitive_type_number_list_append_as_tree = 228, // primitive.type.number.list.append.as.tree
-        S_229_primitive_type_number_float_list_member_as_tree = 229, // primitive.type.number.float.list.member.as.tree
-        S_230_primitive_signal_route = 230,      // primitive.signal.route
-        S_231_primitive_signal_route_implied_outputs = 231, // primitive.signal.route.implied.outputs
-        S_232_primitive_signal_route_implied_connections = 232, // primitive.signal.route.implied.connections
-        S_233_primitive_signal_route_explicit = 233, // primitive.signal.route.explicit
-        S_234_primitive_signal_source = 234,     // primitive.signal.source
-        S_235_primitive_signal_source_table = 235, // primitive.signal.source.table
-        S_236_primitive_signal_source_soundfile = 236, // primitive.signal.source.soundfile
-        S_237_primitive_signal_source_waveform_as_tree = 237, // primitive.signal.source.waveform.as.tree
-        S_238_primitive_type_list = 238,         // primitive.type.list
-        S_239_primitive_type_list_start = 239,   // primitive.type.list.start
-        S_240_primitive_type_list_append = 240,  // primitive.type.list.append
-        S_241_primitive_ui = 241,                // primitive.ui
-        S_242_primitive_ui_button = 242,         // primitive.ui.button
-        S_243_primitive_ui_checkbox = 243,       // primitive.ui.checkbox
-        S_244_primitive_ui_vslider = 244,        // primitive.ui.vslider
-        S_245_primitive_ui_hslider = 245,        // primitive.ui.hslider
-        S_246_primitive_ui_nentry = 246,         // primitive.ui.nentry
-        S_247_primitive_ui_vgroup = 247,         // primitive.ui.vgroup
-        S_248_primitive_ui_hgroup = 248,         // primitive.ui.hgroup
-        S_249_primitive_ui_tgroup = 249,         // primitive.ui.tgroup
-        S_250_primitive_ui_vbargraph = 250,      // primitive.ui.vbargraph
-        S_251_primitive_ui_hbargraph = 251,      // primitive.ui.hbargraph
-        S_252_primitive_foreign_function = 252,  // primitive.foreign.function
-        S_253_primitive_foreign_function_signature = 253, // primitive.foreign.function.signature
-        S_254_primitive_foreign_constant = 254,  // primitive.foreign.constant
-        S_255_primitive_foreign_variable = 255,  // primitive.foreign.variable
-        S_256_primitive_signal_inputs = 256,     // primitive.signal.inputs
-        S_257_primitive_signal_outputs = 257,    // primitive.signal.outputs
-        S_statement = 258,                       // statement
-        S_259_statement_definition = 259,        // statement.definition
-        S_260_statement_definition_function_arg = 260, // statement.definition.function.arg
-        S_261_statement_definition_function_args = 261, // statement.definition.function.args
-        S_262_statement_definition_function_args_start = 262, // statement.definition.function.args.start
-        S_263_statement_definition_function_args_append = 263, // statement.definition.function.args.append
-        S_264_statement_definition_function_declaration = 264, // statement.definition.function.declaration
-        S_265_statement_definition_function = 265, // statement.definition.function
-        S_266_statement_definition_assignment_operator = 266, // statement.definition.assignment.operator
-        S_267_statement_definition_assignment = 267, // statement.definition.assignment
-        S_268_statement_definition_with = 268,   // statement.definition.with
-        S_269_statement_definition_list = 269,   // statement.definition.list
-        S_270_statement_definition_list_start = 270, // statement.definition.list.start
-        S_271_statement_definition_list_start_qualified = 271, // statement.definition.list.start.qualified
-        S_272_statement_definition_list_append = 272, // statement.definition.list.append
-        S_273_statement_definition_list_append_qualified = 273, // statement.definition.list.append.qualified
-        S_274_statement_declare_metadata = 274,  // statement.declare.metadata
-        S_275_statement_declare_feature_metadata = 275, // statement.declare.feature.metadata
-        S_276_statement_declare_doc = 276,       // statement.declare.doc
-        S_277_statement_identifier_as_tree = 277, // statement.identifier.as.tree
-        S_278_statement_box_identifier_as_tree = 278, // statement.box.identifier.as.tree
-        S_279_statement_foreign_function_identifier_as_tree = 279, // statement.foreign.function.identifier.as.tree
-        S_280_statement_import = 280,            // statement.import
-        S_281_statement_list = 281,              // statement.list
-        S_282_statement_list_start = 282,        // statement.list.start
-        S_283_statement_list_start_qualified = 283, // statement.list.start.qualified
-        S_284_statement_list_append = 284,       // statement.list.append
-        S_285_statement_list_append_qualified = 285, // statement.list.append.qualified
-        S_286_statement_math_precision = 286,    // statement.math.precision
-        S_287_statement_math_precision_list = 287, // statement.math.precision.list
-        S_288_statement_math_precision_list_start = 288, // statement.math.precision.list.start
-        S_289_statement_math_precision_list_append = 289, // statement.math.precision.list.append
-        S_290_statement_signal_pattern_rule = 290, // statement.signal.pattern.rule
-        S_291_statement_signal_pattern_rule_list = 291, // statement.signal.pattern.rule.list
-        S_292_statement_signal_pattern_rule_list_start = 292, // statement.signal.pattern.rule.list.start
-        S_293_statement_signal_pattern_rule_list_append = 293, // statement.signal.pattern.rule.list.append
-        S_294_statement_terminal = 294           // statement.terminal
+        S_148_doc_attribute_definition_dependencies = 148, // doc.attribute.definition.dependencies
+        S_149_doc_attribute_definition_doc_tags = 149, // doc.attribute.definition.doc.tags
+        S_150_doc_attribute_definition_distributed = 150, // doc.attribute.definition.distributed
+        S_151_doc_attribute_definition = 151,    // doc.attribute.definition
+        S_152_doc_attribute_value = 152,         // doc.attribute.value
+        S_expression = 153,                      // expression
+        S_154_expression_component = 154,        // expression.component
+        S_155_expression_composition = 155,      // expression.composition
+        S_156_expression_composition_parallel = 156, // expression.composition.parallel
+        S_157_expression_composition_serial = 157, // expression.composition.serial
+        S_158_expression_composition_mix = 158,  // expression.composition.mix
+        S_159_expression_composition_recursive = 159, // expression.composition.recursive
+        S_160_expression_composition_sequence = 160, // expression.composition.sequence
+        S_161_expression_composition_split = 161, // expression.composition.split
+        S_162_expression_environment = 162,      // expression.environment
+        S_163_expression_infix = 163,            // expression.infix
+        S_164_expression_infix_definitions_substitution = 164, // expression.infix.definitions.substitution
+        S_165_expression_infix_environment_access = 165, // expression.infix.environment.access
+        S_166_expression_infix_math = 166,       // expression.infix.math
+        S_167_expression_infix_math_algebra = 167, // expression.infix.math.algebra
+        S_168_expression_infix_math_comparison = 168, // expression.infix.math.comparison
+        S_169_expression_infix_math_logic = 169, // expression.infix.math.logic
+        S_170_expression_infix_math_shift = 170, // expression.infix.math.shift
+        S_171_expression_infix_prefix = 171,     // expression.infix.prefix
+        S_172_expression_infix_signal_delay = 172, // expression.infix.signal.delay
+        S_173_expression_iterate_parallel = 173, // expression.iterate.parallel
+        S_174_expression_iterate_sequence = 174, // expression.iterate.sequence
+        S_175_expression_iterate_sum = 175,      // expression.iterate.sum
+        S_176_expression_iterate_product = 176,  // expression.iterate.product
+        S_177_expression_lambda = 177,           // expression.lambda
+        S_178_expression_lambda_params = 178,    // expression.lambda.params
+        S_179_expression_lambda_params_start = 179, // expression.lambda.params.start
+        S_180_expression_lambda_params_append = 180, // expression.lambda.params.append
+        S_181_expression_letrec = 181,           // expression.letrec
+        S_182_expression_letrec_list = 182,      // expression.letrec.list
+        S_183_expression_letrec_list_start = 183, // expression.letrec.list.start
+        S_184_expression_letrec_list_append = 184, // expression.letrec.list.append
+        S_185_expression_letrec_equation = 185,  // expression.letrec.equation
+        S_186_expression_letrec_equation_name = 186, // expression.letrec.equation.name
+        S_187_expression_library = 187,          // expression.library
+        S_188_expression_math = 188,             // expression.math
+        S_189_expression_math_comparison = 189,  // expression.math.comparison
+        S_190_expression_math_rounding = 190,    // expression.math.rounding
+        S_191_expression_math_signal = 191,      // expression.math.signal
+        S_192_expression_math_signal_algebra = 192, // expression.math.signal.algebra
+        S_193_expression_math_signal_shift = 193, // expression.math.signal.shift
+        S_194_expression_math_signal_power = 194, // expression.math.signal.power
+        S_195_expression_math_scalar_as_tree = 195, // expression.math.scalar.as.tree
+        S_196_expression_math_scalar_int = 196,  // expression.math.scalar.int
+        S_197_expression_math_scalar_int_as_tree = 197, // expression.math.scalar.int.as.tree
+        S_198_expression_math_scalar_float = 198, // expression.math.scalar.float
+        S_199_expression_math_scalar_float_as_tree = 199, // expression.math.scalar.float.as.tree
+        S_200_expression_math_trigonometry_as_tree = 200, // expression.math.trigonometry.as.tree
+        S_201_expression_parenthesis = 201,      // expression.parenthesis
+        S_202_expression_signal = 202,           // expression.signal
+        S_203_expression_signal_control = 203,   // expression.signal.control
+        S_204_expression_signal_delay = 204,     // expression.signal.delay
+        S_205_expression_signal_logic = 205,     // expression.signal.logic
+        S_primitive = 206,                       // primitive
+        S_207_primitive_foreign = 207,           // primitive.foreign
+        S_208_primitive_type_number_as_tree = 208, // primitive.type.number.as.tree
+        S_209_primitive_type_number_int = 209,   // primitive.type.number.int
+        S_210_primitive_type_number_float = 210, // primitive.type.number.float
+        S_211_primitive_type_number_int_as_tree = 211, // primitive.type.number.int.as.tree
+        S_212_primitive_type_number_float_as_tree = 212, // primitive.type.number.float.as.tree
+        S_213_primitive_string_quoted = 213,     // primitive.string.quoted
+        S_214_primitive_string_quoted_as_tree = 214, // primitive.string.quoted.as.tree
+        S_215_primitive_string_unquoted = 215,   // primitive.string.unquoted
+        S_216_primitive_string_unquoted_as_tree = 216, // primitive.string.unquoted.as.tree
+        S_217_primitive_string_tag = 217,        // primitive.string.tag
+        S_218_primitive_string_tag_as_tree = 218, // primitive.string.tag.as.tree
+        S_219_primitive_signal = 219,            // primitive.signal
+        S_220_primitive_signal_input_wire = 220, // primitive.signal.input.wire
+        S_221_primitive_signal_input_terminate = 221, // primitive.signal.input.terminate
+        S_222_primitive_type = 222,              // primitive.type
+        S_223_primitive_type_cast_number = 223,  // primitive.type.cast.number
+        S_224_primitive_type_cast_number_int = 224, // primitive.type.cast.number.int
+        S_225_primitive_type_cast_number_float = 225, // primitive.type.cast.number.float
+        S_226_primitive_type_cast_any = 226,     // primitive.type.cast.any
+        S_227_primitive_type_number_int_list_member_as_tree = 227, // primitive.type.number.int.list.member.as.tree
+        S_228_primitive_type_number_list_as_tree = 228, // primitive.type.number.list.as.tree
+        S_229_primitive_type_number_list_member_as_tree = 229, // primitive.type.number.list.member.as.tree
+        S_230_primitive_type_number_list_start_as_tree = 230, // primitive.type.number.list.start.as.tree
+        S_231_primitive_type_number_list_append_as_tree = 231, // primitive.type.number.list.append.as.tree
+        S_232_primitive_type_number_float_list_member_as_tree = 232, // primitive.type.number.float.list.member.as.tree
+        S_233_primitive_signal_route = 233,      // primitive.signal.route
+        S_234_primitive_signal_route_implied_outputs = 234, // primitive.signal.route.implied.outputs
+        S_235_primitive_signal_route_implied_connections = 235, // primitive.signal.route.implied.connections
+        S_236_primitive_signal_route_explicit = 236, // primitive.signal.route.explicit
+        S_237_primitive_signal_source = 237,     // primitive.signal.source
+        S_238_primitive_signal_source_table = 238, // primitive.signal.source.table
+        S_239_primitive_signal_source_soundfile = 239, // primitive.signal.source.soundfile
+        S_240_primitive_signal_source_waveform_as_tree = 240, // primitive.signal.source.waveform.as.tree
+        S_241_primitive_type_list = 241,         // primitive.type.list
+        S_242_primitive_type_list_start = 242,   // primitive.type.list.start
+        S_243_primitive_type_list_append = 243,  // primitive.type.list.append
+        S_244_primitive_ui = 244,                // primitive.ui
+        S_245_primitive_ui_button = 245,         // primitive.ui.button
+        S_246_primitive_ui_checkbox = 246,       // primitive.ui.checkbox
+        S_247_primitive_ui_vslider = 247,        // primitive.ui.vslider
+        S_248_primitive_ui_hslider = 248,        // primitive.ui.hslider
+        S_249_primitive_ui_nentry = 249,         // primitive.ui.nentry
+        S_250_primitive_ui_vgroup = 250,         // primitive.ui.vgroup
+        S_251_primitive_ui_hgroup = 251,         // primitive.ui.hgroup
+        S_252_primitive_ui_tgroup = 252,         // primitive.ui.tgroup
+        S_253_primitive_ui_vbargraph = 253,      // primitive.ui.vbargraph
+        S_254_primitive_ui_hbargraph = 254,      // primitive.ui.hbargraph
+        S_255_primitive_foreign_function = 255,  // primitive.foreign.function
+        S_256_primitive_foreign_function_signature_names_1_args_0 = 256, // primitive.foreign.function.signature.names.1.args.0
+        S_257_primitive_foreign_function_signature_names_1_args_list = 257, // primitive.foreign.function.signature.names.1.args.list
+        S_258_primitive_foreign_function_signature_names_2_args_0 = 258, // primitive.foreign.function.signature.names.2.args.0
+        S_259_primitive_foreign_function_signature_names_2_args_list = 259, // primitive.foreign.function.signature.names.2.args.list
+        S_260_primitive_foreign_function_signature_names_3_args_0 = 260, // primitive.foreign.function.signature.names.3.args.0
+        S_261_primitive_foreign_function_signature_names_3_args_list = 261, // primitive.foreign.function.signature.names.3.args.list
+        S_262_primitive_foreign_function_signature = 262, // primitive.foreign.function.signature
+        S_263_primitive_foreign_constant = 263,  // primitive.foreign.constant
+        S_264_primitive_foreign_variable = 264,  // primitive.foreign.variable
+        S_265_primitive_signal_inputs = 265,     // primitive.signal.inputs
+        S_266_primitive_signal_outputs = 266,    // primitive.signal.outputs
+        S_statement = 267,                       // statement
+        S_268_statement_definition = 268,        // statement.definition
+        S_269_statement_definition_function_arg = 269, // statement.definition.function.arg
+        S_270_statement_definition_function_args = 270, // statement.definition.function.args
+        S_271_statement_definition_function_args_start = 271, // statement.definition.function.args.start
+        S_272_statement_definition_function_args_append = 272, // statement.definition.function.args.append
+        S_273_statement_definition_function_declaration = 273, // statement.definition.function.declaration
+        S_274_statement_definition_function = 274, // statement.definition.function
+        S_275_statement_definition_assignment_operator = 275, // statement.definition.assignment.operator
+        S_276_statement_definition_assignment = 276, // statement.definition.assignment
+        S_277_statement_definition_with = 277,   // statement.definition.with
+        S_278_statement_definition_list = 278,   // statement.definition.list
+        S_279_statement_definition_list_start = 279, // statement.definition.list.start
+        S_280_statement_definition_list_start_qualified = 280, // statement.definition.list.start.qualified
+        S_281_statement_definition_list_append = 281, // statement.definition.list.append
+        S_282_statement_definition_list_append_qualified = 282, // statement.definition.list.append.qualified
+        S_283_statement_declare_metadata = 283,  // statement.declare.metadata
+        S_284_statement_declare_feature_metadata = 284, // statement.declare.feature.metadata
+        S_285_statement_declare_doc = 285,       // statement.declare.doc
+        S_286_statement_identifier_as_tree = 286, // statement.identifier.as.tree
+        S_287_statement_box_identifier_as_tree = 287, // statement.box.identifier.as.tree
+        S_288_statement_foreign_function_identifier_as_tree = 288, // statement.foreign.function.identifier.as.tree
+        S_289_statement_import = 289,            // statement.import
+        S_290_statement_list = 290,              // statement.list
+        S_291_statement_list_start = 291,        // statement.list.start
+        S_292_statement_list_start_qualified = 292, // statement.list.start.qualified
+        S_293_statement_list_append = 293,       // statement.list.append
+        S_294_statement_list_append_qualified = 294, // statement.list.append.qualified
+        S_295_statement_math_precision = 295,    // statement.math.precision
+        S_296_statement_math_precision_list = 296, // statement.math.precision.list
+        S_297_statement_math_precision_list_start = 297, // statement.math.precision.list.start
+        S_298_statement_math_precision_list_append = 298, // statement.math.precision.list.append
+        S_299_statement_signal_pattern_rule = 299, // statement.signal.pattern.rule
+        S_300_statement_signal_pattern_rule_list = 300, // statement.signal.pattern.rule.list
+        S_301_statement_signal_pattern_rule_list_start = 301, // statement.signal.pattern.rule.list.start
+        S_302_statement_signal_pattern_rule_list_append = 302, // statement.signal.pattern.rule.list.append
+        S_303_statement_terminal = 303           // statement.terminal
       };
     };
 
@@ -1252,18 +1270,18 @@ namespace Faust { namespace Compiler { namespace Parser {
         switch (this->kind ())
     {
       case symbol_kind::S_FLOAT: // FLOAT
-      case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
-      case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_198_expression_math_scalar_float: // expression.math.scalar.float
+      case symbol_kind::S_210_primitive_type_number_float: // primitive.type.number.float
         value.move< FloatType > (std::move (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
-      case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_286_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_287_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_288_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_289_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_196_expression_math_scalar_int: // expression.math.scalar.int
+      case symbol_kind::S_209_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_295_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_296_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_297_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_298_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< IntType > (std::move (that.value));
         break;
 
@@ -1273,141 +1291,150 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_145_doc_metadata: // doc.metadata
       case symbol_kind::S_expression: // expression
-      case symbol_kind::S_151_expression_component: // expression.component
-      case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
-      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
-      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
-      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_159_expression_environment: // expression.environment
-      case symbol_kind::S_160_expression_infix: // expression.infix
-      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
-      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_174_expression_lambda: // expression.lambda
-      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_178_expression_letrec: // expression.letrec
-      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_184_expression_library: // expression.library
-      case symbol_kind::S_185_expression_math: // expression.math
-      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_192_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
-      case symbol_kind::S_194_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
-      case symbol_kind::S_196_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
-      case symbol_kind::S_197_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
-      case symbol_kind::S_198_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_199_expression_signal: // expression.signal
-      case symbol_kind::S_200_expression_signal_control: // expression.signal.control
-      case symbol_kind::S_201_expression_signal_delay: // expression.signal.delay
-      case symbol_kind::S_202_expression_signal_logic: // expression.signal.logic
+      case symbol_kind::S_154_expression_component: // expression.component
+      case symbol_kind::S_155_expression_composition: // expression.composition
+      case symbol_kind::S_156_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_157_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_158_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_159_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_160_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_161_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_162_expression_environment: // expression.environment
+      case symbol_kind::S_163_expression_infix: // expression.infix
+      case symbol_kind::S_164_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_165_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_166_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_167_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_168_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_169_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_170_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_171_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_172_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_173_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_174_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_175_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_176_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_177_expression_lambda: // expression.lambda
+      case symbol_kind::S_178_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_179_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_180_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_181_expression_letrec: // expression.letrec
+      case symbol_kind::S_182_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_183_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_184_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_185_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_186_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_187_expression_library: // expression.library
+      case symbol_kind::S_188_expression_math: // expression.math
+      case symbol_kind::S_189_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_190_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_191_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_192_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_193_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_194_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_195_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
+      case symbol_kind::S_197_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
+      case symbol_kind::S_199_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
+      case symbol_kind::S_200_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
+      case symbol_kind::S_201_expression_parenthesis: // expression.parenthesis
+      case symbol_kind::S_202_expression_signal: // expression.signal
+      case symbol_kind::S_203_expression_signal_control: // expression.signal.control
+      case symbol_kind::S_204_expression_signal_delay: // expression.signal.delay
+      case symbol_kind::S_205_expression_signal_logic: // expression.signal.logic
       case symbol_kind::S_primitive: // primitive
-      case symbol_kind::S_204_primitive_foreign: // primitive.foreign
-      case symbol_kind::S_205_primitive_type_number_as_tree: // primitive.type.number.as.tree
-      case symbol_kind::S_208_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
-      case symbol_kind::S_209_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
-      case symbol_kind::S_211_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
-      case symbol_kind::S_213_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
-      case symbol_kind::S_215_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
-      case symbol_kind::S_216_primitive_signal: // primitive.signal
-      case symbol_kind::S_217_primitive_signal_input_wire: // primitive.signal.input.wire
-      case symbol_kind::S_218_primitive_signal_input_terminate: // primitive.signal.input.terminate
-      case symbol_kind::S_219_primitive_type: // primitive.type
-      case symbol_kind::S_220_primitive_type_cast_number: // primitive.type.cast.number
-      case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
-      case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
-      case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
-      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_241_primitive_ui: // primitive.ui
-      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_207_primitive_foreign: // primitive.foreign
+      case symbol_kind::S_208_primitive_type_number_as_tree: // primitive.type.number.as.tree
+      case symbol_kind::S_211_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
+      case symbol_kind::S_212_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
+      case symbol_kind::S_214_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
+      case symbol_kind::S_216_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
+      case symbol_kind::S_218_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
+      case symbol_kind::S_219_primitive_signal: // primitive.signal
+      case symbol_kind::S_220_primitive_signal_input_wire: // primitive.signal.input.wire
+      case symbol_kind::S_221_primitive_signal_input_terminate: // primitive.signal.input.terminate
+      case symbol_kind::S_222_primitive_type: // primitive.type
+      case symbol_kind::S_223_primitive_type_cast_number: // primitive.type.cast.number
+      case symbol_kind::S_224_primitive_type_cast_number_int: // primitive.type.cast.number.int
+      case symbol_kind::S_225_primitive_type_cast_number_float: // primitive.type.cast.number.float
+      case symbol_kind::S_226_primitive_type_cast_any: // primitive.type.cast.any
+      case symbol_kind::S_227_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_232_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_233_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_234_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_235_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_236_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_237_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_238_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_239_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_240_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_241_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_242_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_243_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_244_primitive_ui: // primitive.ui
+      case symbol_kind::S_245_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_246_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_247_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_248_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_249_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_250_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_251_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_252_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_253_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_254_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_255_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_256_primitive_foreign_function_signature_names_1_args_0: // primitive.foreign.function.signature.names.1.args.0
+      case symbol_kind::S_257_primitive_foreign_function_signature_names_1_args_list: // primitive.foreign.function.signature.names.1.args.list
+      case symbol_kind::S_258_primitive_foreign_function_signature_names_2_args_0: // primitive.foreign.function.signature.names.2.args.0
+      case symbol_kind::S_259_primitive_foreign_function_signature_names_2_args_list: // primitive.foreign.function.signature.names.2.args.list
+      case symbol_kind::S_260_primitive_foreign_function_signature_names_3_args_0: // primitive.foreign.function.signature.names.3.args.0
+      case symbol_kind::S_261_primitive_foreign_function_signature_names_3_args_list: // primitive.foreign.function.signature.names.3.args.list
+      case symbol_kind::S_262_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_263_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_264_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_265_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_266_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_259_statement_definition: // statement.definition
-      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_267_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_268_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_269_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_270_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_271_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_272_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_273_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_274_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_275_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_276_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_277_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_278_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_279_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_280_statement_import: // statement.import
-      case symbol_kind::S_281_statement_list: // statement.list
-      case symbol_kind::S_282_statement_list_start: // statement.list.start
-      case symbol_kind::S_283_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_284_statement_list_append: // statement.list.append
-      case symbol_kind::S_285_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_290_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_291_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_293_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition: // statement.definition
+      case symbol_kind::S_269_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_270_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_271_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_272_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_273_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_274_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_276_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_277_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_278_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_279_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_280_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_281_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_282_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_283_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_284_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_285_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_286_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_287_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_288_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_289_statement_import: // statement.import
+      case symbol_kind::S_290_statement_list: // statement.list
+      case symbol_kind::S_291_statement_list_start: // statement.list.start
+      case symbol_kind::S_292_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_293_statement_list_append: // statement.list.append
+      case symbol_kind::S_294_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_299_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_300_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_301_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_302_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.move< Tree > (std::move (that.value));
         break;
 
       case symbol_kind::S_146_doc_list: // doc.list
       case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_148_doc_attribute_definition_dependencies: // doc.attribute.definition.dependencies
+      case symbol_kind::S_149_doc_attribute_definition_doc_tags: // doc.attribute.definition.doc.tags
+      case symbol_kind::S_150_doc_attribute_definition_distributed: // doc.attribute.definition.distributed
+      case symbol_kind::S_151_doc_attribute_definition: // doc.attribute.definition
+      case symbol_kind::S_152_doc_attribute_value: // doc.attribute.value
         value.move< bool > (std::move (that.value));
         break;
 
@@ -1546,17 +1573,17 @@ namespace Faust { namespace Compiler { namespace Parser {
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
-      case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
-      case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
-      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
-      case symbol_kind::S_294_statement_terminal: // statement.terminal
+      case symbol_kind::S_213_primitive_string_quoted: // primitive.string.quoted
+      case symbol_kind::S_215_primitive_string_unquoted: // primitive.string.unquoted
+      case symbol_kind::S_217_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_275_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_303_statement_terminal: // statement.terminal
         value.move< std::string > (std::move (that.value));
         break;
 
-      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
-      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
-      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_230_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_231_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.move< std::vector<Tree> > (std::move (that.value));
         break;
 
@@ -1692,18 +1719,18 @@ namespace Faust { namespace Compiler { namespace Parser {
 switch (yykind)
     {
       case symbol_kind::S_FLOAT: // FLOAT
-      case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
-      case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_198_expression_math_scalar_float: // expression.math.scalar.float
+      case symbol_kind::S_210_primitive_type_number_float: // primitive.type.number.float
         value.template destroy< FloatType > ();
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
-      case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_286_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_287_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_288_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_289_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_196_expression_math_scalar_int: // expression.math.scalar.int
+      case symbol_kind::S_209_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_295_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_296_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_297_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_298_statement_math_precision_list_append: // statement.math.precision.list.append
         value.template destroy< IntType > ();
         break;
 
@@ -1713,141 +1740,150 @@ switch (yykind)
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_145_doc_metadata: // doc.metadata
       case symbol_kind::S_expression: // expression
-      case symbol_kind::S_151_expression_component: // expression.component
-      case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
-      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
-      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
-      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_159_expression_environment: // expression.environment
-      case symbol_kind::S_160_expression_infix: // expression.infix
-      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
-      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_174_expression_lambda: // expression.lambda
-      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_178_expression_letrec: // expression.letrec
-      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_184_expression_library: // expression.library
-      case symbol_kind::S_185_expression_math: // expression.math
-      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_192_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
-      case symbol_kind::S_194_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
-      case symbol_kind::S_196_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
-      case symbol_kind::S_197_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
-      case symbol_kind::S_198_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_199_expression_signal: // expression.signal
-      case symbol_kind::S_200_expression_signal_control: // expression.signal.control
-      case symbol_kind::S_201_expression_signal_delay: // expression.signal.delay
-      case symbol_kind::S_202_expression_signal_logic: // expression.signal.logic
+      case symbol_kind::S_154_expression_component: // expression.component
+      case symbol_kind::S_155_expression_composition: // expression.composition
+      case symbol_kind::S_156_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_157_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_158_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_159_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_160_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_161_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_162_expression_environment: // expression.environment
+      case symbol_kind::S_163_expression_infix: // expression.infix
+      case symbol_kind::S_164_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_165_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_166_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_167_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_168_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_169_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_170_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_171_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_172_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_173_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_174_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_175_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_176_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_177_expression_lambda: // expression.lambda
+      case symbol_kind::S_178_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_179_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_180_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_181_expression_letrec: // expression.letrec
+      case symbol_kind::S_182_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_183_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_184_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_185_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_186_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_187_expression_library: // expression.library
+      case symbol_kind::S_188_expression_math: // expression.math
+      case symbol_kind::S_189_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_190_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_191_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_192_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_193_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_194_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_195_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
+      case symbol_kind::S_197_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
+      case symbol_kind::S_199_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
+      case symbol_kind::S_200_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
+      case symbol_kind::S_201_expression_parenthesis: // expression.parenthesis
+      case symbol_kind::S_202_expression_signal: // expression.signal
+      case symbol_kind::S_203_expression_signal_control: // expression.signal.control
+      case symbol_kind::S_204_expression_signal_delay: // expression.signal.delay
+      case symbol_kind::S_205_expression_signal_logic: // expression.signal.logic
       case symbol_kind::S_primitive: // primitive
-      case symbol_kind::S_204_primitive_foreign: // primitive.foreign
-      case symbol_kind::S_205_primitive_type_number_as_tree: // primitive.type.number.as.tree
-      case symbol_kind::S_208_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
-      case symbol_kind::S_209_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
-      case symbol_kind::S_211_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
-      case symbol_kind::S_213_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
-      case symbol_kind::S_215_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
-      case symbol_kind::S_216_primitive_signal: // primitive.signal
-      case symbol_kind::S_217_primitive_signal_input_wire: // primitive.signal.input.wire
-      case symbol_kind::S_218_primitive_signal_input_terminate: // primitive.signal.input.terminate
-      case symbol_kind::S_219_primitive_type: // primitive.type
-      case symbol_kind::S_220_primitive_type_cast_number: // primitive.type.cast.number
-      case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
-      case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
-      case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
-      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_241_primitive_ui: // primitive.ui
-      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_207_primitive_foreign: // primitive.foreign
+      case symbol_kind::S_208_primitive_type_number_as_tree: // primitive.type.number.as.tree
+      case symbol_kind::S_211_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
+      case symbol_kind::S_212_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
+      case symbol_kind::S_214_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
+      case symbol_kind::S_216_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
+      case symbol_kind::S_218_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
+      case symbol_kind::S_219_primitive_signal: // primitive.signal
+      case symbol_kind::S_220_primitive_signal_input_wire: // primitive.signal.input.wire
+      case symbol_kind::S_221_primitive_signal_input_terminate: // primitive.signal.input.terminate
+      case symbol_kind::S_222_primitive_type: // primitive.type
+      case symbol_kind::S_223_primitive_type_cast_number: // primitive.type.cast.number
+      case symbol_kind::S_224_primitive_type_cast_number_int: // primitive.type.cast.number.int
+      case symbol_kind::S_225_primitive_type_cast_number_float: // primitive.type.cast.number.float
+      case symbol_kind::S_226_primitive_type_cast_any: // primitive.type.cast.any
+      case symbol_kind::S_227_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_232_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_233_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_234_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_235_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_236_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_237_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_238_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_239_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_240_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_241_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_242_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_243_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_244_primitive_ui: // primitive.ui
+      case symbol_kind::S_245_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_246_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_247_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_248_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_249_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_250_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_251_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_252_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_253_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_254_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_255_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_256_primitive_foreign_function_signature_names_1_args_0: // primitive.foreign.function.signature.names.1.args.0
+      case symbol_kind::S_257_primitive_foreign_function_signature_names_1_args_list: // primitive.foreign.function.signature.names.1.args.list
+      case symbol_kind::S_258_primitive_foreign_function_signature_names_2_args_0: // primitive.foreign.function.signature.names.2.args.0
+      case symbol_kind::S_259_primitive_foreign_function_signature_names_2_args_list: // primitive.foreign.function.signature.names.2.args.list
+      case symbol_kind::S_260_primitive_foreign_function_signature_names_3_args_0: // primitive.foreign.function.signature.names.3.args.0
+      case symbol_kind::S_261_primitive_foreign_function_signature_names_3_args_list: // primitive.foreign.function.signature.names.3.args.list
+      case symbol_kind::S_262_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_263_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_264_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_265_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_266_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_259_statement_definition: // statement.definition
-      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_267_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_268_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_269_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_270_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_271_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_272_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_273_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_274_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_275_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_276_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_277_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_278_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_279_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_280_statement_import: // statement.import
-      case symbol_kind::S_281_statement_list: // statement.list
-      case symbol_kind::S_282_statement_list_start: // statement.list.start
-      case symbol_kind::S_283_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_284_statement_list_append: // statement.list.append
-      case symbol_kind::S_285_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_290_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_291_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_293_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition: // statement.definition
+      case symbol_kind::S_269_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_270_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_271_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_272_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_273_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_274_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_276_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_277_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_278_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_279_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_280_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_281_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_282_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_283_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_284_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_285_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_286_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_287_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_288_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_289_statement_import: // statement.import
+      case symbol_kind::S_290_statement_list: // statement.list
+      case symbol_kind::S_291_statement_list_start: // statement.list.start
+      case symbol_kind::S_292_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_293_statement_list_append: // statement.list.append
+      case symbol_kind::S_294_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_299_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_300_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_301_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_302_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.template destroy< Tree > ();
         break;
 
       case symbol_kind::S_146_doc_list: // doc.list
       case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_148_doc_attribute_definition_dependencies: // doc.attribute.definition.dependencies
+      case symbol_kind::S_149_doc_attribute_definition_doc_tags: // doc.attribute.definition.doc.tags
+      case symbol_kind::S_150_doc_attribute_definition_distributed: // doc.attribute.definition.distributed
+      case symbol_kind::S_151_doc_attribute_definition: // doc.attribute.definition
+      case symbol_kind::S_152_doc_attribute_value: // doc.attribute.value
         value.template destroy< bool > ();
         break;
 
@@ -1986,17 +2022,17 @@ switch (yykind)
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
-      case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
-      case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
-      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
-      case symbol_kind::S_294_statement_terminal: // statement.terminal
+      case symbol_kind::S_213_primitive_string_quoted: // primitive.string.quoted
+      case symbol_kind::S_215_primitive_string_unquoted: // primitive.string.unquoted
+      case symbol_kind::S_217_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_275_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_303_statement_terminal: // statement.terminal
         value.template destroy< std::string > ();
         break;
 
-      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
-      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
-      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_230_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_231_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.template destroy< std::vector<Tree> > ();
         break;
 
@@ -4601,9 +4637,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 914,     ///< Last index in yytable_.
-      yynnts_ = 157,  ///< Number of nonterminal symbols.
-      yyfinal_ = 45 ///< Termination state number.
+      yylast_ = 4767,     ///< Last index in yytable_.
+      yynnts_ = 166,  ///< Number of nonterminal symbols.
+      yyfinal_ = 55 ///< Termination state number.
     };
 
 
@@ -4629,18 +4665,18 @@ switch (yykind)
     switch (this->kind ())
     {
       case symbol_kind::S_FLOAT: // FLOAT
-      case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
-      case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_198_expression_math_scalar_float: // expression.math.scalar.float
+      case symbol_kind::S_210_primitive_type_number_float: // primitive.type.number.float
         value.copy< FloatType > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
-      case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_286_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_287_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_288_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_289_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_196_expression_math_scalar_int: // expression.math.scalar.int
+      case symbol_kind::S_209_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_295_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_296_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_297_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_298_statement_math_precision_list_append: // statement.math.precision.list.append
         value.copy< IntType > (YY_MOVE (that.value));
         break;
 
@@ -4650,141 +4686,150 @@ switch (yykind)
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_145_doc_metadata: // doc.metadata
       case symbol_kind::S_expression: // expression
-      case symbol_kind::S_151_expression_component: // expression.component
-      case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
-      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
-      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
-      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_159_expression_environment: // expression.environment
-      case symbol_kind::S_160_expression_infix: // expression.infix
-      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
-      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_174_expression_lambda: // expression.lambda
-      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_178_expression_letrec: // expression.letrec
-      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_184_expression_library: // expression.library
-      case symbol_kind::S_185_expression_math: // expression.math
-      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_192_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
-      case symbol_kind::S_194_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
-      case symbol_kind::S_196_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
-      case symbol_kind::S_197_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
-      case symbol_kind::S_198_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_199_expression_signal: // expression.signal
-      case symbol_kind::S_200_expression_signal_control: // expression.signal.control
-      case symbol_kind::S_201_expression_signal_delay: // expression.signal.delay
-      case symbol_kind::S_202_expression_signal_logic: // expression.signal.logic
+      case symbol_kind::S_154_expression_component: // expression.component
+      case symbol_kind::S_155_expression_composition: // expression.composition
+      case symbol_kind::S_156_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_157_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_158_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_159_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_160_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_161_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_162_expression_environment: // expression.environment
+      case symbol_kind::S_163_expression_infix: // expression.infix
+      case symbol_kind::S_164_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_165_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_166_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_167_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_168_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_169_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_170_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_171_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_172_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_173_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_174_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_175_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_176_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_177_expression_lambda: // expression.lambda
+      case symbol_kind::S_178_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_179_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_180_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_181_expression_letrec: // expression.letrec
+      case symbol_kind::S_182_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_183_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_184_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_185_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_186_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_187_expression_library: // expression.library
+      case symbol_kind::S_188_expression_math: // expression.math
+      case symbol_kind::S_189_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_190_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_191_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_192_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_193_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_194_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_195_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
+      case symbol_kind::S_197_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
+      case symbol_kind::S_199_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
+      case symbol_kind::S_200_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
+      case symbol_kind::S_201_expression_parenthesis: // expression.parenthesis
+      case symbol_kind::S_202_expression_signal: // expression.signal
+      case symbol_kind::S_203_expression_signal_control: // expression.signal.control
+      case symbol_kind::S_204_expression_signal_delay: // expression.signal.delay
+      case symbol_kind::S_205_expression_signal_logic: // expression.signal.logic
       case symbol_kind::S_primitive: // primitive
-      case symbol_kind::S_204_primitive_foreign: // primitive.foreign
-      case symbol_kind::S_205_primitive_type_number_as_tree: // primitive.type.number.as.tree
-      case symbol_kind::S_208_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
-      case symbol_kind::S_209_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
-      case symbol_kind::S_211_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
-      case symbol_kind::S_213_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
-      case symbol_kind::S_215_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
-      case symbol_kind::S_216_primitive_signal: // primitive.signal
-      case symbol_kind::S_217_primitive_signal_input_wire: // primitive.signal.input.wire
-      case symbol_kind::S_218_primitive_signal_input_terminate: // primitive.signal.input.terminate
-      case symbol_kind::S_219_primitive_type: // primitive.type
-      case symbol_kind::S_220_primitive_type_cast_number: // primitive.type.cast.number
-      case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
-      case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
-      case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
-      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_241_primitive_ui: // primitive.ui
-      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_207_primitive_foreign: // primitive.foreign
+      case symbol_kind::S_208_primitive_type_number_as_tree: // primitive.type.number.as.tree
+      case symbol_kind::S_211_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
+      case symbol_kind::S_212_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
+      case symbol_kind::S_214_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
+      case symbol_kind::S_216_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
+      case symbol_kind::S_218_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
+      case symbol_kind::S_219_primitive_signal: // primitive.signal
+      case symbol_kind::S_220_primitive_signal_input_wire: // primitive.signal.input.wire
+      case symbol_kind::S_221_primitive_signal_input_terminate: // primitive.signal.input.terminate
+      case symbol_kind::S_222_primitive_type: // primitive.type
+      case symbol_kind::S_223_primitive_type_cast_number: // primitive.type.cast.number
+      case symbol_kind::S_224_primitive_type_cast_number_int: // primitive.type.cast.number.int
+      case symbol_kind::S_225_primitive_type_cast_number_float: // primitive.type.cast.number.float
+      case symbol_kind::S_226_primitive_type_cast_any: // primitive.type.cast.any
+      case symbol_kind::S_227_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_232_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_233_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_234_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_235_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_236_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_237_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_238_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_239_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_240_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_241_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_242_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_243_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_244_primitive_ui: // primitive.ui
+      case symbol_kind::S_245_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_246_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_247_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_248_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_249_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_250_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_251_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_252_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_253_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_254_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_255_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_256_primitive_foreign_function_signature_names_1_args_0: // primitive.foreign.function.signature.names.1.args.0
+      case symbol_kind::S_257_primitive_foreign_function_signature_names_1_args_list: // primitive.foreign.function.signature.names.1.args.list
+      case symbol_kind::S_258_primitive_foreign_function_signature_names_2_args_0: // primitive.foreign.function.signature.names.2.args.0
+      case symbol_kind::S_259_primitive_foreign_function_signature_names_2_args_list: // primitive.foreign.function.signature.names.2.args.list
+      case symbol_kind::S_260_primitive_foreign_function_signature_names_3_args_0: // primitive.foreign.function.signature.names.3.args.0
+      case symbol_kind::S_261_primitive_foreign_function_signature_names_3_args_list: // primitive.foreign.function.signature.names.3.args.list
+      case symbol_kind::S_262_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_263_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_264_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_265_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_266_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_259_statement_definition: // statement.definition
-      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_267_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_268_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_269_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_270_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_271_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_272_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_273_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_274_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_275_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_276_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_277_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_278_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_279_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_280_statement_import: // statement.import
-      case symbol_kind::S_281_statement_list: // statement.list
-      case symbol_kind::S_282_statement_list_start: // statement.list.start
-      case symbol_kind::S_283_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_284_statement_list_append: // statement.list.append
-      case symbol_kind::S_285_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_290_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_291_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_293_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition: // statement.definition
+      case symbol_kind::S_269_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_270_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_271_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_272_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_273_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_274_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_276_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_277_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_278_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_279_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_280_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_281_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_282_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_283_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_284_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_285_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_286_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_287_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_288_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_289_statement_import: // statement.import
+      case symbol_kind::S_290_statement_list: // statement.list
+      case symbol_kind::S_291_statement_list_start: // statement.list.start
+      case symbol_kind::S_292_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_293_statement_list_append: // statement.list.append
+      case symbol_kind::S_294_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_299_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_300_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_301_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_302_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.copy< Tree > (YY_MOVE (that.value));
         break;
 
       case symbol_kind::S_146_doc_list: // doc.list
       case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_148_doc_attribute_definition_dependencies: // doc.attribute.definition.dependencies
+      case symbol_kind::S_149_doc_attribute_definition_doc_tags: // doc.attribute.definition.doc.tags
+      case symbol_kind::S_150_doc_attribute_definition_distributed: // doc.attribute.definition.distributed
+      case symbol_kind::S_151_doc_attribute_definition: // doc.attribute.definition
+      case symbol_kind::S_152_doc_attribute_value: // doc.attribute.value
         value.copy< bool > (YY_MOVE (that.value));
         break;
 
@@ -4923,17 +4968,17 @@ switch (yykind)
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
-      case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
-      case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
-      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
-      case symbol_kind::S_294_statement_terminal: // statement.terminal
+      case symbol_kind::S_213_primitive_string_quoted: // primitive.string.quoted
+      case symbol_kind::S_215_primitive_string_unquoted: // primitive.string.unquoted
+      case symbol_kind::S_217_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_275_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_303_statement_terminal: // statement.terminal
         value.copy< std::string > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
-      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
-      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_230_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_231_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.copy< std::vector<Tree> > (YY_MOVE (that.value));
         break;
 
@@ -4969,18 +5014,18 @@ switch (yykind)
     switch (this->kind ())
     {
       case symbol_kind::S_FLOAT: // FLOAT
-      case symbol_kind::S_195_expression_math_scalar_float: // expression.math.scalar.float
-      case symbol_kind::S_207_primitive_type_number_float: // primitive.type.number.float
+      case symbol_kind::S_198_expression_math_scalar_float: // expression.math.scalar.float
+      case symbol_kind::S_210_primitive_type_number_float: // primitive.type.number.float
         value.move< FloatType > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_INT: // INT
-      case symbol_kind::S_193_expression_math_scalar_int: // expression.math.scalar.int
-      case symbol_kind::S_206_primitive_type_number_int: // primitive.type.number.int
-      case symbol_kind::S_286_statement_math_precision: // statement.math.precision
-      case symbol_kind::S_287_statement_math_precision_list: // statement.math.precision.list
-      case symbol_kind::S_288_statement_math_precision_list_start: // statement.math.precision.list.start
-      case symbol_kind::S_289_statement_math_precision_list_append: // statement.math.precision.list.append
+      case symbol_kind::S_196_expression_math_scalar_int: // expression.math.scalar.int
+      case symbol_kind::S_209_primitive_type_number_int: // primitive.type.number.int
+      case symbol_kind::S_295_statement_math_precision: // statement.math.precision
+      case symbol_kind::S_296_statement_math_precision_list: // statement.math.precision.list
+      case symbol_kind::S_297_statement_math_precision_list_start: // statement.math.precision.list.start
+      case symbol_kind::S_298_statement_math_precision_list_append: // statement.math.precision.list.append
         value.move< IntType > (YY_MOVE (s.value));
         break;
 
@@ -4990,141 +5035,150 @@ switch (yykind)
       case symbol_kind::S_143_doc_diagram: // doc.diagram
       case symbol_kind::S_145_doc_metadata: // doc.metadata
       case symbol_kind::S_expression: // expression
-      case symbol_kind::S_151_expression_component: // expression.component
-      case symbol_kind::S_152_expression_composition: // expression.composition
-      case symbol_kind::S_153_expression_composition_parallel: // expression.composition.parallel
-      case symbol_kind::S_154_expression_composition_serial: // expression.composition.serial
-      case symbol_kind::S_155_expression_composition_mix: // expression.composition.mix
-      case symbol_kind::S_156_expression_composition_recursive: // expression.composition.recursive
-      case symbol_kind::S_157_expression_composition_sequence: // expression.composition.sequence
-      case symbol_kind::S_158_expression_composition_split: // expression.composition.split
-      case symbol_kind::S_159_expression_environment: // expression.environment
-      case symbol_kind::S_160_expression_infix: // expression.infix
-      case symbol_kind::S_161_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
-      case symbol_kind::S_162_expression_infix_environment_access: // expression.infix.environment.access
-      case symbol_kind::S_163_expression_infix_math: // expression.infix.math
-      case symbol_kind::S_164_expression_infix_math_algebra: // expression.infix.math.algebra
-      case symbol_kind::S_165_expression_infix_math_comparison: // expression.infix.math.comparison
-      case symbol_kind::S_166_expression_infix_math_logic: // expression.infix.math.logic
-      case symbol_kind::S_167_expression_infix_math_shift: // expression.infix.math.shift
-      case symbol_kind::S_168_expression_infix_prefix: // expression.infix.prefix
-      case symbol_kind::S_169_expression_infix_signal_delay: // expression.infix.signal.delay
-      case symbol_kind::S_170_expression_iterate_parallel: // expression.iterate.parallel
-      case symbol_kind::S_171_expression_iterate_sequence: // expression.iterate.sequence
-      case symbol_kind::S_172_expression_iterate_sum: // expression.iterate.sum
-      case symbol_kind::S_173_expression_iterate_product: // expression.iterate.product
-      case symbol_kind::S_174_expression_lambda: // expression.lambda
-      case symbol_kind::S_175_expression_lambda_params: // expression.lambda.params
-      case symbol_kind::S_176_expression_lambda_params_start: // expression.lambda.params.start
-      case symbol_kind::S_177_expression_lambda_params_append: // expression.lambda.params.append
-      case symbol_kind::S_178_expression_letrec: // expression.letrec
-      case symbol_kind::S_179_expression_letrec_list: // expression.letrec.list
-      case symbol_kind::S_180_expression_letrec_list_start: // expression.letrec.list.start
-      case symbol_kind::S_181_expression_letrec_list_append: // expression.letrec.list.append
-      case symbol_kind::S_182_expression_letrec_equation: // expression.letrec.equation
-      case symbol_kind::S_183_expression_letrec_equation_name: // expression.letrec.equation.name
-      case symbol_kind::S_184_expression_library: // expression.library
-      case symbol_kind::S_185_expression_math: // expression.math
-      case symbol_kind::S_186_expression_math_comparison: // expression.math.comparison
-      case symbol_kind::S_187_expression_math_rounding: // expression.math.rounding
-      case symbol_kind::S_188_expression_math_signal: // expression.math.signal
-      case symbol_kind::S_189_expression_math_signal_algebra: // expression.math.signal.algebra
-      case symbol_kind::S_190_expression_math_signal_shift: // expression.math.signal.shift
-      case symbol_kind::S_191_expression_math_signal_power: // expression.math.signal.power
-      case symbol_kind::S_192_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
-      case symbol_kind::S_194_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
-      case symbol_kind::S_196_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
-      case symbol_kind::S_197_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
-      case symbol_kind::S_198_expression_parenthesis: // expression.parenthesis
-      case symbol_kind::S_199_expression_signal: // expression.signal
-      case symbol_kind::S_200_expression_signal_control: // expression.signal.control
-      case symbol_kind::S_201_expression_signal_delay: // expression.signal.delay
-      case symbol_kind::S_202_expression_signal_logic: // expression.signal.logic
+      case symbol_kind::S_154_expression_component: // expression.component
+      case symbol_kind::S_155_expression_composition: // expression.composition
+      case symbol_kind::S_156_expression_composition_parallel: // expression.composition.parallel
+      case symbol_kind::S_157_expression_composition_serial: // expression.composition.serial
+      case symbol_kind::S_158_expression_composition_mix: // expression.composition.mix
+      case symbol_kind::S_159_expression_composition_recursive: // expression.composition.recursive
+      case symbol_kind::S_160_expression_composition_sequence: // expression.composition.sequence
+      case symbol_kind::S_161_expression_composition_split: // expression.composition.split
+      case symbol_kind::S_162_expression_environment: // expression.environment
+      case symbol_kind::S_163_expression_infix: // expression.infix
+      case symbol_kind::S_164_expression_infix_definitions_substitution: // expression.infix.definitions.substitution
+      case symbol_kind::S_165_expression_infix_environment_access: // expression.infix.environment.access
+      case symbol_kind::S_166_expression_infix_math: // expression.infix.math
+      case symbol_kind::S_167_expression_infix_math_algebra: // expression.infix.math.algebra
+      case symbol_kind::S_168_expression_infix_math_comparison: // expression.infix.math.comparison
+      case symbol_kind::S_169_expression_infix_math_logic: // expression.infix.math.logic
+      case symbol_kind::S_170_expression_infix_math_shift: // expression.infix.math.shift
+      case symbol_kind::S_171_expression_infix_prefix: // expression.infix.prefix
+      case symbol_kind::S_172_expression_infix_signal_delay: // expression.infix.signal.delay
+      case symbol_kind::S_173_expression_iterate_parallel: // expression.iterate.parallel
+      case symbol_kind::S_174_expression_iterate_sequence: // expression.iterate.sequence
+      case symbol_kind::S_175_expression_iterate_sum: // expression.iterate.sum
+      case symbol_kind::S_176_expression_iterate_product: // expression.iterate.product
+      case symbol_kind::S_177_expression_lambda: // expression.lambda
+      case symbol_kind::S_178_expression_lambda_params: // expression.lambda.params
+      case symbol_kind::S_179_expression_lambda_params_start: // expression.lambda.params.start
+      case symbol_kind::S_180_expression_lambda_params_append: // expression.lambda.params.append
+      case symbol_kind::S_181_expression_letrec: // expression.letrec
+      case symbol_kind::S_182_expression_letrec_list: // expression.letrec.list
+      case symbol_kind::S_183_expression_letrec_list_start: // expression.letrec.list.start
+      case symbol_kind::S_184_expression_letrec_list_append: // expression.letrec.list.append
+      case symbol_kind::S_185_expression_letrec_equation: // expression.letrec.equation
+      case symbol_kind::S_186_expression_letrec_equation_name: // expression.letrec.equation.name
+      case symbol_kind::S_187_expression_library: // expression.library
+      case symbol_kind::S_188_expression_math: // expression.math
+      case symbol_kind::S_189_expression_math_comparison: // expression.math.comparison
+      case symbol_kind::S_190_expression_math_rounding: // expression.math.rounding
+      case symbol_kind::S_191_expression_math_signal: // expression.math.signal
+      case symbol_kind::S_192_expression_math_signal_algebra: // expression.math.signal.algebra
+      case symbol_kind::S_193_expression_math_signal_shift: // expression.math.signal.shift
+      case symbol_kind::S_194_expression_math_signal_power: // expression.math.signal.power
+      case symbol_kind::S_195_expression_math_scalar_as_tree: // expression.math.scalar.as.tree
+      case symbol_kind::S_197_expression_math_scalar_int_as_tree: // expression.math.scalar.int.as.tree
+      case symbol_kind::S_199_expression_math_scalar_float_as_tree: // expression.math.scalar.float.as.tree
+      case symbol_kind::S_200_expression_math_trigonometry_as_tree: // expression.math.trigonometry.as.tree
+      case symbol_kind::S_201_expression_parenthesis: // expression.parenthesis
+      case symbol_kind::S_202_expression_signal: // expression.signal
+      case symbol_kind::S_203_expression_signal_control: // expression.signal.control
+      case symbol_kind::S_204_expression_signal_delay: // expression.signal.delay
+      case symbol_kind::S_205_expression_signal_logic: // expression.signal.logic
       case symbol_kind::S_primitive: // primitive
-      case symbol_kind::S_204_primitive_foreign: // primitive.foreign
-      case symbol_kind::S_205_primitive_type_number_as_tree: // primitive.type.number.as.tree
-      case symbol_kind::S_208_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
-      case symbol_kind::S_209_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
-      case symbol_kind::S_211_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
-      case symbol_kind::S_213_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
-      case symbol_kind::S_215_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
-      case symbol_kind::S_216_primitive_signal: // primitive.signal
-      case symbol_kind::S_217_primitive_signal_input_wire: // primitive.signal.input.wire
-      case symbol_kind::S_218_primitive_signal_input_terminate: // primitive.signal.input.terminate
-      case symbol_kind::S_219_primitive_type: // primitive.type
-      case symbol_kind::S_220_primitive_type_cast_number: // primitive.type.cast.number
-      case symbol_kind::S_221_primitive_type_cast_number_int: // primitive.type.cast.number.int
-      case symbol_kind::S_222_primitive_type_cast_number_float: // primitive.type.cast.number.float
-      case symbol_kind::S_223_primitive_type_cast_any: // primitive.type.cast.any
-      case symbol_kind::S_224_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
-      case symbol_kind::S_226_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
-      case symbol_kind::S_229_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
-      case symbol_kind::S_230_primitive_signal_route: // primitive.signal.route
-      case symbol_kind::S_231_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
-      case symbol_kind::S_232_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
-      case symbol_kind::S_233_primitive_signal_route_explicit: // primitive.signal.route.explicit
-      case symbol_kind::S_234_primitive_signal_source: // primitive.signal.source
-      case symbol_kind::S_235_primitive_signal_source_table: // primitive.signal.source.table
-      case symbol_kind::S_236_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
-      case symbol_kind::S_237_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
-      case symbol_kind::S_238_primitive_type_list: // primitive.type.list
-      case symbol_kind::S_239_primitive_type_list_start: // primitive.type.list.start
-      case symbol_kind::S_240_primitive_type_list_append: // primitive.type.list.append
-      case symbol_kind::S_241_primitive_ui: // primitive.ui
-      case symbol_kind::S_242_primitive_ui_button: // primitive.ui.button
-      case symbol_kind::S_243_primitive_ui_checkbox: // primitive.ui.checkbox
-      case symbol_kind::S_244_primitive_ui_vslider: // primitive.ui.vslider
-      case symbol_kind::S_245_primitive_ui_hslider: // primitive.ui.hslider
-      case symbol_kind::S_246_primitive_ui_nentry: // primitive.ui.nentry
-      case symbol_kind::S_247_primitive_ui_vgroup: // primitive.ui.vgroup
-      case symbol_kind::S_248_primitive_ui_hgroup: // primitive.ui.hgroup
-      case symbol_kind::S_249_primitive_ui_tgroup: // primitive.ui.tgroup
-      case symbol_kind::S_250_primitive_ui_vbargraph: // primitive.ui.vbargraph
-      case symbol_kind::S_251_primitive_ui_hbargraph: // primitive.ui.hbargraph
-      case symbol_kind::S_252_primitive_foreign_function: // primitive.foreign.function
-      case symbol_kind::S_253_primitive_foreign_function_signature: // primitive.foreign.function.signature
-      case symbol_kind::S_254_primitive_foreign_constant: // primitive.foreign.constant
-      case symbol_kind::S_255_primitive_foreign_variable: // primitive.foreign.variable
-      case symbol_kind::S_256_primitive_signal_inputs: // primitive.signal.inputs
-      case symbol_kind::S_257_primitive_signal_outputs: // primitive.signal.outputs
+      case symbol_kind::S_207_primitive_foreign: // primitive.foreign
+      case symbol_kind::S_208_primitive_type_number_as_tree: // primitive.type.number.as.tree
+      case symbol_kind::S_211_primitive_type_number_int_as_tree: // primitive.type.number.int.as.tree
+      case symbol_kind::S_212_primitive_type_number_float_as_tree: // primitive.type.number.float.as.tree
+      case symbol_kind::S_214_primitive_string_quoted_as_tree: // primitive.string.quoted.as.tree
+      case symbol_kind::S_216_primitive_string_unquoted_as_tree: // primitive.string.unquoted.as.tree
+      case symbol_kind::S_218_primitive_string_tag_as_tree: // primitive.string.tag.as.tree
+      case symbol_kind::S_219_primitive_signal: // primitive.signal
+      case symbol_kind::S_220_primitive_signal_input_wire: // primitive.signal.input.wire
+      case symbol_kind::S_221_primitive_signal_input_terminate: // primitive.signal.input.terminate
+      case symbol_kind::S_222_primitive_type: // primitive.type
+      case symbol_kind::S_223_primitive_type_cast_number: // primitive.type.cast.number
+      case symbol_kind::S_224_primitive_type_cast_number_int: // primitive.type.cast.number.int
+      case symbol_kind::S_225_primitive_type_cast_number_float: // primitive.type.cast.number.float
+      case symbol_kind::S_226_primitive_type_cast_any: // primitive.type.cast.any
+      case symbol_kind::S_227_primitive_type_number_int_list_member_as_tree: // primitive.type.number.int.list.member.as.tree
+      case symbol_kind::S_229_primitive_type_number_list_member_as_tree: // primitive.type.number.list.member.as.tree
+      case symbol_kind::S_232_primitive_type_number_float_list_member_as_tree: // primitive.type.number.float.list.member.as.tree
+      case symbol_kind::S_233_primitive_signal_route: // primitive.signal.route
+      case symbol_kind::S_234_primitive_signal_route_implied_outputs: // primitive.signal.route.implied.outputs
+      case symbol_kind::S_235_primitive_signal_route_implied_connections: // primitive.signal.route.implied.connections
+      case symbol_kind::S_236_primitive_signal_route_explicit: // primitive.signal.route.explicit
+      case symbol_kind::S_237_primitive_signal_source: // primitive.signal.source
+      case symbol_kind::S_238_primitive_signal_source_table: // primitive.signal.source.table
+      case symbol_kind::S_239_primitive_signal_source_soundfile: // primitive.signal.source.soundfile
+      case symbol_kind::S_240_primitive_signal_source_waveform_as_tree: // primitive.signal.source.waveform.as.tree
+      case symbol_kind::S_241_primitive_type_list: // primitive.type.list
+      case symbol_kind::S_242_primitive_type_list_start: // primitive.type.list.start
+      case symbol_kind::S_243_primitive_type_list_append: // primitive.type.list.append
+      case symbol_kind::S_244_primitive_ui: // primitive.ui
+      case symbol_kind::S_245_primitive_ui_button: // primitive.ui.button
+      case symbol_kind::S_246_primitive_ui_checkbox: // primitive.ui.checkbox
+      case symbol_kind::S_247_primitive_ui_vslider: // primitive.ui.vslider
+      case symbol_kind::S_248_primitive_ui_hslider: // primitive.ui.hslider
+      case symbol_kind::S_249_primitive_ui_nentry: // primitive.ui.nentry
+      case symbol_kind::S_250_primitive_ui_vgroup: // primitive.ui.vgroup
+      case symbol_kind::S_251_primitive_ui_hgroup: // primitive.ui.hgroup
+      case symbol_kind::S_252_primitive_ui_tgroup: // primitive.ui.tgroup
+      case symbol_kind::S_253_primitive_ui_vbargraph: // primitive.ui.vbargraph
+      case symbol_kind::S_254_primitive_ui_hbargraph: // primitive.ui.hbargraph
+      case symbol_kind::S_255_primitive_foreign_function: // primitive.foreign.function
+      case symbol_kind::S_256_primitive_foreign_function_signature_names_1_args_0: // primitive.foreign.function.signature.names.1.args.0
+      case symbol_kind::S_257_primitive_foreign_function_signature_names_1_args_list: // primitive.foreign.function.signature.names.1.args.list
+      case symbol_kind::S_258_primitive_foreign_function_signature_names_2_args_0: // primitive.foreign.function.signature.names.2.args.0
+      case symbol_kind::S_259_primitive_foreign_function_signature_names_2_args_list: // primitive.foreign.function.signature.names.2.args.list
+      case symbol_kind::S_260_primitive_foreign_function_signature_names_3_args_0: // primitive.foreign.function.signature.names.3.args.0
+      case symbol_kind::S_261_primitive_foreign_function_signature_names_3_args_list: // primitive.foreign.function.signature.names.3.args.list
+      case symbol_kind::S_262_primitive_foreign_function_signature: // primitive.foreign.function.signature
+      case symbol_kind::S_263_primitive_foreign_constant: // primitive.foreign.constant
+      case symbol_kind::S_264_primitive_foreign_variable: // primitive.foreign.variable
+      case symbol_kind::S_265_primitive_signal_inputs: // primitive.signal.inputs
+      case symbol_kind::S_266_primitive_signal_outputs: // primitive.signal.outputs
       case symbol_kind::S_statement: // statement
-      case symbol_kind::S_259_statement_definition: // statement.definition
-      case symbol_kind::S_260_statement_definition_function_arg: // statement.definition.function.arg
-      case symbol_kind::S_261_statement_definition_function_args: // statement.definition.function.args
-      case symbol_kind::S_262_statement_definition_function_args_start: // statement.definition.function.args.start
-      case symbol_kind::S_263_statement_definition_function_args_append: // statement.definition.function.args.append
-      case symbol_kind::S_264_statement_definition_function_declaration: // statement.definition.function.declaration
-      case symbol_kind::S_265_statement_definition_function: // statement.definition.function
-      case symbol_kind::S_267_statement_definition_assignment: // statement.definition.assignment
-      case symbol_kind::S_268_statement_definition_with: // statement.definition.with
-      case symbol_kind::S_269_statement_definition_list: // statement.definition.list
-      case symbol_kind::S_270_statement_definition_list_start: // statement.definition.list.start
-      case symbol_kind::S_271_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
-      case symbol_kind::S_272_statement_definition_list_append: // statement.definition.list.append
-      case symbol_kind::S_273_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
-      case symbol_kind::S_274_statement_declare_metadata: // statement.declare.metadata
-      case symbol_kind::S_275_statement_declare_feature_metadata: // statement.declare.feature.metadata
-      case symbol_kind::S_276_statement_declare_doc: // statement.declare.doc
-      case symbol_kind::S_277_statement_identifier_as_tree: // statement.identifier.as.tree
-      case symbol_kind::S_278_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
-      case symbol_kind::S_279_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
-      case symbol_kind::S_280_statement_import: // statement.import
-      case symbol_kind::S_281_statement_list: // statement.list
-      case symbol_kind::S_282_statement_list_start: // statement.list.start
-      case symbol_kind::S_283_statement_list_start_qualified: // statement.list.start.qualified
-      case symbol_kind::S_284_statement_list_append: // statement.list.append
-      case symbol_kind::S_285_statement_list_append_qualified: // statement.list.append.qualified
-      case symbol_kind::S_290_statement_signal_pattern_rule: // statement.signal.pattern.rule
-      case symbol_kind::S_291_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
-      case symbol_kind::S_292_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
-      case symbol_kind::S_293_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
+      case symbol_kind::S_268_statement_definition: // statement.definition
+      case symbol_kind::S_269_statement_definition_function_arg: // statement.definition.function.arg
+      case symbol_kind::S_270_statement_definition_function_args: // statement.definition.function.args
+      case symbol_kind::S_271_statement_definition_function_args_start: // statement.definition.function.args.start
+      case symbol_kind::S_272_statement_definition_function_args_append: // statement.definition.function.args.append
+      case symbol_kind::S_273_statement_definition_function_declaration: // statement.definition.function.declaration
+      case symbol_kind::S_274_statement_definition_function: // statement.definition.function
+      case symbol_kind::S_276_statement_definition_assignment: // statement.definition.assignment
+      case symbol_kind::S_277_statement_definition_with: // statement.definition.with
+      case symbol_kind::S_278_statement_definition_list: // statement.definition.list
+      case symbol_kind::S_279_statement_definition_list_start: // statement.definition.list.start
+      case symbol_kind::S_280_statement_definition_list_start_qualified: // statement.definition.list.start.qualified
+      case symbol_kind::S_281_statement_definition_list_append: // statement.definition.list.append
+      case symbol_kind::S_282_statement_definition_list_append_qualified: // statement.definition.list.append.qualified
+      case symbol_kind::S_283_statement_declare_metadata: // statement.declare.metadata
+      case symbol_kind::S_284_statement_declare_feature_metadata: // statement.declare.feature.metadata
+      case symbol_kind::S_285_statement_declare_doc: // statement.declare.doc
+      case symbol_kind::S_286_statement_identifier_as_tree: // statement.identifier.as.tree
+      case symbol_kind::S_287_statement_box_identifier_as_tree: // statement.box.identifier.as.tree
+      case symbol_kind::S_288_statement_foreign_function_identifier_as_tree: // statement.foreign.function.identifier.as.tree
+      case symbol_kind::S_289_statement_import: // statement.import
+      case symbol_kind::S_290_statement_list: // statement.list
+      case symbol_kind::S_291_statement_list_start: // statement.list.start
+      case symbol_kind::S_292_statement_list_start_qualified: // statement.list.start.qualified
+      case symbol_kind::S_293_statement_list_append: // statement.list.append
+      case symbol_kind::S_294_statement_list_append_qualified: // statement.list.append.qualified
+      case symbol_kind::S_299_statement_signal_pattern_rule: // statement.signal.pattern.rule
+      case symbol_kind::S_300_statement_signal_pattern_rule_list: // statement.signal.pattern.rule.list
+      case symbol_kind::S_301_statement_signal_pattern_rule_list_start: // statement.signal.pattern.rule.list.start
+      case symbol_kind::S_302_statement_signal_pattern_rule_list_append: // statement.signal.pattern.rule.list.append
         value.move< Tree > (YY_MOVE (s.value));
         break;
 
       case symbol_kind::S_146_doc_list: // doc.list
       case symbol_kind::S_147_doc_attribute_list: // doc.attribute.list
-      case symbol_kind::S_148_doc_attribute_definition: // doc.attribute.definition
-      case symbol_kind::S_149_doc_attribute_value: // doc.attribute.value
+      case symbol_kind::S_148_doc_attribute_definition_dependencies: // doc.attribute.definition.dependencies
+      case symbol_kind::S_149_doc_attribute_definition_doc_tags: // doc.attribute.definition.doc.tags
+      case symbol_kind::S_150_doc_attribute_definition_distributed: // doc.attribute.definition.distributed
+      case symbol_kind::S_151_doc_attribute_definition: // doc.attribute.definition
+      case symbol_kind::S_152_doc_attribute_value: // doc.attribute.value
         value.move< bool > (YY_MOVE (s.value));
         break;
 
@@ -5263,17 +5317,17 @@ switch (yykind)
       case symbol_kind::S_ENDL: // ENDL
       case symbol_kind::S_141_doc_text: // doc.text
       case symbol_kind::S_144_doc_notice: // doc.notice
-      case symbol_kind::S_210_primitive_string_quoted: // primitive.string.quoted
-      case symbol_kind::S_212_primitive_string_unquoted: // primitive.string.unquoted
-      case symbol_kind::S_214_primitive_string_tag: // primitive.string.tag
-      case symbol_kind::S_266_statement_definition_assignment_operator: // statement.definition.assignment.operator
-      case symbol_kind::S_294_statement_terminal: // statement.terminal
+      case symbol_kind::S_213_primitive_string_quoted: // primitive.string.quoted
+      case symbol_kind::S_215_primitive_string_unquoted: // primitive.string.unquoted
+      case symbol_kind::S_217_primitive_string_tag: // primitive.string.tag
+      case symbol_kind::S_275_statement_definition_assignment_operator: // statement.definition.assignment.operator
+      case symbol_kind::S_303_statement_terminal: // statement.terminal
         value.move< std::string > (YY_MOVE (s.value));
         break;
 
-      case symbol_kind::S_225_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
-      case symbol_kind::S_227_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
-      case symbol_kind::S_228_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
+      case symbol_kind::S_228_primitive_type_number_list_as_tree: // primitive.type.number.list.as.tree
+      case symbol_kind::S_230_primitive_type_number_list_start_as_tree: // primitive.type.number.list.start.as.tree
+      case symbol_kind::S_231_primitive_type_number_list_append_as_tree: // primitive.type.number.list.append.as.tree
         value.move< std::vector<Tree> > (YY_MOVE (s.value));
         break;
 

@@ -27,7 +27,7 @@
 
 %initial-action
 {
-  self.location().streamName() = self._streamName;
+  self.location().streamName() = self.streamName();
 };
 
 %code requires { /* Faust requires */
@@ -77,7 +77,7 @@
 
 
 #undef yylex
-#define yylex self._lexer->lex
+#define yylex self.lexer()->lex
 
 %}
 
@@ -260,6 +260,9 @@
 %type <Tree> doc
 %type <bool> doc.attribute.list
 %type <bool> doc.attribute.definition
+%type <bool> doc.attribute.definition.dependencies
+%type <bool> doc.attribute.definition.doc.tags
+%type <bool> doc.attribute.definition.distributed
 %type <bool> doc.attribute.value
 %type <std::string> doc.text
 %type <Tree> doc.equation
@@ -328,6 +331,12 @@
 %type <Tree> primitive.foreign.constant
 %type <Tree> primitive.foreign.function
 %type <Tree> primitive.foreign.function.signature
+%type <Tree> primitive.foreign.function.signature.names.1.args.0
+%type <Tree> primitive.foreign.function.signature.names.1.args.list
+%type <Tree> primitive.foreign.function.signature.names.2.args.0
+%type <Tree> primitive.foreign.function.signature.names.2.args.list
+%type <Tree> primitive.foreign.function.signature.names.3.args.0
+%type <Tree> primitive.foreign.function.signature.names.3.args.list
 %type <Tree> primitive.foreign.variable
 %type <Tree> primitive.signal.input.wire
 %type <Tree> primitive.signal.input.terminate
@@ -431,7 +440,7 @@ program:
 		statement.list {
 			$$ = $[statement.list];
       $$->location() = @$;
-			self._ast = self.formatDefinitions($$);
+			self.ast() = self.formatDefinitions($$);
 		}
   | %empty {
     $$ = ::Faust::Primitive::Symbols::asTree().nil;
@@ -480,7 +489,7 @@ doc:
         $$ = $DOCCHAR;
       }
     | doc.text[prior] DOCCHAR {
-        $$ = $prior.append(self._lexer->YYText());
+        $$ = $prior.append(self.lexer()->YYText());
       }
 
   doc.equation:
@@ -488,12 +497,22 @@ doc:
         $$ = $expression;
         $$->location() = @$;
       }
+    | BEQN error EEQN {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   doc.diagram:
       BDGM expression EDGM {
         $$ = $expression;
         $$->location() = @$;
       }
+    | BDGM error EDGM {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   doc.notice:
       NOTICE {
@@ -505,6 +524,11 @@ doc:
         $$ = $[statement.identifier.as.tree];
         $$->location() = @$;
       }
+    | BMETADATA error EMETADATA {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   /*------------------- doc.list -------------------*/
 
@@ -515,6 +539,11 @@ doc:
    |  BLST /* Empty list */ ELST {
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
       }
+    | BLST error ELST {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
     doc.attribute.list:
         doc.attribute.definition {
@@ -524,21 +553,45 @@ doc:
           $$ = $[doc.attribute.definition];
         }
 
-    doc.attribute.definition:
+    doc.attribute.definition.dependencies:
         LSTDEPENDENCIES LSTEQ LSTQ doc.attribute.value LSTQ {
           $$ = $[doc.attribute.value];
-          self._lstDependenciesSwitch = $[doc.attribute.value];
+          self.lstDependenciesSwitch() = $[doc.attribute.value];
         }
-      | LSTMDOCTAGS LSTEQ LSTQ doc.attribute.value LSTQ {
+      | LSTDEPENDENCIES LSTEQ LSTQ error LSTQ {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+      
+    doc.attribute.definition.doc.tags:
+        LSTMDOCTAGS LSTEQ LSTQ doc.attribute.value LSTQ {
           $$ = $[doc.attribute.value];
-          self._stripDocSwitch = $[doc.attribute.value];
-          self._stripDocSwitch ? self._stripDocSwitch=false
-                                   : self._stripDocSwitch=true;
+          self.stripDocSwitch() = $[doc.attribute.value];
+          self.stripDocSwitch() ? self.stripDocSwitch()=false
+                                   : self.stripDocSwitch()=true;
         }
-      | LSTDISTRIBUTED LSTEQ LSTQ doc.attribute.value LSTQ {
+      | LSTMDOCTAGS LSTEQ LSTQ error LSTQ {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+      
+    doc.attribute.definition.distributed:
+        LSTDISTRIBUTED LSTEQ LSTQ doc.attribute.value LSTQ {
           $$ = $[doc.attribute.value];
-          self._lstDistributedSwitch = $[doc.attribute.value];
+          self.lstDistributedSwitch() = $[doc.attribute.value];
         }
+      | LSTDISTRIBUTED LSTEQ LSTQ error LSTQ {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+
+    doc.attribute.definition:
+        doc.attribute.definition.dependencies
+      | doc.attribute.definition.doc.tags
+      | doc.attribute.definition.distributed
 
     doc.attribute.value:
         LSTTRUE {
@@ -564,6 +617,11 @@ expression:
         $$ = ::boxComponent($[primitive.string.unquoted.as.tree]);
         $$->location() = @$;
       }
+    | COMPONENT LPAR error RPAR {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   /******************** Composition ********************/
 
@@ -615,6 +673,11 @@ expression:
         $$ = ::boxWithLocalDef(boxEnvironment(),self.formatDefinitions($[statement.list]));
         $$->location() = @$;
       }
+    | ENVIRONMENT LBRAQ error RBRAQ {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   /******************** Infix ********************/
 
@@ -646,6 +709,11 @@ expression:
         );
         $$->location() = @$;
       }
+    | expression.infix[lhs] LCROC error RCROC {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
       
   expression.infix.environment.access:
       expression.infix[lhs] DOT statement.box.identifier.as.tree[rhs] {
@@ -660,23 +728,23 @@ expression:
     | expression.infix.math.shift
 
   expression.infix.math.algebra:
-      expression.infix[lhs] ADD   expression.infix[rhs] {
+      expression.infix[lhs] ADD expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigAdd));
         $$->location() = @$;
       }
-    | expression.infix[lhs] SUB   expression.infix[rhs] {
+    | expression.infix[lhs] SUB expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigSub));
         $$->location() = @$;
       }
-    | expression.infix[lhs] MUL   expression.infix[rhs] {
+    | expression.infix[lhs] MUL expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigMul));
         $$->location() = @$;
       }
-    | expression.infix[lhs] DIV   expression.infix[rhs] {
+    | expression.infix[lhs] DIV expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigDiv));
         $$->location() = @$;
       }
-    | expression.infix[lhs] MOD   expression.infix[rhs] {
+    | expression.infix[lhs] MOD expression.infix[rhs] {
         $$ = ::boxSeq(::boxPar($lhs,$rhs),::boxPrim2(sigRem));
         $$->location() = @$;
       }
@@ -740,6 +808,11 @@ expression:
         $$ = ::buildBoxAppl($lhs,$[statement.definition.function.args]);
         $$->location() = @$;
       }
+    | expression.infix[lhs] LPAR error RPAR {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
   
   expression.infix.signal.delay:
       expression.infix[lhs] FDELAY expression.infix[rhs] {
@@ -762,6 +835,11 @@ expression:
         );
         $$->location() = @$;
       }
+    | ITERATE_PARALLEL LPAR error RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
 
   expression.iterate.sequence:
       ISEQ LPAR statement.box.identifier.as.tree COMMA expression.composition.serial COMMA expression RPAR {
@@ -771,6 +849,11 @@ expression:
           $expression
         );
         $$->location() = @$;
+      }
+    | ISEQ LPAR error RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
 
   expression.iterate.sum:
@@ -782,6 +865,11 @@ expression:
         );
         $$->location() = @$;
       }
+    | ISUM LPAR error RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
 
   expression.iterate.product:
       IPROD LPAR statement.box.identifier.as.tree COMMA expression.composition.serial COMMA expression RPAR {
@@ -791,6 +879,11 @@ expression:
           $expression
         );
         $$->location() = @$;
+      }
+    | IPROD LPAR error RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
 
   /******************** Lambda ********************/
@@ -802,6 +895,16 @@ expression:
           $expression
         );
         $$->location() = @$;
+      }
+    | LAMBDA LPAR error RPAR DOT LPAR expression RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | LAMBDA LPAR expression.lambda.params RPAR DOT LPAR error RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
   
   expression.lambda.params:
@@ -853,6 +956,21 @@ expression:
       );
       $$->location() = @$;
 		}
+  | expression[lhs] LETREC LBRAQ error RBRAQ {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
+  | expression[lhs] LETREC LBRAQ error WHERE statement.definition.list RBRAQ {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
+  | expression[lhs] LETREC LBRAQ expression.letrec.list WHERE error RBRAQ {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   /*------------------- letrec.list -------------------*/
 
@@ -889,11 +1007,16 @@ expression:
         );
         $$->location() = @$;
       }
-    | error statement.terminal {
-        $$ = ::Faust::Primitive::Symbols::asTree().nil;
-        self._lexer->LexerError("Expected expression.");
-        $$->location() = @$;
-    }
+    | error DEF statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | expression.letrec.equation.name DEF error {
+        $$ = $[expression.letrec.equation.name];
+        yyclearin;
+        yyerrok;
+      }
 
     expression.letrec.equation.name:
         DELAY1 statement.box.identifier.as.tree {
@@ -908,6 +1031,11 @@ expression:
       LIBRARY LPAR primitive.string.unquoted.as.tree RPAR {
         $$ = ::boxLibrary( $[primitive.string.unquoted.as.tree] );
         $$->location() = @$;
+      }
+    | LIBRARY LPAR error RPAR {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
 
   /******************** Math ********************/
@@ -1070,7 +1198,7 @@ expression:
 
         expression.math.scalar.int:
           ADD INT {
-            $$ = std::stoi(self._lexer->YYText());
+            $$ = std::stoi(self.lexer()->YYText());
           }
         | SUB INT {
             $$ = -$INT;
@@ -1133,6 +1261,11 @@ expression:
       $$ = $expression;
       $$->location() = @$;
     }
+  | LPAR error RPAR {
+      yyclearin;
+      yyerrok;
+      ++self.errorCount();
+    }
 
   /******************** Signal ********************/
 
@@ -1194,6 +1327,11 @@ expression:
           $$ = ::boxCase(self.checkRulelist($[statement.signal.pattern.rule.list]));
           $$->location() = @$;
         }
+      | CASE LBRAQ error RBRAQ {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
 /***************************************************/
 /******************** Primitive ********************/
@@ -1221,12 +1359,12 @@ primitive:
     
     primitive.type.number.int:
       INT {
-        $$ = std::stoi(self._lexer->YYText());
+        $$ = std::stoi(self.lexer()->YYText());
       }
 
     primitive.type.number.float:
       FLOAT {
-        $$ = std::atof(self._lexer->YYText());
+        $$ = std::atof(self.lexer()->YYText());
       }
 
     primitive.type.number.int.as.tree:
@@ -1245,7 +1383,7 @@ primitive:
         
   primitive.string.quoted:
       STRING {
-        $$ = self._lexer->YYText();
+        $$ = self.lexer()->YYText();
       }
 
   primitive.string.quoted.as.tree:
@@ -1256,7 +1394,7 @@ primitive:
 
   primitive.string.unquoted:
       STRING {
-        $$ = self.unquote(self._lexer->YYText());
+        $$ = self.unquote(self.lexer()->YYText());
       }
 
   primitive.string.unquoted.as.tree:
@@ -1267,10 +1405,10 @@ primitive:
 
   primitive.string.tag:
       STRING {
-        $$ = self._lexer->YYText();
+        $$ = self.lexer()->YYText();
       }
     | TAGSTRING {
-        $$ = self._lexer->YYText();
+        $$ = self.lexer()->YYText();
       }
 
   primitive.string.tag.as.tree:
@@ -1466,65 +1604,365 @@ primitive:
           $$ = ::boxButton($[primitive.string.unquoted.as.tree]);
           $$->location() = @$;
         }
+      | BUTTON LPAR error RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
     primitive.ui.checkbox:
         CHECKBOX LPAR primitive.string.unquoted.as.tree RPAR {
           $$ = ::boxCheckbox($[primitive.string.unquoted.as.tree]);
           $$->location() = @$;
         }
+      | CHECKBOX LPAR error RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
     primitive.ui.vslider:
-        VSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
-          $$ = ::boxVSlider($[primitive.string.unquoted.as.tree],$arg1,$arg2,$arg3,$arg4);
+        VSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          $$ = ::boxVSlider(
+            $[primitive.string.unquoted.as.tree],
+            $arg1,
+            $arg2,
+            $arg3,
+            $arg4
+          );
           $$->location() = @$;
+        }
+      | VSLIDER LPAR error                               COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     error                               COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     error                               COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     error                               COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     error
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     primitive.ui.hslider:
-        HSLIDER LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
-          $$ = ::boxHSlider($[primitive.string.unquoted.as.tree],$arg1,$arg2,$arg3,$arg4);
+        HSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          $$ = ::boxHSlider(
+            $[primitive.string.unquoted.as.tree],
+            $arg1,
+            $arg2,
+            $arg3,
+            $arg4
+          );
           $$->location() = @$;
+        }
+      | HSLIDER LPAR error                               COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     error                               COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     error                               COMMA
+                     expression.composition.serial[arg3] COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     error                               COMMA
+                     expression.composition.serial[arg4]
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HSLIDER LPAR primitive.string.unquoted.as.tree   COMMA
+                     expression.composition.serial[arg1] COMMA
+                     expression.composition.serial[arg2] COMMA
+                     expression.composition.serial[arg3] COMMA
+                     error
+                RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     primitive.ui.nentry:
-        NENTRY LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] COMMA expression.composition.serial[arg3] COMMA expression.composition.serial[arg4] RPAR {
+        NENTRY LPAR primitive.string.unquoted.as.tree   COMMA
+                    expression.composition.serial[arg1] COMMA
+                    expression.composition.serial[arg2] COMMA
+                    expression.composition.serial[arg3] COMMA
+                    expression.composition.serial[arg4]
+               RPAR {
           $$ = ::boxNumEntry($[primitive.string.unquoted.as.tree],$arg1,$arg2,$arg3,$arg4);
           $$->location() = @$;
         }
+      | NENTRY LPAR error                               COMMA
+                    expression.composition.serial[arg1] COMMA
+                    expression.composition.serial[arg2] COMMA
+                    expression.composition.serial[arg3] COMMA
+                    expression.composition.serial[arg4]
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | NENTRY LPAR primitive.string.unquoted.as.tree   COMMA
+                    error                               COMMA
+                    expression.composition.serial[arg2] COMMA
+                    expression.composition.serial[arg3] COMMA
+                    expression.composition.serial[arg4]
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | NENTRY LPAR primitive.string.unquoted.as.tree   COMMA
+                    expression.composition.serial[arg1] COMMA
+                    error                               COMMA
+                    expression.composition.serial[arg3] COMMA
+                    expression.composition.serial[arg4]
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | NENTRY LPAR primitive.string.unquoted.as.tree   COMMA
+                    expression.composition.serial[arg1] COMMA
+                    expression.composition.serial[arg2] COMMA
+                    error                               COMMA
+                    expression.composition.serial[arg4]
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | NENTRY LPAR primitive.string.unquoted.as.tree   COMMA
+                    expression.composition.serial[arg1] COMMA
+                    expression.composition.serial[arg2] COMMA
+                    expression.composition.serial[arg3] COMMA
+                    error
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
     primitive.ui.vgroup:
-        VGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR {
-          $$ = ::boxVGroup($[primitive.string.unquoted.as.tree], $expression);
-          $$->location() = @$;
+        VGROUP LPAR primitive.string.unquoted.as.tree COMMA
+                    expression
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VGROUP LPAR error COMMA
+                    expression
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VGROUP LPAR primitive.string.unquoted.as.tree COMMA
+                    error
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     primitive.ui.hgroup:
-        HGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR {
-          $$ = ::boxHGroup($[primitive.string.unquoted.as.tree], $expression);
-          $$->location() = @$;
+        HGROUP LPAR primitive.string.unquoted.as.tree COMMA
+                    expression
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HGROUP LPAR error COMMA
+                    expression
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HGROUP LPAR primitive.string.unquoted.as.tree COMMA
+                    error
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     primitive.ui.tgroup:
-        TGROUP LPAR primitive.string.unquoted.as.tree COMMA expression RPAR {
-          $$ = ::boxTGroup($[primitive.string.unquoted.as.tree], $expression);
-          $$->location() = @$;
+        TGROUP LPAR primitive.string.unquoted.as.tree COMMA
+                    expression
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | TGROUP LPAR error COMMA
+                    expression
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | TGROUP LPAR primitive.string.unquoted.as.tree COMMA
+                    error
+               RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     primitive.ui.vbargraph:
-        VBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] RPAR {
-          $$ = ::boxVBargraph($[primitive.string.unquoted.as.tree],$arg1,$arg2);
+        VBARGRAPH LPAR primitive.string.unquoted.as.tree   COMMA
+                       expression.composition.serial[arg1] COMMA
+                       expression.composition.serial[arg2]
+                  RPAR {
+          $$ = ::boxVBargraph(
+            $[primitive.string.unquoted.as.tree],
+            $arg1,
+            $arg2
+          );
           $$->location() = @$;
+        }
+      | VBARGRAPH LPAR error                               COMMA
+                       expression.composition.serial[arg1] COMMA
+                       expression.composition.serial[arg2]
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VBARGRAPH LPAR primitive.string.unquoted.as.tree   COMMA
+                       error                               COMMA
+                       expression.composition.serial[arg2]
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | VBARGRAPH LPAR primitive.string.unquoted.as.tree   COMMA
+                       expression.composition.serial[arg1] COMMA
+                       error
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     primitive.ui.hbargraph:
-        HBARGRAPH LPAR primitive.string.unquoted.as.tree COMMA expression.composition.serial[arg1] COMMA expression.composition.serial[arg2] RPAR {
-          $$ = ::boxHBargraph($[primitive.string.unquoted.as.tree],$arg1,$arg2);
-          $$->location() = @$;
+        HBARGRAPH LPAR primitive.string.unquoted.as.tree   COMMA
+                       expression.composition.serial[arg1] COMMA
+                       expression.composition.serial[arg2]
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HBARGRAPH LPAR error                               COMMA
+                       expression.composition.serial[arg1] COMMA
+                       expression.composition.serial[arg2]
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HBARGRAPH LPAR primitive.string.unquoted.as.tree   COMMA
+                       error                               COMMA
+                       expression.composition.serial[arg2]
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | HBARGRAPH LPAR primitive.string.unquoted.as.tree   COMMA
+                       expression.composition.serial[arg1] COMMA
+                       error
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     /******************** Foreign ********************/
 
     primitive.foreign.function:
-        FFUNCTION LPAR primitive.foreign.function.signature COMMA primitive.string.tag.as.tree COMMA primitive.string.unquoted.as.tree RPAR {
+        FFUNCTION LPAR primitive.foreign.function.signature COMMA
+                       primitive.string.tag.as.tree         COMMA
+                       primitive.string.unquoted.as.tree
+                  RPAR {
           $$ = ::boxFFun(
             ::ffunction(
               $[primitive.foreign.function.signature],
@@ -1534,105 +1972,305 @@ primitive:
           );
           $$->location() = @$;
         }
+      | FFUNCTION LPAR error                        COMMA
+                       primitive.string.tag.as.tree COMMA
+                       primitive.string.unquoted.as.tree
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | FFUNCTION LPAR primitive.foreign.function.signature COMMA
+                       error                                COMMA
+                       primitive.string.unquoted.as.tree
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | FFUNCTION LPAR primitive.foreign.function.signature COMMA
+                       primitive.string.tag.as.tree         COMMA
+                       error
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
+      primitive.foreign.function.signature.names.1.args.0:
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[name] LPAR RPAR {
+            $$ = ::cons(
+              $[primitive.type.cast.number],
+              ::cons(
+                ::cons(
+                  $name,
+                  ::cons(
+                    $name,
+                    ::cons( $name, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            $$->location() = @$;
+          }
+        | error statement.foreign.function.identifier.as.tree[name] LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number error LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+
+      primitive.foreign.function.signature.names.1.args.list:
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[name] LPAR primitive.type.list RPAR {
+            $$ = ::cons(
+              $[primitive.type.cast.number],
+              ::cons(
+                ::cons(
+                  $name,
+                  ::cons( $name, ::cons( $name, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                $[primitive.type.list]
+              )
+            );
+            $$->location() = @$;
+          }
+        | error statement.foreign.function.identifier.as.tree[name] LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number error LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name] LPAR error RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+          
+      primitive.foreign.function.signature.names.2.args.0:
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                     LPAR RPAR {
+            $$ = ::cons(
+              $[primitive.type.cast.number],
+              ::cons(
+                ::cons(
+                  $name1,
+                  ::cons(
+                    $name2,
+                    ::cons( $name2, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            $$->location() = @$;
+          }
+        | error statement.foreign.function.identifier.as.tree[name1]
+             OR statement.foreign.function.identifier.as.tree[name2]
+                LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number error
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                     LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR error
+                                     LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+          
+      primitive.foreign.function.signature.names.2.args.list:
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                     LPAR primitive.type.list RPAR {
+            $$ = ::cons(
+              $[primitive.type.cast.number],
+              ::cons(
+                ::cons(
+                  $name1,
+                  ::cons(
+                    $name2,
+                    ::cons( $name2, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                $[primitive.type.list]
+              )
+            );
+            $$->location() = @$;
+          }
+        | error statement.foreign.function.identifier.as.tree[name1]
+             OR statement.foreign.function.identifier.as.tree[name2]
+                LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number error
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                     LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR error
+                                     LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                     LPAR error RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+      
+      primitive.foreign.function.signature.names.3.args.0:
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR RPAR {
+            $$ = ::cons(
+              $[primitive.type.cast.number],
+              ::cons(
+                ::cons(
+                  $name1,
+                  ::cons(
+                    $name2,
+                    ::cons( $name3, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                ::Faust::Primitive::Symbols::asTree().nil
+              )
+            );
+            $$->location() = @$;
+          }
+        | error statement.foreign.function.identifier.as.tree[name1]
+             OR statement.foreign.function.identifier.as.tree[name2]
+             OR statement.foreign.function.identifier.as.tree[name3]
+                LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number error
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR error
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR error
+                                     LPAR RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+
+      primitive.foreign.function.signature.names.3.args.list:
+          primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR primitive.type.list RPAR {
+            $$ = ::cons(
+              $[primitive.type.cast.number],
+              ::cons(
+                ::cons(
+                  $name1,
+                  ::cons(
+                    $name2,
+                    ::cons( $name3, ::Faust::Primitive::Symbols::asTree().nil )
+                  )
+                ),
+                $[primitive.type.list]
+              )
+            );
+            $$->location() = @$;
+          }
+        | error statement.foreign.function.identifier.as.tree[name1]
+             OR statement.foreign.function.identifier.as.tree[name2]
+             OR statement.foreign.function.identifier.as.tree[name3]
+                LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number error
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR error
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR error
+                                     LPAR primitive.type.list RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[name1]
+                                  OR statement.foreign.function.identifier.as.tree[name2]
+                                  OR statement.foreign.function.identifier.as.tree[name3]
+                                     LPAR error RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+      
       primitive.foreign.function.signature:
-          primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun] LPAR primitive.type.list RPAR {
-            $$ = ::cons(
-              $[primitive.type.cast.number],
-              ::cons(
-                ::cons(
-                  $fun,
-                  ::cons( $fun, ::cons( $fun, ::Faust::Primitive::Symbols::asTree().nil )
-                  )
-                ),
-                $[primitive.type.list]
-              )
-            );
-            $$->location() = @$;
-          }
-        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR primitive.type.list RPAR {
-            $$ = ::cons(
-              $[primitive.type.cast.number],
-              ::cons(
-                ::cons(
-                  $fun1,
-                  ::cons(
-                    $fun2,
-                    ::cons( $fun2, ::Faust::Primitive::Symbols::asTree().nil )
-                  )
-                ),
-                $[primitive.type.list]
-              )
-            );
-            $$->location() = @$;
-          }
-        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR primitive.type.list RPAR {
-            $$ = ::cons(
-              $[primitive.type.cast.number],
-              ::cons(
-                ::cons(
-                  $fun1,
-                  ::cons(
-                    $fun2,
-                    ::cons( $fun3, ::Faust::Primitive::Symbols::asTree().nil )
-                  )
-                ),
-                $[primitive.type.list]
-              )
-            );
-            $$->location() = @$;
-          }
-        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun] LPAR RPAR {
-            $$ = ::cons(
-              $[primitive.type.cast.number],
-              ::cons(
-                ::cons(
-                  $fun,
-                  ::cons(
-                    $fun,
-                    ::cons( $fun, ::Faust::Primitive::Symbols::asTree().nil )
-                  )
-                ),
-                ::Faust::Primitive::Symbols::asTree().nil
-              )
-            );
-            $$->location() = @$;
-          }
-        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] LPAR RPAR {
-            $$ = ::cons(
-              $[primitive.type.cast.number],
-              ::cons(
-                ::cons(
-                  $fun1,
-                  ::cons(
-                    $fun2,
-                    ::cons( $fun2, ::Faust::Primitive::Symbols::asTree().nil )
-                  )
-                ),
-                ::Faust::Primitive::Symbols::asTree().nil
-              )
-            );
-            $$->location() = @$;
-          }
-        | primitive.type.cast.number statement.foreign.function.identifier.as.tree[fun1] OR statement.foreign.function.identifier.as.tree[fun2] OR statement.foreign.function.identifier.as.tree[fun3] LPAR RPAR {
-            $$ = ::cons(
-              $[primitive.type.cast.number],
-              ::cons(
-                ::cons(
-                  $fun1,
-                  ::cons(
-                    $fun2,
-                    ::cons( $fun3, ::Faust::Primitive::Symbols::asTree().nil )
-                  )
-                ),
-                ::Faust::Primitive::Symbols::asTree().nil
-              )
-            );
-            $$->location() = @$;
-          }
+          primitive.foreign.function.signature.names.1.args.0
+        | primitive.foreign.function.signature.names.1.args.list
+        | primitive.foreign.function.signature.names.2.args.0
+        | primitive.foreign.function.signature.names.2.args.list
+        | primitive.foreign.function.signature.names.3.args.0
+        | primitive.foreign.function.signature.names.3.args.list
 
     primitive.foreign.constant:
-        FCONSTANT LPAR primitive.type.cast.number statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR {
+        FCONSTANT LPAR primitive.type.cast.number statement.identifier.as.tree COMMA
+                       primitive.string.tag.as.tree
+                  RPAR {
           $$ = ::boxFConst(
             $[primitive.type.cast.number],
             $[statement.identifier.as.tree],
@@ -1640,15 +2278,59 @@ primitive:
           );
           $$->location() = @$;
         }
+      | FCONSTANT LPAR error statement.identifier.as.tree COMMA
+                       primitive.string.tag.as.tree
+                  RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+      | FCONSTANT LPAR primitive.type.cast.number error COMMA
+                       primitive.string.tag.as.tree
+                  RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
+      | FCONSTANT LPAR primitive.type.cast.number statement.identifier.as.tree COMMA
+                       error
+                  RPAR {
+            yyclearin;
+            yyerrok;
+            ++self.errorCount();
+          }
 
     primitive.foreign.variable:
-        FVARIABLE LPAR primitive.type.cast.number statement.identifier.as.tree COMMA primitive.string.tag.as.tree RPAR {
+        FVARIABLE LPAR primitive.type.cast.number statement.identifier.as.tree COMMA
+                       primitive.string.tag.as.tree
+                  RPAR {
           $$ = ::boxFVar(
             $[primitive.type.cast.number],
             $[statement.identifier.as.tree],
             $[primitive.string.tag.as.tree]
           );
           $$->location() = @$;
+        }
+      | FVARIABLE LPAR error statement.identifier.as.tree COMMA
+                       primitive.string.tag.as.tree
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | FVARIABLE LPAR primitive.type.cast.number error COMMA
+                       primitive.string.tag.as.tree
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | FVARIABLE LPAR primitive.type.cast.number statement.identifier.as.tree COMMA
+                       error
+                  RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
     /******************** I/O ********************/
@@ -1658,11 +2340,21 @@ primitive:
           $$ = ::boxInputs($expression);
           $$->location() = @$;
         }
+      | INPUTS LPAR error RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
     primitive.signal.outputs:
         OUTPUTS LPAR expression RPAR {
           $$ = ::boxOutputs($expression);
           $$->location() = @$;
+        }
+      | OUTPUTS LPAR error RPAR {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
 
 /***************************************************/
@@ -1716,25 +2408,63 @@ statement:
         );
         $$->location() = @$;
       }
+    | error LPAR statement.definition.function.args RPAR DEF expression {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | statement.box.identifier.as.tree LPAR error RPAR DEF expression {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
 
     statement.definition.function:
         statement.definition.function.declaration statement.terminal {
           $$ = $[statement.definition.function.declaration];
           $$->location() = @$;
         }
+      | error statement.terminal {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
 
     statement.definition.assignment.operator:
         DEF
 
     statement.definition.assignment:
-        statement.box.identifier.as.tree
-        statement.definition.assignment.operator
-        expression statement.terminal {
+        statement.box.identifier.as.tree statement.definition.assignment.operator
+          expression statement.terminal {
           $$ = cons(
             $[statement.box.identifier.as.tree],
             ::cons( ::Faust::Primitive::Symbols::asTree().nil, $expression )
           );
           $$->location() = @$;
+        }
+      | error statement.definition.assignment.operator
+          expression statement.terminal {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | statement.box.identifier.as.tree error
+          expression statement.terminal {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | statement.box.identifier.as.tree statement.definition.assignment.operator
+          error statement.terminal {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
+        }
+      | statement.box.identifier.as.tree statement.definition.assignment.operator
+          expression error {
+          yyclearin;
+          yyerrok;
+          ++self.errorCount();
         }
     
     statement.definition.with:
@@ -1744,6 +2474,16 @@ statement:
           self.formatDefinitions($[statement.definition.list])
         );
         $$->location() = @$;
+      }
+    | error WITH LBRAQ statement.definition.list RBRAQ {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | expression WITH LBRAQ error RBRAQ {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
 
     /*------------------- statement.definition.list -------------------*/
@@ -1790,17 +2530,61 @@ statement:
   /******************** Declare ********************/
 
   statement.declare.metadata:
-      DECLARE statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] statement.terminal {
+      DECLARE statement.identifier.as.tree[key]
+              primitive.string.quoted.as.tree[value]
+        statement.terminal {
         self.declareMetadata($key,$value);
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
         $$->location() = @$;
       }
+    | DECLARE error primitive.string.quoted.as.tree[value] statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | DECLARE statement.identifier.as.tree[key] error statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | DECLARE statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] error {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
 
   statement.declare.feature.metadata:
-      DECLARE statement.identifier.as.tree[feature] statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] statement.terminal {
+      DECLARE statement.identifier.as.tree[feature]
+              statement.identifier.as.tree[key]
+              primitive.string.quoted.as.tree[value]
+        statement.terminal {
         self.declareDefinitionMetadata( $feature, $key, $value );
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
         $$->location() = @$;
+      }
+    | DECLARE error
+              statement.identifier.as.tree[key]
+              primitive.string.quoted.as.tree[value]
+        statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | DECLARE statement.identifier.as.tree[feature]
+              error
+              primitive.string.quoted.as.tree[value]
+        statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | DECLARE statement.identifier.as.tree[feature]
+              statement.identifier.as.tree[key]
+              error
+        statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
 
   statement.declare.doc:
@@ -1809,24 +2593,29 @@ statement:
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
         $$->location() = @$;
       }
+    | BDOC error EDOC {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
 
   /******************** Identifier ********************/
 
   statement.identifier.as.tree:
       IDENT {
-        $$ = ::tree(self._lexer->YYText());
+        $$ = ::tree(self.lexer()->YYText());
         $$->location() = @$;
       }
 
   statement.box.identifier.as.tree:
       IDENT {
-        $$ = ::boxIdent(self._lexer->YYText());
+        $$ = ::boxIdent(self.lexer()->YYText());
         $$->location() = @$;
       }
 
   statement.foreign.function.identifier.as.tree:
       IDENT {
-        $$ = ::tree(self._lexer->YYText());
+        $$ = ::tree(self.lexer()->YYText());
         $$->location() = @$;
       }
 
@@ -1836,6 +2625,16 @@ statement:
       IMPORT LPAR primitive.string.unquoted.as.tree[filename] RPAR statement.terminal {
         $$ = ::importFile($filename);
         $$->location() = @$;
+      }
+    | IMPORT LPAR error RPAR statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | IMPORT LPAR primitive.string.unquoted.as.tree[filename] RPAR error {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
       }
 
   /******************** List ********************/
@@ -1926,6 +2725,21 @@ statement:
       LPAR statement.definition.function.args RPAR ARROW expression statement.terminal {
         $$ = ::cons($[statement.definition.function.args],$expression);
       }
+    | LPAR error RPAR ARROW expression statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | LPAR statement.definition.function.args RPAR ARROW error statement.terminal {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
+    | LPAR statement.definition.function.args RPAR ARROW expression error {
+        yyclearin;
+        yyerrok;
+        ++self.errorCount();
+      }
 
   /*------------------- signal.pattern.rule.list -------------------*/
 
@@ -1955,8 +2769,8 @@ statement:
 
   statement.terminal:
       ENDDEF
-    | ENDL
-    | ENDOFINPUT { return 0; }
+    | ENDL /* Currently this will never match because ENDL is never returned as a token. */
+    | ENDOFINPUT { return 0; } /* ENDOFINPUT cannot have a type, so has to be converted here. */
 
 
 %%
