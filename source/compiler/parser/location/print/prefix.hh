@@ -154,6 +154,14 @@ namespace Faust {
             }
             
             Prefix&
+            setLastToClosing()
+            {
+              last().setClosing();
+              ++_closingOffset;
+              return *this;
+            }
+            
+            Prefix&
             shrink()
             {
               std::size_t new_size = _cells.size() - _closingOffset - 1;

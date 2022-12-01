@@ -91,3 +91,4 @@ TEST_F( ParserTest, badExpression ) {
   Tree ast = parser.parseString( source, "bad_expression.dsp" );
   ASSERT_EQ( ast, nullptr );
 }
+

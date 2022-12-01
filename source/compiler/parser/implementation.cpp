@@ -372,6 +372,6 @@ BisonImplementation::report_syntax_error (
 )
 const
 {
-  this->self.report_syntax_error( context );
+  this->self.reportSyntaxError( context );
 }
 

@@ -151,9 +151,9 @@ namespace Faust {
           location.name() = _parser.symbol_name( symbol.kind() );
           if ( count ) {
             location.begin()   = rhs_locations[1].location.begin();
-            location.end()     = rhs_locations[count-1].location.end();
+            location.end()     = rhs_locations[count].location.end();
             for ( std::size_t index = 0 ; index < count - 1 ; ++index ) {
-              const auto& this_symbol_part{rhs_locations[index+1]};
+              const auto& this_symbol_part{rhs_locations[count-index]};
               Location this_location_part{this_symbol_part.location};
               this_location_part.name() = _parser.symbol_name( this_symbol_part.kind() );
               location.parts().push_back(this_location_part);
@@ -174,13 +174,8 @@ namespace Faust {
           Location& location
         )
         {
-          auto iterator = stack.begin() + 1;
-          auto iterator_last = stack.end() - 1;
-          location.begin()   = iterator->location.begin();
-          location.end()     = iterator_last->location.end();
-          location.streamName() = _location.streamName();
-          location.name() = _parser.symbol_name( iterator->kind() );
-          for ( ++iterator; iterator < stack.end() ; ++iterator ) {
+          /* Bison's stack is an array with a junk element in 0 and "index 0" at size - 1. */
+          for ( auto iterator = stack.begin() + 1; iterator < stack.end() ; ++iterator ) {
             const auto& this_symbol_part{*iterator};
             Location this_location_part{this_symbol_part.location};
             this_location_part.name() = _parser.symbol_name( this_symbol_part.kind() );
@@ -199,46 +194,45 @@ namespace Faust {
         void error(const std::string& m)
         {
           std::cerr << m << std::endl;
+              throw faustexception(m);
         }
 
         void
-        report_syntax_error (
+        reportSyntaxError (
           const BisonImplementation::context& context
         )
         {
-          std::cerr << "Syntax error: " << std::endl;
-
           auto& stack = _parser.yystack();
-          Location syntax_error;
-          copyStackToLocationParts( stack, syntax_error );
-
-          /* Ask Parser to provide expected tokens. */
-          int expected_token_count = context.expected_tokens( nullptr, 0 );
-          BisonImplementation::symbol_kind_type expected_tokens[expected_token_count];
-          context.expected_tokens(expected_tokens, expected_token_count);
-          
-
-          // now we want to create a fake location to append to parts
-          // it will hold all the possible matches we are looking for (from state)
-          
+          Location syntax_error(
+            _streamName,
+            "Syntax Error",
+            _location.begin(),
+            _location.end()
+          );
           auto state = stack[0].state;
-          const auto& transitions = ::Faust::Compiler::Parser::transitions().at(53);
- 
-          auto symbol = YY_CAST(BisonImplementation::symbol_kind_type, _parser.yystos()[+state]);
-          auto symbol_name = _parser.symbol_name(symbol);
-          
-          syntax_error.printStack(std::cerr);
-          
-          constexpr std::array<std::string_view, 2> phrase{ ": expected ", " or " };
-          for ( int index = 0; index < expected_token_count; ++index ) {
-            std::cerr << phrase[!!index]
-                      << BisonImplementation::symbol_name( expected_tokens[index] );
+          const auto& transitions = ::Faust::Compiler::Parser::transitions().at(state);
+          for ( auto& this_context : transitions.context ) {
+            Location& this_location = syntax_error.parts().emplace_back(
+              syntax_error.streamName(),
+              std::string("Possibility ") + std::to_string(syntax_error.parts().size()+1) + ": " + this_context.symbol,
+              0,
+              0
+            );
+            copyStackToLocationParts( stack, this_location );
+            for ( auto& this_expected_symbol_name : this_context.expected ) {
+              this_location.parts().emplace_back(
+                syntax_error.streamName(),
+                this_expected_symbol_name,
+                -1,
+                -1
+              );
+            }
           }
-          BisonImplementation::symbol_kind_type token_type = context.token();
-          if ( token_type != BisonImplementation::symbol_kind::S_YYEMPTY ) {
-            std::cerr << " before " << BisonImplementation::symbol_name(token_type);
-          }
-          std::cerr << std::endl;
+          
+          std::stringstream error;
+          syntax_error.printStack(error);
+          throw faustexception(error.str());
+
         }
         
         Tree checkRulelist(Tree lr);

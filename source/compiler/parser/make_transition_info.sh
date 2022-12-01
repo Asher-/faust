@@ -88,16 +88,16 @@ TRANSITION_CLASS="
       {
         Transition() = default;
         Transition(
-          const Context&                    context,
+          const std::vector<Context>&       contexts,
           const std::map<std::string, int>& tokens,
           const std::map<std::string, int>& symbols
         )
         :
-          context( context ),
+          context( contexts ),
           tokens( tokens ),
           symbols( symbols )
         {}
-        Context                    context;
+        std::vector<Context>       context;
         std::map<std::string, int> tokens;
         std::map<std::string, int> symbols;
       };

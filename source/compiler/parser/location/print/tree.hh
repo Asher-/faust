@@ -76,7 +76,7 @@ namespace Faust {
               )
               :
                 _location( location ),
-                _lastPrintedPosition( Position( 0, 0 ) ),
+                _lastPrintedPosition( Position( -1, -1 ) ),
                 _prefix()
               {}
 
@@ -159,7 +159,7 @@ namespace Faust {
                 }
                 else {
                   stack << _prefix << Leaf;
-                  initial_prefix_spacing = Leaf.size() + 1;
+                  initial_prefix_spacing = Leaf.size();
                 }
                 std::string position_string{ ( _location.begin() != _lastPrintedPosition )
                                              ? static_cast<std::string>((_lastPrintedPosition = _location.begin())) + " "
@@ -173,19 +173,22 @@ namespace Faust {
                     Helper::Tree<Location> tree( location, _lastPrintedPosition, _prefix, false );
                     stack << tree;
                   }
-                  Helper::Tree<Location> tree( *iterator_last_part, _lastPrintedPosition, _prefix, true );
+                  Helper::Tree<Location> tree( *iterator_last_part, _lastPrintedPosition, _prefix, false );
                   stack << tree;
                 }
+                _prefix.closeLast();
                 if ( ! _finalNested ) {
-                  _prefix.last().value() = _location.end();
-                  _prefix.last().width() += Leaf.size();
+                  auto& close_cell = _prefix.emplace_back( initial_prefix_spacing );
+                  close_cell.value() = "/";
+                  close_cell.setClosing();
                   stack << _prefix << std::endl;
                   _prefix.shrink();
                 }
                 else {
-                  _prefix.last().close();
-                  ++_prefix.closingOffset();
+                  _prefix.close();
+                  stack << _prefix << std::endl;
                 }
+
                 return stack;
               }
 

@@ -251,7 +251,15 @@ namespace Faust {
             const Position& pos
           )
           {
-            return ostr << pos.line() << '.' << pos.column();
+            if ( (pos.line() == -1) && (pos.column() == -1) ) {
+              return ostr << "[missing]";
+            }
+            else if ( (pos.line() == 0) && (pos.column() == 0) ) {
+              return ostr;
+            }
+            else {
+              return ostr << pos.line() << ':' << pos.column();
+            }
           }
           
           static constexpr

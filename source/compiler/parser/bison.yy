@@ -387,7 +387,7 @@
 %type <Tree> statement.definition
 %type <Tree> statement.definition.assignment
 %type <std::string> statement.definition.assignment.operator
-%type <std::string> statement.definition.assignment.terminal
+%type <std::string> statement.terminal
 %type <Tree> statement.definition.function
 %type <Tree> statement.definition.function.arg
 %type <Tree> statement.definition.function.args
@@ -879,7 +879,7 @@ expression:
         }
         
   expression.letrec.equation:
-      expression.letrec.equation.name DEF expression ENDDEF {
+      expression.letrec.equation.name DEF expression statement.terminal {
         $$ = ::cons(
           $[expression.letrec.equation.name],
           cons(
@@ -889,7 +889,7 @@ expression:
         );
         $$->location() = @$;
       }
-    | error ENDDEF {
+    | error statement.terminal {
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
         self._lexer->LexerError("Expected expression.");
         $$->location() = @$;
@@ -1718,35 +1718,18 @@ statement:
       }
 
     statement.definition.function:
-        statement.definition.function.declaration ENDDEF {
+        statement.definition.function.declaration statement.terminal {
           $$ = $[statement.definition.function.declaration];
           $$->location() = @$;
         }
-      | statement.definition.function.declaration ENDOFINPUT {
-          $$ = $[statement.definition.function.declaration];
-          $$->location() = @$;
-        }
-      | statement.definition.function.declaration ENDL {
-          $$ = $[statement.definition.function.declaration];
-          $$->location() = @$;
-        }
-      | ENDDEF error {
-        yyerrok;
-        yyclearin;
-        $$ = ::Faust::Primitive::Symbols::asTree().nil;
-        $$->location() = @$;
-      }
 
     statement.definition.assignment.operator:
         DEF
 
-    statement.definition.assignment.terminal:
-        ENDDEF
-
     statement.definition.assignment:
         statement.box.identifier.as.tree
         statement.definition.assignment.operator
-        expression statement.definition.assignment.terminal {
+        expression statement.terminal {
           $$ = cons(
             $[statement.box.identifier.as.tree],
             ::cons( ::Faust::Primitive::Symbols::asTree().nil, $expression )
@@ -1807,14 +1790,14 @@ statement:
   /******************** Declare ********************/
 
   statement.declare.metadata:
-      DECLARE statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] ENDDEF {
+      DECLARE statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] statement.terminal {
         self.declareMetadata($key,$value);
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
         $$->location() = @$;
       }
 
   statement.declare.feature.metadata:
-      DECLARE statement.identifier.as.tree[feature] statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] ENDDEF {
+      DECLARE statement.identifier.as.tree[feature] statement.identifier.as.tree[key] primitive.string.quoted.as.tree[value] statement.terminal {
         self.declareDefinitionMetadata( $feature, $key, $value );
         $$ = ::Faust::Primitive::Symbols::asTree().nil;
         $$->location() = @$;
@@ -1850,7 +1833,7 @@ statement:
   /******************** Import ********************/
 
   statement.import:
-      IMPORT LPAR primitive.string.unquoted.as.tree[filename] RPAR ENDDEF {
+      IMPORT LPAR primitive.string.unquoted.as.tree[filename] RPAR statement.terminal {
         $$ = ::importFile($filename);
         $$->location() = @$;
       }
@@ -1940,7 +1923,7 @@ statement:
   /******************** Rules ********************/
 
   statement.signal.pattern.rule:
-      LPAR statement.definition.function.args RPAR ARROW expression ENDDEF {
+      LPAR statement.definition.function.args RPAR ARROW expression statement.terminal {
         $$ = ::cons($[statement.definition.function.args],$expression);
       }
 
@@ -1967,5 +1950,13 @@ statement:
           );
           $$->location() = @$;
         }
+
+  /******************** Terminal ********************/
+
+  statement.terminal:
+      ENDDEF
+    | ENDL
+    | ENDOFINPUT { return 0; }
+
 
 %%

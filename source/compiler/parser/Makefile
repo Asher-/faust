@@ -28,12 +28,6 @@ bison/implementation.cpp : bison.yy
 	@$(GSED) -i -E "s/(YYLLOC_DEFAULT \(error_token).location(, yyerror_range, 2\))/\1\2/" bison/implementation.cpp
 	@# Expose yystack so that we can access reduced partial rule matches (no longer in LAC).
 	@$(GSED) -i -E "s/^(\s*)(stack_type yystack_;)\s*/\1\2\n\1public:\n\1stack_type\& yystack\(\) { return yystack_; }\n\1const stack_type\& yystack\(\) const { return yystack_; }\n\1private:\n/" bison/implementation.hh
-	@# Expose yy_lr_goto_state_ for error printing
-	@$(GSED) -i -E "s/^(\s*)(static state_type yy_lr_goto_state_ \(state_type yystate, int yysym\);)\s*/\1public:\n\1\2\n\1private:\n/" bison/implementation.hh
-	@# Expose yyr1_ for error printing
-	@$(GSED) -i -E "s/^(\s*)(static const short yyr1_\[\];)\s*/\1\2\n\1public:\n\1static auto\& yyr1\(\) { return yyr1_; }\n\1private:\n/" bison/implementation.hh
-	@# Expose yystos_ for error printing
-	@$(GSED) -i -E "s/^(\s*)(static const short yystos_\[\];)\s*/\1\2\n\1public:\n\1static auto\& yystos\(\) { return yystos_; }\n\1private:\n/" bison/implementation.hh
 	@./make_transition_info.sh
 	
 lexer/abstract/implementation.cpp : lexer/faustlexer.ll

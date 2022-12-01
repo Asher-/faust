@@ -113,7 +113,7 @@ namespace Faust {
             )
             {
               const char spacing_char = _closing ? '_' : ' ';
-              if ( ! _value.length() )
+              if ( ! _closing && ! _value.length() )
                 _value = "|";
               const std::size_t spacing = _width - _value.length();
               for ( std::size_t index = 0 ; index < spacing ; ++index ) {
@@ -145,6 +145,12 @@ namespace Faust {
             close()
             {
               clear();
+              _closing = true;
+            }
+
+            void
+            setClosing()
+            {
               _closing = true;
             }
 

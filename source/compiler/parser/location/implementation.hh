@@ -71,6 +71,8 @@ namespace Faust {
             const Position&     position
           )
           :
+            _streamName( stream_name ),
+            _name( symbol_name ),
             _begin( position ),
             _end( position )
           {}
@@ -83,6 +85,8 @@ namespace Faust {
             const Position&     end
           )
           :
+            _streamName( stream_name ),
+            _name( symbol_name ),
             _begin( begin ),
             _end( end )
           {}

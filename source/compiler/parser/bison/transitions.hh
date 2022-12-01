@@ -35,7 +35,7 @@ namespace Faust {
       {
         Context() = default;
         Context(
-          const std::string&               in_symbol,
+          const std::string           in_symbol,
           const std::vector<std::string>&  matched_parts,
           const std::vector<std::string>&  expected_parts
         )
@@ -53,12 +53,12 @@ namespace Faust {
       {
         Transition() = default;
         Transition(
-          const std::vector<Context>&       context,
+          const std::vector<Context>&       contexts,
           const std::map<std::string, int>& tokens,
           const std::map<std::string, int>& symbols
         )
         :
-          context( context ),
+          context( contexts ),
           tokens( tokens ),
           symbols( symbols )
         {}
