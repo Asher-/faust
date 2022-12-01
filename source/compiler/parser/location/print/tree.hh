@@ -176,8 +176,8 @@ namespace Faust {
                   Helper::Tree<Location> tree( *iterator_last_part, _lastPrintedPosition, _prefix, false );
                   stack << tree;
                 }
-                _prefix.closeLast();
                 if ( ! _finalNested ) {
+                  _prefix.closeLast();
                   auto& close_cell = _prefix.emplace_back( initial_prefix_spacing );
                   close_cell.value() = "/";
                   close_cell.setClosing();
@@ -185,7 +185,8 @@ namespace Faust {
                   _prefix.shrink();
                 }
                 else {
-                  _prefix.close();
+                  _prefix.last().value() = "/";
+                  _prefix.last().setClosing();
                   stack << _prefix << std::endl;
                 }
 
